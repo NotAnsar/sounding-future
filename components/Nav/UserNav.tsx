@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
-	FileClock,
 	LogOutIcon,
 	Settings,
 	Upload,
