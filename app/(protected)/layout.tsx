@@ -1,8 +1,7 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
-import UserNav from '@/components/Nav/UserNav';
-import { Input } from '@/components/ui/input';
+import LeftNav from '@/components/Nav/LeftNav';
+import TopNav from '@/components/Nav/TopNav';
 import { AudioProvider } from '@/context/AudioContext';
-import Image from 'next/image';
 
 export default async function Layout({
 	children,
@@ -11,26 +10,8 @@ export default async function Layout({
 }) {
 	return (
 		<div className='relative flex h-screen '>
-			<div className='bg-background fixed top-0 h-[72px] md:h-[128px] w-full flex z-10 gap-4 md:gap-0'>
-				<div className='md:w-64 md:min-w-64 md:max-w-64 h-full grid pl-8 items-center'>
-					<Image
-						src={'/logo.png'}
-						alt='logo'
-						width={288.33}
-						height={132}
-						className='w-24 md:w-36 h-auto'
-					/>
-				</div>
-				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 '>
-					<Input
-						type='search'
-						placeholder='Search'
-						className='w-1/2 bg-player placeholder:text-base py-4 border border-border/10 rounded-xl'
-					/>
-					<UserNav />
-				</div>
-			</div>
-			<div className='hidden w-64 md:flex flex-col h-[calc(100vh-128px)] fixed top-[128px] p-5 bg-foreground rounded-tr-3xl  '></div>
+			<TopNav />
+			<LeftNav />
 
 			<AudioProvider>
 				<main className='md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[72px] md:mt-[128px]'>
