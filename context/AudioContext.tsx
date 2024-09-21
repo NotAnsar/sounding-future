@@ -22,7 +22,7 @@ interface AudioContextType {
 	togglePlayPause: () => void;
 	setVolume: (volume: number) => void;
 	seek: (time: number) => void;
-	formatTime: (time: number) => string;
+
 	playTrack: (track: Track) => void;
 	nextTrack: () => void;
 	previousTrack: () => void;
@@ -90,12 +90,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		if (soundRef.current) {
 			soundRef.current.seek(seekTime);
 		}
-	};
-
-	const formatTime = (time: number): string => {
-		const minutes = Math.floor(time / 60);
-		const seconds = Math.floor(time % 60);
-		return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 	};
 
 	const playTrack = (track: Track) => {
@@ -177,7 +171,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		togglePlayPause,
 		setVolume: handleVolumeChange,
 		seek: handleSeek,
-		formatTime,
+
 		playTrack,
 		nextTrack,
 		previousTrack,

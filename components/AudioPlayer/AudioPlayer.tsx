@@ -6,6 +6,7 @@ import { Track, useAudio } from '@/context/AudioContext';
 import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import { useEffect } from 'react';
 import CustomSlider from './CustomSlider';
+import { formatTime } from '@/lib/utils';
 
 export default function AudioPlayer() {
 	const {
@@ -20,7 +21,6 @@ export default function AudioPlayer() {
 		seek,
 		playTrack,
 		toggleMute,
-		formatTime,
 	} = useAudio();
 	useAudioKeyboardControls();
 
