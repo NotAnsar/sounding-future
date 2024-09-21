@@ -26,7 +26,7 @@ export default function TrackList({ tracks }: { tracks: Track[] }) {
 								<TableCell className='w-14 relative'>
 									<div
 										className={cn(
-											'min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md justify-center items-center hidden group-hover:flex absolute inset-2 bg-black/40',
+											'min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md justify-center items-center hidden group-hover:flex absolute inset-2 bg-black/40 cursor-pointer',
 											isPlaying && isCurrentTrack ? 'flex' : ''
 										)}
 										onClick={() => {

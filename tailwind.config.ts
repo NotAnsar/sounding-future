@@ -19,6 +19,7 @@ const config: Config = {
 				background: 'hsl(221, 44%, 8%)',
 				foreground: 'hsl(220, 34%, 12%)',
 				player: 'hsl(220, 42%, 16%)',
+				button: 'hsl(218, 63%, 31%)',
 
 				card: {
 					DEFAULT: 'hsl(var(--card))',
@@ -45,6 +46,7 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))',
 				},
+
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))',

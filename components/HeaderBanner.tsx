@@ -12,7 +12,7 @@ export default function HeaderBanner({
 	className?: string;
 }) {
 	return (
-		<div className='w-full h-40 sm:h-48 md:h-64 relative'>
+		<div className='w-full h-40 sm:h-48 md:h-56 relative'>
 			<Image
 				alt={title}
 				src={img}

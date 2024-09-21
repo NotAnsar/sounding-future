@@ -4,9 +4,11 @@ import { Icons } from '../icons/audio-player';
 import { useAudio } from '@/context/AudioContext';
 import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import CustomSlider from './CustomSlider';
-import { formatTime } from '@/lib/utils';
+import { cn, formatTime } from '@/lib/utils';
+import { useState } from 'react';
 
 export default function AudioPlayer() {
+	const [loop, setloop] = useState(false);
 	const {
 		currentTrack,
 		isPlaying,
@@ -29,7 +31,7 @@ export default function AudioPlayer() {
 		<div className='w-full bg-[#18243B] fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2'>
 			<div className='flex gap-3 items-center w-auto md:min-w-[200px] xl:min-w-[250px] max-w-[250px] md:w-[250px]'>
 				<Image
-					src='/cover.png'
+					src={currentTrack.cover}
 					alt='cover'
 					width={56}
 					height={56}
@@ -80,8 +82,19 @@ export default function AudioPlayer() {
 						{formatTime(currentTrack.duration)}
 					</span>
 				</div>
-				<div className='w-10 h-auto aspect-square justify-center items-center bg-white rounded-full hidden md:flex '>
-					<Icons.shuffle className='w-4 h-auto cursor-pointer text-black' />
+				<div
+					className={cn(
+						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
+						loop ? 'bg-white' : 'border-white'
+					)}
+					onClick={() => setloop((a) => !a)}
+				>
+					<Icons.shuffle
+						className={cn(
+							'w-4 h-auto cursor-pointer transition-all duration-200',
+							loop ? 'text-black' : 'text-white'
+						)}
+					/>
 				</div>
 			</div>
 

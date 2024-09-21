@@ -75,7 +75,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			} else {
 				soundRef.current.play();
 			}
-			setIsPlaying((prev) => !prev);
+			// setIsPlaying((prev) => !prev);
 		}
 	}, [isPlaying]);
 
