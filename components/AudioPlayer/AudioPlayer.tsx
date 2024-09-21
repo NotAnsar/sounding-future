@@ -79,7 +79,7 @@ export default function AudioPlayer() {
 					/>
 
 					<span className='text-xs font-semibold w-8'>
-						{formatTime(currentTrack.duration)}
+						{formatTime(duration)}
 					</span>
 				</div>
 				<div
