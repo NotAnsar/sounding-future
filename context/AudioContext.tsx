@@ -22,7 +22,7 @@ interface AudioContextType {
 	togglePlayPause: () => void;
 	setVolume: (volume: number) => void;
 	seek: (time: number) => void;
-
+	playNewTrack: (tracks: Track[], index?: number) => void;
 	playTrack: (track: Track) => void;
 	nextTrack: () => void;
 	previousTrack: () => void;
@@ -75,6 +75,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			} else {
 				soundRef.current.play();
 			}
+			setIsPlaying((prev) => !prev);
 		}
 	}, [isPlaying]);
 
@@ -92,19 +93,54 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		}
 	};
 
-	const playTrack = (track: Track) => {
-		setCurrentTrack(track);
-		if (soundRef.current) {
-			soundRef.current.stop();
-			soundRef.current.unload();
-		}
-		setCurrentTime(0);
+	const playTrack = useCallback(
+		(track: Track, tracks?: Track[]) => {
+			if (!track) {
+				setIsPlaying(false);
+				setCurrentTrack(null);
+				return;
+			}
 
-		if (soundRef.current) {
-			soundRef.current.play();
-			setIsPlaying(true);
-		}
-	};
+			setCurrentTrack(track);
+			if (soundRef.current) {
+				soundRef.current.stop();
+				soundRef.current.unload();
+			}
+			setCurrentTime(0);
+
+			const newSound = new Howl({
+				src: [track?.url],
+				html5: true,
+				onload: () => {
+					setDuration(newSound.duration());
+					newSound.play();
+					setIsPlaying(true);
+				},
+				onplay: () => setIsPlaying(true),
+				onpause: () => setIsPlaying(false),
+				onstop: () => setIsPlaying(false),
+				onend: () => {
+					const currentIndex = (tracks || playlist).findIndex(
+						(t) => t.id === track.id
+					);
+
+					const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
+					playTrack((tracks || playlist)[nextIndex], tracks);
+				},
+			});
+
+			soundRef.current = newSound;
+		},
+		[playlist]
+	);
+
+	const playNewTrack = useCallback(
+		(tracks: Track[], index: number = 0) => {
+			setPlaylist(tracks);
+			playTrack(tracks[index], tracks);
+		},
+		[playTrack]
+	);
 
 	const previousTrack = useCallback(() => {
 		if (playlist.length > 0 && currentTrack) {
@@ -115,7 +151,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				(currentIndex - 1 + playlist.length) % playlist.length;
 			playTrack(playlist[previousIndex]);
 		}
-	}, [playlist, currentTrack]);
+	}, [playlist, currentTrack, playTrack]);
 
 	const nextTrack = useCallback(() => {
 		if (playlist.length > 0 && currentTrack) {
@@ -125,30 +161,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			const nextIndex = (currentIndex + 1) % playlist.length;
 			playTrack(playlist[nextIndex]);
 		}
-	}, [playlist, currentTrack]);
-
-	useEffect(() => {
-		if (currentTrack) {
-			if (soundRef.current) {
-				soundRef.current.unload();
-			}
-			soundRef.current = new Howl({
-				src: [currentTrack.songUrl],
-				html5: true,
-				onload: () => {
-					setDuration(soundRef.current?.duration() || 0);
-				},
-				onplay: () => setIsPlaying(true),
-				onpause: () => setIsPlaying(false),
-				onstop: () => setIsPlaying(false),
-				onend: () => nextTrack(),
-			});
-		}
-
-		return () => {
-			soundRef.current?.unload();
-		};
-	}, [currentTrack, nextTrack]);
+	}, [playlist, currentTrack, playTrack]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -171,12 +184,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		togglePlayPause,
 		setVolume: handleVolumeChange,
 		seek: handleSeek,
-
 		playTrack,
 		nextTrack,
 		previousTrack,
 		setPlaylist,
 		toggleMute,
+		playNewTrack,
 	};
 
 	return (
@@ -184,15 +197,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	);
 };
 
-export interface Track {
+export type Track = {
 	id: string;
 	title: string;
 	artist: string;
-	album?: string;
-	releaseDate?: string;
-	genre?: string;
-	duration?: number;
-	label?: string;
-	songUrl: string;
-	coverUrl?: string;
-}
+	genre: string;
+	duration: number;
+	url: string;
+	cover: string;
+	liked?: boolean;
+};
