@@ -14,7 +14,7 @@ export default function page() {
 	);
 }
 
-interface Track {
+type Track = {
 	title: string;
 	artist: string;
 	genre: string;
@@ -22,7 +22,7 @@ interface Track {
 	songUrl?: string;
 	cover?: string;
 	liked?: boolean;
-}
+};
 
 const tracks: Track[] = [
 	{
@@ -49,7 +49,7 @@ const tracks: Track[] = [
 	},
 ];
 
-export function TrackList({ tracks }: { tracks: Track[] }) {
+function TrackList({ tracks }: { tracks: Track[] }) {
 	return (
 		<div className='text-gray-300 p-4 font-sans'>
 			<ul className='space-y-2'>
