@@ -137,7 +137,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	// const playNewTrack = useCallback(
 	// 	(tracks: Track[], index: number = 0) => {
 	// 		setPlaylist(tracks);
-	// 		playTrack(tracks[index], tracks);
+	// 		playTrack(tracks[  index], tracks);
 	// 	},
 	// 	[playTrack]
 	// );

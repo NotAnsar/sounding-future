@@ -48,7 +48,7 @@ export default function AudioPlayer() {
 			<div className='flex gap-2 md:gap-3 items-center justify-center w-full '>
 				<div className='flex gap-1.5 items-center '>
 					<Icons.next
-						className='w-10 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block'
+						className='w-10 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block fill-white'
 						onClick={previousTrack}
 					/>
 					<button onClick={togglePlayPause} className='text-nowrap'>
@@ -60,7 +60,7 @@ export default function AudioPlayer() {
 					</button>
 
 					<Icons.next
-						className='w-10 h-auto aspect-square cursor-pointer hidden sm:block'
+						className='w-10 h-auto aspect-square cursor-pointer hidden sm:block fill-white'
 						onClick={nextTrack}
 					/>
 				</div>
