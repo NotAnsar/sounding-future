@@ -48,7 +48,7 @@ export default function AudioPlayer() {
 			<div className='flex gap-2 md:gap-3 items-center justify-center w-full '>
 				<div className='flex gap-1.5 items-center '>
 					<Icons.next
-						className='w-9 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block fill-white'
+						className='w-8 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block fill-white'
 						onClick={previousTrack}
 					/>
 					<button onClick={togglePlayPause} className='text-nowrap'>
@@ -60,7 +60,7 @@ export default function AudioPlayer() {
 					</button>
 
 					<Icons.next
-						className='w-9 h-auto aspect-square cursor-pointer hidden sm:block fill-white'
+						className='w-8 h-auto aspect-square cursor-pointer hidden sm:block fill-white'
 						onClick={nextTrack}
 					/>
 				</div>
@@ -102,9 +102,15 @@ export default function AudioPlayer() {
 				<Icons.setting className='w-5 h-auto aspect-square cursor-pointer' />
 				<button onClick={toggleMute}>
 					{isMuted ? (
-						<Icons.muted className='w-[26px] h-auto aspect-square cursor-pointer' />
+						<Icons.muted
+							className='w-[22px] h-auto aspect-square cursor-pointer fill-white stroke-white'
+							style={{ strokeWidth: '1px' }}
+						/>
 					) : (
-						<Icons.speaker className='w-[26px] h-auto aspect-square cursor-pointer' />
+						<Icons.speaker
+							className='w-[22px] h-auto aspect-square cursor-pointer fill-white stroke-white'
+							style={{ strokeWidth: '1px' }}
+						/>
 					)}
 				</button>
 

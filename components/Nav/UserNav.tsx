@@ -8,17 +8,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-	LogOutIcon,
-	Settings,
-	Upload,
-	UserIcon,
-	UserRoundCog,
-} from 'lucide-react';
+import { UserCog, UserRoundCog } from 'lucide-react';
 
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { cn } from '@/lib/utils';
+import { Icons } from '../icons/audio-player';
 
 export default function UserNav({ className }: { className?: string }) {
 	return (
@@ -29,7 +24,7 @@ export default function UserNav({ className }: { className?: string }) {
 
 					<AvatarFallback className='h-9 w-auto aspect-square bg-button'>
 						{/* <span className='sr-only'>{user?.email}</span> */}
-						<UserIcon className='h-[17px] w-auto' />
+						<UserCog className='h-[17px] w-auto' />
 					</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
@@ -57,14 +52,14 @@ export default function UserNav({ className }: { className?: string }) {
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
 					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
-						<Settings className='w-4 h-auto mr-2' />
+						<Icons.setting className='w-4 h-auto mr-2' />
 						Settings
 					</Link>
 				</DropdownMenuItem>
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
 					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
-						<Upload className='w-4 h-auto mr-2' />
+						<Icons.upload className='w-4 h-auto mr-2 fill-white ' />
 						Upload Tracks
 					</Link>
 				</DropdownMenuItem>
@@ -76,7 +71,7 @@ export default function UserNav({ className }: { className?: string }) {
 							type='submit'
 							className='p-2 w-full text-left flex items-center'
 						>
-							<LogOutIcon className='w-4 h-auto mr-2' />
+							<Icons.logout className='w-4 h-auto mr-2 fill-white' />
 							Log Out
 						</button>
 					</form>
