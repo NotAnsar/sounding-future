@@ -85,7 +85,7 @@ export default function AudioPlayer() {
 						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
 						true ? 'bg-white' : 'border-white'
 					)}
-					onClick={() => setloop((a) => !a)}
+					// onClick={() => setloop((a) => !a)}
 				>
 					<Icons.shuffle
 						className={cn(
