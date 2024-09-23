@@ -22,7 +22,7 @@ export default function HeaderBanner({
 			/>
 
 			<div className='absolute inset-0 bg-black bg-opacity-30 rounded-3xl' />
-			<div className='absolute bottom-6 px-6 text-white z-10 w-full'>
+			<div className='absolute bottom-6 px-6 text-white w-full'>
 				<h1 className='font-bold text-3xl sm:text-5xl md:text-[50px] md:leading-[54px] lg:text-[66px] lg:leading-[66px]'>
 					{title}
 				</h1>

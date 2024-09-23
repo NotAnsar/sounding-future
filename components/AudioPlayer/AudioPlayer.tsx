@@ -5,10 +5,8 @@ import { useAudio } from '@/context/AudioContext';
 import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import CustomSlider from './CustomSlider';
 import { cn, formatTime } from '@/lib/utils';
-import { useState } from 'react';
 
 export default function AudioPlayer() {
-	const [loop, setloop] = useState(false);
 	const {
 		currentTrack,
 		isPlaying,
@@ -85,14 +83,14 @@ export default function AudioPlayer() {
 				<div
 					className={cn(
 						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
-						loop ? 'bg-white' : 'border-white'
+						true ? 'bg-white' : 'border-white'
 					)}
 					onClick={() => setloop((a) => !a)}
 				>
 					<Icons.shuffle
 						className={cn(
 							'w-4 h-auto cursor-pointer transition-all duration-200',
-							loop ? 'text-black' : 'text-white'
+							true ? 'text-black' : 'text-white'
 						)}
 					/>
 				</div>
@@ -102,15 +100,9 @@ export default function AudioPlayer() {
 				<Icons.setting className='w-5 h-auto aspect-square cursor-pointer' />
 				<button onClick={toggleMute}>
 					{isMuted ? (
-						<Icons.muted
-							className='w-[22px] h-auto aspect-square cursor-pointer fill-white stroke-white'
-							style={{ strokeWidth: '1px' }}
-						/>
+						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-white' />
 					) : (
-						<Icons.speaker
-							className='w-[22px] h-auto aspect-square cursor-pointer fill-white stroke-white'
-							style={{ strokeWidth: '1px' }}
-						/>
+						<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-white' />
 					)}
 				</button>
 

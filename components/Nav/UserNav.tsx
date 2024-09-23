@@ -8,12 +8,10 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { UserCog, UserRoundCog } from 'lucide-react';
-
+import { LogOut, Settings, Upload, UserIcon, UserRoundCog } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { cn } from '@/lib/utils';
-import { Icons } from '../icons/audio-player';
 
 export default function UserNav({ className }: { className?: string }) {
 	return (
@@ -24,7 +22,7 @@ export default function UserNav({ className }: { className?: string }) {
 
 					<AvatarFallback className='h-9 w-auto aspect-square bg-button'>
 						{/* <span className='sr-only'>{user?.email}</span> */}
-						<UserCog className='h-[17px] w-auto' />
+						<UserIcon className='h-[17px] w-auto' />
 					</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>
@@ -52,14 +50,15 @@ export default function UserNav({ className }: { className?: string }) {
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
 					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
-						<Icons.setting className='w-4 h-auto mr-2' />
+						<Settings className='w-4 h-auto mr-2' />
 						Settings
 					</Link>
 				</DropdownMenuItem>
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
 					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
-						<Icons.upload className='w-4 h-auto mr-2 fill-white ' />
+						{/* <Icons.upload className='w-4 h-auto mr-2 fill-white ' /> */}
+						<Upload className='w-4 h-auto mr-2 ' />
 						Upload Tracks
 					</Link>
 				</DropdownMenuItem>
@@ -71,7 +70,8 @@ export default function UserNav({ className }: { className?: string }) {
 							type='submit'
 							className='p-2 w-full text-left flex items-center'
 						>
-							<Icons.logout className='w-4 h-auto mr-2 fill-white' />
+							{/* <Icons.logout className='w-4 h-auto mr-2 fill-white' /> */}
+							<LogOut className='w-4 h-auto mr-2' />
 							Log Out
 						</button>
 					</form>
