@@ -31,11 +31,11 @@ const config: Config = {
 				},
 				primary: {
 					DEFAULT: 'hsl(313, 81%, 75%)',
-					foreground: 'hsl(var(--primary-foreground))',
+					foreground: 'hsl(313, 52%, 45%)',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))',
+					foreground: 'hsl(275, 43%, 41%)',
 				},
 				muted: {
 					// DEFAULT: 'hsl(var(--muted))',

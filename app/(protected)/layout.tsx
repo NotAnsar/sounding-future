@@ -1,5 +1,5 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
-import LeftNav from '@/components/Nav/LeftNav';
+import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
 import { AudioProvider } from '@/context/AudioContext';
 
@@ -10,11 +10,15 @@ export default async function Layout({
 }) {
 	return (
 		<div className='relative flex h-screen '>
-			<TopNav />
-			<LeftNav />
-
+			<TopNav className={`top-0 h-[72px] md:h-[128px]`} />
+			<SideBarNav
+				className={`hidden md:flex top-[128px] h-[calc(100vh-128px)] fixed`}
+			/>
+			;
 			<AudioProvider>
-				<main className='md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[72px] md:mt-[128px]'>
+				<main
+					className={`md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[72px] md:mt-[128px]`}
+				>
 					{children}
 					Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis id,
 					odio modi fugiat praesentium porro molestias, perferendis ullam sint

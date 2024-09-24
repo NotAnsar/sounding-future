@@ -4,10 +4,16 @@ import { Input } from '../ui/input';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { Menu } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export default function TopNav() {
+export default function TopNav({ className }: { className?: string }) {
 	return (
-		<div className='bg-background fixed top-0 h-[72px] md:h-[128px] w-full flex z-10 gap-4 md:gap-0'>
+		<div
+			className={cn(
+				'bg-background fixed w-full flex z-10 gap-4 md:gap-0',
+				className
+			)}
+		>
 			<div className='md:w-64 md:min-w-64 md:max-w-64 h-full grid pl-8 items-center'>
 				<Image
 					src={'/logo.png'}
