@@ -65,16 +65,22 @@ export default function UserNav({ className }: { className?: string }) {
 
 				<DropdownMenuSeparator />
 				<DropdownMenuItem className='cursor-pointer p-0 '>
-					<form className='w-full relative'>
+					{/* <form className='w-full relative'>
 						<button
 							type='submit'
 							className='p-2 w-full text-left flex items-center'
 						>
-							{/* <Icons.logout className='w-4 h-auto mr-2 fill-white' /> */}
 							<LogOut className='w-4 h-auto mr-2' />
 							Log Out
 						</button>
-					</form>
+					</form> */}
+					<Link
+						href={'/login'}
+						className='px-2 py-2.5 w-full flex items-center'
+					>
+						<LogOut className='w-4 h-auto mr-2' />
+						Log Out
+					</Link>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
