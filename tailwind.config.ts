@@ -67,6 +67,9 @@ const config: Config = {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 			},
+			backgroundImage: {
+				auth: "url('/auth.png')",
+			},
 		},
 	},
 	plugins: [require('tailwindcss-animate')],
