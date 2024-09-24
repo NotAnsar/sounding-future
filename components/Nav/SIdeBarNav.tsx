@@ -22,7 +22,7 @@ export default function SideBarNav({
 			)}
 			{...props}
 		>
-			<div className='space-y-4 py-4'>
+			<div className='flex flex-col gap-3 py-2 h-full'>
 				<div className='px-3 py-2 space-y-6'>
 					<div className='flex flex-col gap-2'>
 						{mainNav.map((item, i) => (
@@ -53,6 +53,9 @@ export default function SideBarNav({
 						))}
 					</div>
 				</div>
+				<Link href={'/privacy'} className='mt-auto flex text-muted mb-20 pl-4'>
+					Privacy | Legal
+				</Link>
 			</div>
 		</div>
 	);

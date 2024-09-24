@@ -1,10 +1,11 @@
 import React from 'react';
 import UserNav from './UserNav';
-import { Input } from '../ui/input';
+
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import SearchInput from './SearchInput';
 
 export default function TopNav({ className }: { className?: string }) {
 	return (
@@ -24,11 +25,7 @@ export default function TopNav({ className }: { className?: string }) {
 				/>
 			</div>
 			<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 md:gap-0'>
-				<Input
-					type='search'
-					placeholder='Search'
-					className='w-1/2 bg-player placeholder:text-base py-4 border border-border/10 rounded-lg hidden md:block'
-				/>
+				<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden sm:block ' />
 				<div className='ml-auto flex items-center gap-2'>
 					<Button
 						variant='ghost'
