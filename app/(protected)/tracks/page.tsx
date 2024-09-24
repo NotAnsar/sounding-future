@@ -1,5 +1,10 @@
+import HeaderBanner from '@/components/HeaderBanner';
 import React from 'react';
 
 export default function page() {
-	return <div>Tracks</div>;
+	return (
+		<>
+			<HeaderBanner img={'/tracks.png'} title='Tracks' />
+		</>
+	);
 }

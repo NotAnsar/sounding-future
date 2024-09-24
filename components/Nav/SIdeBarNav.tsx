@@ -40,7 +40,7 @@ export default function SideBarNav({
 					<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 						MY COLLECTION
 					</h2>
-					<div className='flex flex-col gap-1 text-lg'>
+					<div className='flex flex-col gap-2'>
 						{collection.map((item, i) => (
 							<Nav
 								Icon={item.icon}
