@@ -4,22 +4,34 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { collection, mainNav } from '@/config/sidenav';
+import { SheetContent } from '../ui/sheet';
+import Image from 'next/image';
 import NavItem from './NavItem';
 
-export default function SideBarNav({
+export default function SideBarNavMobile({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	const path = usePathname();
 
 	return (
-		<div
+		<SheetContent
+			side='left'
 			className={cn(
-				'w-64 flex flex-col fixed p-5 bg-foreground rounded-tr-3xl',
+				'w-4/5 sm:w-64 flex flex-col fixed p-5 bg-foreground',
 				className
 			)}
 			{...props}
 		>
+			<Link href={'/'}>
+				<Image
+					src={'/logo.png'}
+					alt='logo'
+					width={288.33}
+					height={132}
+					className='w-24 ml-3 h-auto'
+				/>
+			</Link>
 			<div className='flex flex-col gap-3 py-2 h-full'>
 				<div className='px-3 py-2 space-y-6'>
 					<div className='flex flex-col gap-2'>
@@ -29,6 +41,7 @@ export default function SideBarNav({
 								title={item.title}
 								path={item.path}
 								currentPath={path}
+								sheet={true}
 								key={i}
 							/>
 						))}
@@ -47,14 +60,15 @@ export default function SideBarNav({
 								currentPath={path}
 								key={i}
 								type='collection'
+								sheet={true}
 							/>
 						))}
 					</div>
 				</div>
-				<Link href={'/privacy'} className='mt-auto flex text-muted mb-20 pl-4'>
+				<Link href={'/privacy'} className='mt-auto flex text-muted pl-4'>
 					Privacy | Legal
 				</Link>
 			</div>
-		</div>
+		</SheetContent>
 	);
 }

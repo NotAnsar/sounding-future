@@ -21,7 +21,7 @@ export default function SignInForm() {
 							name='username'
 							placeholder='JohnDoe'
 							className={cn(
-								'h-12 text-base placeholder:text-base',
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
 								state?.errors?.username
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive'
 									: ''
@@ -37,7 +37,7 @@ export default function SignInForm() {
 							name='email'
 							placeholder='name@example.com'
 							className={cn(
-								'h-12 text-base placeholder:text-base',
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
 								state?.errors?.email
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive'
 									: ''
@@ -53,7 +53,7 @@ export default function SignInForm() {
 							name='password'
 							placeholder='********'
 							className={cn(
-								'h-12 text-base placeholder:text-base',
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
 								state?.errors?.password
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive'
 									: ''

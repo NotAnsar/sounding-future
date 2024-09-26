@@ -25,7 +25,8 @@ export default function SearchInput({
 				<Input
 					type={'search'}
 					className={cn(
-						'pl-8 w-full placeholder:text-[15px] text-[15px] h-10 rounded-xl font-light',
+						'pl-8 w-full placeholder:text-[15px] text-[15px] h-10 rounded-xl font-light ring-2 ring-transparent focus-visible:ring-2 focus-visible:ring-primary/40',
+
 						inputStyles
 					)}
 					placeholder={placeholder}

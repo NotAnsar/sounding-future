@@ -23,7 +23,7 @@ export default function LoginForm() {
 							name='email'
 							placeholder='name@example.com'
 							className={cn(
-								'h-12 text-base placeholder:text-base',
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
 								state?.errors?.email
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
 									: ''
@@ -35,10 +35,10 @@ export default function LoginForm() {
 					</div>
 					<div className='grid gap-2'>
 						<div className='flex items-center'>
-							<Label className='font-semibold text-[15px]'>Password</Label>
+							<Label className='font-semibold text-[15px] '>Password</Label>
 							<Link
 								href='#'
-								className='ml-auto inline-block text-[15px] text-primary underline font-semibold'
+								className='ml-auto inline-block text-[15px] text-primary underline font-semibold '
 							>
 								Forgot password?
 							</Link>
@@ -48,7 +48,7 @@ export default function LoginForm() {
 							name='password'
 							placeholder='********'
 							className={cn(
-								'h-12 text-base placeholder:text-base',
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
 								state?.errors?.password
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
 									: ''
