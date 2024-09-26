@@ -1,12 +1,20 @@
-import Link from 'next/link';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+'use client';
 
-export default async function LoginForm() {
+import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useFormState } from 'react-dom';
+import { login } from '@/actions/login';
+import ErrorMessage from '../ErrorMessage';
+import { SubmitButton } from './SubmitButton';
+import { cn } from '@/lib/utils';
+
+export default function LoginForm() {
+	const [state, formAction] = useFormState(login, {});
+
 	return (
-		<div className={`grid gap-6`}>
-			<form>
+		<div className={`grid gap-6 `}>
+			<form action={formAction}>
 				<div className='grid gap-4'>
 					<div className='grid gap-2'>
 						<Label className='font-semibold text-[15px]'>Email</Label>
@@ -14,9 +22,16 @@ export default async function LoginForm() {
 							type='email'
 							name='email'
 							placeholder='name@example.com'
-							className='h-12 text-base placeholder:text-base'
+							className={cn(
+								'h-12 text-base placeholder:text-base',
+								state?.errors?.email
+									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
 							required
 						/>
+
+						<ErrorMessage errors={state.errors?.email} />
 					</div>
 					<div className='grid gap-2'>
 						<div className='flex items-center'>
@@ -32,20 +47,32 @@ export default async function LoginForm() {
 							type='password'
 							name='password'
 							placeholder='********'
+							className={cn(
+								'h-12 text-base placeholder:text-base',
+								state?.errors?.password
+									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
 							required
-							className='h-12 text-base placeholder:text-base'
 						/>
+						<ErrorMessage errors={state?.errors?.password} />
 					</div>
-					<Button
-						type='submit'
-						size={'xl'}
-						className='font-semibold text-[15px] mt-2'
-					>
-						Login with Email
-					</Button>
+
+					<div className='mt-2'>
+						<ErrorMessage
+							errors={state.message ? [state.message] : undefined}
+						/>
+						<SubmitButton className='mt-2.5 w-full'>
+							Login With Email
+						</SubmitButton>
+					</div>
 				</div>
+				<ErrorMessage
+					errors={state.message ? [state.message] : undefined}
+					className='mt-1'
+				/>
 			</form>
-			<div className='relative '>
+			<div className='relative'>
 				<div className='absolute inset-0 flex items-center'>
 					<span className='w-full border-t' />
 				</div>
@@ -56,14 +83,7 @@ export default async function LoginForm() {
 				</div>
 			</div>
 			<div className='grid gap-3 w-full'>
-				<Button
-					type='button'
-					variant={'outline'}
-					size={'xl'}
-					className='font-semibold text-[15px]'
-				>
-					Login With Google
-				</Button>
+				<SubmitButton variant={'outline'}>Login With Google</SubmitButton>
 			</div>
 		</div>
 	);
