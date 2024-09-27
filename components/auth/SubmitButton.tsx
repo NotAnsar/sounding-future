@@ -18,7 +18,7 @@ export function SubmitButton({
 			type='submit'
 			size='xl'
 			disabled={pending}
-			className={cn('font-semibold text-[15px]', className)}
+			className={cn('flex items-center font-semibold text-[15px]', className)}
 			{...props}
 		>
 			{pending ? <Loader className='mr-2 h-4 w-4 animate-spin' /> : null}

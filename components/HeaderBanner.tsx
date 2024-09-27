@@ -12,13 +12,13 @@ export default function HeaderBanner({
 	className?: string;
 }) {
 	return (
-		<div className='w-full h-40 sm:h-48 md:h-56 relative'>
+		<div className={cn('w-full h-40 sm:h-48 md:h-52 relative', className)}>
 			<Image
 				alt={title}
 				src={img}
 				width={1053}
 				height={319}
-				className={cn('w-full h-full object-cover rounded-3xl ', className)}
+				className={cn('w-full h-full object-cover rounded-3xl ')}
 			/>
 
 			<div className='absolute inset-0 bg-black bg-opacity-30 rounded-3xl' />

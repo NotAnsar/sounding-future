@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				alt='logo'
 				width={288.33}
 				height={132}
-				className='w-24 md:w-28 h-auto top-6 left-4 md:left-8 md:top-8 absolute'
+				className='w-24 md:w-[104px] h-auto top-6 left-4 md:left-8 md:top-8 absolute'
 			/>
 			{children}
 

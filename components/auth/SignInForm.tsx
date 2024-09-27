@@ -7,12 +7,13 @@ import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import { register } from '@/actions/signup';
+import { Icons } from '../icons/audio-player';
 
 export default function SignInForm() {
 	const [state, formAction] = useFormState(register, {});
 
 	return (
-		<div className={`grid gap-6`}>
+		<div className={`grid gap-4`}>
 			<form action={formAction}>
 				<div className='grid gap-4'>
 					<div className='grid gap-2'>
@@ -62,11 +63,11 @@ export default function SignInForm() {
 						/>
 						<ErrorMessage errors={state.errors?.password} />
 					</div>
-					<div className='mt-2'>
+					<div>
 						<ErrorMessage
 							errors={state.message ? [state.message] : undefined}
 						/>
-						<SubmitButton className='mt-2.5 w-full'>
+						<SubmitButton className='mt-1.5 w-full'>
 							Sign Up with Email
 						</SubmitButton>
 					</div>
@@ -83,7 +84,10 @@ export default function SignInForm() {
 				</div>
 			</div>
 			<div className='grid gap-3 w-full'>
-				<SubmitButton variant={'outline'}>Sign Up With Google</SubmitButton>
+				<SubmitButton variant={'outline'}>
+					<Icons.google className='mr-2 w-6 fill-white' />
+					Sign Up With Google
+				</SubmitButton>
 			</div>
 		</div>
 	);

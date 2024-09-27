@@ -1,12 +1,34 @@
 import HeaderBanner from '@/components/HeaderBanner';
-import TrackList from '@/components/tracks/TrackList';
+import TracksCarousel from '@/components/home/NewTracks';
+// import TrackList from '@/components/tracks/TrackList';
 import { Track } from '@/context/AudioContext';
 
 export default function page() {
 	return (
 		<>
-			<HeaderBanner img={'/home.png'} title='Explore 3D Audio Music' />
-			<TrackList tracks={tracks} />
+			<HeaderBanner
+				img={'/home.png'}
+				title='Explore 3D Audio Music'
+				className='mb-8'
+			/>
+			<div className='flex flex-col gap-12'>
+				<TracksCarousel
+					tracks={[...tracks, ...tracks, ...tracks]}
+					title='New Tracks'
+					className='xl:w-2/3'
+				/>
+				<TracksCarousel
+					tracks={[...tracks, ...tracks, ...tracks]}
+					title='Tracks by genre'
+					className='xl:w-2/3'
+				/>
+				<TracksCarousel
+					tracks={[...tracks, ...tracks, ...tracks]}
+					title='Curated Collections'
+					className='xl:w-2/3'
+				/>
+			</div>
+			{/* <TrackList tracks={tracks} /> */}
 		</>
 	);
 }
