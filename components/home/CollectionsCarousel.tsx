@@ -1,4 +1,5 @@
 'use client';
+
 import {
 	Carousel,
 	CarouselContent,
@@ -8,15 +9,14 @@ import {
 } from '@/components/ui/carousel';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Track } from '@/context/AudioContext';
 import { cn } from '@/lib/utils';
 
-export default function TracksCarousel({
-	tracks,
+export default function CollectionsCarousel({
+	// collections,
 	title,
 	className,
 }: {
-	tracks: Track[];
+	// collections: { picture: string; name: string; id: string }[];
 	title?: string;
 	className?: string;
 }) {
@@ -44,39 +44,28 @@ export default function TracksCarousel({
 				</div>
 
 				<CarouselContent>
-					{tracks.map((track, i) => (
+					{collections.map((collection, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
 							<Link
-								href={`/tracks/${track.id}`}
+								href={`/tracks/${collection.id}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image
-									src={track.cover}
-									alt={track.title}
+									src={collection.picture}
+									alt={collection.name}
 									width={220}
 									height={220}
 									className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
 								/>
 							</Link>
 
-							<Link
-								href={'/artists/id'}
-								className='text-muted text-sm md:text-base font-semibold text-nowrap'
-							>
-								{track.artist}
-							</Link>
-							<Link
-								href={`/tracks/${track.id}`}
+							<h3
 								className={cn(
 									'text-white text-sm sm:text-[17px] font-semibold line-clamp-1'
-									// isCurrentTrack ? 'text-primary' : ''
 								)}
 							>
-								{track.title}
-							</Link>
-							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track.genre}
-							</h6>
+								{collection.name}
+							</h3>
 						</CarouselItem>
 					))}
 				</CarouselContent>
@@ -84,3 +73,26 @@ export default function TracksCarousel({
 		</div>
 	);
 }
+
+const collections = [
+	{
+		id: '1',
+		picture: '/collections/Audiomatch.png',
+		name: 'Audiomatch',
+	},
+	{
+		id: '2',
+		picture: '/collections/Audiostuff.png',
+		name: 'Audiostuff',
+	},
+	{
+		id: '3',
+		picture: '/collections/Soco festival.png',
+		name: 'Soco festival',
+	},
+	{
+		id: '4',
+		picture: '/collections/Unsounded.png',
+		name: 'Unsounded',
+	},
+];

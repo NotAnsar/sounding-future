@@ -1,4 +1,7 @@
 import HeaderBanner from '@/components/HeaderBanner';
+import ArtistsCarousel from '@/components/home/ArtistCarousel';
+import CollectionsCarousel from '@/components/home/CollectionsCarousel';
+import GenresCarousel from '@/components/home/GenresCarousel';
 import TracksCarousel from '@/components/home/NewTracks';
 // import TrackList from '@/components/tracks/TrackList';
 import { Track } from '@/context/AudioContext';
@@ -17,18 +20,10 @@ export default function page() {
 					title='New Tracks'
 					className='xl:w-2/3'
 				/>
-				<TracksCarousel
-					tracks={[...tracks, ...tracks, ...tracks]}
-					title='Tracks by genre'
-					className='xl:w-2/3'
-				/>
-				<TracksCarousel
-					tracks={[...tracks, ...tracks, ...tracks]}
-					title='Curated Collections'
-					className='xl:w-2/3'
-				/>
+				<GenresCarousel className='xl:w-2/3' title='Tracks by genre' />
+				<CollectionsCarousel className='xl:w-2/3' title='Curated Collections' />
+				<ArtistsCarousel className='xl:w-2/3' />
 			</div>
-			{/* <TrackList tracks={tracks} /> */}
 		</>
 	);
 }
