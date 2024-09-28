@@ -6,7 +6,7 @@ export default function page() {
 	return (
 		<>
 			<HeaderBanner img={'/artists.png'} title='Artists' />
-			<ExploreArtists className='lg:w-2/3 mt-12' />
+			<ExploreArtists className='xl:w-2/3 mt-12' />
 		</>
 	);
 }
