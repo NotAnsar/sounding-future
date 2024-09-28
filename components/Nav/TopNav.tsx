@@ -26,7 +26,7 @@ export default function TopNav({ className }: { className?: string }) {
 							alt='logo'
 							width={288.33}
 							height={132}
-							className='w-24 md:w-36 h-auto'
+							className='w-24 md:w-32 h-auto'
 						/>
 					</Link>
 				</div>

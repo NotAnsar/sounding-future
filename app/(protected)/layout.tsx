@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			style={
 				{
 					'--top-nav-height': '72px',
-					'--top-nav-height-md': '128px',
+					'--top-nav-height-md': '100px',
 				} as React.CSSProperties
 			}
 		>

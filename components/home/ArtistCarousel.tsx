@@ -74,7 +74,7 @@ export default function ArtistsCarousel({
 	);
 }
 
-const artists = [
+export const artists = [
 	{
 		id: '1',
 		picture: '/artists/Anna-Novak.png',
