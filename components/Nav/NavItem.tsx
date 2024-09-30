@@ -23,7 +23,10 @@ export default function NavItem({
 		<Link
 			className={cn(
 				buttonVariants({
-					variant: path === currentPath ? 'sideNav' : 'sideNavForeground',
+					variant:
+						currentPath.split('/')[1] === path.split('/')[1]
+							? 'sideNav'
+							: 'sideNavForeground',
 				}),
 				'justify-start py-2 pr-3'
 			)}

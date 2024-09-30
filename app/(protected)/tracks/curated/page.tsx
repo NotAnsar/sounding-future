@@ -9,7 +9,8 @@ export default function page({
 	return (
 		<>
 			<TracksNav type={type} />
-			<TabsContent value='new'>new</TabsContent>
+
+			<TabsContent value='curated'>curated</TabsContent>
 		</>
 	);
 }
