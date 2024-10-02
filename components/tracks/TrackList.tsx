@@ -7,10 +7,16 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { Track, useAudio } from '@/context/AudioContext';
 
-export default function TrackList({ tracks }: { tracks: Track[] }) {
+export default function TrackList({
+	tracks,
+	className,
+}: {
+	tracks: Track[];
+	className?: string;
+}) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	return (
-		<div className='p-4'>
+		<div className={cn('p-4', className)}>
 			<Table className='lg:w-2/3 '>
 				<TableBody>
 					{tracks.map((track, index) => {
@@ -63,11 +69,14 @@ export default function TrackList({ tracks }: { tracks: Track[] }) {
 									>
 										{track.title}
 									</h3>
-									<h6 className='text-sm font-light text-muted line-clamp-1'>
+									<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
 										{track.genre}
 									</h6>
+									<h6 className='text-sm font-medium text-muted line-clamp-1 sm:hidden block'>
+										{track.artist}
+									</h6>
 								</TableCell>
-								<TableCell>
+								<TableCell className='hidden sm:block'>
 									<h3 className='text-muted text-base font-semibold text-nowrap'>
 										{track.artist}
 									</h3>
