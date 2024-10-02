@@ -28,7 +28,7 @@ export default function page() {
 	);
 }
 
-const tracks: Track[] = [
+export const tracks: Track[] = [
 	{
 		id: '1',
 		title: 'Digital Mirage',

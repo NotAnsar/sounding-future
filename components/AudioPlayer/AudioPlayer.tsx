@@ -26,7 +26,7 @@ export default function AudioPlayer() {
 	if (!currentTrack) return null;
 
 	return (
-		<div className='w-full bg-[#18243B] fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2'>
+		<div className='w-full bg-[#18243B] fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2 z-10'>
 			<div className='flex gap-3 items-center w-auto md:min-w-[200px] xl:min-w-[250px] max-w-[250px] md:w-[250px]'>
 				<Image
 					src={currentTrack.cover}
