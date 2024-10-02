@@ -26,7 +26,7 @@ export default function TracksCards({
 				return (
 					<div key={i}>
 						<div
-							className='rounded-lg block border overflow-hidden w-full h-auto mb-2 relative group'
+							className='rounded-lg block border overflow-hidden w-full h-auto mb-2 relative group cursor-pointer'
 							onClick={() => {
 								if (isCurrentTrack) {
 									togglePlayPause();
@@ -44,7 +44,7 @@ export default function TracksCards({
 							>
 								<PauseIcon
 									className={cn(
-										'w-3/5 h-auto aspect-square text-black fill-black cursor-pointer ',
+										'w-3/5 h-auto aspect-square text-black fill-black ',
 										!(isPlaying && isCurrentTrack) ? 'hidden' : 'block'
 									)}
 								/>

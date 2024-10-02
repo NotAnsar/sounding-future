@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 import { PlayIcon } from 'lucide-react';
 import { Track, useAudio } from '@/context/AudioContext';
+import Link from 'next/link';
 
 export default function TrackList({
 	tracks,
@@ -32,8 +33,10 @@ export default function TrackList({
 								<TableCell className='w-14 relative'>
 									<div
 										className={cn(
-											'min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md justify-center items-center hidden group-hover:flex absolute inset-2 bg-black/40 cursor-pointer',
-											isPlaying && isCurrentTrack ? 'flex' : ''
+											'min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md justify-center items-center flex absolute inset-2 bg-black/40 cursor-pointer',
+											// isPlaying && isCurrentTrack ? 'flex' : ''
+											isCurrentTrack ? 'visible' : 'invisible',
+											'group-hover:visible'
 										)}
 										onClick={() => {
 											if (isCurrentTrack) {
@@ -44,11 +47,24 @@ export default function TrackList({
 										}}
 									>
 										<div className='w-8 h-auto aspect-square flex justify-center items-center bg-white rounded-full'>
-											{isPlaying && isCurrentTrack ? (
+											{/* {isPlaying && isCurrentTrack ? (
 												<PauseIcon className='w-5 h-auto aspect-square text-black fill-black cursor-pointer' />
 											) : (
 												<PlayIcon className='w-5 h-auto aspect-square text-black fill-black cursor-pointer' />
-											)}
+											)} */}
+											<PauseIcon
+												className={cn(
+													'w-3/5 h-auto aspect-square text-black fill-black cursor-pointer ',
+													!(isPlaying && isCurrentTrack) ? 'hidden' : 'block'
+												)}
+											/>
+
+											<PlayIcon
+												className={cn(
+													'w-3/5 h-auto aspect-square text-black fill-black cursor-pointer',
+													isPlaying && isCurrentTrack ? 'hidden' : 'block'
+												)}
+											/>
 										</div>
 									</div>
 
@@ -61,25 +77,32 @@ export default function TrackList({
 									/>
 								</TableCell>
 								<TableCell className=''>
-									<h3
+									<Link
+										href={`/tracks/${track.id}`}
 										className={cn(
-											'text-white text-base font-semibold line-clamp-1',
+											'text-white text-base font-semibold line-clamp-1 hover:opacity-80',
 											isCurrentTrack ? 'text-primary' : ''
 										)}
 									>
 										{track.title}
-									</h3>
+									</Link>
 									<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
 										{track.genre}
 									</h6>
-									<h6 className='text-sm font-medium text-muted line-clamp-1 sm:hidden block'>
+									<Link
+										href={'/artist/id'}
+										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
+									>
 										{track.artist}
-									</h6>
+									</Link>
 								</TableCell>
 								<TableCell className='hidden sm:block'>
-									<h3 className='text-muted text-base font-semibold text-nowrap'>
+									<Link
+										href={'/artist/id'}
+										className='text-muted text-base font-semibold text-nowrap hover:text-primary'
+									>
 										{track.artist}
-									</h3>
+									</Link>
 								</TableCell>
 
 								<TableCell>
