@@ -29,12 +29,12 @@ export default function page({
 	return (
 		<>
 			<TrackDetails track={track} />
-			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid sm:gap-3'>
+			<Tabs value={tabValue} className='mt-4 sm:mt-8 flex flex-col sm:gap-3'>
 				<TrackNav id={id} />
 
 				<main className='mt-8'>
-					<div className='grid xl:grid-cols-3 gap-4'>
-						<div className='col-span-2'>
+					<div className='grid grid-cols-1 xl:grid-cols-3 gap-4'>
+						<div className='xl:col-span-2 w-fit'>
 							<TabsContent value='info'>
 								Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo
 							</TabsContent>
@@ -84,7 +84,7 @@ export default function page({
 						</div>
 					</div>
 					<ArtistsCarousel
-						className='mt-12 '
+						className='mt-12'
 						artists={artists}
 						title='Similar artists'
 						classNameItem='basis-32 sm:basis-52 lg:basis-64'
