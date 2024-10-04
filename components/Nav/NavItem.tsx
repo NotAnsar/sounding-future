@@ -19,12 +19,14 @@ export default function NavItem({
 	type?: 'collection' | undefined;
 	sheet?: boolean;
 }) {
+	const isCollection = type === 'collection';
 	const CommonLink = (
 		<Link
 			className={cn(
 				buttonVariants({
 					variant:
-						currentPath.split('/')[1] === path.split('/')[1]
+						currentPath.split('/')[isCollection ? 2 : 1] ===
+						path.split('/')[isCollection ? 2 : 1]
 							? 'sideNav'
 							: 'sideNavForeground',
 				}),
@@ -35,7 +37,7 @@ export default function NavItem({
 			<Icon
 				className={cn(
 					'mr-2.5 w-[19px] h-auto fill-white',
-					type === 'collection' || title === 'Genres' ? 'w-[17px]' : ''
+					isCollection || title === 'Genres' ? 'w-[17px]' : ''
 				)}
 			/>
 
