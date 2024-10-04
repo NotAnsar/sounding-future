@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import SearchInput from './SearchInput';
+import SearchInput from './Search/SearchInput';
 import Link from 'next/link';
 import { Sheet, SheetTrigger } from '../ui/sheet';
 import SideBarNavMobile from './SideBarNavMobile';
