@@ -3,22 +3,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { artists } from '../home/ArtistCarousel';
 
 export default function ExploreArtists({
-	// artists,
-	// title,
+	artists,
+	title = 'Explore our artists',
 	className,
 }: {
-	// artists: { id: string; name: string; picture: string }[];
-	// title?: string;
+	artists: { id: string; name: string; picture: string }[];
+	title?: string;
 	className?: string;
 }) {
 	return (
 		<div className={cn(className)}>
-			<h1 className='text-[22px] font-semibold text-primary mb-6'>
-				Explore our artists
-			</h1>
+			<h1 className='text-[22px] font-semibold text-primary mb-6'>{title}</h1>
 
 			<div className='grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4  sm:gap-x-6 sm:gap-y-10'>
 				{artists.map((artist, i) => (

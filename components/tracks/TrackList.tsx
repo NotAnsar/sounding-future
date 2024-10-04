@@ -17,8 +17,8 @@ export default function TrackList({
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	return (
-		<div className={cn('p-4', className)}>
-			<Table className='lg:w-2/3 '>
+		<div className={cn('p-4 lg:w-2/3', className)}>
+			<Table>
 				<TableBody>
 					{tracks.map((track, index) => {
 						const isCurrentTrack = currentTrack?.id === track.id;

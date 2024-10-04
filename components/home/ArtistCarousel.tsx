@@ -11,21 +11,21 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 export default function ArtistsCarousel({
-	// artists,
-	// title,
+	artists,
+	title = 'Explore our artists',
 	className,
+	classNameItem,
 }: {
-	// artists: { id: string; name: string; picture: string }[];
-	// title?: string;
+	artists: { id: string; name: string; picture: string }[];
+	title?: string;
 	className?: string;
+	classNameItem?: string;
 }) {
 	return (
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
 				<div className='flex justify-between items-center mb-4'>
-					<h1 className='text-[22px] font-semibold text-primary'>
-						Explore our artists
-					</h1>
+					<h1 className='text-[22px] font-semibold text-primary'>{title}</h1>
 
 					{true ? (
 						<div className='flex border-2 border-foreground rounded-sm items-center'>
@@ -46,7 +46,10 @@ export default function ArtistsCarousel({
 
 				<CarouselContent>
 					{artists.map((artist, i) => (
-						<CarouselItem key={i} className='basis-32 sm:basis-40 lg:basis-44'>
+						<CarouselItem
+							key={i}
+							className={cn('basis-32 sm:basis-40 lg:basis-44', classNameItem)}
+						>
 							<Link
 								href={`/artists/${artist.id}`}
 								className='rounded-full block border overflow-hidden w-full h-auto mb-2'
@@ -73,71 +76,3 @@ export default function ArtistsCarousel({
 		</div>
 	);
 }
-
-export const artists = [
-	{
-		id: '1',
-		picture: '/artists/Anna-Novak.png',
-		name: 'Anna Novak',
-	},
-	{
-		id: '2',
-		picture: '/artists/Carlos-Ruiz.png',
-		name: 'Carlos Ruiz',
-	},
-	{
-		id: '3',
-		picture: '/artists/Chen-Wei.png',
-		name: 'Chen Wei',
-	},
-	{
-		id: '4',
-		picture: '/artists/David-Müller.png',
-		name: 'David Müller',
-	},
-	{
-		id: '5',
-		picture: '/artists/Diego-Fernandez.png',
-		name: 'Diego Fernandez',
-	},
-	{
-		id: '6',
-		picture: '/artists/Elena-Rossi.png',
-		name: 'Elena Rossi',
-	},
-	{
-		id: '7',
-		picture: '/artists/Juan-Martinez.png',
-		name: 'Juan Martinez',
-	},
-	{
-		id: '8',
-		picture: '/artists/Liam-O-Connor.png',
-		name: "Liam O'Connor",
-	},
-	{
-		id: '9',
-		picture: '/artists/Luka-Petrovic.png',
-		name: 'Luka Petrovic',
-	},
-	{
-		id: '10',
-		picture: '/artists/Maria-Silva.png',
-		name: 'Maria Silva',
-	},
-	{
-		id: '11',
-		picture: '/artists/Max-Harris.png',
-		name: 'Max Harris',
-	},
-	{
-		id: '12',
-		picture: '/artists/Sidney-Clifford.png',
-		name: 'Sidney Clifford',
-	},
-	{
-		id: '13',
-		picture: '/artists/Yasmin-Al-Sayed.png',
-		name: 'Yasmin Al-Sayed',
-	},
-];
