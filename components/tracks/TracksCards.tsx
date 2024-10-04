@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Track, useAudio } from '@/context/AudioContext';
+import { useAudio } from '@/context/AudioContext';
 import { PauseIcon, PlayIcon } from 'lucide-react';
+import { Track } from '@/config/dummy-data';
 
 export default function TracksCards({
 	tracks,
@@ -67,10 +68,10 @@ export default function TracksCards({
 						</div>
 
 						<Link
-							href={'/artists/id'}
+							href={`/artists/${track.artist.id}`}
 							className='text-muted text-sm md:text-base font-semibold text-nowrap hover:text-primary'
 						>
-							{track.artist}
+							{track.artist.name}
 						</Link>
 						<Link
 							href={`/tracks/${track.id}`}

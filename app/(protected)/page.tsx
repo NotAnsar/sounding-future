@@ -5,7 +5,7 @@ import GenresCarousel from '@/components/home/GenresCarousel';
 import TracksCarousel from '@/components/home/NewTracks';
 import { artists, tracks } from '@/config/dummy-data';
 
-export default function page() {
+export default async function page() {
 	return (
 		<>
 			<HeaderBanner

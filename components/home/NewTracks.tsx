@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/carousel';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Track } from '@/context/AudioContext';
+import { Track } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
 
 export default function TracksCarousel({
@@ -44,7 +44,7 @@ export default function TracksCarousel({
 				</div>
 
 				<CarouselContent>
-					{tracks.map((track, i) => (
+					{tracks?.map((track, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
 							<Link
 								href={`/tracks/${track.id}`}
@@ -60,10 +60,10 @@ export default function TracksCarousel({
 							</Link>
 
 							<Link
-								href={'/artists/id'}
+								href={`/artists/${track.artist.id}`}
 								className='text-muted text-sm md:text-base font-semibold text-nowrap'
 							>
-								{track.artist}
+								{track.artist.name}
 							</Link>
 							<Link
 								href={`/tracks/${track.id}`}

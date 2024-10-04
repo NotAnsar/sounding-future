@@ -9,6 +9,7 @@ import React, {
 	useCallback,
 } from 'react';
 import { Howl } from 'howler';
+import { Track } from '@/config/dummy-data';
 
 interface AudioContextType {
 	currentTrack: Track | null;
@@ -212,15 +213,4 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	return (
 		<AudioContext.Provider value={value}>{children}</AudioContext.Provider>
 	);
-};
-
-export type Track = {
-	id: string;
-	title: string;
-	artist: string;
-	genre: string;
-	duration: number;
-	url: string;
-	cover: string;
-	liked?: boolean;
 };

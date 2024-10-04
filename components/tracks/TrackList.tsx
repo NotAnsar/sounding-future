@@ -3,10 +3,10 @@ import { cn, formatTime } from '@/lib/utils';
 import { Heart, PauseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-
 import { PlayIcon } from 'lucide-react';
-import { Track, useAudio } from '@/context/AudioContext';
+import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
+import { Track } from '@/config/dummy-data';
 
 export default function TrackList({
 	tracks,
@@ -90,18 +90,18 @@ export default function TrackList({
 										{track.genre}
 									</h6>
 									<Link
-										href={'/artist/id'}
+										href={`/artist/${track.artist.id}`}
 										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
 									>
-										{track.artist}
+										{track.artist.name}
 									</Link>
 								</TableCell>
 								<TableCell className='hidden sm:block'>
 									<Link
-										href={'/artist/id'}
+										href={`/artist/${track.artist.id}`}
 										className='text-muted text-base font-semibold text-nowrap hover:text-primary'
 									>
-										{track.artist}
+										{track.artist.name}
 									</Link>
 								</TableCell>
 

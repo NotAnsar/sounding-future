@@ -3,14 +3,15 @@
 import Image from 'next/image';
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Track, useAudio } from '@/context/AudioContext';
+import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
 import { useState } from 'react';
+import { Track } from '@/config/dummy-data';
 
 export default function TrackDetails({ track }: { track: Track }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
-	const [liked, setliked] = useState(false);
+	const [liked, setliked] = useState(track.liked);
 	const isCurrentTrack = currentTrack?.id === track.id;
 
 	return (
@@ -81,17 +82,17 @@ export default function TrackDetails({ track }: { track: Track }) {
 
 				<div className='flex gap-2.5 items-center'>
 					<Image
-						alt={track.artist}
-						src={'/artists/Anna-Novak.png'}
+						alt={track.artist.name}
+						src={track.artist.picture}
 						className='rounded-full w-8 sm:w-12 h-auto'
 						width={48}
 						height={48}
 					/>
 					<Link
-						href={`/player/artist/${5}`}
+						href={`/player/artist/${track.artist.id}`}
 						className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer line-clamp-1 '
 					>
-						{track.artist}
+						{track.artist.name}
 					</Link>
 					<Icons.follow className='min-w-8 w-8 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 				</div>

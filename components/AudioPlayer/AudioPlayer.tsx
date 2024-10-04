@@ -38,7 +38,7 @@ export default function AudioPlayer() {
 				<div className='truncate hidden md:block'>
 					<h2 className='font-semibold truncate'>{currentTrack.title}</h2>
 					<h5 className='text-sm text-[#9898A6] font-semibold'>
-						{currentTrack.artist}
+						{currentTrack.artist.name}
 					</h5>
 				</div>
 			</div>
