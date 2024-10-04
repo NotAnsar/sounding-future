@@ -93,57 +93,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		}
 	};
 
-	// const playTrack = useCallback(
-	// 	(track: Track, tracks?: Track[]) => {
-	// 		if (!track) {
-	// 			setIsPlaying(false);
-	// 			setCurrentTrack(null);
-	// 			return;
-	// 		}
-
-	// 		setCurrentTrack(track);
-	// 		if (soundRef.current) {
-	// 			soundRef.current.stop();
-	// 			soundRef.current.unload();
-	// 		}
-	// 		setCurrentTime(0);
-
-	// 		const newSound = new Howl({
-	// 			src: [track?.url],
-	// 			html5: true,
-	// 			onload: () => {
-	// 				setDuration(newSound.duration());
-	// 				newSound.play();
-	// 				setIsPlaying(true);
-	// 			},
-	// 			onplay: () => setIsPlaying(true),
-	// 			onpause: () => setIsPlaying(false),
-	// 			onstop: () => setIsPlaying(false),
-	// 			onend: () => {
-	// 				const currentIndex = (tracks || playlist).findIndex(
-	// 					(t) => t.id === track.id
-	// 				);
-
-	// 				const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
-	// 				playTrack((tracks || playlist)[nextIndex], tracks);
-	// 			},
-	// 		});
-
-	// 		soundRef.current = newSound;
-	// 	},
-	// 	[playlist]
-	// );
-
-	// const playNewTrack = useCallback(
-	// 	(tracks: Track[], index: number = 0) => {
-	// 		setPlaylist(tracks);
-	// 		playTrack(tracks[  index], tracks);
-	// 	},
-	// 	[playTrack]
-	// );
-
 	const playTrack = useCallback(
 		(track: Track, tracks?: Track[]) => {
+			const loadStartTime = performance.now();
+
 			if (!track) {
 				setIsPlaying(false);
 				setCurrentTrack(null);
@@ -156,13 +109,20 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				soundRef.current.unload();
 			}
 			setCurrentTime(0);
-
+			setIsPlaying(true);
 			const newSound = new Howl({
 				src: [track?.url],
 				html5: true,
 				preload: true, // Ensure preloading is enabled
+
 				onload: () => {
 					setDuration(newSound.duration());
+					// Capture the time when the track is fully loaded
+					const loadEndTime = performance.now();
+
+					// Calculate and log the loading duration
+					const loadingDuration = loadEndTime - loadStartTime;
+					console.log(`Track loaded in: ${loadingDuration} ms`);
 				},
 				onplay: () => setIsPlaying(true),
 				onpause: () => setIsPlaying(false),

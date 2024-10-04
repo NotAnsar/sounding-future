@@ -30,16 +30,6 @@ export default function page() {
 
 export const tracks: Track[] = [
 	{
-		id: '1',
-		title: 'Digital Mirage',
-		artist: 'Anna Novak',
-		genre: 'electronic music',
-		duration: 233, // 3:53 in seconds
-		cover: '/tracks/Digital-Mirage.png',
-		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t1.mp3?t=2024-10-02T19%3A40%3A04.164Z',
-		liked: false,
-	},
-	{
 		id: '2',
 		title: 'Synthwave Sunset',
 		artist: 'Diego Fernandez',
@@ -87,6 +77,16 @@ export const tracks: Track[] = [
 		duration: 132, // 2:12 in seconds
 		cover: '/tracks/Gravity-Shift.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t6.mp3?t=2024-10-02T19%3A41%3A18.707Z',
+		liked: false,
+	},
+	{
+		id: '1',
+		title: 'Digital Mirage',
+		artist: 'Anna Novak',
+		genre: 'electronic music',
+		duration: 233, // 3:53 in seconds
+		cover: '/tracks/Digital-Mirage.png',
+		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t1.mp3?t=2024-10-02T19%3A40%3A04.164Z',
 		liked: false,
 	},
 	{
