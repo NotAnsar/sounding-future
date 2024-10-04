@@ -34,7 +34,7 @@ export default function page({
 
 				<main className='mt-8'>
 					<div className='grid grid-cols-1 xl:grid-cols-3 gap-4'>
-						<div className='xl:col-span-2 w-fit'>
+						<div className='xl:col-span-2 '>
 							<TabsContent value='info'>
 								Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo
 							</TabsContent>
