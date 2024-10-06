@@ -20,6 +20,8 @@ export default function AudioPlayer() {
 		toggleMute,
 		nextTrack,
 		previousTrack,
+		isLoop,
+		toggleLoop,
 	} = useAudio();
 	useAudioKeyboardControls();
 
@@ -83,14 +85,14 @@ export default function AudioPlayer() {
 				<div
 					className={cn(
 						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
-						true ? 'bg-white' : 'border-white'
+						isLoop ? 'bg-white' : 'border-white'
 					)}
-					// onClick={() => setloop((a) => !a)}
+					onClick={toggleLoop}
 				>
 					<Icons.shuffle
 						className={cn(
 							'w-4 h-auto cursor-pointer transition-all duration-200',
-							true ? 'text-black' : 'text-white'
+							isLoop ? 'text-black' : 'text-white'
 						)}
 					/>
 				</div>
