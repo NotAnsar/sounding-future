@@ -19,6 +19,8 @@ interface AudioContextType {
 	duration: number;
 	volume: number;
 	isMuted: boolean;
+	isLoop: boolean;
+	toggleLoop: () => void;
 	toggleMute: () => void;
 	togglePlayPause: () => void;
 	setVolume: (volume: number) => void;
@@ -54,6 +56,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	const soundRef = useRef<Howl | null>(null);
 	const [isMuted, setIsMuted] = useState(false);
 	const previousVolume = useRef(volume);
+	const [isLoop, setIsLoop] = useState(false); // Initialize isLoop state
+
+	const toggleLoop = useCallback(() => {
+		setIsLoop((prev) => !prev);
+	}, []);
 
 	const toggleMute = useCallback(() => {
 		if (soundRef.current) {
@@ -76,7 +83,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			} else {
 				soundRef.current.play();
 			}
-			// setIsPlaying((prev) => !prev);
+			setIsPlaying((prev) => !prev);
 		}
 	}, [isPlaying]);
 
@@ -104,46 +111,67 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				return;
 			}
 
-			setCurrentTrack(track);
-			if (soundRef.current) {
-				soundRef.current.stop();
-				soundRef.current.unload();
-			}
-			setCurrentTime(0);
-			setIsPlaying(true);
+			// Create the new sound
 			const newSound = new Howl({
 				src: [track?.url],
 				html5: true,
-				preload: true, // Ensure preloading is enabled
-
+				preload: true,
 				onload: () => {
 					setDuration(newSound.duration());
-					// Capture the time when the track is fully loaded
 					const loadEndTime = performance.now();
-
-					// Calculate and log the loading duration
 					const loadingDuration = loadEndTime - loadStartTime;
 					console.log(`Track loaded in: ${loadingDuration} ms`);
 				},
-				onplay: () => setIsPlaying(true),
-				onpause: () => setIsPlaying(false),
-				onstop: () => setIsPlaying(false),
+
+				// onend: () => {
+				// 	const currentIndex = (tracks || playlist).findIndex(
+				// 		(t) => t.id === track.id
+				// 	);
+				// 	const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
+				// 	playTrack((tracks || playlist)[nextIndex], tracks);
+				// },
 				onend: () => {
 					const currentIndex = (tracks || playlist).findIndex(
 						(t) => t.id === track.id
 					);
-
-					const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
-					playTrack((tracks || playlist)[nextIndex], tracks);
+					if (currentIndex === (tracks || playlist).length - 1) {
+						// Last song in playlist
+						if (isLoop) {
+							// If loop is true, start from the first song
+							playTrack((tracks || playlist)[0], tracks);
+						} else {
+							// If loop is false, pause playback
+							setIsPlaying(false);
+						}
+					} else {
+						// Not the last song, play next track as normal
+						const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
+						playTrack((tracks || playlist)[nextIndex], tracks);
+					}
 				},
 			});
 
-			soundRef.current = newSound;
+			// Update state once
+			setCurrentTrack(track);
+			setCurrentTime(0);
 
-			// Start playing immediately after creating the new Howl instance
+			setIsPlaying((prevState) => {
+				if (!prevState) return true;
+
+				return prevState;
+			});
+
+			// Start playing the new sound
 			newSound.play();
+
+			// Clean up the old sound
+			if (soundRef.current) {
+				soundRef.current.unload();
+			}
+
+			soundRef.current = newSound;
 		},
-		[playlist]
+		[playlist, isLoop]
 	);
 
 	const playNewTrack = useCallback(
@@ -199,6 +227,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		duration,
 		volume,
 		isMuted,
+		isLoop,
 		togglePlayPause,
 		setVolume: handleVolumeChange,
 		seek: handleSeek,
@@ -208,6 +237,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		setPlaylist,
 		toggleMute,
 		playNewTrack,
+		toggleLoop,
 	};
 
 	return (

@@ -71,12 +71,12 @@ export default function TrackDetails({ track }: { track: Track }) {
 							className='cursor-pointer h-full flex justify-center items-center'
 						>
 							{liked ? (
-								<Icons.heartFilled className='w-8 h-auto aspect-square fill-white ' />
+								<Icons.heartFilled className='w-7 h-auto aspect-square fill-white ' />
 							) : (
-								<Icons.heartOutline className='w-8 h-auto aspect-square fill-white' />
+								<Icons.heartOutline className='w-7 h-auto aspect-square fill-white' />
 							)}
 						</div>
-						<Icons.share className='w-7 h-auto aspect-square fill-white' />
+						<Icons.share className='w-6 h-auto aspect-square fill-white cursor-pointer' />
 					</div>
 				</div>
 
@@ -94,7 +94,7 @@ export default function TrackDetails({ track }: { track: Track }) {
 					>
 						{track.artist.name}
 					</Link>
-					<Icons.follow className='min-w-8 w-8 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
+					<Icons.follow className='min-w-7 w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 				</div>
 			</div>
 		</div>

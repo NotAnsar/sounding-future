@@ -67,23 +67,23 @@ export default function TracksCards({
 							/>
 						</div>
 
-						<Link
-							href={`/artists/${track.artist.id}`}
-							className='text-muted text-sm md:text-base font-semibold text-nowrap hover:text-primary'
-						>
-							{track.artist.name}
+						<Link href={`/tracks/${track.id}`} className='cursor-pointer'>
+							{/* <h5 className='text-muted text-sm md:text-base font-semibold text-nowrap hover:text-primary'> */}
+							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap'>
+								{track.artist.name}
+							</h5>
+							<h4
+								className={cn(
+									// 'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 hover:underline'
+									'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 '
+								)}
+							>
+								{track.title}
+							</h4>
+							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
+								{track.genre}
+							</h6>
 						</Link>
-						<Link
-							href={`/tracks/${track.id}`}
-							className={cn(
-								'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 hover:underline'
-							)}
-						>
-							{track.title}
-						</Link>
-						<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-							{track.genre}
-						</h6>
 					</div>
 				);
 			})}
