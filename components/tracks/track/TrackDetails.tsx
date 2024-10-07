@@ -61,7 +61,7 @@ export default function TrackDetails({ track }: { track: Track }) {
 				</span>
 
 				<div className='flex gap-3 flex-col xl:flex-row'>
-					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold line-clamp-2 '>
+					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
 						{track.title}
 					</h2>
 

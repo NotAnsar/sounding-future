@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  f_name    String?
+  l_name    String?
+  email     String   @unique
+  password  String
+  username  String   @unique
+  role      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  artist    Artist?
+  follows   Follow[]
+  likes     Like[]
+
+  @@map("users")
+}
+
+model Artist {
+  id                        String   @id @default(cuid())
+  name                      String
+  pic                       String?
+  info                      String?  @db.Text
+  websiteLink               String?  @map("website_link")
+  socialMediaLinks          String[] @map("social_media_links")
+  soundingFutureArticleLink String?  @map("sounding_future_article_link")
+  userId                    String   @unique @map("user_id")
+  createdAt                 DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id])
+  tracks       Track[]
+  artistGenres ArtistGenre[]
+  followers    Follow[]
+
+  @@map("artists")
+}
+
+model Genre {
+  id   String @id @default(cuid())
+  name String @unique
+
+  // Relations
+  tracks       Track[]
+  artistGenres ArtistGenre[]
+
+  @@map("genres")
+}
+
+model ArtistGenre {
+  artistId String @map("artist_id")
+  genreId  String @map("genre_id")
+
+  // Relations
+  artist Artist @relation(fields: [artistId], references: [id])
+  genre  Genre  @relation(fields: [genreId], references: [id])
+
+  @@id([artistId, genreId])
+  @@map("artist_genres")
+}
+
+model Track {
+  id           String   @id @default(cuid())
+  title        String
+  cover        String?
+  info         String?  @db.Text
+  artistId     String   @map("artist_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  genreId      String   @map("genre_id")
+  urlMp3       String?  @map("url_mp3")
+  urlFlac      String?  @map("url_flac")
+  releaseYear  Int?     @map("release_year")
+  recognitions String[]
+  curatedBy    String?  @map("curated_by")
+
+  // Relations
+  artist Artist @relation(fields: [artistId], references: [id])
+  genre  Genre  @relation(fields: [genreId], references: [id])
+  likes  Like[]
+
+  @@map("tracks")
+}
+
+model Follow {
+  followingUserId  String   @map("following_user_id")
+  followedArtistId String   @map("followed_artist_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user   User   @relation(fields: [followingUserId], references: [id])
+  artist Artist @relation(fields: [followedArtistId], references: [id])
+
+  @@id([followingUserId, followedArtistId])
+  @@map("follows")
+}
+
+model Like {
+  userId    String   @map("user_id")
+  trackId   String   @map("track_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id])
+  track Track @relation(fields: [trackId], references: [id])
+
+  @@id([userId, trackId])
+  @@map("likes")
+}
