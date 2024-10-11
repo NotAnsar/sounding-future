@@ -1,8 +1,43 @@
+import { NextResponse } from 'next/server';
+import { authConfig } from './lib/auth.config';
 import NextAuth from 'next-auth';
-import { authConfig } from '@/lib/auth.config';
 
-export default NextAuth(authConfig).auth;
+const API_AUTH_PREFIX = '/api/auth';
+const AUTH_ROUTES = ['/login', '/signup'];
+const PROTECTED_ROUTES = ['/'];
+
+export const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
+	const pathname = req.nextUrl.pathname;
+
+	const isAuth = req.auth;
+
+	const isAccessingApiAuthRoute = pathname.startsWith(API_AUTH_PREFIX);
+	const isAccessingAuthRoute = AUTH_ROUTES.some((route) =>
+		pathname.startsWith(route)
+	);
+	const isAccessingProtectedRoute = PROTECTED_ROUTES.some((route) =>
+		pathname.startsWith(route)
+	);
+
+	if (isAccessingApiAuthRoute) {
+		return NextResponse.next();
+	}
+
+	if (isAccessingAuthRoute) {
+		if (isAuth) {
+			return NextResponse.redirect(new URL('/', req.url));
+		}
+
+		return NextResponse.next();
+	}
+
+	if (!isAuth && isAccessingProtectedRoute) {
+		return NextResponse.redirect(new URL('/login', req.url));
+	}
+});
 
 export const config = {
-	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|public).*)'],
+	matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
 };
