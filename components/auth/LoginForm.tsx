@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormState } from 'react-dom';
-import { login } from '@/actions/login';
+import { login } from '@/actions/auth/login';
 import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
-import { Icons } from '../icons/audio-player';
+import SignWithGoogle from './SignWithGoogle';
 
 export default function LoginForm() {
 	const [state, formAction] = useFormState(login, {});
@@ -84,10 +84,7 @@ export default function LoginForm() {
 				</div>
 			</div>
 			<div className='grid gap-3 w-full'>
-				<SubmitButton variant={'outline'}>
-					<Icons.google className='mr-2 w-6 fill-white' />
-					Login With Google
-				</SubmitButton>
+				<SignWithGoogle />
 			</div>
 		</div>
 	);

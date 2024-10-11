@@ -11,11 +11,17 @@ model User {
   id        String   @id @default(cuid())
   f_name    String?
   l_name    String?
+  image       String?
   email     String   @unique
-  password  String
-  username  String   @unique
-  role      String
+  password  String?
+  emailVerified DateTime?
+  name  String   @unique
+  role      String   @default("user") // Set default value for role  
+
+
+  accounts      Account[]
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
 
   // Relations
   artist    Artist?
@@ -107,6 +113,7 @@ model Like {
   userId    String   @map("user_id")
   trackId   String   @map("track_id")
   createdAt DateTime @default(now()) @map("created_at")
+  
 
   // Relations
   user  User  @relation(fields: [userId], references: [id])
@@ -115,3 +122,37 @@ model Like {
   @@id([userId, trackId])
   @@map("likes")
 }
+
+
+
+ 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+ 

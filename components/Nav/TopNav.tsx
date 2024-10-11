@@ -9,8 +9,11 @@ import SearchInput from './Search/SearchInput';
 import Link from 'next/link';
 import { Sheet, SheetTrigger } from '../ui/sheet';
 import SideBarNavMobile from './SideBarNavMobile';
+import { auth } from '@/lib/auth';
 
-export default function TopNav({ className }: { className?: string }) {
+export default async function TopNav({ className }: { className?: string }) {
+	const session = await auth();
+
 	return (
 		<Sheet>
 			<div
@@ -43,7 +46,7 @@ export default function TopNav({ className }: { className?: string }) {
 								<span className='sr-only'>Toggle navigation menu</span>
 							</Button>
 						</SheetTrigger>
-						<UserNav />
+						{session?.user && <UserNav user={session?.user} />}
 					</div>
 				</div>
 			</div>

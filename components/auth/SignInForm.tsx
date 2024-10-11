@@ -6,8 +6,8 @@ import { useFormState } from 'react-dom';
 import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
-import { register } from '@/actions/signup';
-import { Icons } from '../icons/audio-player';
+import { register } from '@/actions/auth/signup';
+import SignWithGoogle from './SignWithGoogle';
 
 export default function SignInForm() {
 	const [state, formAction] = useFormState(register, {});
@@ -84,10 +84,7 @@ export default function SignInForm() {
 				</div>
 			</div>
 			<div className='grid gap-3 w-full'>
-				<SubmitButton variant={'outline'}>
-					<Icons.google className='mr-2 w-6 fill-white' />
-					Sign Up With Google
-				</SubmitButton>
+				<SignWithGoogle />
 			</div>
 		</div>
 	);

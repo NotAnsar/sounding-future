@@ -8,20 +8,31 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, Settings, Upload, UserIcon, UserRoundCog } from 'lucide-react';
+import { Settings, Upload, UserIcon, UserRoundCog } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { cn } from '@/lib/utils';
+import LogOutButton from './LogOutButton';
+import { User } from 'next-auth';
 
-export default function UserNav({ className }: { className?: string }) {
+export default function UserNav({
+	className,
+	user,
+}: {
+	className?: string;
+	user: User;
+}) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className={cn('relative', className)}>
 				<Avatar className='flex items-center justify-center'>
-					<AvatarImage className='h-9 w-auto aspect-square rounded-full' />
+					<AvatarImage
+						className='h-9 w-auto aspect-square rounded-full'
+						src={user?.image || undefined}
+					/>
 
 					<AvatarFallback className='h-9 w-auto aspect-square bg-button'>
-						{/* <span className='sr-only'>{user?.email}</span> */}
+						<span className='sr-only'>{user?.email}</span>
 						<UserIcon className='h-[17px] w-auto' />
 					</AvatarFallback>
 				</Avatar>
@@ -33,11 +44,11 @@ export default function UserNav({ className }: { className?: string }) {
 			>
 				<div className='flex items-center justify-start gap-2 p-2'>
 					<div className='flex flex-col space-y-1 leading-none truncate'>
-						<p className='font-medium text-[15px] truncate'>Frank Zimmer</p>
+						<p className='font-medium text-[15px] truncate'>{user.name}</p>
 
-						{/* <p className='w-[200px] truncate text-[13px] text-muted-foreground'>
+						<p className='w-[200px] truncate text-[13px] text-muted-foreground'>
 							{user?.email}
-						</p> */}
+						</p>
 					</div>
 				</div>
 				<DropdownMenuSeparator />
@@ -65,22 +76,7 @@ export default function UserNav({ className }: { className?: string }) {
 
 				<DropdownMenuSeparator />
 				<DropdownMenuItem className='cursor-pointer p-0 '>
-					{/* <form className='w-full relative'>
-						<button
-							type='submit'
-							className='p-2 w-full text-left flex items-center'
-						>
-							<LogOut className='w-4 h-auto mr-2' />
-							Log Out
-						</button>
-					</form> */}
-					<Link
-						href={'/login'}
-						className='px-2 py-2.5 w-full flex items-center'
-					>
-						<LogOut className='w-4 h-auto mr-2' />
-						Log Out
-					</Link>
+					<LogOutButton />
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
