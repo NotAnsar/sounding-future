@@ -23,7 +23,6 @@ export const useAudioKeyboardControls = () => {
 				if (isInputLike(currentElement)) return;
 				currentElement = currentElement.parentNode;
 			}
-			console.log(event.code);
 
 			// Handle space key press
 			if (event.code === 'Space' || event.code === 'MediaPlayPause') {
