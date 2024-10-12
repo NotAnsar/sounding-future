@@ -40,7 +40,7 @@ export default function UserNav({
 
 			<DropdownMenuContent
 				align='end'
-				className='max-w-[250px] min-w-[200px] truncate bg-secondary backdrop-blur-md border-background '
+				className='max-w-[250px] min-w-[200px] truncate bg-background backdrop-blur-md border-border '
 			>
 				<div className='flex items-center justify-start gap-2 p-2'>
 					<div className='flex flex-col space-y-1 leading-none truncate'>
@@ -52,8 +52,8 @@ export default function UserNav({
 					</div>
 				</div>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className='cursor-pointer p-0'>
-					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
+				<DropdownMenuItem className='cursor-pointer p-0 '>
+					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center '>
 						<UserRoundCog className='w-4 h-auto mr-2' />
 						Profile
 					</Link>
