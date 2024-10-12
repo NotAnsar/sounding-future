@@ -1,8 +1,11 @@
 'use server';
 
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
+import { hash } from 'bcrypt';
+import { prisma } from '@/lib/prisma';
 import { State } from '@/actions/utils';
+import { signIn } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 const RegisterSchema = z.object({
 	username: z
@@ -39,33 +42,47 @@ export async function register(
 	const { username, email, password } = validatedFields.data;
 
 	try {
-		// Here you would typically interact with your database or authentication service
-		// For example, you might use Prisma ORM to create a new user:
-		//
-		// const user = await prisma.user.create({
-		//   data: {
-		//     username,
-		//     email,
-		//     password: await bcrypt.hash(password, 10), // Remember to hash the password!
-		//   },
-		// });
+		const hashedPassword = await hash(password, 10);
 
-		console.log('User registered:', { username, email, password });
+		const user = await prisma.user.create({
+			data: {
+				name: username,
+				email,
+				password: hashedPassword,
+			},
+		});
 
-		// If registration is successful, you might want to log the user in automatically
-		// This depends on your authentication strategy
+		console.log('User registered:', user);
+
+		const result = await signIn('credentials', {
+			email,
+			password,
+			redirect: false,
+		});
+
+		if (result?.error) {
+			return { message: 'Invalid email or password' };
+		}
 	} catch (error) {
 		console.error('Registration failed', error);
 
-		// Check for specific error types
 		if (error instanceof Error) {
-			if (error.message.includes('unique constraint')) {
-				// This assumes your database throws an error for duplicate username/email
-				return { message: 'This username or email is already in use' };
+			if (
+				error.message.includes(
+					'Unique constraint failed on the fields: (`email`)'
+				)
+			) {
+				return { message: 'This email is already in use' };
+			}
+			if (
+				error.message.includes(
+					'Unique constraint failed on the fields: (`name`)'
+				)
+			) {
+				return { message: 'This username is already in use' };
 			}
 		}
 
-		// Generic error message
 		return {
 			message: 'An error occurred during registration. Please try again.',
 		};

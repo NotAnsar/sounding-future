@@ -32,7 +32,7 @@ export default function LoginForm() {
 							required
 						/>
 
-						<ErrorMessage errors={state.errors?.email} />
+						<ErrorMessage errors={state?.errors?.email} />
 					</div>
 					<div className='grid gap-2'>
 						<div className='flex items-center'>
@@ -61,17 +61,13 @@ export default function LoginForm() {
 
 					<div>
 						<ErrorMessage
-							errors={state.message ? [state.message] : undefined}
+							errors={state?.message ? [state.message] : undefined}
 						/>
-						<SubmitButton className='mt-1.5 w-full'>
+						<SubmitButton className='mt-2.5 w-full'>
 							Login With Email
 						</SubmitButton>
 					</div>
 				</div>
-				<ErrorMessage
-					errors={state.message ? [state.message] : undefined}
-					className='mt-1'
-				/>
 			</form>
 			<div className='relative'>
 				<div className='absolute inset-0 flex items-center'>

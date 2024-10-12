@@ -1,21 +1,17 @@
 'use server';
 
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
+import { compare } from 'bcrypt';
+import { prisma } from '@/lib/prisma';
 import { State } from '@/actions/utils';
+import { signIn } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 const LoginSchema = z.object({
-	email: z.string().email({ message: 'Invalid email address' }),
+	email: z.string().email({ message: 'Please enter a valid email address.' }),
 	password: z
 		.string()
-		.min(8, { message: 'Password must contain at least 8 characters' }),
-	// .regex(
-	// 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-	// 	{
-	// 		message:
-	// 			'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-	// 	}
-	// ),
+		.min(8, { message: 'Your password must have at least 8 characters.' }),
 });
 
 type LoginData = z.infer<typeof LoginSchema>;
@@ -34,36 +30,40 @@ export async function login(
 	if (!validatedFields.success) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
-			message: 'Validation failed',
+			message: 'There were validation errors. Please check your input.',
 		};
 	}
 
 	const { email, password } = validatedFields.data;
 
 	try {
-		// Here you would typically interact with your authentication service
-		// For example, you might use a function to check the credentials:
-		//
-		// const user = await authenticateUser(email, password);
-		// if (!user) {
-		//   throw new Error('Invalid credentials');
-		// }
+		const user = await prisma.user.findUnique({
+			where: { email: email },
+		});
 
-		console.log('User logged in:', { email, password });
-
-		// If login is successful, you would typically set up a session or JWT token here
-	} catch (error) {
-		console.error('Login failed', error);
-
-		// Check for specific error types
-		if (error instanceof Error) {
-			if (error.message === 'Invalid credentials') {
-				return { message: 'Invalid email or password' };
-			}
+		if (!user || !user.password) {
+			return { message: 'No account found with that email address.' };
 		}
 
-		// Generic error message
-		return { message: 'An error occurred during login. Please try again.' };
+		const isPasswordValid = await compare(password, user.password);
+
+		if (!isPasswordValid) {
+			return { message: 'The password you entered is incorrect.' };
+		}
+
+		// If password is valid, sign in the user
+		const result = await signIn('credentials', {
+			email,
+			password,
+			redirect: false,
+		});
+
+		if (result?.error) {
+			return { message: 'Login failed. Please try again later.' };
+		}
+	} catch (error) {
+		console.error('Login failed', error);
+		return { message: 'An unexpected error occurred. Please try again.' };
 	}
 
 	redirect('/');
