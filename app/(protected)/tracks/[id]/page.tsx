@@ -8,6 +8,7 @@ import TrackList from '@/components/tracks/TrackList';
 import { artists, tracks } from '@/config/dummy-data';
 import TrackNav from '@/components/tracks/track/TrackNav';
 import Image from 'next/image';
+import TrackArtist from '@/components/tracks/track/TrackArtist';
 
 export default function page({
 	params: { id },
@@ -47,9 +48,7 @@ export default function page({
 									className='lg:w-full p-0'
 								/>
 							</TabsContent>
-							<TabsContent value='artist'>
-								<p>artist page {id}</p>
-							</TabsContent>
+							<TrackArtist track={track} />
 						</div>
 						<div>
 							<ul className=' flex flex-col gap-3 lg:p-4 mt-2'>

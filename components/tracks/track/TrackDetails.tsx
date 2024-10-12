@@ -12,6 +12,7 @@ import { Track } from '@/config/dummy-data';
 export default function TrackDetails({ track }: { track: Track }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	const [liked, setliked] = useState(track.liked);
+	const [followed, setFollowed] = useState(false);
 	const isCurrentTrack = currentTrack?.id === track.id;
 
 	return (
@@ -94,7 +95,16 @@ export default function TrackDetails({ track }: { track: Track }) {
 					>
 						{track.artist.name}
 					</Link>
-					<Icons.follow className='min-w-7 w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+					<div
+						onClick={() => setFollowed((l) => !l)}
+						className='cursor-pointer h-full flex justify-center items-center'
+					>
+						{followed ? (
+							<Icons.follow className='min-w-7 w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+						) : (
+							<Icons.unfollow className='min-w-7 w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

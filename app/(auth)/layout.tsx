@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			/>
 			{children}
 
-			<ModeToggle className='absolute bottom-12 z-50 left-12' />
+			<ModeToggle className='absolute top-6 right-6 lg:bottom-12 z-50 lg:left-12 lg:right-auto lg:top-auto ' />
 
 			<SecondarySection />
 		</div>
