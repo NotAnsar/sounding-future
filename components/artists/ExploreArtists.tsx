@@ -15,7 +15,9 @@ export default function ExploreArtists({
 }) {
 	return (
 		<div className={cn(className)}>
-			<h1 className='text-[22px] font-semibold text-primary mb-6'>{title}</h1>
+			<h1 className='text-[22px] font-semibold text-primary-foreground mb-6'>
+				{title}
+			</h1>
 
 			<div className='grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4  sm:gap-x-6 sm:gap-y-10'>
 				{artists.map((artist, i) => (

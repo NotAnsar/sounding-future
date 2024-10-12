@@ -18,7 +18,7 @@ export default function SideBarNavMobile({
 		<SheetContent
 			side='left'
 			className={cn(
-				'w-4/5 sm:w-64 flex flex-col fixed p-5 bg-foreground',
+				'w-4/5 sm:w-64 flex flex-col fixed p-5 bg-secondary',
 				className
 			)}
 			{...props}
@@ -29,7 +29,14 @@ export default function SideBarNavMobile({
 					alt='logo'
 					width={288.33}
 					height={132}
-					className='w-24 ml-3 h-auto'
+					className='w-24 ml-3 h-auto hidden dark:block'
+				/>
+				<Image
+					src={'/logo-light.png'}
+					alt='logo'
+					width={288.33}
+					height={132}
+					className='w-24 ml-3 h-auto block dark:hidden'
 				/>
 			</Link>
 			<div className='flex flex-col gap-3 py-2 h-full'>

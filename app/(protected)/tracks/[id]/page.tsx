@@ -54,19 +54,19 @@ export default function page({
 						<div>
 							<ul className=' flex flex-col gap-3 lg:p-4 mt-2'>
 								<li className='flex gap-3'>
-									<Icons.tag className='w-6 h-auto aspect-auto fill-white' />{' '}
+									<Icons.tag className='w-6 h-auto aspect-auto fill-foreground' />{' '}
 									{track.genre}
 								</li>
 								<li className='flex gap-3'>
-									<Icons.calendar className='w-6 h-auto aspect-auto fill-white' />{' '}
+									<Icons.calendar className='w-6 h-auto aspect-auto fill-foreground' />{' '}
 									2018
 								</li>
 								<li className='flex gap-3'>
-									<Icons.prize className='w-6 h-auto aspect-auto fill-white' />{' '}
+									<Icons.prize className='w-6 h-auto aspect-auto fill-foreground' />{' '}
 									3D Audio competition
 								</li>
 								<li className='flex gap-3'>
-									<Icons.datails className='w-6 h-auto aspect-auto fill-white' />{' '}
+									<Icons.datails className='w-6 h-auto aspect-auto fill-foreground' />{' '}
 									3D AmbiX
 								</li>
 							</ul>

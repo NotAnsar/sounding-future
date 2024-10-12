@@ -28,7 +28,7 @@ export default function AudioPlayer() {
 	if (!currentTrack) return null;
 
 	return (
-		<div className='w-full bg-[#18243B] fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2 z-10'>
+		<div className='w-full bg-player fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2 z-10 '>
 			<div className='flex gap-3 items-center w-auto md:min-w-[200px] xl:min-w-[250px] max-w-[250px] md:w-[250px]'>
 				<Image
 					src={currentTrack.cover}
@@ -39,7 +39,7 @@ export default function AudioPlayer() {
 				/>
 				<div className='truncate hidden md:block'>
 					<h2 className='font-semibold truncate'>{currentTrack.title}</h2>
-					<h5 className='text-sm text-[#9898A6] font-semibold'>
+					<h5 className='text-sm text-muted font-semibold'>
 						{currentTrack.artist.name}
 					</h5>
 				</div>
@@ -48,19 +48,19 @@ export default function AudioPlayer() {
 			<div className='flex gap-2 md:gap-3 items-center justify-center w-full '>
 				<div className='flex gap-1.5 items-center '>
 					<Icons.next
-						className='w-8 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block fill-white'
+						className='w-8 h-auto aspect-square cursor-pointer rotate-180 hidden sm:block fill-foreground'
 						onClick={previousTrack}
 					/>
 					<button onClick={togglePlayPause} className='text-nowrap'>
 						{isPlaying ? (
-							<Icons.pause className='w-12 h-auto aspect-square text-white fill-white cursor-pointer' />
+							<Icons.pause className='w-12 h-auto aspect-square text-foreground fill-foreground cursor-pointer' />
 						) : (
-							<Icons.play className='w-12 h-auto aspect-square cursor-pointer text-white fill-white ' />
+							<Icons.play className='w-12 h-auto aspect-square cursor-pointer text-foreground fill-foreground ' />
 						)}
 					</button>
 
 					<Icons.next
-						className='w-8 h-auto aspect-square cursor-pointer hidden sm:block fill-white'
+						className='w-8 h-auto aspect-square cursor-pointer hidden sm:block fill-foreground'
 						onClick={nextTrack}
 					/>
 				</div>
@@ -85,26 +85,26 @@ export default function AudioPlayer() {
 				<div
 					className={cn(
 						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
-						isLoop ? 'bg-white' : 'border-white'
+						isLoop ? 'bg-foreground' : 'border-foreground'
 					)}
 					onClick={toggleLoop}
 				>
 					<Icons.shuffle
 						className={cn(
 							'w-4 h-auto cursor-pointer transition-all duration-200',
-							isLoop ? 'text-black' : 'text-white'
+							isLoop ? 'text-background' : 'text-foreground'
 						)}
 					/>
 				</div>
 			</div>
 
 			<div className='hidden gap-3 items-center mr-4 md:flex'>
-				<Icons.setting className='w-5 h-auto aspect-square cursor-pointer' />
+				<Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
 				<button onClick={toggleMute}>
 					{isMuted ? (
-						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-white' />
+						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
 					) : (
-						<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-white' />
+						<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
 					)}
 				</button>
 
@@ -115,7 +115,7 @@ export default function AudioPlayer() {
 					onChange={(e) => setVolume(parseFloat(e.target.value))}
 					className='w-[100px]'
 				/>
-				<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer' />
+				<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
 			</div>
 		</div>
 	);

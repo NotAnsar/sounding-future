@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Sheet, SheetTrigger } from '../ui/sheet';
 import SideBarNavMobile from './SideBarNavMobile';
 import { auth } from '@/lib/auth';
+import { ModeToggle } from '../ModeToggle';
 
 export default async function TopNav({ className }: { className?: string }) {
 	const session = await auth();
@@ -29,7 +30,14 @@ export default async function TopNav({ className }: { className?: string }) {
 							alt='logo'
 							width={288.33}
 							height={132}
-							className='w-24 md:w-32 h-auto'
+							className='w-24 md:w-32 h-auto hidden dark:block'
+						/>
+						<Image
+							src={'/logo-light.png'}
+							alt='logo'
+							width={288.33}
+							height={132}
+							className='w-24 md:w-32 h-auto block dark:hidden'
 						/>
 					</Link>
 				</div>
@@ -40,12 +48,13 @@ export default async function TopNav({ className }: { className?: string }) {
 							<Button
 								variant='ghost'
 								size='icon'
-								className='shrink-0 md:hidden text-white hover:text-white hover:bg-foreground'
+								className='shrink-0 md:hidden text-foreground hover:text-foreground hover:bg-secondary'
 							>
 								<Menu className='h-7 w-auto aspect-square' />
 								<span className='sr-only'>Toggle navigation menu</span>
 							</Button>
 						</SheetTrigger>
+						<ModeToggle />
 						{session?.user && <UserNav user={session?.user} />}
 					</div>
 				</div>

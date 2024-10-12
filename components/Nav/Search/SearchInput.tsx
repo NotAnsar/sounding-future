@@ -16,7 +16,7 @@ interface SearchInputProps {
 export default function SearchInput({
 	className,
 	placeholder = 'Search artists, tracks...',
-	iconColor = 'text-white',
+	iconColor = 'text-foreground',
 	inputStyles,
 }: SearchInputProps) {
 	const [searchTerm, setSearchTerm] = useState('');

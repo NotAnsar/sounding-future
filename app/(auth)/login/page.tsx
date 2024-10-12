@@ -21,9 +21,12 @@ export default async function Page() {
 				</div>
 
 				<LoginForm />
-				<p className='px-8 text-center text-base font-semibold text-white mt-1.5'>
+				<p className='px-8 text-center text-base font-semibold mt-1.5'>
 					{"Don't have an account? "}
-					<Link href='/signup' className='text-primary hover:underline'>
+					<Link
+						href='/signup'
+						className='text-primary-foreground hover:underline'
+					>
 						Sign up now
 					</Link>
 				</p>

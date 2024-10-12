@@ -6,7 +6,7 @@ export default function SignWithGoogle() {
 	return (
 		<form action={googleSignIn} className='w-full'>
 			<SubmitButton variant={'outline'} className='w-full'>
-				<Icons.google className='mr-2 w-6 fill-white' />
+				<Icons.google className='mr-2 w-6 fill-foreground' />
 				Sign Up With Google
 			</SubmitButton>
 		</form>

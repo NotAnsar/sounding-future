@@ -24,10 +24,10 @@ export default function CollectionsCarousel({
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
 				<div className='flex justify-between items-center mb-4'>
-					<h1 className='text-[22px] font-semibold text-primary'>{title}</h1>
+					<h1 className='text-[22px] font-semibold text-primary-foreground'>{title}</h1>
 
 					{true ? (
-						<div className='flex border-2 border-foreground rounded-sm items-center'>
+						<div className='flex border-2 border-secondary rounded-sm items-center'>
 							<CarouselPrevious className='static border-none rounded-none translate-y-0' />
 							<CarouselNext className='static border-none rounded-none translate-y-0' />
 						</div>
@@ -61,7 +61,7 @@ export default function CollectionsCarousel({
 
 							<h3
 								className={cn(
-									'text-white text-sm sm:text-[17px] font-semibold line-clamp-1'
+									'text-sm sm:text-[17px] font-semibold line-clamp-1'
 								)}
 							>
 								{collection.name}

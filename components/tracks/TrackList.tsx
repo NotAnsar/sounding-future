@@ -34,7 +34,6 @@ export default function TrackList({
 									<div
 										className={cn(
 											'min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md justify-center items-center flex absolute inset-2 bg-black/40 cursor-pointer',
-											// isPlaying && isCurrentTrack ? 'flex' : ''
 											isCurrentTrack ? 'visible' : 'invisible',
 											'group-hover:visible'
 										)}
@@ -47,11 +46,6 @@ export default function TrackList({
 										}}
 									>
 										<div className='w-8 h-auto aspect-square flex justify-center items-center bg-white rounded-full'>
-											{/* {isPlaying && isCurrentTrack ? (
-												<PauseIcon className='w-5 h-auto aspect-square text-black fill-black cursor-pointer' />
-											) : (
-												<PlayIcon className='w-5 h-auto aspect-square text-black fill-black cursor-pointer' />
-											)} */}
 											<PauseIcon
 												className={cn(
 													'w-3/5 h-auto aspect-square text-black fill-black cursor-pointer ',
@@ -80,7 +74,7 @@ export default function TrackList({
 									<Link
 										href={`/tracks/${track.id}`}
 										className={cn(
-											'text-white text-base font-semibold line-clamp-1 hover:opacity-80',
+											' text-base font-semibold line-clamp-1 hover:opacity-80',
 											isCurrentTrack ? 'text-primary' : ''
 										)}
 									>
@@ -108,8 +102,8 @@ export default function TrackList({
 								<TableCell>
 									<Heart
 										className={cn(
-											'w-5 h-5 text-muted hover:text-white cursor-pointer',
-											track.liked ? 'text-white fill-white' : ''
+											'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
+											track.liked ? 'text-foreground fill-foreground' : ''
 										)}
 									/>
 								</TableCell>

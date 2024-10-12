@@ -17,11 +17,7 @@ export default function TracksNav({
 		<div className='flex flex-col sm:flex-row justify-between gap-1.5'>
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				<TabsTrigger value='new' className='!p-0'>
-					<Link
-						href={'/tracks'}
-						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
-						scroll
-					>
+					<Link href={'/tracks'} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
 						New <span className='hidden sm:inline'>Tracks</span>
 					</Link>
 				</TabsTrigger>
@@ -29,7 +25,6 @@ export default function TracksNav({
 					<Link
 						href={'/tracks?sort=popular'}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
-						scroll
 					>
 						Popular <span className='hidden sm:inline'>Tracks</span>
 					</Link>
@@ -38,7 +33,6 @@ export default function TracksNav({
 					<Link
 						href={'/tracks?sort=curated'}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
-						scroll
 					>
 						Curated Selections
 					</Link>
@@ -49,21 +43,31 @@ export default function TracksNav({
 					href={`/tracks?type=table${sort ? '&sort=' + sort : ''}`}
 					className={cn(
 						buttonVariants(),
-						'bg-transparent p-1.5 sm:p-2 hover:bg-button h-fit ',
+						'bg-transparent p-1.5 sm:p-2 hover:bg-button group h-fit duration-200 transition-all shadow-none',
 						isTable ? 'bg-button' : ''
 					)}
 				>
-					<Icons.table className='w-5 sm:w-6 h-auto aspect-square' />
+					<Icons.table
+						className={cn(
+							'w-5 sm:w-6 h-auto aspect-square text-foreground group-hover:text-white',
+							isTable ? 'text-white' : ''
+						)}
+					/>
 				</Link>
 				<Link
 					href={`/tracks?type=grid${sort ? '&sort=' + sort : ''}`}
 					className={cn(
 						buttonVariants(),
-						'bg-transparent p-1.5 sm:p-2 hover:bg-button h-fit ',
+						'bg-transparent p-1.5 sm:p-2 hover:bg-button h-fit group shadow-none duration-200 transition-all',
 						!isTable ? 'bg-button' : ''
 					)}
 				>
-					<Icons.grid className='w-5 sm:w-6 h-auto aspect-square' />
+					<Icons.grid
+						className={cn(
+							'w-5 sm:w-6 h-auto aspect-square text-foreground group-hover:text-white shadow-none',
+							!isTable ? 'text-white' : ''
+						)}
+					/>
 				</Link>
 			</div>
 		</div>

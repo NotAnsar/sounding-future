@@ -20,17 +20,18 @@ export default function NavItem({
 	sheet?: boolean;
 }) {
 	const isCollection = type === 'collection';
+	const isCurrentPath =
+		currentPath.split('/')[isCollection ? 2 : 1] ===
+		path.split('/')[isCollection ? 2 : 1];
 	const CommonLink = (
 		<Link
 			className={cn(
 				buttonVariants({
-					variant:
-						currentPath.split('/')[isCollection ? 2 : 1] ===
-						path.split('/')[isCollection ? 2 : 1]
-							? 'sideNav'
-							: 'sideNavForeground',
+					variant: isCurrentPath ? 'sideNav' : 'sideNavForeground',
 				}),
-				'justify-start py-2 pr-3'
+				'justify-start py-2 pr-3 hover:text-white duration-200 transition-none',
+
+				isCurrentPath ? 'text-white' : ''
 			)}
 			href={path}
 		>

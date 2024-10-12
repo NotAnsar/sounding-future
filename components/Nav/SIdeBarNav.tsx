@@ -15,7 +15,7 @@ export default function SideBarNav({
 	return (
 		<div
 			className={cn(
-				'w-64 flex flex-col fixed p-5 bg-foreground rounded-tr-3xl',
+				'w-64 flex flex-col fixed p-5 bg-secondary rounded-tr-3xl',
 				className
 			)}
 			{...props}

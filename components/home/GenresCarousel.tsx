@@ -22,10 +22,12 @@ export default function GenresCarousel({
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
 				<div className='flex justify-between items-center mb-4'>
-					<h1 className='text-[22px] font-semibold text-primary'>{title}</h1>
+					<h1 className='text-[22px] font-semibold text-primary-foreground'>
+						{title}
+					</h1>
 
 					{true ? (
-						<div className='flex border-2 border-foreground rounded-sm items-center'>
+						<div className='flex border-2 border-secondary rounded-sm items-center'>
 							<CarouselPrevious className='static border-none rounded-none translate-y-0' />
 							<CarouselNext className='static border-none rounded-none translate-y-0' />
 						</div>
@@ -45,13 +47,13 @@ export default function GenresCarousel({
 					{genres.map((genre, i) => (
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>
 							<div
-								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32'
+								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white'
 								style={{ background: gradients[i % gradients.length] }}
 							>
 								<h5 className='text-[11px] font-bold ml-auto'>3D Audio</h5>
 								<h3
 									className={cn(
-										'text-white text-lg sm:text-xl font-semibold line-clamp-2 mt-auto'
+										'text-lg sm:text-xl font-semibold line-clamp-2 mt-auto'
 									)}
 								>
 									{genre.name}

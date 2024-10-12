@@ -20,9 +20,10 @@ export default function CustomSlider({
 	value,
 	onChange,
 	className = '',
-	trackClassName = 'h-[5px] rounded-full ring-red-950 accent-[#B3B3B3]',
-	progressClassName = 'bg-[#B3B3B3]',
-	backgroundClassName = 'bg-[#525151]',
+	trackClassName = 'h-[5px] rounded-full ring-red-950 accent-[#141B29] dark:accent-[#B3B3B3]',
+	progressClassName = 'bg-[#141B29] dark:bg-[#B3B3B3]',
+
+	backgroundClassName = 'bg-[#847F7F] dark:bg-[#525151]',
 	...props
 }: CustomSliderProps) {
 	return (

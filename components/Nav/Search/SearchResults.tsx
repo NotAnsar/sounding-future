@@ -38,10 +38,10 @@ export default function SearchResults({
 	}, [onClose, searchRef]);
 
 	return (
-		<div className='absolute z-10 w-full mt-2 bg-player rounded-xl border border-background max-h-96 overflow-y-auto'>
+		<div className='absolute z-10 w-full mt-2 dark:bg-player bg-[#E6E6E6] rounded-xl border border-background max-h-96 overflow-y-auto'>
 			{searchResults.artists.length > 0 && (
 				<div className='p-4'>
-					<h3 className='text-white text-sm font-semibold mb-2'>Artists</h3>
+					<h3 className=' text-sm font-semibold mb-2'>Artists</h3>
 					{searchResults.artists.map((artist) => (
 						<Link
 							key={artist.id}
@@ -56,7 +56,7 @@ export default function SearchResults({
 								height={40}
 								width={40}
 							/>
-							<span className='text-white'>{artist.name}</span>
+							<span>{artist.name}</span>
 						</Link>
 					))}
 				</div>
@@ -64,7 +64,7 @@ export default function SearchResults({
 
 			{searchResults.tracks.length > 0 && (
 				<div className='p-4'>
-					<h3 className='text-white text-sm font-semibold mb-2'>Tracks</h3>
+					<h3 className='text-sm font-semibold mb-2'>Tracks</h3>
 					{searchResults.tracks.map((track) => (
 						<Link
 							key={track.id}
@@ -80,8 +80,8 @@ export default function SearchResults({
 								className='w-10 h-10 rounded-lg'
 							/>
 							<div>
-								<p className='text-white'>{track.title}</p>
-								<p className='text-gray-400 text-sm'>{track.artist.name}</p>
+								<p>{track.title}</p>
+								<p className='text-muted text-sm'>{track.artist.name}</p>
 							</div>
 						</Link>
 					))}

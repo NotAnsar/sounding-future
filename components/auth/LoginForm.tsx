@@ -39,7 +39,7 @@ export default function LoginForm() {
 							<Label className='font-semibold text-[15px] '>Password</Label>
 							<Link
 								href='#'
-								className='ml-auto inline-block text-[15px] text-primary underline font-semibold '
+								className='ml-auto inline-block text-[15px] text-primary-foreground underline font-semibold '
 							>
 								Forgot password?
 							</Link>

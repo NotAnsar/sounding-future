@@ -40,7 +40,7 @@ export default function UserNav({
 
 			<DropdownMenuContent
 				align='end'
-				className='max-w-[250px] min-w-[200px] truncate bg-foreground backdrop-blur-md border-background '
+				className='max-w-[250px] min-w-[200px] truncate bg-secondary backdrop-blur-md border-background '
 			>
 				<div className='flex items-center justify-start gap-2 p-2'>
 					<div className='flex flex-col space-y-1 leading-none truncate'>

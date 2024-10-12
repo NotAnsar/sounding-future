@@ -75,7 +75,7 @@ export default function TracksCards({
 							<h4
 								className={cn(
 									// 'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 hover:underline'
-									'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 '
+									'text-sm sm:text-[17px] font-semibold line-clamp-1 '
 								)}
 							>
 								{track.title}

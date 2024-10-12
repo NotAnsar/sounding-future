@@ -14,11 +14,13 @@ const config: Config = {
 				sans: ['var(--font-sans)', ...fontFamily.sans],
 			},
 			colors: {
-				// background: 'hsl(var(--background))',
-				// foreground: 'hsl(var(--foreground))',
-				background: 'hsl(221, 44%, 8%)',
-				foreground: 'hsl(220, 34%, 12%)',
-				player: 'hsl(220, 42%, 16%)',
+				background: 'hsl(var(--background))',
+				foreground: 'hsl(var(--foreground))',
+				player: {
+					DEFAULT: 'hsl(var(--player))',
+					foreground: 'hsl(var(--player-foreground))',
+				},
+
 				button: 'hsl(218, 63%, 31%)',
 
 				card: {
@@ -30,16 +32,16 @@ const config: Config = {
 					foreground: 'hsl(var(--popover-foreground))',
 				},
 				primary: {
-					DEFAULT: 'hsl(313, 81%, 75%)',
-					foreground: 'hsl(313, 52%, 45%)',
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+					text_foreground: 'hsl(var(--primary-foreground-text))',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(275, 43%, 41%)',
 				},
 				muted: {
-					// DEFAULT: 'hsl(var(--muted))',
-					DEFAULT: 'hsl(240, 7%, 62%)',
+					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))',
 				},
 				accent: {
