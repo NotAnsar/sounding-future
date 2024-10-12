@@ -85,13 +85,13 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: #0c121f;
-	border: solid 1px #141b29;
+	background: hsl(var(--background));
+	border: hsl(var(--secondary));
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #202d46;
+	background: hsl(219, 37%, 20%);
 
 	border-radius: 4px;
 }
@@ -103,7 +103,7 @@
 
 [type='search']::-webkit-search-cancel-button {
 	-webkit-appearance: none;
-	background-color: hsl(313, 81%, 75%);
+	background-color: hsl(var(--primary-foreground));
 	-webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='red'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
 	background-size: 18px 18px;
 	height: 18px;
