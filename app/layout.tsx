@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { auth } from '@/lib/auth';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AudioProvider } from '@/context/AudioContext';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -38,7 +39,9 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<SessionProvider>{children}</SessionProvider>
+					<SessionProvider>
+						<AudioProvider>{children}</AudioProvider>
+					</SessionProvider>
 				</ThemeProvider>
 			</body>
 		</html>

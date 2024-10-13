@@ -1,11 +1,20 @@
+'use client';
 import { logOut } from '@/actions/auth/logOut';
+import { useAudio } from '@/context/AudioContext';
 import { Loader, LogOut as LogOutIcon } from 'lucide-react';
 import React from 'react';
 import { useFormStatus } from 'react-dom';
 
 export default function LogOutButton() {
+	const { resetAudio } = useAudio();
+
+	const handleLogout = async () => {
+		resetAudio();
+		await logOut();
+	};
+
 	return (
-		<form className='w-full relative' action={logOut}>
+		<form className='w-full relative' action={handleLogout}>
 			<SubmitButton />
 		</form>
 	);

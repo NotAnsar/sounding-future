@@ -1,4 +1,5 @@
 'use client';
+
 import React, {
 	createContext,
 	useContext,
@@ -30,6 +31,7 @@ interface AudioContextType {
 	nextTrack: () => void;
 	previousTrack: () => void;
 	setPlaylist: (tracks: Track[]) => void;
+	resetAudio: () => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -219,6 +221,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		return () => clearInterval(interval);
 	}, [isPlaying]);
 
+	const resetAudio = useCallback(() => {
+		if (soundRef.current) {
+			soundRef.current.stop();
+			soundRef.current.unload();
+		}
+		setCurrentTrack(null);
+		setIsPlaying(false);
+		setCurrentTime(0);
+		setDuration(0);
+		// Reset any other relevant state
+	}, []);
+
 	const value = {
 		currentTrack,
 		playlist,
@@ -238,6 +252,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		toggleMute,
 		playNewTrack,
 		toggleLoop,
+		resetAudio,
 	};
 
 	return (

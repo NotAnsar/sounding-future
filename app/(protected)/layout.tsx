@@ -1,7 +1,6 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
 import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
-import { AudioProvider } from '@/context/AudioContext';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
@@ -20,14 +19,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			<SideBarNav
 				className={`hidden md:flex top-[var(--top-nav-height-md)] h-[calc(100vh-var(--top-nav-height-md))] fixed`}
 			/>
-			<AudioProvider>
-				<main
-					className={`md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[var(--top-nav-height)] md:mt-[var(--top-nav-height-md)] `}
-				>
-					{children}
-				</main>
-				<AudioPlayer />
-			</AudioProvider>
+
+			<main
+				className={`md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[var(--top-nav-height)] md:mt-[var(--top-nav-height-md)] `}
+			>
+				{children}
+			</main>
+			<AudioPlayer />
 		</div>
 	);
 }
