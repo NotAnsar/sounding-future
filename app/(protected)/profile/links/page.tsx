@@ -1,4 +1,5 @@
 'use client';
+
 import { updateProfile } from '@/actions/profile/profile';
 import ErrorMessage from '@/components/ErrorMessage';
 import ProfileNav from '@/components/profile/ProfileNav';
@@ -12,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
-export default function page() {
+export default function Page() {
 	const initialState = { message: null, errors: {} };
 	const [state, action] = useFormState(updateProfile, initialState);
 	const router = useRouter();
@@ -22,7 +23,7 @@ export default function page() {
 			router.push('/');
 			toast({ description: 'Profile updated successfully', title: 'Success' });
 		}
-	}, [state]);
+	}, [state, router]);
 
 	return (
 		<form action={action}>

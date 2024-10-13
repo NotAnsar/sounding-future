@@ -35,7 +35,7 @@ export default function Page() {
 			router.push('/');
 			toast({ description: 'Profile updated successfully', title: 'Success' });
 		}
-	}, [state]);
+	}, [state, router]);
 
 	return (
 		<form action={action}>
