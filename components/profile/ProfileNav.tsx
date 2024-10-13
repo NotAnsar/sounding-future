@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { TabsList, TabsTrigger } from '../ui/tabs';
-import { Button } from '../ui/button';
 import SaveButton from './SaveButton';
 
 export default function ProfileNav() {
