@@ -29,14 +29,6 @@ export default function TracksNav({
 						Popular <span className='hidden sm:inline'>Tracks</span>
 					</Link>
 				</TabsTrigger>
-				<TabsTrigger value='curated' className='!p-0'>
-					<Link
-						href={'/tracks?sort=curated'}
-						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
-					>
-						Curated Selections
-					</Link>
-				</TabsTrigger>
 			</TabsList>
 			<div className='flex gap-1 ml-auto sm:ml-0  '>
 				<Link

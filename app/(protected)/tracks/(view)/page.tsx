@@ -33,14 +33,6 @@ export default function page({
 						<TracksCards tracks={tracks} />
 					)}
 				</TabsContent>
-				<TabsContent value='curated'>
-					<h1 className='text-3xl mb-4 font-medium'>Curated</h1>
-					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
-					) : (
-						<TracksCards tracks={tracks} />
-					)}
-				</TabsContent>
 			</Tabs>
 		</>
 	);

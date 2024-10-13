@@ -69,7 +69,7 @@ export default function page({
 									3D AmbiX
 								</li>
 							</ul>
-							<span className='w-fit flex flex-col gap-1 lg:p-4 mt-8 '>
+							<span className='w-fit flex flex-col gap-1 lg:p-4 mt-8 items-center'>
 								<h4 className='text-sm'>Track curated by:</h4>
 								<Image
 									alt='Audio Match'
@@ -85,7 +85,7 @@ export default function page({
 					<ArtistsCarousel
 						className='mt-12'
 						artists={artists}
-						title='Similar artists'
+						title='Artists you may also like'
 						classNameItem='basis-32 sm:basis-52 lg:basis-64'
 					/>
 				</main>

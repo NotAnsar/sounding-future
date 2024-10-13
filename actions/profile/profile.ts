@@ -65,7 +65,7 @@ export async function updateProfile(
 		// Example profile update logic (replace with your actual implementation)
 		// await updateUserProfile(userId, { name, biography, genres })
 
-		revalidatePath('/profile');
+		revalidatePath('/', 'layout');
 		return { message: 'Profile updated successfully' };
 	} catch (error) {
 		console.error('Profile update error:', error);
