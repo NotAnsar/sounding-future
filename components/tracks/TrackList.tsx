@@ -26,8 +26,8 @@ export default function TrackList({
 							<TableRow
 								key={index}
 								className={cn(
-									'hover:bg-player/35 border-none group',
-									isCurrentTrack ? 'bg-player/35' : ''
+									'hover:bg-player/50 border-none group',
+									isCurrentTrack ? 'bg-player/50' : ''
 								)}
 							>
 								<TableCell className='w-14 relative'>

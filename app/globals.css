@@ -6,7 +6,8 @@
 	:root {
 		--background: 0 0% 100%;
 		--foreground: 221 44% 8%;
-		--player: 240 77% 92%;
+		--player: 0 0% 90%;
+
 		--player-foreground: 220 42% 16%;
 
 		--card: 0 0% 100%;
@@ -40,7 +41,7 @@
 		--background: 221 44% 8%;
 		--foreground: 0 0% 100%;
 		--player: 220 42% 16%;
-		--player-foreground: 240 77% 92%;
+		--player-foreground: 0 0% 90%;
 		--card: 240 10% 3.9%;
 		--card-foreground: 0 0% 98%;
 		--popover: 240 10% 3.9%;
@@ -108,4 +109,9 @@
 	background-size: 18px 18px;
 	height: 18px;
 	width: 18px;
+}
+
+.popover-content-width-same-as-its-trigger {
+	width: var(--radix-popover-trigger-width);
+	max-height: var(--radix-popover-content-available-height);
 }

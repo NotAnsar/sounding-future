@@ -38,7 +38,7 @@ export default function SearchResults({
 	}, [onClose, searchRef]);
 
 	return (
-		<div className='absolute z-10 w-full mt-2 dark:bg-player bg-[#E6E6E6] rounded-xl border border-background max-h-96 overflow-y-auto'>
+		<div className='absolute z-10 w-full mt-2 bg-player rounded-xl border border-background max-h-96 overflow-y-auto'>
 			{searchResults.artists.length > 0 && (
 				<div className='p-4'>
 					<h3 className=' text-sm font-semibold mb-2'>Artists</h3>

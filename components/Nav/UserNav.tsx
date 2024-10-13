@@ -53,7 +53,10 @@ export default function UserNav({
 				</div>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem className='cursor-pointer p-0 '>
-					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center '>
+					<Link
+						href={'/profile'}
+						className='px-2 py-2.5 w-full flex items-center '
+					>
 						<UserRoundCog className='w-4 h-auto mr-2' />
 						Profile
 					</Link>
