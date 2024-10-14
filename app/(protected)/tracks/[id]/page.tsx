@@ -91,7 +91,9 @@ export default function page({
 					<TracksCarousel
 						tracks={tracks}
 						title='Tracks you may also like'
-						classNameItem='basis-32 sm:basis-52 lg:basis-64'
+						classNameItem='basis-36 sm:basis-52 lg:basis-64'
+						className='mt-12 '
+						classNameTitle='text-[18px] sm:text-[22px]'
 					/>
 				</main>
 			</Tabs>

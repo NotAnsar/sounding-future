@@ -16,17 +16,24 @@ export default function TracksCarousel({
 	title,
 	className,
 	classNameItem,
+	classNameTitle,
 }: {
 	tracks: Track[];
 	title?: string;
 	className?: string;
 	classNameItem?: string;
+	classNameTitle?: string;
 }) {
 	return (
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
 				<div className='flex justify-between items-center mb-4'>
-					<h1 className='text-[22px] font-semibold text-primary-foreground'>
+					<h1
+						className={cn(
+							'text-[22px] font-semibold text-primary-foreground',
+							classNameTitle
+						)}
+					>
 						{title}
 					</h1>
 
