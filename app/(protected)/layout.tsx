@@ -1,6 +1,7 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
 import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
+import NextTopLoader from 'nextjs-toploader';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
@@ -13,6 +14,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				} as React.CSSProperties
 			}
 		>
+			<NextTopLoader
+				color='#AE3795'
+				initialPosition={0.08}
+				crawlSpeed={200}
+				height={4}
+				crawl={true}
+				showSpinner={false}
+				easing='ease'
+				speed={200}
+				shadow='0 0 10px #e11d48,0 0 5px #e11d48'
+			/>
+
 			<TopNav
 				className={`top-0 h-[var(--top-nav-height)] md:h-[var(--top-nav-height-md)]`}
 			/>
