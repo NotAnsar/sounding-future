@@ -26,7 +26,7 @@ export default function page({
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
-					<h1 className='text-3xl mb-4 font-medium'>Popular</h1>
+					{/* <h1 className='text-3xl mb-4 font-medium'>Popular</h1> */}
 					{isTable ? (
 						<TrackList tracks={tracks} className='p-0' />
 					) : (

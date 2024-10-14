@@ -18,7 +18,7 @@ export default function TracksNav({
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				<TabsTrigger value='new' className='!p-0'>
 					<Link href={'/tracks'} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
-						New <span className='hidden sm:inline'>Tracks</span>
+						New Tracks
 					</Link>
 				</TabsTrigger>
 				<TabsTrigger value='popular' className='!p-0'>
@@ -26,7 +26,8 @@ export default function TracksNav({
 						href={'/tracks?sort=popular'}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
 					>
-						Popular <span className='hidden sm:inline'>Tracks</span>
+						{/* Popular <span className='hidden sm:inline'>Tracks</span> */}
+						Popular Tracks
 					</Link>
 				</TabsTrigger>
 			</TabsList>

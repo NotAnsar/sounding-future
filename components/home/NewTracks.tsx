@@ -15,10 +15,12 @@ export default function TracksCarousel({
 	tracks,
 	title,
 	className,
+	classNameItem,
 }: {
 	tracks: Track[];
 	title?: string;
 	className?: string;
+	classNameItem?: string;
 }) {
 	return (
 		<div className={cn('', className)}>
@@ -47,7 +49,10 @@ export default function TracksCarousel({
 
 				<CarouselContent>
 					{tracks?.map((track, i) => (
-						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
+						<CarouselItem
+							key={i}
+							className={cn('basis-40 md:basis-52 lg:basis-56', classNameItem)}
+						>
 							<Link
 								href={`/tracks/${track.id}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'

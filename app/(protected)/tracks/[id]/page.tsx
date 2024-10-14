@@ -2,13 +2,13 @@ import { TabsContent } from '@/components/ui/tabs';
 import { notFound } from 'next/navigation';
 import TrackDetails from '@/components/tracks/track/TrackDetails';
 import { Tabs } from '@/components/ui/tabs';
-import ArtistsCarousel from '@/components/home/ArtistCarousel';
 import { Icons } from '@/components/icons/track-icons';
 import TrackList from '@/components/tracks/TrackList';
-import { artists, tracks } from '@/config/dummy-data';
+import { tracks } from '@/config/dummy-data';
 import TrackNav from '@/components/tracks/track/TrackNav';
 import Image from 'next/image';
 import TrackArtist from '@/components/tracks/track/TrackArtist';
+import TracksCarousel from '@/components/home/NewTracks';
 
 export default function page({
 	params: { id },
@@ -82,10 +82,15 @@ export default function page({
 							</span>
 						</div>
 					</div>
-					<ArtistsCarousel
+					{/* <ArtistsCarousel
 						className='mt-12'
 						artists={artists}
 						title='Artists you may also like'
+						
+					/> */}
+					<TracksCarousel
+						tracks={tracks}
+						title='Tracks you may also like'
 						classNameItem='basis-32 sm:basis-52 lg:basis-64'
 					/>
 				</main>
