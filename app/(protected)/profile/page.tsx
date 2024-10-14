@@ -55,7 +55,7 @@ export default function Page() {
 							name='name'
 							id='name'
 							className={cn(
-								'max-w-md',
+								'max-w-lg',
 								state?.errors?.name
 									? 'border-destructive focus-visible:ring-destructive '
 									: ''
@@ -76,7 +76,7 @@ export default function Page() {
 						</Label>
 						<Textarea
 							className={cn(
-								'max-w-md min-h-32',
+								'max-w-lg min-h-32',
 								state?.errors?.biography
 									? 'border-destructive focus-visible:ring-destructive '
 									: ''

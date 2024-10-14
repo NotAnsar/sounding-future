@@ -68,3 +68,26 @@ export async function login(
 
 	redirect('/');
 }
+
+export async function loginGuest(): Promise<LoginState> {
+	// guest user account
+	// FriendlyExplorer42
+	// guest.user@example.com
+	// Guest1234
+	try {
+		const result = await signIn('credentials', {
+			email: 'guest.user@example.com',
+			password: 'Guest1234',
+			redirect: false,
+		});
+
+		if (result?.error) {
+			return { message: 'Login failed. Please try again later.' };
+		}
+	} catch (error) {
+		console.error('Login failed', error);
+		return { message: 'An unexpected error occurred. Please try again.' };
+	}
+
+	redirect('/');
+}

@@ -14,7 +14,7 @@ export default function TracksNav({
 }) {
 	const isTable = type === 'table';
 	return (
-		<div className='flex flex-col sm:flex-row justify-between gap-1.5'>
+		<div className='flex justify-between gap-1.5'>
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				<TabsTrigger value='new' className='!p-0'>
 					<Link href={'/tracks'} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>

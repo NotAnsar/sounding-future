@@ -36,7 +36,7 @@ const GenreSelector: React.FC<GenreSelectorProps> = ({
 					<Button
 						variant='input'
 						className={cn(
-							'max-w-md justify-start text-left font-normal ',
+							'max-w-lg justify-start text-left font-normal ',
 							error ? 'border-destructive focus-visible:ring-destructive ' : ''
 						)}
 					>

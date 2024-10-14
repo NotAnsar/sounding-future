@@ -8,8 +8,11 @@ export default function ErrorMessage({
 	return (
 		<div className={className}>
 			{errors &&
-				errors.map((error: string) => (
-					<p className='text-sm font-medium text-destructive' key={error}>
+				errors.map((error: string, i) => (
+					<p
+						className='text-sm font-medium text-destructive'
+						key={`${error}_${i}`}
+					>
 						{error}
 					</p>
 				))}

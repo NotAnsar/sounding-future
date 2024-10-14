@@ -1,4 +1,5 @@
 import LoginForm from '@/components/auth/LoginForm';
+import SignAsGuest from '@/components/auth/SignAsGuest';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -21,15 +22,18 @@ export default async function Page() {
 				</div>
 
 				<LoginForm />
-				<p className='px-8 text-center text-base font-semibold mt-1.5'>
-					{"Don't have an account? "}
-					<Link
-						href='/signup'
-						className='text-primary-foreground hover:underline'
-					>
-						Sign up now
-					</Link>
-				</p>
+				<div className='flex flex-col gap-2'>
+					<p className='px-8 text-center text-base font-semibold mt-1.5'>
+						{"Don't have an account? "}
+						<Link
+							href='/signup'
+							className='text-primary-foreground hover:underline'
+						>
+							Sign up now
+						</Link>
+					</p>
+					<SignAsGuest />
+				</div>
 			</div>
 		</div>
 	);

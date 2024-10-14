@@ -1,3 +1,4 @@
+import SignAsGuest from '@/components/auth/SignAsGuest';
 import SignInForm from '@/components/auth/SignInForm';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -30,6 +31,7 @@ export default async function Page() {
 						Login now
 					</Link>
 				</p>
+				<SignAsGuest />
 			</div>
 		</div>
 	);

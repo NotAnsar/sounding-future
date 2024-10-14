@@ -16,7 +16,7 @@ export default function page({
 	return (
 		<>
 			<HeaderBanner img={'/tracks.png'} title='Tracks' />
-			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid sm:gap-3'>
+			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<TracksNav type={type} sort={sort} />
 				<TabsContent value='new'>
 					{isTable ? (
