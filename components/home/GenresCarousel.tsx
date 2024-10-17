@@ -7,14 +7,15 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
+import { Genre } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
 
 export default function GenresCarousel({
-	// collections,
+	genres,
 	title,
 	className,
 }: {
-	// collections: { name: string; id: string }[];
+	genres: Genre[];
 	title?: string;
 	className?: string;
 }) {
@@ -48,7 +49,9 @@ export default function GenresCarousel({
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>
 							<div
 								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white'
-								style={{ background: gradients[i % gradients.length] }}
+								style={{
+									background: `linear-gradient(180deg, ${genre.from} 0%, ${genre.to} 100%)`,
+								}}
 							>
 								<h5 className='text-[11px] font-bold ml-auto'>3D Audio</h5>
 								<h3
@@ -66,19 +69,3 @@ export default function GenresCarousel({
 		</div>
 	);
 }
-
-const gradients = [
-	'linear-gradient(180deg, #A42F67 0%, #513383 100%)',
-	'linear-gradient(180deg, #267B43 0%, #2F489F 100%)',
-	'linear-gradient(180deg, #7F8128 0%, #1F1D7B 100%)',
-];
-
-const genres = [
-	{
-		id: '1',
-		name: 'Electronic Music',
-		from: '',
-	},
-	{ id: '2', name: 'Field Recordings' },
-	{ id: '3', name: 'Contemporary Music' },
-];

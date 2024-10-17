@@ -10,13 +10,14 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Collection } from '@/config/dummy-data';
 
 export default function CollectionsCarousel({
-	// collections,
+	collections,
 	title,
 	className,
 }: {
-	// collections: { picture: string; name: string; id: string }[];
+	collections: Collection[];
 	title?: string;
 	className?: string;
 }) {
@@ -24,7 +25,9 @@ export default function CollectionsCarousel({
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
 				<div className='flex justify-between items-center mb-4'>
-					<h1 className='text-[22px] font-semibold text-primary-foreground'>{title}</h1>
+					<h1 className='text-[22px] font-semibold text-primary-foreground'>
+						{title}
+					</h1>
 
 					{true ? (
 						<div className='flex border-2 border-secondary rounded-sm items-center'>
@@ -73,26 +76,3 @@ export default function CollectionsCarousel({
 		</div>
 	);
 }
-
-const collections = [
-	{
-		id: '1',
-		picture: '/collections/Audiomatch.png',
-		name: 'Audiomatch',
-	},
-	{
-		id: '2',
-		picture: '/collections/Audiostuff.png',
-		name: 'Audiostuff',
-	},
-	{
-		id: '3',
-		picture: '/collections/Soco festival.png',
-		name: 'Soco festival',
-	},
-	{
-		id: '4',
-		picture: '/collections/Unsounded.png',
-		name: 'Unsounded',
-	},
-];

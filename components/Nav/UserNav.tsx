@@ -33,7 +33,7 @@ export default function UserNav({
 
 					<AvatarFallback className='h-9 w-auto aspect-square bg-button'>
 						<span className='sr-only'>{user?.email}</span>
-						<UserIcon className='h-[17px] w-auto text-w' />
+						<UserIcon className='h-[17px] w-auto text-white' />
 					</AvatarFallback>
 				</Avatar>
 			</DropdownMenuTrigger>

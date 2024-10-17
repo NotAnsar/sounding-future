@@ -206,3 +206,60 @@ export const tracks: Track[] = [
 		liked: false,
 	},
 ];
+
+export type Collection = {
+	id: string;
+	picture: string;
+	name: string;
+	country: string;
+};
+
+export const collections: Collection[] = [
+	{
+		id: '1',
+		picture: '/collections/Audiomatch.png',
+		name: 'Audiomatch',
+		country: 'Austria',
+	},
+	{
+		id: '2',
+		picture: '/collections/Audiostuff.png',
+		name: 'Audiostuff',
+		country: 'USA',
+	},
+	{
+		id: '3',
+		picture: '/collections/Soco festival.png',
+		name: 'Soco festival',
+		country: 'France',
+	},
+	{
+		id: '4',
+		picture: '/collections/Unsounded.png',
+		name: 'Unsounded',
+		country: 'India',
+	},
+];
+
+export type Genre = {
+	id: string;
+	name: string;
+	from: string;
+	to: string;
+};
+
+export const gradients = [
+	'linear-gradient(180deg,  0%,  100%)',
+	'linear-gradient(180deg, 100%)',
+	'linear-gradient(180deg, 100%)',
+	'linear-gradient(180deg, 100%)',
+	'linear-gradient(180deg, 100%)',
+];
+
+export const genres = [
+	{ id: '1', name: 'Electronic Music', from: '#A42F67', to: '#513383' },
+	{ id: '2', name: 'Field Recordings', from: '#267B43', to: '#2F489F' },
+	{ id: '3', name: 'Contemporary Music', from: '#7F8128', to: '#1F1D7B' },
+	{ id: '4', name: 'Game Audio', from: '#f46217', to: '#0b486b' },
+	{ id: '5', name: 'Sound Art', from: '#4b1248', to: '#efc27b' },
+];
