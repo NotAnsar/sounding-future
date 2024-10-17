@@ -12,13 +12,20 @@ export default function HeaderBanner({
 	className?: string;
 }) {
 	return (
-		<div className={cn('w-full h-auto  relative', className)}>
+		<div
+			className={cn(
+				'w-full h-auto min-h-40 sm:min-h-48 md:min-h-52 relative',
+				className
+			)}
+		>
 			<Image
 				alt={title}
 				src={img}
 				width={2500}
 				height={500}
-				className={cn('w-full h-auto object-cover rounded-3xl ')}
+				className={cn(
+					'w-full h-auto object-cover rounded-3xl min-h-40 sm:min-h-48 md:min-h-52'
+				)}
 			/>
 
 			{/* <div className='absolute inset-0 bg-black bg-opacity-5 rounded-3xl' /> */}
@@ -29,4 +36,8 @@ export default function HeaderBanner({
 			</div>
 		</div>
 	);
+}
+
+{
+	/* <div className={cn('w-full min-h-40 sm:h-48 md:h-52 relative', className)}></div> */
 }
