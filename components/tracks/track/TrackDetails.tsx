@@ -16,10 +16,17 @@ export default function TrackDetails({ track }: { track: Track }) {
 	const isCurrentTrack = currentTrack?.id === track.id;
 
 	return (
-		<div className='w-full flex flex-col sm:flex-row  gap-4'>
+		<div
+			className='w-full flex flex-col sm:flex-row gap-4 bg-red-800 p-4 rounded-3xl'
+			style={{
+				background: '#cc2b5e',
+				// backgroundImage: '-webkit-linear-gradient(to right, #cc2b5e,#753a88 )',
+				backgroundImage: 'linear-gradient(to right,  #cc2b5e,#753a88)',
+			}}
+		>
 			<div
 				className={cn(
-					'rounded-3xl border overflow-hidden relative group cursor-pointer w-full sm:min-w-64 sm:w-64 xl:min-w-72 xl:w-72  h-auto aspect-square'
+					'rounded-3xl border border-border/15 overflow-hidden relative group cursor-pointer w-full sm:min-w-64 sm:w-64 xl:min-w-72 xl:w-72  h-auto aspect-square'
 				)}
 				onClick={() => {
 					if (isCurrentTrack) {
@@ -53,13 +60,13 @@ export default function TrackDetails({ track }: { track: Track }) {
 				<Image alt={track.title} src={track.cover} width={640} height={640} />
 			</div>
 			<div className='flex flex-col gap-3 mt-auto mb-2'>
-				<span
+				{/* <span
 					className={cn(
 						'text-xs px-2 py-1 rounded-sm uppercase font-medium text-white bg-primary w-fit'
 					)}
 				>
 					Track
-				</span>
+				</span> */}
 
 				<div className='flex gap-3 flex-col xl:flex-row'>
 					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
@@ -100,9 +107,9 @@ export default function TrackDetails({ track }: { track: Track }) {
 						className='cursor-pointer h-full flex justify-center items-center'
 					>
 						{followed ? (
-							<Icons.follow className='min-w-7 w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+							<Icons.follow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
 						) : (
-							<Icons.unfollow className='min-w-7 w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+							<Icons.unfollow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
 						)}
 					</div>
 				</div>
