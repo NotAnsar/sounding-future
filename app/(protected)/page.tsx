@@ -9,7 +9,7 @@ export default async function page() {
 	return (
 		<>
 			<HeaderBanner
-				img={'/home.png'}
+				img={'/banners/home.jpg'}
 				title='Explore 3D Audio Music'
 				className='mb-8'
 			/>

@@ -6,7 +6,7 @@ import { artists } from '@/config/dummy-data';
 export default function page() {
 	return (
 		<>
-			<HeaderBanner img={'/artists.png'} title='Artists' />
+			<HeaderBanner img={'/banners/artists.jpg'} title='Artists' />
 			<ExploreArtists className='xl:w-2/3 mt-12' artists={artists} />
 		</>
 	);

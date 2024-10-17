@@ -70,16 +70,14 @@ export async function login(
 }
 
 export async function loginGuest(): Promise<LoginState> {
-	// guest user account
-	// FriendlyExplorer42
-	// guest.user@example.com
-	// Guest1234
 	try {
 		const result = await signIn('credentials', {
 			email: 'guest.user@example.com',
 			password: 'Guest1234',
 			redirect: false,
 		});
+
+		console.log(result);
 
 		if (result?.error) {
 			return { message: 'Login failed. Please try again later.' };

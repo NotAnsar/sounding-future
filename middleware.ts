@@ -3,14 +3,13 @@ import { authConfig } from './lib/auth.config';
 import NextAuth from 'next-auth';
 
 const API_AUTH_PREFIX = '/api/auth';
-const AUTH_ROUTES = ['/login', '/signup'];
+const AUTH_ROUTES = ['/login', '/signup', '/login-guest'];
 const PROTECTED_ROUTES = ['/'];
 
 export const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
 	const pathname = req.nextUrl.pathname;
-
 	const isAuth = req.auth;
 
 	const isAccessingApiAuthRoute = pathname.startsWith(API_AUTH_PREFIX);

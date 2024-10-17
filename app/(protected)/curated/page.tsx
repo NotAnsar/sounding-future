@@ -4,7 +4,7 @@ import React from 'react';
 export default function page() {
 	return (
 		<>
-			<HeaderBanner img={'/banners/genres.jpg'} title='Genres' />
+			<HeaderBanner img={'/banners/curated.jpg'} title='Curated' />
 		</>
 	);
 }

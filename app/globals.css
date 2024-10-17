@@ -7,7 +7,6 @@
 		--background: 0 0% 100%;
 		--foreground: 221 44% 8%;
 		--player: 0 0% 90%;
-
 		--player-foreground: 220 42% 16%;
 
 		--card: 0 0% 100%;
@@ -75,7 +74,7 @@
 		@apply border-border;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground dark:text-[#e0e0e0];
 	}
 }
 
@@ -92,7 +91,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: hsl(219, 37%, 20%);
+	background: hsl(var(--player));
 
 	border-radius: 4px;
 }

@@ -17,7 +17,7 @@ export default function TrackArtist({ track }: { track: Track }) {
 					alt={artist?.name}
 				/>
 			)}
-			<p>
+			<p className='text-pretty leading-7'>
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
 				architecto illo optio, sed, ratione unde voluptate fuga ullam qui
 				obcaecati nostrum enim? Enim provident ut eum praesentium aliquid

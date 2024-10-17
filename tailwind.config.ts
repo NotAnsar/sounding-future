@@ -70,7 +70,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)',
 			},
 			backgroundImage: {
-				auth: "url('/auth.png')",
+				auth: "url('/banners/sign-up.jpg')",
 			},
 		},
 	},

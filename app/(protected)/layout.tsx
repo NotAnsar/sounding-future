@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				showSpinner={false}
 				easing='ease'
 				speed={200}
-				shadow='0 0 10px #e11d48,0 0 5px #e11d48'
+				shadow='0 0 10px #AE3795,0 0 5px #AE3795'
 			/>
 
 			<TopNav
