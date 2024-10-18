@@ -63,7 +63,10 @@ export default function UserNav({
 				</DropdownMenuItem>
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
-					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
+					<Link
+						href={'/settings'}
+						className='px-2 py-2.5 w-full flex items-center'
+					>
 						<Settings className='w-4 h-auto mr-2' />
 						Settings
 					</Link>
