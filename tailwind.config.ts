@@ -20,9 +20,7 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--player))',
 					foreground: 'hsl(var(--player-foreground))',
 				},
-
 				button: 'hsl(218, 63%, 31%)',
-
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',

@@ -2,9 +2,10 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { State } from '../utils';
 
 // Define the schema for profile update
-const ProfileSchema = z.object({
+const ProfileLinksSchema = z.object({
 	websiteLink: z.string().url('Invalid website URL').optional().nullable(),
 	socialMediaLinks: z
 		.array(z.string().url('Invalid social media URL'))
@@ -14,14 +15,9 @@ const ProfileSchema = z.object({
 		.max(10, 'You can only add up to 10 Sounding Future article links'),
 });
 
-export type ProfileFormState = {
-	errors?: {
-		websiteLink?: string[];
-		socialMediaLinks?: string[];
-		soundingFutureArticles?: string[];
-	};
-	message?: string | null;
-};
+type ProfileLinksData = z.infer<typeof ProfileLinksSchema>;
+
+export type ProfileFormState = State<ProfileLinksData>;
 
 export async function updateProfileLinks(
 	prevState: ProfileFormState,
@@ -34,7 +30,7 @@ export async function updateProfileLinks(
 		.getAll('soundingFutureArticles')
 		.filter((link) => link !== '') as string[];
 
-	const validatedFields = ProfileSchema.safeParse({
+	const validatedFields = ProfileLinksSchema.safeParse({
 		websiteLink: formData.get('websiteLink'),
 		socialMediaLinks: socialMediaLinksData,
 		soundingFutureArticles: soundingFutureArticlesData,

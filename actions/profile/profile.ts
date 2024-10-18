@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { State } from '../utils';
 
 // Define the schema for profile update
 const ProfileSchema = z.object({
@@ -17,15 +18,9 @@ const ProfileSchema = z.object({
 	image: z.instanceof(File).optional(),
 });
 
-export type ProfileFormState = {
-	errors?: {
-		name?: string[];
-		biography?: string[];
-		genres?: string[];
-		image?: string[];
-	};
-	message?: string | null;
-};
+type ProfileData = z.infer<typeof ProfileSchema>;
+
+export type ProfileFormState = State<ProfileData>;
 
 export async function updateProfile(
 	prevState: ProfileFormState,
