@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			/>
 
 			<main
-				className={`md:ml-64 pb-24 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[var(--top-nav-height)] md:mt-[var(--top-nav-height-md)] `}
+				className={`md:ml-64 pb-32 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[var(--top-nav-height)] md:mt-[var(--top-nav-height-md)]`}
 			>
 				{children}
 			</main>
