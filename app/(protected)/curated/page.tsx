@@ -7,7 +7,7 @@ export default function page() {
 	return (
 		<>
 			<HeaderBanner img={'/banners/curated.jpg'} title='Curated' />
-			<CuratedList collections={collections} className='xl:w-2/3 mt-12' />
+			<CuratedList collections={collections} className='mt-12' />
 		</>
 	);
 }

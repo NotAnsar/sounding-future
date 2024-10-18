@@ -14,7 +14,7 @@ export default function GenreList({
 	return (
 		<div
 			className={cn(
-				'grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10',
+				'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4  gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10',
 				className
 			)}
 		>

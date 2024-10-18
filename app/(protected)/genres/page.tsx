@@ -8,7 +8,7 @@ export default function page() {
 	return (
 		<>
 			<HeaderBanner img={'/banners/genres.jpg'} title='Genres' />
-			<GenreList className='xl:w-2/3 mt-12' genres={genres} />
+			<GenreList className='mt-12' genres={genres} />
 		</>
 	);
 }
