@@ -19,9 +19,12 @@ export default function ProfileLinksForm() {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (state.message === 'Profile updated successfully') {
+		if (state?.message === 'Files uploaded successfully') {
 			router.push('/');
-			toast({ description: 'Profile updated successfully', title: 'Success' });
+			toast({
+				description: 'Audio Files uploaded successfully',
+				title: 'Success',
+			});
 		}
 	}, [state, router]);
 
@@ -62,6 +65,7 @@ export default function ProfileLinksForm() {
 					</div>
 
 					<TrackUpload errors={state?.errors} />
+
 					<ImageUpload
 						name='imageFile'
 						error={state?.errors?.imageFile}
