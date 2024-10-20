@@ -2,7 +2,6 @@
 
 import { submitTrack } from '@/actions/upload-track/basics';
 import ErrorMessage from '@/components/ErrorMessage';
-import GenreSelector from '@/components/profile/GenreSelector';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -12,10 +11,9 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
-import { AVAILABLE_GENRES } from '../profile/page';
 import { DatePickerInput } from '@/components/ui/datepickerInput';
 import { MultiSelect } from '@/components/ui/multi-select';
-import { artists, collections } from '@/config/dummy-data';
+import { artists, collections, genres } from '@/config/dummy-data';
 
 export default function Page() {
 	const initialState = { message: null, errors: {} };
@@ -70,7 +68,12 @@ export default function Page() {
 							placeholder='Select Artist'
 							searchPlaceholder='Search Artist...'
 							emptyMessage='No Artist found.'
-							className='max-w-lg '
+							className={cn(
+								'max-w-lg',
+								state?.errors?.artist
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
 						/>
 						<p className='text-muted text-sm'>select one or more from list</p>
 
@@ -119,7 +122,12 @@ export default function Page() {
 							placeholder='Select Recognitions'
 							searchPlaceholder='Search Recognitions...'
 							emptyMessage='No Recognitions found.'
-							className='max-w-lg'
+							className={cn(
+								'max-w-lg',
+								state?.errors?.recognitions
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
 						/>
 
 						<p className='text-muted text-sm'>select one or more from list</p>
@@ -140,7 +148,12 @@ export default function Page() {
 							placeholder='Select items'
 							searchPlaceholder='Search items...'
 							emptyMessage='No items found.'
-							className='max-w-lg'
+							className={cn(
+								'max-w-lg',
+								state?.errors?.curatedBy
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
 						/>
 
 						<p className='text-muted text-sm'>select one or more curator</p>
@@ -148,14 +161,29 @@ export default function Page() {
 						<ErrorMessage errors={state?.errors?.curatedBy} />
 					</div>
 
-					<GenreSelector
-						genres={AVAILABLE_GENRES}
-						initialGenres={[]}
-						error={state?.errors?.genreTags}
-						name='genreTags'
-						message='Select 3 genre tags from list'
-						label='Track genre tags'
-					/>
+					<div className='grid gap-2'>
+						<Label
+							className={cn(state?.errors?.genreTags ? 'text-destructive' : '')}
+							htmlFor={'genreTags'}
+						>
+							Track genre tags
+						</Label>
+						<MultiSelect
+							options={genres.map((g) => ({ label: g.name, value: g.id }))}
+							name='genreTags'
+							placeholder='Select genre tags'
+							searchPlaceholder='Search genre tags...'
+							emptyMessage='No genre tag found.'
+							className={cn(
+								'max-w-lg',
+								state?.errors?.genreTags
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
+						/>
+						<p className='text-sm text-muted'>Select 3 genre tags from list</p>
+						<ErrorMessage errors={state?.errors?.genreTags} />
+					</div>
 				</TabsContent>
 			</Tabs>
 		</form>

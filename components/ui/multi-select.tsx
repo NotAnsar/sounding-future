@@ -95,7 +95,7 @@ export function MultiSelect({
 						onFocus={onFocus}
 						onBlur={onBlur}
 					>
-						<div className='flex gap-1 flex-wrap'>
+						<div className='flex gap-1 flex-wrap font-normal'>
 							{selectedItems.length === 0 && placeholder}
 							{selectedItems.length > 0 && (
 								<>

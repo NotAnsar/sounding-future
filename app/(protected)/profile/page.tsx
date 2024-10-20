@@ -1,29 +1,19 @@
 'use client';
 import { updateProfile } from '@/actions/profile/profile';
 import ErrorMessage from '@/components/ErrorMessage';
-import GenreSelector from '@/components/profile/GenreSelector';
 import ImageUpload from '@/components/profile/ImageUpload';
 import ProfileNav from '@/components/profile/ProfileNav';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { genres } from '@/config/dummy-data';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
-
-export const AVAILABLE_GENRES = [
-	'Rock',
-	'Pop',
-	'Jazz',
-	'Classical',
-	'Hip Hop',
-	'Electronic',
-	'Country',
-	'R&B',
-];
 
 export default function Page() {
 	const initialState = { message: null, errors: {} };
@@ -88,12 +78,31 @@ export default function Page() {
 						<ErrorMessage errors={state?.errors?.biography} />
 					</div>
 
-					<GenreSelector
-						genres={AVAILABLE_GENRES}
-						initialGenres={[]}
-						error={state?.errors?.genres}
-						message='Select up to 3 genre tags for your music'
-					/>
+					<div className='grid gap-2'>
+						<Label
+							className={cn(state?.errors?.genres ? 'text-destructive' : '')}
+							htmlFor={'genreTags'}
+						>
+							Artist genre tags
+						</Label>
+						<MultiSelect
+							options={genres.map((g) => ({ label: g.name, value: g.id }))}
+							name='genres'
+							placeholder='Select genre tags'
+							searchPlaceholder='Search genre tags...'
+							emptyMessage='No genre tag found.'
+							className={cn(
+								'max-w-lg',
+								state?.errors?.genres
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
+						/>
+						<p className='text-sm text-muted'>
+							Select up to 3 genre tags for your music
+						</p>
+						<ErrorMessage errors={state?.errors?.genres} />
+					</div>
 				</TabsContent>
 			</Tabs>
 		</form>
