@@ -68,7 +68,6 @@ export default function TracksCards({
 						</div>
 
 						<Link href={`/tracks/${track.id}`} className='cursor-pointer'>
-							{/* <h5 className='text-muted text-sm md:text-base font-semibold text-nowrap hover:text-primary'> */}
 							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap'>
 								{track.artist.name}
 							</h5>

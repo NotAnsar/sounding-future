@@ -40,7 +40,7 @@ export default function TrackUploadSection({ errors }: TrackUploadProps) {
 							<Music2 className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted w-4 h-auto aspect-square cursor-pointer' />
 						</div>
 
-						<p className='text-muted text-sm'>
+						<p className='text-muted text-sm max-w-lg'>
 							Upload your track in MP3 format (max 50MB)
 						</p>
 
@@ -67,7 +67,7 @@ export default function TrackUploadSection({ errors }: TrackUploadProps) {
 							<Music2 className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted w-4 h-auto aspect-square' />
 						</div>
 
-						<p className='text-muted text-sm'>
+						<p className='text-muted text-sm max-w-lg'>
 							Upload your track in FLAC format for best quality (max 50MB)
 						</p>
 

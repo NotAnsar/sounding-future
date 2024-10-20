@@ -74,7 +74,7 @@ export default function Page() {
 
 							<ErrorMessage errors={state?.errors?.secondName} />
 						</div>
-						<p className='text-muted text-sm col-span-full'>
+						<p className='text-muted text-sm max-w-lg col-span-full'>
 							Your first and last name (will not be displayed publicly)
 						</p>
 					</div>

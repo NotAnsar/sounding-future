@@ -54,70 +54,21 @@ export default function ProfileLinksForm() {
 							className='max-w-lg'
 						/>
 
-						<p className='text-muted text-sm'>
+						<p className='text-muted text-sm max-w-lg'>
 							Select fromat from list: AmbiX, 5.1, Stereo, ...
 						</p>
 
 						<ErrorMessage errors={state?.errors?.sourceFormat} />
 					</div>
 
-					{/* <div className='grid gap-2'>
-						<Label
-							htmlFor='flacFile'
-							className={cn(state?.errors?.mp3File ? 'text-destructive' : '')}
-						>
-							Upload Track
-						</Label>
-
-						<div className='grid gap-4'>
-							<div className='grid gap-2'>
-								<Input
-									type='file'
-									name='mp3File'
-									id='mp3File'
-									className={cn(
-										'max-w-lg',
-										state?.errors?.mp3File
-											? 'border-destructive focus-visible:ring-destructive '
-											: ''
-									)}
-								/>
-
-								<p className='text-muted text-sm'>
-									upload your track in mp3 format
-								</p>
-
-								<ErrorMessage errors={state?.errors?.mp3File} />
-							</div>
-							<div className='grid gap-2'>
-								<Input
-									type='file'
-									name='flacFile'
-									id='flacFile'
-									className={cn(
-										'max-w-lg',
-										state?.errors?.flacFile
-											? 'border-destructive focus-visible:ring-destructive '
-											: ''
-									)}
-								/>
-
-								<p className='text-muted text-sm'>
-									upload your track in flac format
-								</p>
-
-								<ErrorMessage errors={state?.errors?.flacFile} />
-							</div>
-						</div>
-					</div> */}
-
 					<TrackUpload errors={state?.errors} />
 					<ImageUpload
 						name='imageFile'
 						error={state?.errors?.imageFile}
 						type='square'
-						message='upload your track in jpg format'
+						message='Upload a cover photo for your track (jpeg, min. 1000x1000px)'
 						size='lg'
+						label='Track Cover'
 					/>
 				</TabsContent>
 			</Tabs>

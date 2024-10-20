@@ -49,8 +49,10 @@ export default function ProfileLinksForm() {
 							name='trackInfo'
 							id='trackInfo'
 						/>
-						<p className='text-muted text-sm'>
-							Give your listeners an introduction to the track
+						<p className='text-muted text-sm max-w-lg'>
+							Tell us a little more about your audio track. For example, the
+							concept, the story of how the track came to be, or what it was
+							like to work on this track.
 						</p>
 
 						<ErrorMessage errors={state?.errors?.trackInfo} />
@@ -61,7 +63,7 @@ export default function ProfileLinksForm() {
 							htmlFor='more'
 							className={cn(state?.errors?.more ? 'text-destructive' : '')}
 						>
-							More
+							Track Credits
 						</Label>
 						<Textarea
 							className={cn(
@@ -73,8 +75,11 @@ export default function ProfileLinksForm() {
 							name='more'
 							id='more'
 						/>
-						<p className='text-muted text-sm'>
-							Give your listeners an introduction to the track
+						<p className='text-muted text-sm max-w-lg'>
+							Mention institutions, assistants, or other people who helped with
+							the audio production or whom you would like to thank. Add
+							information about the recording studio, the technology you used,
+							or the label that released the track.
 						</p>
 
 						<ErrorMessage errors={state?.errors?.more} />
@@ -101,7 +106,7 @@ export default function ProfileLinksForm() {
 									: ''
 							)}
 						/>
-						<p className='text-muted text-sm'>
+						<p className='text-muted text-sm max-w-lg'>
 							add a link to a Sounding Future article
 						</p>
 						<ErrorMessage errors={state?.errors?.articleLink} />

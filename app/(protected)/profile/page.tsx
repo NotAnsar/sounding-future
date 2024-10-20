@@ -51,7 +51,7 @@ export default function Page() {
 									: ''
 							)}
 						/>
-						<p className='text-muted text-sm'>
+						<p className='text-muted text-sm max-w-lg'>
 							Your artist name (visible and searchable for other users)
 						</p>
 						<ErrorMessage errors={state?.errors?.name} />
@@ -74,7 +74,7 @@ export default function Page() {
 							name='biography'
 							id='biography'
 						/>
-						<p className='text-muted text-sm'>Max. 500 characters</p>
+						<p className='text-muted text-sm max-w-lg'>Max. 500 characters</p>
 						<ErrorMessage errors={state?.errors?.biography} />
 					</div>
 

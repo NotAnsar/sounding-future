@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Artist, Track } from '@/config/dummy-data';
 import Link from 'next/link';
 
-interface SearchResultsProps {
+interface SearchResultsProps { 
 	searchResults: {
 		artists: Artist[];
 		tracks: Track[];

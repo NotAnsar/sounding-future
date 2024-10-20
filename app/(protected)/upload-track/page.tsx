@@ -75,7 +75,9 @@ export default function Page() {
 									: ''
 							)}
 						/>
-						<p className='text-muted text-sm'>select one or more from list</p>
+						<p className='text-muted text-sm max-w-lg'>
+							select one or more from list
+						</p>
 
 						<ErrorMessage errors={state?.errors?.artist} />
 					</div>
@@ -130,7 +132,9 @@ export default function Page() {
 							)}
 						/>
 
-						<p className='text-muted text-sm'>select one or more from list</p>
+						<p className='text-muted text-sm max-w-lg'>
+							select one or more from list
+						</p>
 
 						<ErrorMessage errors={state?.errors?.recognitions} />
 					</div>
@@ -156,7 +160,9 @@ export default function Page() {
 							)}
 						/>
 
-						<p className='text-muted text-sm'>select one or more curator</p>
+						<p className='text-muted text-sm max-w-lg'>
+							select one or more curator
+						</p>
 
 						<ErrorMessage errors={state?.errors?.curatedBy} />
 					</div>

@@ -6,15 +6,22 @@ import { State } from '../utils';
 
 const UploadImageSchema = z.object({
 	sourceFormat: z.string().min(1, { message: 'La ville est requise' }),
-	mp3File: z.instanceof(File),
-	flacFile: z.instanceof(File).optional(),
+	mp3File: z
+		.instanceof(File)
+		.refine((file) => {
+			return file.type === 'audio/mpeg' || file.type === '.mp3';
+		}, 'Mp3 File must be in mp3 or mpeg format')
+		.refine((file) => {
+			return file.size <= 50 * 1024 * 1024;
+		}, 'Mp3 File must be less than 50MB'),
+	flacFile: z.instanceof(File).optional(), 
 	imageFile: z
 		.instanceof(File)
 		.refine((file) => {
 			return file.type === 'image/jpeg' || file.type === 'image/jpg';
 		}, 'Image must be in JPG format')
 		.refine((file) => {
-			return file.size <= 5 * 1024 * 1024; // 5MB limit
+			return file.size <= 5 * 1024 * 1024;
 		}, 'Image must be less than 5MB'),
 });
 
@@ -28,8 +35,14 @@ export async function uploadTrackInfo(
 ): Promise<ImageUploadState> {
 	const validatedFields = UploadImageSchema.safeParse({
 		sourceFormat: formData.get('sourceFormat'),
-		mp3File: formData.get('mp3File'),
-		flacFile: formData.get('flacFile'),
+		mp3File:
+			(formData.get('mp3File') as File).size === 0
+				? undefined
+				: formData.get('mp3File'),
+		flacFile:
+			(formData.get('flacFile') as File).size === 0
+				? undefined
+				: formData.get('flacFile'),
 		imageFile: formData.get('imageFile'),
 	});
 
@@ -43,13 +56,11 @@ export async function uploadTrackInfo(
 	const { sourceFormat, mp3File, flacFile, imageFile } = validatedFields.data;
 
 	try {
-		// Here you would handle the actual file uploads
-		// For example, upload to cloud storage or process files
 		console.log('Uploading files:', {
 			sourceFormat,
-			mp3File: mp3File?.name,
-			flacFile: flacFile?.name,
-			imageFile: imageFile.name,
+			mp3File,
+			flacFile,
+			imageFile,
 		});
 
 		revalidatePath('/', 'layout');

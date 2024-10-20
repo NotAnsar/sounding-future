@@ -8,7 +8,13 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Settings, Upload, UserIcon, UserRoundCog } from 'lucide-react';
+import {
+	Newspaper,
+	Settings,
+	Upload,
+	UserIcon,
+	UserRoundCog,
+} from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { cn } from '@/lib/utils';
@@ -79,6 +85,16 @@ export default function UserNav({
 					>
 						<Upload className='w-4 h-auto mr-2 ' />
 						Upload Track
+					</Link>
+				</DropdownMenuItem>
+				<DropdownMenuItem className='cursor-pointer p-0'>
+					<Link
+						href={'https://www.soundingfuture.com/en'}
+						target='_blank'
+						className='px-2 py-2.5 w-full flex items-center'
+					>
+						<Newspaper className='w-4 h-auto mr-2 ' />
+						Switch to articles
 					</Link>
 				</DropdownMenuItem>
 

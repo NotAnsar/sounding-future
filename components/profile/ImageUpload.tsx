@@ -15,12 +15,14 @@ export default function ImageUpload({
 	type = 'circle',
 	size = 'default',
 	message = 'Upload your profile image, max. 1mb',
+	label = 'User Image',
 }: {
 	name: string;
 	initialData?: string;
 	error?: string[] | undefined;
 	type?: 'circle' | 'square';
 	message?: string;
+	label?: string;
 	size?: 'default' | 'lg';
 }) {
 	const [preview, setPreview] = useState<string | null>(initialData || null);
@@ -46,7 +48,7 @@ export default function ImageUpload({
 	);
 	return (
 		<div className='grid gap-2'>
-			<Label className={error ? 'text-destructive' : ''}>User image</Label>
+			<Label className={error ? 'text-destructive' : ''}>{label}</Label>
 			<input
 				id={name}
 				name={name}
@@ -85,7 +87,7 @@ export default function ImageUpload({
 				<div className='flex gap-2 items-center'>
 					<PlusCircle className='w-6 h-auto aspect-square ' />
 
-					<p className='text-muted text-sm'>{message}</p>
+					<p className='text-muted text-sm max-w-lg'>{message}</p>
 				</div>
 			</div>
 			<ErrorMessage errors={error} />

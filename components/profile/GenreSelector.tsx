@@ -79,7 +79,7 @@ export default function GenreSelector({
 			{selectedGenres.map((genre) => (
 				<input key={genre} type='hidden' name={name} value={genre} />
 			))}
-			{message && <p className='text-muted text-sm'>{message}</p>}
+			{message && <p className='text-muted text-sm max-w-lg'>{message}</p>}
 			<ErrorMessage errors={error} />
 		</div>
 	);
