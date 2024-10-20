@@ -14,7 +14,7 @@ export default function TrackUploadSection({ errors }: TrackUploadProps) {
 		<div className='grid gap-6'>
 			<div className='grid gap-2'>
 				<Label
-					htmlFor='flacFile'
+					htmlFor='mp3File'
 					className={cn(errors?.mp3File ? 'text-destructive' : '')}
 				>
 					Upload Track
