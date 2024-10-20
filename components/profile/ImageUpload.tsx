@@ -6,15 +6,22 @@ import { Icons } from '../icons/profile-icons';
 import { Label } from '../ui/label';
 import Image from 'next/image';
 import ErrorMessage from '../ErrorMessage';
+import { cn } from '@/lib/utils';
 
 export default function ImageUpload({
 	initialData,
 	name,
 	error,
+	type = 'circle',
+	size = 'default',
+	message = 'Upload your profile image, max. 1mb',
 }: {
 	name: string;
 	initialData?: string;
 	error?: string[] | undefined;
+	type?: 'circle' | 'square';
+	message?: string;
+	size?: 'default' | 'lg';
 }) {
 	const [preview, setPreview] = useState<string | null>(initialData || null);
 
@@ -56,22 +63,29 @@ export default function ImageUpload({
 					<Image
 						src={preview}
 						alt='Avatar'
-						width={112}
-						height={112}
-						className='rounded-full border border-foreground '
+						width={size === 'default' ? 112 : 144}
+						height={size === 'default' ? 112 : 144}
+						className={cn(
+							'border border-foreground mt-2',
+							type === 'circle' ? 'rounded-full' : 'rounded-md'
+						)}
 						style={{ aspectRatio: '96/96', objectFit: 'cover' }}
 					/>
 				) : (
-					<div className='w-28 h-auto aspect-square rounded-full border border-foreground mt-2 flex items-center justify-center cursor-pointer'>
+					<div
+						className={cn(
+							'h-auto aspect-square border border-foreground mt-2 flex items-center justify-center cursor-pointer',
+							type === 'circle' ? 'rounded-full' : 'rounded-md',
+							size === 'default' ? 'w-28' : 'w-36'
+						)}
+					>
 						<Icons.image className='w-8 h-auto aspect-square' />
 					</div>
 				)}
 				<div className='flex gap-2 items-center'>
 					<PlusCircle className='w-6 h-auto aspect-square ' />
 
-					<p className='text-muted text-sm'>
-						Upload your profile image, max. 1mb
-					</p>
+					<p className='text-muted text-sm'>{message}</p>
 				</div>
 			</div>
 			<ErrorMessage errors={error} />

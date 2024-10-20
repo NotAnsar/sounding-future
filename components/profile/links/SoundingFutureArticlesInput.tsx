@@ -13,7 +13,6 @@ export default function SoundingFutureArticlesInput({
 	errors?: string[];
 }) {
 	const [articleLinks, setArticleLinks] = useState<string[]>(['']);
-	console.log(errors);
 
 	const addArticleLink = () => {
 		if (articleLinks.length < 10) {

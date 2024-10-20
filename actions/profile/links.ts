@@ -47,9 +47,11 @@ export async function updateProfileLinks(
 		validatedFields.data;
 
 	try {
-		console.log('Website Link:', websiteLink);
-		console.log('Social Media Links:', socialMediaLinks);
-		console.log('Sounding Future Articles:', soundingFutureArticles);
+		console.log('Profile Link:', {
+			websiteLink,
+			socialMediaLinks,
+			soundingFutureArticles,
+		});
 
 		revalidatePath('/', 'layout');
 		return { message: 'Profile updated successfully' };

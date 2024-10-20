@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
-const AVAILABLE_GENRES = [
+export const AVAILABLE_GENRES = [
 	'Rock',
 	'Pop',
 	'Jazz',
@@ -92,6 +92,7 @@ export default function Page() {
 						genres={AVAILABLE_GENRES}
 						initialGenres={[]}
 						error={state?.errors?.genres}
+						message='Select up to 3 genre tags for your music'
 					/>
 				</TabsContent>
 			</Tabs>

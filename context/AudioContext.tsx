@@ -125,13 +125,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 					console.log(`Track loaded in: ${loadingDuration} ms`);
 				},
 
-				// onend: () => {
-				// 	const currentIndex = (tracks || playlist).findIndex(
-				// 		(t) => t.id === track.id
-				// 	);
-				// 	const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
-				// 	playTrack((tracks || playlist)[nextIndex], tracks);
-				// },
 				onend: () => {
 					const currentIndex = (tracks || playlist).findIndex(
 						(t) => t.id === track.id

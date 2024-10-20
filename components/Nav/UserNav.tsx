@@ -73,10 +73,12 @@ export default function UserNav({
 				</DropdownMenuItem>
 
 				<DropdownMenuItem className='cursor-pointer p-0'>
-					<Link href={'#'} className='px-2 py-2.5 w-full flex items-center'>
-						{/* <Icons.upload className='w-4 h-auto mr-2 fill-white ' /> */}
+					<Link
+						href={'/upload-track'}
+						className='px-2 py-2.5 w-full flex items-center'
+					>
 						<Upload className='w-4 h-auto mr-2 ' />
-						Upload Tracks
+						Upload Track
 					</Link>
 				</DropdownMenuItem>
 

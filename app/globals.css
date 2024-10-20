@@ -114,3 +114,9 @@
 	width: var(--radix-popover-trigger-width);
 	max-height: var(--radix-popover-content-available-height);
 }
+
+/* add this snippet in your globals.css file */
+
+.rdp-vhidden {
+	@apply hidden;
+}

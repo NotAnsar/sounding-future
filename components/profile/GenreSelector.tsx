@@ -15,21 +15,27 @@ import { Checkbox } from '@/components/ui/checkbox';
 interface GenreSelectorProps {
 	error?: string[];
 	genres: string[];
+	name?: string;
+	label?: string;
+	message?: string;
 	initialGenres: string[];
 }
 
-const GenreSelector: React.FC<GenreSelectorProps> = ({
+export default function GenreSelector({
+	name = 'genres',
 	error,
 	genres,
 	initialGenres,
-}) => {
+	label = 'Artist genre tags',
+	message,
+}: GenreSelectorProps) {
 	const [selectedGenres, setselectedGenres] = useState<string[]>(
 		initialGenres || []
 	);
 	return (
 		<div className='grid gap-2'>
-			<Label className={cn(error ? 'text-destructive' : '')}>
-				Artist genre tags
+			<Label className={cn(error ? 'text-destructive' : '')} htmlFor={name}>
+				{label}
 			</Label>
 			<Popover>
 				<PopoverTrigger asChild>
@@ -51,14 +57,13 @@ const GenreSelector: React.FC<GenreSelectorProps> = ({
 							<div key={genre} className='flex items-center'>
 								<Checkbox
 									id={genre}
-									name='genres'
+									name={name}
 									value={genre}
 									defaultChecked={selectedGenres.includes(genre)}
 									onCheckedChange={(checked) => {
 										const newGenres = checked
 											? [...selectedGenres, genre]
 											: selectedGenres.filter((sm) => sm !== genre);
-										console.log(newGenres);
 
 										setselectedGenres(newGenres);
 									}}
@@ -72,14 +77,10 @@ const GenreSelector: React.FC<GenreSelectorProps> = ({
 				</PopoverContent>
 			</Popover>
 			{selectedGenres.map((genre) => (
-				<input key={genre} type='hidden' name='genres' value={genre} />
+				<input key={genre} type='hidden' name={name} value={genre} />
 			))}
-			<p className='text-muted text-sm'>
-				Select up to 3 genre tags for your music
-			</p>
+			{message && <p className='text-muted text-sm'>{message}</p>}
 			<ErrorMessage errors={error} />
 		</div>
 	);
-};
-
-export default GenreSelector;
+}

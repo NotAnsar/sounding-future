@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { auth } from '@/lib/auth';
+// import { auth } from '@/lib/auth';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AudioProvider } from '@/context/AudioContext';
@@ -25,9 +25,7 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const session = await auth();
-	console.log('my session', session);
-	console.log('my font', fontSans);
+	// const session = await auth();
 
 	return (
 		<html lang='en'>

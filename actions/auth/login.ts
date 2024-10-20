@@ -77,8 +77,6 @@ export async function loginGuest(): Promise<LoginState> {
 			redirect: false,
 		});
 
-		console.log(result);
-
 		if (result?.error) {
 			return { message: 'Login failed. Please try again later.' };
 		}
