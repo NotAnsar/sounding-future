@@ -58,7 +58,7 @@ export default function UserNav({
 					</div>
 				</div>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className='cursor-pointer p-0 '>
+				<DropdownMenuItem className='cursor-pointer p-0 ' asChild>
 					<Link
 						href={'/profile'}
 						className='px-2 py-2.5 w-full flex items-center '
@@ -68,7 +68,7 @@ export default function UserNav({
 					</Link>
 				</DropdownMenuItem>
 
-				<DropdownMenuItem className='cursor-pointer p-0'>
+				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'/settings'}
 						className='px-2 py-2.5 w-full flex items-center'
@@ -78,7 +78,7 @@ export default function UserNav({
 					</Link>
 				</DropdownMenuItem>
 
-				<DropdownMenuItem className='cursor-pointer p-0'>
+				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'/upload-track'}
 						className='px-2 py-2.5 w-full flex items-center'
@@ -87,7 +87,7 @@ export default function UserNav({
 						Upload Track
 					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuItem className='cursor-pointer p-0'>
+				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'https://www.soundingfuture.com/en'}
 						target='_blank'
