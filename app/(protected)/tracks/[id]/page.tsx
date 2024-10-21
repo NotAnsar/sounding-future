@@ -6,7 +6,6 @@ import { Icons } from '@/components/icons/track-icons';
 import TrackList from '@/components/tracks/TrackList';
 import { tracks } from '@/config/dummy-data';
 import TrackNav from '@/components/tracks/track/TrackNav';
-import Image from 'next/image';
 import TrackArtist from '@/components/tracks/track/TrackArtist';
 import TracksCarousel from '@/components/home/NewTracks';
 
@@ -51,35 +50,29 @@ export default function page({
 							<TrackArtist track={track} />
 						</div>
 						<div>
-							<ul className=' flex flex-col gap-3 lg:p-4 mt-2'>
-								<li className='flex gap-3'>
-									<Icons.tag className='w-6 h-auto aspect-auto fill-foreground' />{' '}
+							{/* <ul className=' flex flex-col gap-3 lg:p-4 mt-2  '> */}
+							<ul className='mt-2 px-10 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
+								<li className='flex gap-3 '>
+									<Icons.tag className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									{track.genre}
 								</li>
 								<li className='flex gap-3'>
-									<Icons.calendar className='w-6 h-auto aspect-auto fill-foreground' />{' '}
+									<Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									2018
 								</li>
 								<li className='flex gap-3'>
-									<Icons.prize className='w-6 h-auto aspect-auto fill-foreground' />{' '}
+									<Icons.prize className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									3D Audio competition
 								</li>
 								<li className='flex gap-3'>
-									<Icons.datails className='w-6 h-auto aspect-auto fill-foreground' />{' '}
+									<Icons.datails className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									3D AmbiX
 								</li>
+								<li className='w-fit flex flex-col gap-1 text-left'>
+									<h4>Track curated by:</h4>
+									<p>Audiomatch</p>
+								</li>
 							</ul>
-							<span className='w-fit flex flex-col gap-1 lg:p-4 mt-8 items-center'>
-								<h4 className='text-sm'>Track curated by:</h4>
-								<Image
-									alt='Audio Match'
-									src={'/collections/Audiomatch.png'}
-									height={50}
-									width={50}
-									className='rounded-full'
-								/>
-								<p className='text-sm'>Audiomatch</p>
-							</span>
 						</div>
 					</div>
 					{/* <ArtistsCarousel

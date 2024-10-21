@@ -54,6 +54,9 @@ export default function ProfileLinksForm() {
 									: ''
 							)}
 						/>
+						<p className='text-muted-foreground text-sm'>
+							Enter your Website URL here
+						</p>
 						<ErrorMessage errors={state?.errors?.websiteLink} />
 					</div>
 
@@ -84,6 +87,7 @@ export default function ProfileLinksForm() {
 						<p className='text-muted-foreground text-sm'>
 							Link 3 social media accounts
 						</p>
+
 						<ErrorMessage errors={state?.errors?.socialMediaLinks} />
 					</div>
 
