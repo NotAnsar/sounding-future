@@ -19,7 +19,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 			<main className='mt-8'>
 				<div className='space-y-8 '>
 					{curated?.studioPic && (
-						<div className='max-w-2xl '>
+						<div className='max-w-2xl w-2/3'>
 							<Image
 								className='w-full rounded-3xl aspect-video object-cover'
 								src={curated?.studioPic}
@@ -30,7 +30,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 						</div>
 					)}
 					<div className='flex flex-col gap-y-6 xl:flex-row gap-x-12'>
-						<p className='text-pretty leading-7 max-w-2xl'>
+						<p className='text-pretty leading-7 max-w-2xl w-2/3'>
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
 							architecto illo optio, sed, ratione unde voluptate fuga ullam qui
 							obcaecati nostrum enim? Enim provident ut eum praesentium aliquid
@@ -47,11 +47,11 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 								Links
 							</h1>
 							<div className='flex gap-4 items-center'>
-								<Icons.facebook className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-300 ease-out' />
-								<Icons.instagram className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-300 ease-out' />
-								<Icons.linkedin className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-300 ease-out' />
-								<Icons.vimeo className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-300 ease-out' />
-								<Icons.youtube className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-300 ease-out' />
+								<Icons.facebook className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+								<Icons.instagram className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+								<Icons.linkedin className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+								<Icons.vimeo className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+								<Icons.youtube className='w-10 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
 							</div>
 						</div>
 					</div>
