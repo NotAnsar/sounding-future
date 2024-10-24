@@ -6,7 +6,13 @@ import { Collection } from '@/config/dummy-data';
 import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 
-export default function CuratedDetails({ curated }: { curated: Collection }) {
+export default function CuratedDetails({
+	curated,
+	isAbout = false,
+}: {
+	curated: Collection;
+	isAbout?: boolean;
+}) {
 	return (
 		<div
 			className='w-full flex flex-col sm:flex-row gap-4 p-4 rounded-3xl text-white'
@@ -38,10 +44,12 @@ export default function CuratedDetails({ curated }: { curated: Collection }) {
 				</h5>
 				<Link
 					className={cn(
-						'text-[13px] py-1.5 px-3 rounded-md font-medium text-white w-fit border-[1.5px] border-white '
-						// 'bg-primary border-primary-foreground'
+						'text-[13px] py-1.5 px-3 rounded-md font-medium text-white w-fit border-[1.5px] border-white ',
+						isAbout && 'bg-primary border-primary-foreground'
 					)}
-					href={`/curated/${curated.id}/about`}
+					href={
+						isAbout ? `/curated/${curated.id}` : `/curated/${curated.id}/about`
+					}
 				>
 					About {curated.name}
 				</Link>

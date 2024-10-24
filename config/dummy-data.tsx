@@ -3,6 +3,7 @@ export type Collection = {
 	picture: string;
 	name: string;
 	country: string;
+	studioPic: string;
 };
 
 export const collections: Collection[] = [
@@ -11,24 +12,28 @@ export const collections: Collection[] = [
 		picture: '/collections/Audiomatch.png',
 		name: 'Audiomatch',
 		country: 'Austria',
+		studioPic: '/curators-about/Audiomatch.png',
 	},
 	{
 		id: '2',
 		picture: '/collections/Audiostuff.png',
 		name: 'Audiostuff',
 		country: 'USA',
+		studioPic: '/curators-about/Audiostuff.png',
 	},
 	{
 		id: '3',
 		picture: '/collections/Soco festival.png',
 		name: 'Soco festival',
 		country: 'France',
+		studioPic: '/curators-about/Soco-Festival.png',
 	},
 	{
 		id: '4',
 		picture: '/collections/Unsounded.png',
 		name: 'Unsounded',
 		country: 'India',
+		studioPic: '/curators-about/Unsounded.png',
 	},
 ];
 
