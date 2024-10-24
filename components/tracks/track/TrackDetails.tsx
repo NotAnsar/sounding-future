@@ -17,7 +17,7 @@ export default function TrackDetails({ track }: { track: Track }) {
 
 	return (
 		<div
-			className='w-full flex flex-col sm:flex-row gap-4 bg-red-800 p-4 rounded-3xl'
+			className='w-full flex flex-col sm:flex-row gap-4 p-4 rounded-3xl text-white'
 			style={{
 				background: '#cc2b5e',
 				// backgroundImage: '-webkit-linear-gradient(to right, #cc2b5e,#753a88 )',
@@ -79,12 +79,12 @@ export default function TrackDetails({ track }: { track: Track }) {
 							className='cursor-pointer h-full flex justify-center items-center'
 						>
 							{liked ? (
-								<Icons.heartFilled className='w-7 h-auto aspect-square fill-foreground ' />
+								<Icons.heartFilled className='w-7 h-auto aspect-square fill-white ' />
 							) : (
-								<Icons.heartOutline className='w-7 h-auto aspect-square fill-foreground' />
+								<Icons.heartOutline className='w-7 h-auto aspect-square fill-white' />
 							)}
 						</div>
-						<Icons.share className='w-6 h-auto aspect-square fill-foreground cursor-pointer' />
+						<Icons.share className='w-6 h-auto aspect-square fill-white cursor-pointer' />
 					</div>
 				</div>
 
@@ -107,9 +107,9 @@ export default function TrackDetails({ track }: { track: Track }) {
 						className='cursor-pointer h-full flex justify-center items-center'
 					>
 						{followed ? (
-							<Icons.follow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+							<Icons.follow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 						) : (
-							<Icons.unfollow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-foreground flex-nowrap text-nowrap cursor-pointer' />
+							<Icons.unfollow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 						)}
 					</div>
 				</div>

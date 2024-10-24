@@ -1,19 +1,54 @@
+export type Collection = {
+	id: string;
+	picture: string;
+	name: string;
+	country: string;
+};
+
+export const collections: Collection[] = [
+	{
+		id: '1',
+		picture: '/collections/Audiomatch.png',
+		name: 'Audiomatch',
+		country: 'Austria',
+	},
+	{
+		id: '2',
+		picture: '/collections/Audiostuff.png',
+		name: 'Audiostuff',
+		country: 'USA',
+	},
+	{
+		id: '3',
+		picture: '/collections/Soco festival.png',
+		name: 'Soco festival',
+		country: 'France',
+	},
+	{
+		id: '4',
+		picture: '/collections/Unsounded.png',
+		name: 'Unsounded',
+		country: 'India',
+	},
+];
+
 export interface Artist {
 	id: string;
 	picture: string;
 	name: string;
 }
 
-export interface Track {
+export type Track = {
 	id: string;
 	title: string;
 	artist: Artist;
+	collection: Collection; // Added this field
 	genre: string;
 	duration: number;
 	cover: string;
 	url: string;
 	liked: boolean;
-}
+};
 
 export const artists: Artist[] = [
 	{
@@ -88,6 +123,7 @@ export const tracks: Track[] = [
 		id: '3',
 		title: 'Neon Dreams',
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
+		collection: collections.find((c) => c.name === 'Audiomatch')!,
 		genre: 'electronic music',
 		duration: 474,
 		cover: '/tracks/Neon-Dreams.png',
@@ -98,17 +134,18 @@ export const tracks: Track[] = [
 		id: '2',
 		title: 'Synthwave Sunset',
 		artist: artists.find((a) => a.name === 'Diego Fernandez')!,
+		collection: collections.find((c) => c.name === 'Audiostuff')!,
 		genre: 'field recording',
 		duration: 344,
 		cover: '/tracks/Synthwave-Sunset.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t2.mp3?t=2024-10-02T19%3A40%3A19.046Z',
 		liked: true,
 	},
-
 	{
 		id: '4',
 		title: 'Cyber Flux',
 		artist: artists.find((a) => a.name === 'Anna Novak')!,
+		collection: collections.find((c) => c.name === 'Soco festival')!,
 		genre: 'electronic music',
 		duration: 734,
 		cover: '/tracks/Cyber-Flux.png',
@@ -119,6 +156,7 @@ export const tracks: Track[] = [
 		id: '5',
 		title: 'Electric Horizon',
 		artist: artists.find((a) => a.name === 'Diego Fernandez')!,
+		collection: collections.find((c) => c.name === 'Unsounded')!,
 		genre: 'field recording',
 		duration: 792,
 		cover: '/tracks/Electric-Horizon.png',
@@ -129,6 +167,7 @@ export const tracks: Track[] = [
 		id: '6',
 		title: 'Gravity Shift',
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
+		collection: collections.find((c) => c.name === 'Audiomatch')!,
 		genre: 'electronic music',
 		duration: 132,
 		cover: '/tracks/Gravity-Shift.png',
@@ -139,6 +178,7 @@ export const tracks: Track[] = [
 		id: '1',
 		title: 'Digital Mirage',
 		artist: artists.find((a) => a.name === 'Anna Novak')!,
+		collection: collections.find((c) => c.name === 'Audiostuff')!,
 		genre: 'electronic music',
 		duration: 233,
 		cover: '/tracks/Digital-Mirage.png',
@@ -149,6 +189,7 @@ export const tracks: Track[] = [
 		id: '7',
 		title: 'Leaves of 342',
 		artist: artists.find((a) => a.name === 'Anna Novak')!,
+		collection: collections.find((c) => c.name === 'Soco festival')!,
 		genre: 'electronic music',
 		duration: 524,
 		cover: '/tracks/Leaves-of-342.png',
@@ -159,6 +200,7 @@ export const tracks: Track[] = [
 		id: '8',
 		title: 'Pulse of the City',
 		artist: artists.find((a) => a.name === 'Diego Fernandez')!,
+		collection: collections.find((c) => c.name === 'Unsounded')!,
 		genre: 'field recording',
 		duration: 444,
 		cover: '/tracks/Pulse-of-the-City.png',
@@ -169,6 +211,7 @@ export const tracks: Track[] = [
 		id: '9',
 		title: 'Silent Frequencies',
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
+		collection: collections.find((c) => c.name === 'Audiomatch')!,
 		genre: 'field recording',
 		duration: 540,
 		cover: '/tracks/Silent-Frequencies.png',
@@ -179,6 +222,7 @@ export const tracks: Track[] = [
 		id: '10',
 		title: 'Digital Mirage',
 		artist: artists.find((a) => a.name === 'Anna Novak')!,
+		collection: collections.find((c) => c.name === 'Soco festival')!,
 		genre: 'electronic music',
 		duration: 396,
 		cover: '/tracks/Digital-Mirage.png',
@@ -189,6 +233,7 @@ export const tracks: Track[] = [
 		id: '11',
 		title: 'Cyber Flux',
 		artist: artists.find((a) => a.name === 'Diego Fernandez')!,
+		collection: collections.find((c) => c.name === 'Unsounded')!,
 		genre: 'electronic music',
 		duration: 504,
 		cover: '/tracks/Cyber-Flux.png',
@@ -199,45 +244,12 @@ export const tracks: Track[] = [
 		id: '12',
 		title: 'Neon Dreams',
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
+		collection: collections.find((c) => c.name === 'Audiostuff')!,
 		genre: 'field recording',
 		duration: 204,
 		cover: '/tracks/Neon-Dreams.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t12.mp3',
 		liked: false,
-	},
-];
-
-export type Collection = {
-	id: string;
-	picture: string;
-	name: string;
-	country: string;
-};
-
-export const collections: Collection[] = [
-	{
-		id: '1',
-		picture: '/collections/Audiomatch.png',
-		name: 'Audiomatch',
-		country: 'Austria',
-	},
-	{
-		id: '2',
-		picture: '/collections/Audiostuff.png',
-		name: 'Audiostuff',
-		country: 'USA',
-	},
-	{
-		id: '3',
-		picture: '/collections/Soco festival.png',
-		name: 'Soco festival',
-		country: 'France',
-	},
-	{
-		id: '4',
-		picture: '/collections/Unsounded.png',
-		name: 'Unsounded',
-		country: 'India',
 	},
 ];
 

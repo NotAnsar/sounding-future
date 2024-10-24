@@ -84,7 +84,7 @@ export default function AudioPlayer() {
 				</div>
 				<div
 					className={cn(
-						'w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden md:flex cursor-pointer transition-all duration-200',
+						' w-10 h-auto aspect-square justify-center items-center border-2  rounded-full hidden lg:flex cursor-pointer transition-all duration-200',
 						isLoop ? 'bg-foreground' : 'border-foreground'
 					)}
 					onClick={toggleLoop}

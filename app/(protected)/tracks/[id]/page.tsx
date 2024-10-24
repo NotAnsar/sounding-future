@@ -70,7 +70,7 @@ export default function page({
 								</li>
 								<li className='w-fit flex flex-col gap-1 text-left'>
 									<h4>Track curated by:</h4>
-									<p>Audiomatch</p>
+									<p>{track.collection.name}</p>
 								</li>
 							</ul>
 						</div>

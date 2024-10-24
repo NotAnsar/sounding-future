@@ -75,7 +75,7 @@ export default function TrackList({
 										href={`/tracks/${track.id}`}
 										className={cn(
 											' text-base font-semibold line-clamp-1 hover:opacity-80',
-											isCurrentTrack ? 'text-primary' : ''
+											isCurrentTrack ? 'text-primary-foreground' : ''
 										)}
 									>
 										{track.title}
