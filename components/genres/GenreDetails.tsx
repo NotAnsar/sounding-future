@@ -11,7 +11,7 @@ export default function GenreDetails({ genre }: { genre: Genre }) {
 				backgroundImage: `linear-gradient(to right, ${genre.from}, ${genre.to})`,
 			}}
 		>
-			<h2 className='text-[36px] mb-0 sm:text-5xl xl:text-6xl font-bold mt-auto sm:mb-2 md:pl-4'>
+			<h2 className='text-[36px] leading-tight mb-0 sm:text-5xl sm:leading-none xl:text-6xl font-bold mt-auto sm:mb-2 md:pl-4'>
 				{genre.name}
 			</h2>
 		</div>
