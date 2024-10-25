@@ -60,7 +60,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 
 			<TracksCarousel
 				tracks={filteredTracks}
-				title='Tracks you may also like'
+				title={`Tracks selected by ${curated.name}`}
 				classNameItem='basis-36 sm:basis-52 lg:basis-64'
 				className='mt-12 xl:w-2/3'
 				classNameTitle='text-[18px] sm:text-[22px]'
