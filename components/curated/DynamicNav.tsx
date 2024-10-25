@@ -5,30 +5,25 @@ import { buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { Icons } from '../icons/audio-player';
 
-export default function CuratedNav({
+export default function DynamicNav({
 	type,
 	sort,
-	id,
 }: {
 	type: string;
 	sort: string;
-	id: string;
 }) {
 	const isTable = type === 'table';
 	return (
 		<div className='flex justify-between gap-1.5'>
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				<TabsTrigger value='new' className='!p-0'>
-					<Link
-						href={`/curated/${id}`}
-						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
-					>    
+					<Link href={`?sort=new`} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
 						New Tracks
 					</Link>
 				</TabsTrigger>
 				<TabsTrigger value='popular' className='!p-0'>
 					<Link
-						href={`/curated/${id}?sort=popular`}
+						href={`?sort=popular`}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
 					>
 						Popular Tracks
@@ -37,7 +32,7 @@ export default function CuratedNav({
 			</TabsList>
 			<div className='flex gap-1 ml-auto sm:ml-0  '>
 				<Link
-					href={`/curated/${id}?type=table${sort ? '&sort=' + sort : ''}`}
+					href={`?type=table${sort ? '&sort=' + sort : ''}`}
 					className={cn(
 						buttonVariants(),
 						'bg-transparent p-1.5 sm:p-2 hover:bg-button group h-fit duration-200 transition-all shadow-none',
@@ -52,7 +47,7 @@ export default function CuratedNav({
 					/>
 				</Link>
 				<Link
-					href={`/curated/${id}?type=grid${sort ? '&sort=' + sort : ''}`}
+					href={`?type=grid${sort ? '&sort=' + sort : ''}`}
 					className={cn(
 						buttonVariants(),
 						'bg-transparent p-1.5 sm:p-2 hover:bg-button h-fit group shadow-none duration-200 transition-all',

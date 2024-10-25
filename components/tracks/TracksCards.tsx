@@ -22,6 +22,9 @@ export default function TracksCards({
 				className
 			)}
 		>
+			{tracks.length === 0 && (
+				<p className='text-base text-muted'>No tracks found</p>
+			)}
 			{tracks.map((track, i) => {
 				const isCurrentTrack = currentTrack?.id === track.id;
 				return (
@@ -73,14 +76,13 @@ export default function TracksCards({
 							</h5>
 							<h4
 								className={cn(
-									// 'text-white text-sm sm:text-[17px] font-semibold line-clamp-1 hover:underline'
 									'text-sm sm:text-[17px] font-semibold line-clamp-1 '
 								)}
 							>
 								{track.title}
 							</h4>
 							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track.genre}
+								{track.genre.name}
 							</h6>
 						</Link>
 					</div>

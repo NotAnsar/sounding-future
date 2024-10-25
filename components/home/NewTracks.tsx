@@ -89,7 +89,7 @@ export default function TracksCarousel({
 								{track.title}
 							</Link>
 							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track.genre}
+								{track.genre.name}
 							</h6>
 						</CarouselItem>
 					))}

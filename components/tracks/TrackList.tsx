@@ -20,6 +20,9 @@ export default function TrackList({
 		<div className={cn('p-4 lg:w-2/3', className)}>
 			<Table>
 				<TableBody>
+					{tracks.length === 0 && (
+						<p className='text-base text-muted'>No tracks found</p>
+					)}
 					{tracks.map((track, index) => {
 						const isCurrentTrack = currentTrack?.id === track.id;
 						return (
@@ -81,7 +84,7 @@ export default function TrackList({
 										{track.title}
 									</Link>
 									<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
-										{track.genre}
+										{track.genre.name}
 									</h6>
 									<Link
 										href={`/artist/${track.artist.id}`}

@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
-import { collections, tracks } from '@/config/dummy-data';
-import CuratedDetails from '@/components/curated/CuratedDetails';
+import { genres, tracks } from '@/config/dummy-data';
 import TrackList from '@/components/tracks/TrackList';
 import TracksCards from '@/components/tracks/TracksCards';
 import { Tabs } from '@radix-ui/react-tabs';
 import { TabsContent } from '@/components/ui/tabs';
+import GenreDetails from '@/components/genres/GenreDetails';
 import DynamicNav from '@/components/curated/DynamicNav';
 
 export default function page({
@@ -16,18 +16,16 @@ export default function page({
 }) {
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
 	const isTable = type === 'table';
-	const curated = collections.find((a) => {
-		return a.id === id;
-	});
+	const genre = genres.find((a) => a.id === id);
 
-	if (!curated) {
+	if (!genre) {
 		notFound();
 	}
 
-	const filteredTracks = tracks.filter((t) => t.collection.id === curated.id);
+	const filteredTracks = tracks.filter((t) => t.genre.id === genre.id);
 	return (
 		<>
-			<CuratedDetails curated={curated} />
+			<GenreDetails genre={genre} />
 
 			<Tabs value={tabValue} className='mt-4 sm:mt-6 grid gap-2 '>
 				<DynamicNav type={type} sort={sort} />
@@ -37,7 +35,7 @@ export default function page({
 						'text-xl md:text-[22px] font-semibold text-primary-foreground mt-4 '
 					}
 				>
-					These tracks have been compiled by Audiomatch
+					All files of the genre {genre.name}
 				</h1>
 				<TabsContent value='new'>
 					{isTable ? (

@@ -54,7 +54,7 @@ export default function page({
 							<ul className='mt-2 px-10 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
 								<li className='flex gap-3 '>
 									<Icons.tag className='w-5 h-auto aspect-auto fill-foreground' />{' '}
-									{track.genre}
+									{track.genre.name}
 								</li>
 								<li className='flex gap-3'>
 									<Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '}
