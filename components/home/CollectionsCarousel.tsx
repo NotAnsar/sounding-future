@@ -50,7 +50,7 @@ export default function CollectionsCarousel({
 					{collections.map((collection, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
 							<Link
-								href={`/tracks/${collection.id}`}
+								href={`/curated/${collection.id}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image

@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/carousel';
 import { Genre } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function GenresCarousel({
 	genres,
@@ -47,8 +48,9 @@ export default function GenresCarousel({
 				<CarouselContent className='gap-4 h-max'>
 					{genres.map((genre, i) => (
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>
-							<div
-								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white'
+							<Link
+								href={`/genres/${genre.id}`}
+								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white cursor-pointer'
 								style={{
 									background: `linear-gradient(180deg, ${genre.from} 0%, ${genre.to} 100%)`,
 								}}
@@ -61,7 +63,7 @@ export default function GenresCarousel({
 								>
 									{genre.name}
 								</h3>
-							</div>
+							</Link>
 						</CarouselItem>
 					))}
 				</CarouselContent>
