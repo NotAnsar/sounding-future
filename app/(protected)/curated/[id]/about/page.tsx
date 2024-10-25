@@ -19,7 +19,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 			<main className='mt-8'>
 				<div className='space-y-8 '>
 					{curated?.studioPic && (
-						<div className='max-w-2xl w-2/3'>
+						<div className='max-w-2xl xl:w-2/3'>
 							<Image
 								className='w-full rounded-3xl aspect-video object-cover'
 								src={curated?.studioPic}
@@ -30,7 +30,7 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 						</div>
 					)}
 					<div className='flex flex-col gap-y-6 xl:flex-row gap-x-12'>
-						<p className='text-pretty leading-7 max-w-2xl w-2/3'>
+						<p className='text-pretty leading-7 max-w-2xl xl:w-2/3'>
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
 							architecto illo optio, sed, ratione unde voluptate fuga ullam qui
 							obcaecati nostrum enim? Enim provident ut eum praesentium aliquid
