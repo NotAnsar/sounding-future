@@ -38,8 +38,12 @@ export default function CuratedDetails({
 				<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
 					{curated.name}
 				</h2>
-				<h5 className={cn('text-sm flex items-center gap-1.5')}>
-					<MapPin className='w-3.5 h-auto aspect-square text-white' />
+				<h5
+					className={cn(
+						'text-[15px] flex items-center gap-1 text-[#ddd] font-medium'
+					)}
+				>
+					<MapPin className='w-[18px] h-auto aspect-square ' />
 					{curated.country}
 				</h5>
 				<Link

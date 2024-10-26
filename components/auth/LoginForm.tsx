@@ -14,9 +14,9 @@ export default function LoginForm() {
 	const [state, formAction] = useFormState(login, {});
 
 	return (
-		<div className={`grid gap-4 `}>
+		<div className={`grid gap-3 `}>
 			<form action={formAction}>
-				<div className='grid gap-4'>
+				<div className='grid gap-3'>
 					<div className='grid gap-2'>
 						<Label className='font-semibold text-[15px]'>Email</Label>
 						<Input

@@ -46,17 +46,34 @@ export default function UserNav({
 
 			<DropdownMenuContent
 				align='end'
-				className='max-w-[250px] min-w-[200px] truncate bg-background backdrop-blur-md border-border '
+				// className='max-w-[250px] min-w-[200px] bg-background backdrop-blur-md border-border '
+				className='max-w-[250px] min-w-[200px] bg-background backdrop-blur-md border-border '
 			>
-				<div className='flex items-center justify-start gap-2 p-2'>
-					<div className='flex flex-col space-y-1 leading-none truncate'>
-						<p className='font-medium text-[15px] truncate'>{user.name}</p>
+				<div className='flex items-center p-1.5'>
+					<Avatar className='flex items-center justify-center'>
+						<AvatarImage
+							className='h-9 w-auto aspect-square rounded-full'
+							src={user?.image || undefined}
+						/>
 
-						<p className='w-[200px] truncate text-[13px] text-muted-foreground'>
-							{user?.email}
-						</p>
+						<AvatarFallback className='h-9 w-auto aspect-square bg-button'>
+							<span className='sr-only'>{user?.email}</span>
+							<UserIcon className='h-[17px] w-auto text-white' />
+						</AvatarFallback>
+					</Avatar>
+					<div className='flex items-center justify-start gap-2 p-2'>
+						<div className='flex flex-col space-y-1 leading-none '>
+							<p className='font-medium text-[15px] line-clamp-1'>
+								{user.name}
+							</p>
+
+							<p className='w-[200px] text-[13px] text-muted-foreground line-clamp-1'>
+								{user?.email}
+							</p>
+						</div>
 					</div>
 				</div>
+
 				<DropdownMenuSeparator />
 				<DropdownMenuItem className='cursor-pointer p-0 ' asChild>
 					<Link
@@ -87,6 +104,8 @@ export default function UserNav({
 						Upload Track
 					</Link>
 				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'https://www.soundingfuture.com/en'}

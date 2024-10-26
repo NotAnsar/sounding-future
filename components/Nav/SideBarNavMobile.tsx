@@ -7,6 +7,8 @@ import { collection, mainNav } from '@/config/sidenav';
 import { SheetContent } from '../ui/sheet';
 import Image from 'next/image';
 import NavItem from './NavItem';
+import { Fragment } from 'react';
+import { LEGAL_NAV } from '@/config/legal';
 
 export default function SideBarNavMobile({
 	className,
@@ -72,9 +74,14 @@ export default function SideBarNavMobile({
 						))}
 					</div>
 				</div>
-				<Link href={'/privacy'} className='mt-auto flex text-muted pl-4'>
-					Privacy | Legal
-				</Link>
+				<div className='flex mt-auto mb-20 pl-4 text-muted'>
+					{LEGAL_NAV.map((l, index) => (
+						<Fragment key={l.href}>
+							<Link href={l.href}>{l.label}</Link>
+							{index < LEGAL_NAV.length - 1 && <span className='px-1'>|</span>}
+						</Fragment>
+					))}
+				</div>
 			</div>
 		</SheetContent>
 	);

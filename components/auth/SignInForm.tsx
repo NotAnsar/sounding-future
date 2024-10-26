@@ -13,9 +13,9 @@ export default function SignInForm() {
 	const [state, formAction] = useFormState(register, {});
 
 	return (
-		<div className={`grid gap-4`}>
+		<div className={`grid gap-2.5`}>
 			<form action={formAction}>
-				<div className='grid gap-4'>
+				<div className='grid gap-2.5'>
 					<div className='grid gap-2'>
 						<Label className='font-semibold text-[15px]'>Username</Label>
 						<Input
@@ -83,9 +83,8 @@ export default function SignInForm() {
 					</span>
 				</div>
 			</div>
-			<div className='grid gap-3 w-full'>
-				<SignWithGoogle />
-			</div>
+
+			<SignWithGoogle />
 		</div>
 	);
 }

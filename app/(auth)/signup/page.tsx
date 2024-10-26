@@ -22,16 +22,30 @@ export default async function Page() {
 				</div>
 
 				<SignInForm />
-				<p className='px-8 text-center text-base font-semibold mt-1.5'>
-					{'Already have an account? '}
-					<Link
-						href='/login'
-						className='text-primary-foreground hover:underline'
-					>
-						Login now
-					</Link>
-				</p>
-				<SignAsGuest />
+				<div className='text-[15px] space-y-1.5'>
+					<p className='px-8 text-center font-semibold mt-1.5'>
+						{'Already have an account? '}
+						<Link
+							href='/login'
+							className='text-primary-foreground hover:underline'
+						>
+							Login now
+						</Link>
+					</p>
+					<SignAsGuest />
+
+					<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
+						By clicking continue, you agree to our{' '}
+						<Link href={'/legal'} className='font-semibold hover:underline'>
+							Legal Terms
+						</Link>{' '}
+						and{' '}
+						<Link href={'/privacy'} className='font-semibold hover:underline'>
+							Privacy Policy
+						</Link>
+						.
+					</p>
+				</div>
 			</div>
 		</div>
 	);

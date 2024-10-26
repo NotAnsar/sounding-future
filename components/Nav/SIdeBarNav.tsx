@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { collection, mainNav } from '@/config/sidenav';
 import NavItem from './NavItem';
+import { LEGAL_NAV } from '@/config/legal';
+import { Fragment } from 'react';
 
 export default function SideBarNav({
 	className,
@@ -51,9 +53,14 @@ export default function SideBarNav({
 						))}
 					</div>
 				</div>
-				<Link href={'/privacy'} className='mt-auto flex text-muted mb-20 pl-4'>
-					Privacy | Legal
-				</Link>
+				<div className='flex mt-auto mb-20 pl-4 text-muted'>
+					{LEGAL_NAV.map((l, index) => (
+						<Fragment key={l.href}>
+							<Link href={l.href}>{l.label}</Link>
+							{index < LEGAL_NAV.length - 1 && <span className='px-1'>|</span>}
+						</Fragment>
+					))}
+				</div>
 			</div>
 		</div>
 	);

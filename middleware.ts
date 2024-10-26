@@ -5,6 +5,7 @@ import NextAuth from 'next-auth';
 const API_AUTH_PREFIX = '/api/auth';
 const AUTH_ROUTES = ['/login', '/signup', '/login-guest'];
 const PROTECTED_ROUTES = ['/'];
+const PUBLIC_ROUTES = ['/about', '/legal', '/privacy'];
 
 export const { auth } = NextAuth(authConfig);
 
@@ -19,8 +20,11 @@ export default auth((req) => {
 	const isAccessingProtectedRoute = PROTECTED_ROUTES.some((route) =>
 		pathname.startsWith(route)
 	);
+	const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+		pathname.startsWith(route)
+	);
 
-	if (isAccessingApiAuthRoute) {
+	if (isAccessingApiAuthRoute || isPublicRoute) {
 		return NextResponse.next();
 	}
 

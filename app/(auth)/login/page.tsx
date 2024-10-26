@@ -22,8 +22,9 @@ export default async function Page() {
 				</div>
 
 				<LoginForm />
-				<div className='flex flex-col gap-2'>
-					<p className='px-8 text-center text-base font-semibold mt-1.5'>
+
+				<div className=' space-y-1.5'>
+					<p className='px-8 text-center font-semibold mt-1.5'>
 						{"Don't have an account? "}
 						<Link
 							href='/signup'
@@ -32,7 +33,20 @@ export default async function Page() {
 							Sign up now
 						</Link>
 					</p>
+
 					<SignAsGuest />
+
+					<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
+						By clicking continue, you agree to our{' '}
+						<Link href={'/legal'} className='font-semibold hover:underline'>
+							Legal Terms
+						</Link>{' '}
+						and{' '}
+						<Link href={'/privacy'} className='font-semibold hover:underline'>
+							Privacy Policy
+						</Link>
+						.
+					</p>
 				</div>
 			</div>
 		</div>
