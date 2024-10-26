@@ -2,7 +2,7 @@ import React from 'react';
 import UserNav from './UserNav';
 
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchInput from './Search/SearchInput';
@@ -44,6 +44,16 @@ export default async function TopNav({ className }: { className?: string }) {
 				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 md:gap-0'>
 					<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden sm:block ' />
 					<div className='ml-auto flex items-center gap-2'>
+						<Link
+							href={'https://www.soundingfuture.com/en/support'}
+							target='_blank'
+							className={cn(
+								buttonVariants({ variant: 'secondary' }),
+								'text-[13px] sm:text-sm px-3 h-8 sm:px-4 border-foreground/80'
+							)}
+						>
+							Support Us
+						</Link>
 						<SheetTrigger asChild>
 							<Button
 								variant='ghost'
@@ -54,6 +64,7 @@ export default async function TopNav({ className }: { className?: string }) {
 								<span className='sr-only'>Toggle navigation menu</span>
 							</Button>
 						</SheetTrigger>
+
 						<ModeToggle />
 						{session?.user && <UserNav user={session?.user} />}
 					</div>
