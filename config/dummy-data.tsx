@@ -41,6 +41,7 @@ export interface Artist {
 	id: string;
 	picture: string;
 	name: string;
+	genres: Genre[]; //min 1 , max 3
 }
 
 export type Track = {
@@ -55,73 +56,12 @@ export type Track = {
 	liked: boolean;
 };
 
-export const artists: Artist[] = [
-	{
-		id: '1',
-		picture: '/artists/Anna-Novak.png',
-		name: 'Anna Novak',
-	},
-	{
-		id: '2',
-		picture: '/artists/Carlos-Ruiz.png',
-		name: 'Carlos Ruiz',
-	},
-	{
-		id: '3',
-		picture: '/artists/Chen-Wei.png',
-		name: 'Chen Wei',
-	},
-	{
-		id: '4',
-		picture: '/artists/David-Müller.png',
-		name: 'David Müller',
-	},
-	{
-		id: '5',
-		picture: '/artists/Diego-Fernandez.png',
-		name: 'Diego Fernandez',
-	},
-	{
-		id: '6',
-		picture: '/artists/Elena-Rossi.png',
-		name: 'Elena Rossi',
-	},
-	{
-		id: '7',
-		picture: '/artists/Juan-Martinez.png',
-		name: 'Juan Martinez',
-	},
-	{
-		id: '8',
-		picture: '/artists/Liam-O-Connor.png',
-		name: "Liam O'Connor",
-	},
-	{
-		id: '9',
-		picture: '/artists/Luka-Petrovic.png',
-		name: 'Luka Petrovic',
-	},
-	{
-		id: '10',
-		picture: '/artists/Maria-Silva.png',
-		name: 'Maria Silva',
-	},
-	{
-		id: '11',
-		picture: '/artists/Max-Harris.png',
-		name: 'Max Harris',
-	},
-	{
-		id: '12',
-		picture: '/artists/Sidney-Clifford.png',
-		name: 'Sidney Clifford',
-	},
-	{
-		id: '13',
-		picture: '/artists/Yasmin-Al-Sayed.png',
-		name: 'Yasmin Al-Sayed',
-	},
-];
+export interface Artist {
+	id: string;
+	picture: string;
+	name: string;
+	genres: Genre[];
+}
 
 export const genres = [
 	{ id: '1', name: 'Electronic Music', from: '#A42F67', to: '#513383' },
@@ -129,6 +69,87 @@ export const genres = [
 	{ id: '3', name: 'Contemporary Music', from: '#7F8128', to: '#1F1D7B' },
 	{ id: '4', name: 'Game Audio', from: '#f46217', to: '#0b486b' },
 	{ id: '5', name: 'Sound Art', from: '#4b1248', to: '#efc27b' },
+];
+
+export const artists: Artist[] = [
+	{
+		id: '1',
+		picture: '/artists/Anna-Novak.png',
+		name: 'Anna Novak',
+		genres: [genres[2], genres[4]], // Contemporary Music, Sound Art
+	},
+	{
+		id: '2',
+		picture: '/artists/Carlos-Ruiz.png',
+		name: 'Carlos Ruiz',
+		genres: [genres[0], genres[2], genres[4]], // Electronic Music, Contemporary Music, Sound Art
+	},
+	{
+		id: '3',
+		picture: '/artists/Chen-Wei.png',
+		name: 'Chen Wei',
+		genres: [genres[4]], // Sound Art
+	},
+	{
+		id: '4',
+		picture: '/artists/David-Müller.png',
+		name: 'David Müller',
+		genres: [genres[0], genres[3]], // Electronic Music, Game Audio
+	},
+	{
+		id: '5',
+		picture: '/artists/Diego-Fernandez.png',
+		name: 'Diego Fernandez',
+		genres: [genres[2], genres[3], genres[4]], // Contemporary Music, Game Audio, Sound Art
+	},
+	{
+		id: '6',
+		picture: '/artists/Elena-Rossi.png',
+		name: 'Elena Rossi',
+		genres: [genres[0], genres[2]], // Electronic Music, Contemporary Music
+	},
+	{
+		id: '7',
+		picture: '/artists/Juan-Martinez.png',
+		name: 'Juan Martinez',
+		genres: [genres[1], genres[2], genres[4]], // Field Recordings, Contemporary Music, Sound Art
+	},
+	{
+		id: '8',
+		picture: '/artists/Liam-O-Connor.png',
+		name: "Liam O'Connor",
+		genres: [genres[0], genres[3]], // Electronic Music, Game Audio
+	},
+	{
+		id: '9',
+		picture: '/artists/Luka-Petrovic.png',
+		name: 'Luka Petrovic',
+		genres: [genres[2], genres[3], genres[4]], // Contemporary Music, Game Audio, Sound Art
+	},
+	{
+		id: '10',
+		picture: '/artists/Maria-Silva.png',
+		name: 'Maria Silva',
+		genres: [genres[1], genres[4]], // Field Recordings, Sound Art
+	},
+	{
+		id: '11',
+		picture: '/artists/Max-Harris.png',
+		name: 'Max Harris',
+		genres: [genres[0], genres[3], genres[4]], // Electronic Music, Game Audio, Sound Art
+	},
+	{
+		id: '12',
+		picture: '/artists/Sidney-Clifford.png',
+		name: 'Sidney Clifford',
+		genres: [genres[0], genres[2]], // Electronic Music, Contemporary Music
+	},
+	{
+		id: '13',
+		picture: '/artists/Yasmin-Al-Sayed.png',
+		name: 'Yasmin Al-Sayed',
+		genres: [genres[1], genres[2], genres[4]], // Field Recordings, Contemporary Music, Sound Art
+	},
 ];
 
 export const tracks: Track[] = [

@@ -1,6 +1,5 @@
 import React from 'react';
 import UserNav from './UserNav';
-
 import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
