@@ -75,12 +75,7 @@ export default function page({
 							</ul>
 						</div>
 					</div>
-					{/* <ArtistsCarousel
-						className='mt-12'
-						artists={artists}
-						title='Artists you may also like'
-						
-					/> */}
+
 					<TracksCarousel
 						tracks={tracks}
 						title='Tracks you may also like'

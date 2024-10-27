@@ -6,6 +6,32 @@ export type Collection = {
 	studioPic: string;
 };
 
+export interface Artist {
+	id: string;
+	picture: string;
+	name: string;
+	genres: Genre[]; //min 1 , max 3
+}
+
+export type Track = {
+	id: string;
+	title: string;
+	artist: Artist;
+	collection: Collection; // Added this field
+	genre: Genre;
+	duration: number;
+	cover: string;
+	url: string;
+	liked: boolean;
+};
+
+export type Genre = {
+	id: string;
+	name: string;
+	from: string;
+	to: string;
+};
+
 export const collections: Collection[] = [
 	{
 		id: '1',
@@ -37,33 +63,7 @@ export const collections: Collection[] = [
 	},
 ];
 
-export interface Artist {
-	id: string;
-	picture: string;
-	name: string;
-	genres: Genre[]; //min 1 , max 3
-}
-
-export type Track = {
-	id: string;
-	title: string;
-	artist: Artist;
-	collection: Collection; // Added this field
-	genre: Genre;
-	duration: number;
-	cover: string;
-	url: string;
-	liked: boolean;
-};
-
-export interface Artist {
-	id: string;
-	picture: string;
-	name: string;
-	genres: Genre[];
-}
-
-export const genres = [
+export const genres: Genre[] = [
 	{ id: '1', name: 'Electronic Music', from: '#A42F67', to: '#513383' },
 	{ id: '2', name: 'Field Recordings', from: '#267B43', to: '#2F489F' },
 	{ id: '3', name: 'Contemporary Music', from: '#7F8128', to: '#1F1D7B' },
@@ -287,13 +287,6 @@ export const tracks: Track[] = [
 		liked: false,
 	},
 ];
-
-export type Genre = {
-	id: string;
-	name: string;
-	from: string;
-	to: string;
-};
 
 export const gradients = [
 	'linear-gradient(180deg,  0%,  100%)',

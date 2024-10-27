@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				<TermsLegalNav />
 
 				<div className='grid md:grid-cols-3 gap-6'>
-					<div className='md:col-span-2'>{children}</div>
+					<div className='md:col-span-2 max-w-2xl'>{children}</div>
 					<TermsLinks />
 				</div>
 			</main>
