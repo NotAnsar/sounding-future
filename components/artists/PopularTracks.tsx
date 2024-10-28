@@ -30,7 +30,9 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 								isCurrentTrack ? 'bg-player/50' : ''
 							)}
 						>
-							<TableCell className='text-left px-4 w-5'>{index + 1}</TableCell>
+							<TableCell className='text-left px-4 w-3.5 sm:w-5'>
+								{index + 1}
+							</TableCell>
 							<TableCell className='w-14 relative'>
 								<div
 									className={cn(
@@ -85,7 +87,7 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 									{track.genre.name}
 								</h6>
 								<Link
-									href={`/artist/${track.artist.id}`}
+									href={`/artists/${track.artist.id}`}
 									className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
 								>
 									{track.artist.name}
@@ -93,7 +95,7 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 							</TableCell>
 							<TableCell className='hidden sm:block'>
 								<Link
-									href={`/artist/${track.artist.id}`}
+									href={`/artists/${track.artist.id}`}
 									className='text-muted text-base font-semibold text-nowrap hover:text-primary'
 								>
 									{track.artist.name}

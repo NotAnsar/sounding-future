@@ -52,7 +52,7 @@ export default function ArtistList({
 										{artist.name}
 									</Link>
 									<Link
-										href={`/artist/${artist.id}`}
+										href={`/artists/${artist.id}`}
 										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block'
 									>
 										{artistTracks}

@@ -97,7 +97,7 @@ export default function TrackDetails({ track }: { track: Track }) {
 						height={48}
 					/>
 					<Link
-						href={`/artist/${track.artist.id}`}
+						href={`/artists/${track.artist.id}`}
 						className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer line-clamp-1 '
 					>
 						{track.artist.name}

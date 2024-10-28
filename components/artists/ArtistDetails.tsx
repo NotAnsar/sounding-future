@@ -52,7 +52,7 @@ export default function ArtistDetails({ artist }: { artist: Artist }) {
 						'text-sm sm:text-[15px] flex items-center gap-1 text-[#ddd] sm:font-medium'
 					)}
 				>
-					<Icons.tag className='w-5 h-auto aspect-auto fill-foreground' />{' '}
+					<Icons.tag className='w-5 h-auto aspect-auto fill-white' />{' '}
 					{artist.genres.map((g) => g.name).join(', ')}
 				</h5>
 			</div>

@@ -87,7 +87,7 @@ export default function TrackList({
 										{track.genre.name}
 									</h6>
 									<Link
-										href={`/artist/${track.artist.id}`}
+										href={`/artists/${track.artist.id}`}
 										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
 									>
 										{track.artist.name}
@@ -95,7 +95,7 @@ export default function TrackList({
 								</TableCell>
 								<TableCell className='hidden sm:block'>
 									<Link
-										href={`/artist/${track.artist.id}`}
+										href={`/artists/${track.artist.id}`}
 										className='text-muted text-base font-semibold text-nowrap hover:text-primary'
 									>
 										{track.artist.name}

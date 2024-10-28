@@ -9,17 +9,17 @@ export default function ArtistTrack({ id }: { id: string }) {
 		<TabsContent value='tracks'>
 			<div className='grid grid-cols-1 xl:grid-cols-3 gap-4'>
 				<div className='xl:col-span-2 space-y-8'>
-					<div className=''>
+					<div>
 						<h1 className='text-2xl font-medium mb-6 text-primary-foreground'>
-							Popular Songs
+							Popular Tracks
 						</h1>
 						<PopularTracks
 							tracks={tracks.filter((t) => t.artist.id === id).splice(0, 10)}
 						/>
 					</div>
-					<div className=''>
+					<div>
 						<h1 className='text-2xl font-medium mb-6 text-primary-foreground'>
-							Discography
+							Tracks
 						</h1>
 
 						<TracksCards

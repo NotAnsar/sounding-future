@@ -41,7 +41,7 @@ export default function SideBarNavMobile({
 					className='w-24 ml-3 h-auto block dark:hidden'
 				/>
 			</Link>
-			<div className='flex flex-col gap-3 py-2 h-full'>
+			<div className='flex flex-col gap-3 py-2 h-full overflow-y-auto'>
 				<div className='px-3 py-2 space-y-6'>
 					<div className='flex flex-col gap-2'>
 						{mainNav.map((item, i) => (

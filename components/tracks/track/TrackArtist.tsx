@@ -48,11 +48,11 @@ export default function TrackArtist({ track }: { track: Track }) {
 					Artist Links
 				</h1>
 				<div className='flex gap-4 items-center'>
-					<Icons.facebook className='w-10 h-auto aspect-square text-foreground cursor-pointer' />
-					<Icons.instagram className='w-10 h-auto aspect-square text-foreground cursor-pointer' />
-					<Icons.linkedin className='w-10 h-auto aspect-square text-foreground cursor-pointer' />
-					<Icons.vimeo className='w-10 h-auto aspect-square text-foreground cursor-pointer' />
-					<Icons.youtube className='w-10 h-auto aspect-square text-foreground cursor-pointer' />
+					<Icons.facebook className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
+					<Icons.instagram className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
+					<Icons.linkedin className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
+					<Icons.vimeo className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
+					<Icons.youtube className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
 				</div>
 			</div>
 			<div>

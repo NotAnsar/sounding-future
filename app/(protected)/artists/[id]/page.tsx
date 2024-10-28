@@ -31,12 +31,12 @@ export default function page({
 
 				<main className='mt-4 '>
 					<ArtistTrack id={id} />
-					<ArtistBio artist={artist} />
+					<ArtistBio /* artist={artist} */ />
 					<ArtistsCarousel
 						artists={artists}
 						className='mt-12 '
 						classNameItem='basis-36 sm:basis-52 lg:basis-60'
-						title='Similar Artist'
+						title='Artists you may also like'
 					/>
 				</main>
 			</Tabs>
