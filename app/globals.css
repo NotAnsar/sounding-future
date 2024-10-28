@@ -92,7 +92,6 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
 	background: hsl(var(--player));
-
 	border-radius: 4px;
 }
 

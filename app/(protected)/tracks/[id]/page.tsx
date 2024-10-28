@@ -8,6 +8,7 @@ import { tracks } from '@/config/dummy-data';
 import TrackNav from '@/components/tracks/track/TrackNav';
 import TrackArtist from '@/components/tracks/track/TrackArtist';
 import TracksCarousel from '@/components/home/NewTracks';
+import CollapsibleText from '@/components/CollapsibleText';
 
 export default function page({
 	params: { id },
@@ -36,7 +37,29 @@ export default function page({
 					<div className='grid grid-cols-1 xl:grid-cols-3 gap-4'>
 						<div className='xl:col-span-2 '>
 							<TabsContent value='info'>
-								Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo
+								<CollapsibleText
+									text='	Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
+								architecto illo optio, sed, ratione unde voluptate fuga ullam
+								qui obcaecati nostrum enim? Enim provident ut eum praesentium
+								aliquid deleniti. Mollitia delectus vitae dolorem dicta
+								laboriosam tenetur at, corporis accusantium facere, ducimus eum.
+								Quidem sunt reiciendis magni distinctio nihil nemo et
+								consectetur in corrupti blanditiis vitae, fugiat, iure molestias
+								suscipit accusantium Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Deleniti soluta labore voluptates quidem
+								ducimus maxime dolore expedita doloremque autem nihil? Nobis sed
+								consequuntur at architecto.	Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
+								architecto illo optio, sed, ratione unde voluptate fuga ullam
+								qui obcaecati nostrum enim? Enim provident ut eum praesentium
+								aliquid deleniti. Mollitia delectus vitae dolorem dicta
+								laboriosam tenetur at, corporis accusantium facere, ducimus eum.
+								Quidem sunt reiciendis magni distinctio nihil nemo et
+								consectetur in corrupti blanditiis vitae, fugiat, iure molestias
+								suscipit accusantium Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Deleniti soluta labore voluptates quidem
+								ducimus maxime dolore expedita doloremque autem nihil? Nobis sed
+								consequuntur at architecto.'
+								/>
 							</TabsContent>
 							<TabsContent value='others'>
 								<p className='font-semibold text-muted text-lg mb-4 px-2'>
