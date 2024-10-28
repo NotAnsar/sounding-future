@@ -4,7 +4,7 @@ import NextAuth from 'next-auth';
 
 const API_AUTH_PREFIX = '/api/auth';
 const AUTH_ROUTES = ['/login', '/signup', '/login-guest'];
-const PROTECTED_ROUTES = ['/'];
+const PROTECTED_ROUTES = ['/user', '/collection'];
 const PUBLIC_ROUTES = ['/about', '/legal', '/privacy'];
 
 export const { auth } = NextAuth(authConfig);

@@ -2,7 +2,7 @@ import React from 'react';
 import UserNav from './UserNav';
 import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { LogIn, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchInput from './Search/SearchInput';
 import Link from 'next/link';
@@ -65,7 +65,21 @@ export default async function TopNav({ className }: { className?: string }) {
 						</SheetTrigger>
 
 						<ModeToggle />
-						{session?.user && <UserNav user={session?.user} />}
+						{session?.user ? (
+							<UserNav user={session?.user} />
+						) : (
+							<Link
+								className={cn(
+									buttonVariants(),
+									'bg-button hover:bg-button/80',
+									'group'
+								)}
+								href={'/login'}
+							>
+								<LogIn className='w-4 h-auto aspect-square mr-2 group-hover:translate-x-0.5 transition-all duration-300 ease-out' />
+								Login
+							</Link>
+						)}
 					</div>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-import SignAsGuest from '@/components/auth/SignAsGuest';
+// import SignAsGuest from '@/components/auth/SignAsGuest';
 import SignInForm from '@/components/auth/SignInForm';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -32,7 +32,7 @@ export default async function Page() {
 							Login now
 						</Link>
 					</p>
-					<SignAsGuest />
+					{/* <SignAsGuest /> */}
 
 					<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
 						By clicking continue, you agree to our{' '}

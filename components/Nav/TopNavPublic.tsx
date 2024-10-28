@@ -41,7 +41,7 @@ export default async function TopNavPublic() {
 						{session?.user ? (
 							<UserNav user={session?.user} />
 						) : (
-							<Link className={cn(buttonVariants(), 'group')} href={'/login'}>
+							<Link className={cn(buttonVariants(), 'bg-button hover:bg-button/80','group')} href={'/login'}>
 								<LogIn className='w-4 h-auto aspect-square mr-2 group-hover:translate-x-0.5 transition-all duration-300 ease-out' />
 								Login
 							</Link>
