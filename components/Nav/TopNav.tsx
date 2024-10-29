@@ -83,7 +83,7 @@ export default async function TopNav({ className }: { className?: string }) {
 					</div>
 				</div>
 			</div>
-			<SideBarNavMobile session={session} />
+			<SideBarNavMobile />
 		</Sheet>
 	);
 }

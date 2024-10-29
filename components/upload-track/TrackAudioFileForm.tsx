@@ -14,7 +14,7 @@ import { SelectInput } from '@/components/ui/select-input';
 import ImageUpload from '@/components/profile/ImageUpload';
 import TrackUpload from '@/components/settings/TrackUploadSection';
 
-export default function ProfileLinksForm() {
+export default function TrackAudioFileForm({ role }: { role: string }) {
 	const [state, formAction] = useFormState(uploadTrackInfo, {});
 	const router = useRouter();
 
@@ -31,7 +31,7 @@ export default function ProfileLinksForm() {
 	return (
 		<form action={formAction}>
 			<Tabs value='audio-file' className='mt-4 sm:mt-8 grid sm:gap-3'>
-				<UploadTrackNav />
+				<UploadTrackNav isAdmin={role === 'admin'} />
 
 				<TabsContent value='audio-file' className='lg:w-2/3 mt-2 grid gap-6'>
 					<ErrorMessage errors={state.message ? [state.message] : undefined} />

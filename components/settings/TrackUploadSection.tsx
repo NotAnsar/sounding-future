@@ -41,7 +41,8 @@ export default function TrackUploadSection({ errors }: TrackUploadProps) {
 						</div>
 
 						<p className='text-muted text-sm max-w-lg'>
-							Upload your track in MP3 format (max 50MB)
+							{/* Upload your track in MP3 format (max 50MB) */}
+							Upload from track version 1
 						</p>
 
 						<ErrorMessage errors={errors?.mp3File} />
@@ -68,7 +69,8 @@ export default function TrackUploadSection({ errors }: TrackUploadProps) {
 						</div>
 
 						<p className='text-muted text-sm max-w-lg'>
-							Upload your track in FLAC format for best quality (max 50MB)
+							{/* Upload your track in FLAC format for best quality (max 50MB) */}
+							Upload from track version 2
 						</p>
 
 						<ErrorMessage errors={errors?.flacFile} />

@@ -1,7 +1,7 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
 import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
-import { auth } from '@/lib/auth';
+
 import NextTopLoader from 'nextjs-toploader';
 
 export default async function Layout({
@@ -9,8 +9,6 @@ export default async function Layout({
 }: {
 	children: React.ReactNode;
 }) {
-	const session = await auth();
-
 	return (
 		<div
 			className='relative flex h-screen'
@@ -38,7 +36,6 @@ export default async function Layout({
 			/>
 			<SideBarNav
 				className={`hidden md:flex top-[var(--top-nav-height-md)] h-[calc(100vh-var(--top-nav-height-md))] fixed`}
-				session={session}
 			/>
 
 			<main

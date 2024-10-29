@@ -13,7 +13,7 @@ import UploadTrackNav from '@/components/upload-track/UploadTrackNav';
 import { addTrackTextInfo } from '@/actions/upload-track/text-info';
 import { Textarea } from '@/components/ui/textarea';
 
-export default function ProfileLinksForm() {
+export default function TracksTextInfoForm({ role }: { role: string }) {
 	const [state, formAction] = useFormState(addTrackTextInfo, {});
 	const router = useRouter();
 
@@ -27,7 +27,7 @@ export default function ProfileLinksForm() {
 	return (
 		<form action={formAction}>
 			<Tabs value='text-info' className='mt-4 sm:mt-8 grid sm:gap-3'>
-				<UploadTrackNav />
+				<UploadTrackNav isAdmin={role === 'admin'} />
 
 				<TabsContent value='text-info' className='lg:w-2/3 mt-2 grid gap-6'>
 					<ErrorMessage errors={state.message ? [state.message] : undefined} />

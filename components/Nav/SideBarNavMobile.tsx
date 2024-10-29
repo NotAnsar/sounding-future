@@ -3,19 +3,18 @@
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { collection, mainNav } from '@/config/sidenav';
+import { mainNav } from '@/config/sidenav';
+
 import { SheetContent } from '../ui/sheet';
 import Image from 'next/image';
 import NavItem from './NavItem';
 import { Fragment } from 'react';
 import { LEGAL_NAV } from '@/config/legal';
-import { Session } from 'next-auth';
 
 export default function SideBarNavMobile({
 	className,
-	session,
 	...props
-}: React.HTMLAttributes<HTMLDivElement> & { session: Session | null }) {
+}: React.HTMLAttributes<HTMLDivElement>) {
 	const path = usePathname();
 
 	return (
@@ -58,7 +57,7 @@ export default function SideBarNavMobile({
 						))}
 					</div>
 				</div>
-				{session ? (
+				{/* {session ? (
 					<div className='px-3 py-2'>
 						<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 							MY COLLECTION
@@ -77,7 +76,7 @@ export default function SideBarNavMobile({
 							))}
 						</div>
 					</div>
-				) : null}
+				) : null} */}
 
 				<div className='flex mt-auto mb-20 pl-4 text-muted'>
 					{LEGAL_NAV.map((l, index) => (

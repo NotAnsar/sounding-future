@@ -1,14 +1,7 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from './prisma';
 import { authConfig } from './auth.config';
-
-interface ExtendedSession extends DefaultSession {
-	user: {
-		id: string;
-		role?: string;
-	} & DefaultSession['user'];
-}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	...authConfig,
@@ -35,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				role: dbUser.role,
 			};
 		},
-		async session({ session, token }): Promise<ExtendedSession> {
+		async session({ session, token }) {
 			return {
 				...session,
 				user: {

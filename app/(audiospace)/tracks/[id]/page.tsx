@@ -59,6 +59,7 @@ export default function page({
 								adipisicing elit. Deleniti soluta labore voluptates quidem
 								ducimus maxime dolore expedita doloremque autem nihil? Nobis sed
 								consequuntur at architecto.'
+									className='max-w-2xl'
 								/>
 							</TabsContent>
 							<TabsContent value='others'>

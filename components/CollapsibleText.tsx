@@ -1,12 +1,15 @@
 'use client';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 export default function CollapsibleText({
 	text,
-	maxLength = 300,
+	maxLength = 600,
+	className,
 }: {
 	text: string;
 	maxLength?: number;
+	className?: string;
 }) {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const shouldCollapse = text.length > maxLength;
@@ -17,7 +20,7 @@ export default function CollapsibleText({
 			: text;
 
 	return (
-		<div className='space-y-2'>
+		<div className={cn('space-y-2', className)}>
 			<p className='text-pretty leading-7'>{displayText}</p>
 			{shouldCollapse && (
 				<button

@@ -159,7 +159,7 @@ export function MultiSelect({
 							<Badge
 								key={val}
 								variant='secondary'
-								className='flex items-center gap-1'
+								className='flex items-center gap-1 text-foreground/95 bg-player font-medium hover:bg-player/80'
 							>
 								{option.label}
 								<button

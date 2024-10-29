@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils';
 import { convertDateFormat } from '@/lib/utils';
+import { auth } from '@/lib/auth';
 
 const TrackSchema = z.object({
 	trackName: z
@@ -35,6 +36,8 @@ export async function submitTrack(
 	prevState: TrackFormState,
 	formData: FormData
 ): Promise<TrackFormState> {
+	const session = await auth();
+
 	const genreTags = formData
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
@@ -44,14 +47,20 @@ export async function submitTrack(
 	const curators = formData
 		.getAll('curatedBy')
 		.filter((c) => c !== '') as string[];
-	const artist = formData.getAll('artist').filter((c) => c !== '') as string[];
+
+	// const artist = formData.getAll('artist').filter((c) => c !== '') as string[];
+
+	const artist =
+		session?.user?.role === 'user'
+			? [session?.user?.id]
+			: (formData.getAll('artist').filter((c) => c !== '') as string[]);
 
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
 		artist: artist,
 		releaseYear: formData.get('releaseYear'),
 		recognitions: recognitions,
-		curatedBy: curators,
+		curatedBy: session?.user?.role === 'user' ? ['audiospace'] : curators,
 		genreTags: genreTags,
 	});
 
