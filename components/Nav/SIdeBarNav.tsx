@@ -7,13 +7,14 @@ import { mainNav } from '@/config/sidenav';
 import NavItem from './NavItem';
 import { LEGAL_NAV } from '@/config/legal';
 import { Fragment } from 'react';
+import { useAudio } from '@/context/AudioContext';
 
 export default function SideBarNav({
 	className,
-
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	const path = usePathname();
+	const { currentTrack } = useAudio();
 
 	return (
 		<div
@@ -57,11 +58,16 @@ export default function SideBarNav({
 					</div>
 				) : null} */}
 
-				<div className='flex mt-auto mb-20 pl-4 text-muted'>
-					{LEGAL_NAV.map((l, index) => (
+				<div
+					className={cn(
+						'flex mt-auto pl-4 text-muted',
+						currentTrack ? 'mb-20' : ''
+					)}
+				>
+					{LEGAL_NAV.filter((l) => l.show).map((l, index, t) => (
 						<Fragment key={l.href}>
 							<Link href={l.href}>{l.label}</Link>
-							{index < LEGAL_NAV.length - 1 && <span className='px-1'>|</span>}
+							{index < t.length - 1 && <span className='px-1'>|</span>}
 						</Fragment>
 					))}
 				</div>

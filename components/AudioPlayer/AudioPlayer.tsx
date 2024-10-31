@@ -5,6 +5,7 @@ import { useAudio } from '@/context/AudioContext';
 import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import CustomSlider from './CustomSlider';
 import { cn, formatTime } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function AudioPlayer() {
 	const {
@@ -115,7 +116,9 @@ export default function AudioPlayer() {
 					onChange={(e) => setVolume(parseFloat(e.target.value))}
 					className='w-[100px]'
 				/>
-				<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
+				<Link href={'/about'} target='_blank'>
+					<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
+				</Link>
 			</div>
 		</div>
 	);
