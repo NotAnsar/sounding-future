@@ -7,15 +7,23 @@ import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import SignWithGoogle from './SignWithGoogle';
-import { resetPasswordRequest } from '@/actions/auth/reset-password';
+import { resetPasswordCompletion } from '@/actions/auth/reset-password';
 import { useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
-export default function ResetForm() {
-	const [state, formAction] = useFormState(resetPasswordRequest, {});
+export default function UpdatePasswordForm({ token }: { token: string }) {
+	const [state, formAction] = useFormState(
+		resetPasswordCompletion.bind(null, token),
+		{}
+	);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (state.message) {
+			if (state.success) {
+				router.replace('/login');
+			}
 			toast({
 				description: state.message,
 				title: state?.success ? 'Success' : 'Error',
@@ -23,30 +31,50 @@ export default function ResetForm() {
 				duration: 5000,
 			});
 		}
-	}, [state]);
+	}, [state, router]);
 
 	return (
 		<div className={`grid gap-3 `}>
 			<form action={formAction}>
 				<div className='grid gap-3'>
 					<div className='grid gap-2'>
-						<Label className='font-semibold text-[15px]'>Email</Label>
+						<div className='flex items-center'>
+							<Label className='font-semibold text-[15px] '>Password</Label>
+						</div>
 						<Input
-							type='email'
-							name='email'
-							placeholder='name@example.com'
+							type='password'
+							name='password'
+							placeholder='********'
 							className={cn(
 								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
-								state?.errors?.email
+								state?.errors?.password
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
 									: ''
 							)}
 							required
 						/>
-
-						<ErrorMessage errors={state?.errors?.email} />
+						<ErrorMessage errors={state?.errors?.password} />
 					</div>
-
+					<div className='grid gap-2'>
+						<div className='flex items-center'>
+							<Label className='font-semibold text-[15px] '>
+								Confirm Password
+							</Label>
+						</div>
+						<Input
+							type='password'
+							name='confirmPassword'
+							placeholder='********'
+							className={cn(
+								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
+								state?.errors?.confirmPassword
+									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
+							required
+						/>
+						<ErrorMessage errors={state?.errors?.confirmPassword} />
+					</div>
 					<SubmitButton className='mt-2.5 w-full'>Send Reset Link</SubmitButton>
 				</div>
 			</form>

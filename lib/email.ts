@@ -5,6 +5,33 @@ interface EmailParams {
 	name: string;
 	from: string;
 	body: string;
+	to?: string;
+}
+
+export async function sendPasswordResetEmail(email: string, token: string) {
+	const resetLink = `${process.env.NEXTAUTH_URL}/update-password?token=${token}`;
+
+	await sendEmail({
+		subject: 'Password Reset Request for Sounding Future',
+		name: 'Sounding Future', // Replace with your actual app name
+		from: process.env.EMAIL_USER || 'noreply@yourdomain.com',
+		to: email,
+		body: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">Password Reset Request</h1>
+        <p>You have requested a password reset for your account. Click the link below to reset your password:</p>
+        <p style="margin: 20px 0;">
+          <a href="${resetLink}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            Reset Password
+          </a>
+        </p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <small style="color: #888;">This is an automated email. Please do not reply.</small>
+      </div>
+    `,
+	});
 }
 
 export async function sendEmail({
@@ -12,6 +39,7 @@ export async function sendEmail({
 	name,
 	from,
 	body,
+	to,
 }: EmailParams): Promise<void> {
 	const myEmail = process.env.EMAIL_USER;
 	const transporter = nodemailer.createTransport({
@@ -23,7 +51,7 @@ export async function sendEmail({
 	const mailOptions = {
 		from: `"${name}" <${myEmail}>`,
 		replyTo: from,
-		to: process.env.EMAIL_RECEIVER,
+		to: to || process.env.EMAIL_RECEIVER,
 		subject,
 		html: body,
 	};
