@@ -93,7 +93,16 @@ export default function page() {
 									{f.question}
 								</AccordionTrigger>
 								<AccordionContent className='text-base px-5 pt-5'>
-									<p>{f.answer}</p>
+									{f.answer}{' '}
+									{f.link && (
+										<Link
+											href={f.link}
+											target='_blank'
+											className='text-primary-foreground hover:underline'
+										>
+											Click here
+										</Link>
+									)}
 								</AccordionContent>
 							</AccordionItem>
 						))}
@@ -171,7 +180,8 @@ const Faq = [
 	{
 		question: 'Which format must my audio track have?',
 		answer:
-			'We need either a multichannel audio format like 5.1, 7.2, etc. or ideally a HOA 5 (Higher Order Ambisonics) file. Please send us your audio file and photos. File Specification: Multichannel .wav file, AmbiX format, 48kHz sampling rate, 24bit resolution | Here you can find a Reaper template from our partner IEM: https://iaem.at/ambisonics/s3dapc/2024/reapertemplate_s3dapc.zip/view',
+			'We need either a multichannel audio format like 5.1, 7.2, etc. or ideally a HOA 5 (Higher Order Ambisonics) file. Please send us your audio file and photos. File Specification: Multichannel .wav file, AmbiX format, 48kHz sampling rate, 24bit resolution | Here you can find a Reaper template from our partner IEM: ',
+		link: 'https://iaem.at/ambisonics/s3dapc/2024/reapertemplate_s3dapc.zip/view',
 	},
 	{
 		question: 'Which information do you need from me as an artist?',

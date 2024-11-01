@@ -1,5 +1,7 @@
+import ContactDialog from '@/components/contactForm/ContactDialog';
 import TermsLegalBanner from '@/components/termsAndLegal/TermsLegalBanner';
 import TermsLegalNav from '@/components/termsAndLegal/TermsLegalNav';
+import { Button } from '@/components/ui/button';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
@@ -8,6 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			<TermsLegalNav />
 
 			{children}
+			<ContactDialog>
+				<Button>Contact Us</Button>
+			</ContactDialog>
 		</main>
 	);
 }
