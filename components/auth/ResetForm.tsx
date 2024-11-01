@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormState } from 'react-dom';
@@ -10,7 +9,7 @@ import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import SignWithGoogle from './SignWithGoogle';
 
-export default function LoginForm() {
+export default function ResetForm() {
 	const [state, formAction] = useFormState(login, {});
 
 	return (
@@ -34,37 +33,13 @@ export default function LoginForm() {
 
 						<ErrorMessage errors={state?.errors?.email} />
 					</div>
-					<div className='grid gap-2'>
-						<div className='flex items-center'>
-							<Label className='font-semibold text-[15px] '>Password</Label>
-							<Link
-								href='/reset-password'
-								className='ml-auto inline-block text-[15px] text-primary-foreground underline font-semibold '
-							>
-								Forgot password?
-							</Link>
-						</div>
-						<Input
-							type='password'
-							name='password'
-							placeholder='********'
-							className={cn(
-								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
-								state?.errors?.password
-									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive '
-									: ''
-							)}
-							required
-						/>
-						<ErrorMessage errors={state?.errors?.password} />
-					</div>
 
 					<div>
 						<ErrorMessage
 							errors={state?.message ? [state.message] : undefined}
 						/>
 						<SubmitButton className='mt-2.5 w-full'>
-							Login With Email
+							Send Reset Link
 						</SubmitButton>
 					</div>
 				</div>

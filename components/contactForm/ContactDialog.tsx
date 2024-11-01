@@ -52,19 +52,19 @@ export default function ContactDialog({
 	return (
 		<Dialog open={open} onOpenChange={setopen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent className='sm:max-w-xl bg-button text-white border-transparent'>
+			<DialogContent className='sm:max-w-xl bg-[#1B273D] text-white border-transparent'>
 				<DialogHeader className='relative'>
 					<DialogTitle className='text-3xl font-semibold'>Contact</DialogTitle>
 				</DialogHeader>
 
-				<form ref={formRef} action={formAction} className='space-y-4'>
+				<form ref={formRef} action={formAction} className='space-y-4 '>
 					<div className='space-y-1.5'>
 						<Label htmlFor='subject'>Subject</Label>
 						<Input
 							name='subject'
 							placeholder='Subject'
 							className={cn(
-								'text-foreground',
+								'text-foreground bg-[#141B29] text-white border-[#141B29]',
 								state.errors?.subject && 'border-destructive'
 							)}
 							required
@@ -81,7 +81,7 @@ export default function ContactDialog({
 								name='firstName'
 								placeholder='John'
 								className={cn(
-									'text-foreground',
+									'text-foreground bg-[#141B29] text-white border-[#141B29]',
 									state.errors?.firstName && 'border-destructive'
 								)}
 								required
@@ -96,7 +96,7 @@ export default function ContactDialog({
 								name='lastName'
 								placeholder='Doe'
 								className={cn(
-									'text-foreground',
+									'text-foreground bg-[#141B29] text-white border-[#141B29]',
 									state.errors?.lastName && 'border-destructive'
 								)}
 								required
@@ -114,7 +114,7 @@ export default function ContactDialog({
 							type='email'
 							placeholder='E-Mail'
 							className={cn(
-								'text-foreground',
+								'text-foreground bg-[#141B29] text-white border-[#141B29]',
 								state.errors?.email && 'border-destructive'
 							)}
 							required
@@ -130,7 +130,7 @@ export default function ContactDialog({
 							name='message'
 							placeholder='Message'
 							className={cn(
-								'text-foreground',
+								'text-foreground bg-[#141B29] text-white border-[#141B29]',
 								' min-h-[150px]',
 								state.errors?.message && 'border-destructive'
 							)}
