@@ -1,13 +1,9 @@
 import React from 'react';
 import { Icons } from '@/components/icons/legal-icons';
-import { buttonVariants } from '@/components/ui/button';
-import { SUBSCRIBE_LINK } from '@/config/links';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 export default function SubscriptionCard() {
 	return (
-		<div className='bg-secondary-foreground text-white p-8 rounded-3xl max-w-2xl'>
+		<div className='bg-card text-white p-8 rounded-3xl max-w-2xl'>
 			<div className='space-y-8 '>
 				<div className='flex gap-4 items-start'>
 					<Icons.donate className='w-9 h-auto aspect-square fill-white mt-3' />
@@ -66,16 +62,7 @@ export default function SubscriptionCard() {
 					</ul>
 				</div>
 
-				<div className='space-y-4'>
-					<Link
-						href={SUBSCRIBE_LINK}
-						target='_blank'
-						className={cn(buttonVariants(), 'w-full sm:w-auto px-4')}
-					>
-						Subscribe Now
-					</Link>
-					<p className='text-sm'>Thank you for your support!</p>
-				</div>
+				<p className='text-sm'>Thank you for your support!</p>
 			</div>
 		</div>
 	);

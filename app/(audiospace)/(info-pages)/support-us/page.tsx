@@ -1,3 +1,4 @@
+import { ContactUsLink } from '@/components/termsAndLegal/ContactUsButton';
 import NewsLetter from '@/components/termsAndLegal/NewsLetter';
 import SocialLinks from '@/components/termsAndLegal/SocialLinks';
 import SubscriptionCard from '@/components/termsAndLegal/support-us/SubscriptionCard';
@@ -21,8 +22,8 @@ export default function page() {
 				<Link
 					href={SUBSCRIBE_LINK}
 					className={cn(
-						buttonVariants({ size: 'sm' }),
-						'w-full sm:w-auto px-4 bg-button hover:bg-button text-sm'
+						buttonVariants(),
+						'w-full sm:w-auto bg-button hover:bg-button'
 					)}
 					target='_blank'
 				>
@@ -31,11 +32,7 @@ export default function page() {
 				<p className=''>
 					Or of course by bank transfer.
 					<br />
-					Please{' '}
-					<span className='underline text-primary-foreground cursor-pointer hover:text-primary-foreground/90'>
-						contact us
-					</span>{' '}
-					via the contact form
+					Please <ContactUsLink /> via the contact form
 				</p>
 			</div>
 		</div>

@@ -19,8 +19,8 @@ export default function NewsLetter() {
 				href={NEWS_LETTER_LINK}
 				target='_blank'
 				className={cn(
-					buttonVariants({ size: 'sm' }),
-					'w-full sm:w-auto px-4 bg-button hover:bg-button text-sm'
+					buttonVariants(),
+					'w-full sm:w-auto bg-button hover:bg-button '
 				)}
 			>
 				Join our Newsletter

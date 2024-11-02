@@ -4,16 +4,15 @@ import { cn } from '@/lib/utils';
 import { buttonVariants } from '../ui/button';
 import SocialLinks from './SocialLinks';
 
-export default function TermsLinks() {
+export default function TermsLinks({ className }: { className?: string }) {
 	return (
-		<aside className='space-y-6'>
+		<aside className={cn('space-y-6', className)}>
 			<div>
 				<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
 					Support us
 				</h1>
 				<Link
 					href={'/support-us'}
-					target='_blank'
 					className={cn(buttonVariants({ variant: 'secondary' }), 'h-8 px-4')}
 				>
 					Support

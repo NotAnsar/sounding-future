@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 
 export default function PrivacyPolicy() {
 	return (
@@ -115,21 +114,6 @@ export default function PrivacyPolicy() {
 					data indicated below.
 				</p>
 			</section>
-
-			<div className='mt-12 space-y-6'>
-				<div className='text-center'>
-					<Button variant='default' className='w-full sm:w-auto'>
-						Contact Us
-					</Button>
-				</div>
-
-				<p className='text-sm text-muted text-center'>
-					We reserve the right to update this Privacy Policy. Changes will be
-					posted on the Platform, and your continued use of our Services
-					following any such change will constitute your acceptance of the
-					updated Policy.
-				</p>
-			</div>
 		</div>
 	);
 }

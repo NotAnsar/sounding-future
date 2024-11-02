@@ -84,4 +84,9 @@ export const Faq = [
 		answer:
 			'We convert your Ambisonics files to binaural now, but in the future the Ambisonics format gives us more options. Ambisonics uses a complex set of mathematical algorithms to capture and reproduce sound in such a way that the direction, height and depth of sound sources are represented in three-dimensional space. In addition to spatial sound quality, head tracking will also be integrated into the audio player in the future. Head tracking is a technology that detects and tracks the movement of the head. 3D audio with head tracking mimics natural hearing even better by reproducing spatial sound in 360 degrees and taking the position of the head into account. It works in a similar way to the human sense of direction, distance and ambient noise. of direction, distance and background noise.',
 	},
+	{
+		question: 'What about money?',
+		answer:
+			'We present 3D Audio Showcase tracks from artists. The tracks are and will remain free. At the moment we do not pay the artists with money. We invest our free time in this project to keep the platform running. We also "pay" the artists indirectly through our work on the articles (author selection, editing, translation) and the audio tracks (conversion, editing). We cover all costs for digital infrastructure, promotion and editorial work. We are working on finding sponsors for the development and maintenance of the project. In the future, we would also like to find a way for the artists to benefit financially in a better way than the big streaming platforms do.',
+	},
 ];

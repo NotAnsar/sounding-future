@@ -9,8 +9,8 @@
 		--player: 0 0% 90%;
 		--player-foreground: 220 42% 16%;
 
-		--card: 0 0% 100%;
-		--card-foreground: 240 10% 3.9%;
+		--card: 275 40% 28%;
+		--card-foreground: 275 40% 28%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 240 10% 3.9%;
 		--primary: 313 52% 45%;
@@ -41,8 +41,8 @@
 		--foreground: 0 0% 100%;
 		--player: 220 42% 16%;
 		--player-foreground: 0 0% 90%;
-		--card: 240 10% 3.9%;
-		--card-foreground: 0 0% 98%;
+		--card: 275 40% 28%;
+		--card-foreground: 275 40% 28%;
 		--popover: 240 10% 3.9%;
 		--popover-foreground: 0 0% 98%;
 		--primary: 313 52% 45%;
@@ -118,4 +118,18 @@
 
 .rdp-vhidden {
 	@apply hidden;
+}
+
+.frc-icon {
+	@apply !fill-muted !text-muted !stroke-muted !w-6 !aspect-square !h-auto;
+}
+
+.frc-button {
+	@apply !bg-primary !text-white !text-xs !font-medium;
+}
+.frc-text {
+	@apply !text-sm;
+}
+.frc-content {
+	@apply !max-w-60;
 }

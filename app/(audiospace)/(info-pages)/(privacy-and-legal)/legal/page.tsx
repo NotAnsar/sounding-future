@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 
 export default function TermsOfUse() {
 	return (
@@ -98,19 +97,6 @@ export default function TermsOfUse() {
 						Platform.
 					</p>
 				</section>
-
-				<div className='mt-12 space-y-6'>
-					<div className='text-center'>
-						<Button variant='default' className='w-full sm:w-auto'>
-							Contact Us
-						</Button>
-					</div>
-
-					<p className='text-sm text-muted text-center'>
-						If you have any questions about this privacy policy or if you wish
-						to exercise your rights, please:
-					</p>
-				</div>
 			</div>
 		</div>
 	);

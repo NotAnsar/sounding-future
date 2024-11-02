@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import {
 	Dialog,
@@ -19,7 +18,6 @@ import { toast } from '@/hooks/use-toast';
 import { ContactState, submitContact } from '@/actions/contact-action';
 import ErrorMessage from '../ErrorMessage';
 import { Label } from '../ui/label';
-import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
 
 const initialState: ContactState = {
 	message: null,
@@ -27,25 +25,13 @@ const initialState: ContactState = {
 };
 
 export default function ContactDialog({
-	setopen,
-	open,
 	children,
 }: {
-	open: boolean;
 	children: React.ReactNode;
-	setopen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-	
+	const [open, setopen] = useState(false);
 	const formRef = useRef<HTMLFormElement>(null);
 	const [state, formAction] = useFormState(submitContact, initialState);
-
-	const captchaHook = useCaptchaHook({
-		siteKey: FRIENDLY_CAPTCHA_SITEKEY,
-		endpoint: 'GLOBAL1',
-		language: 'en',
-		startMode: 'none',
-		showAttribution: true,
-	});
 
 	useEffect(() => {
 		if (state.message) {
@@ -63,30 +49,15 @@ export default function ContactDialog({
 		}
 	}, [state, setopen]);
 
-	const handleSubmit = async (formData: FormData) => {
-		if (captchaHook.captchaStatus.solution === null) {
-			toast({
-				description: "Cant submit form, puzzle hasn't been solved yet!",
-				title: 'Error',
-				variant: 'destructive',
-				duration: 5000,
-			});
-			return;
-		}
-
-		return formAction(formData);
-	};
-
 	return (
-		<Dialog open={open} onOpenChange={setopen} key={open + ''}>
+		<Dialog open={open} onOpenChange={setopen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className='sm:max-w-xl bg-[#1B273D] text-white border-transparent'>
 				<DialogHeader className='relative'>
 					<DialogTitle className='text-3xl font-semibold'>Contact</DialogTitle>
 				</DialogHeader>
 
-				{/* <form ref={formRef} action={formAction} className='space-y-4 '> */}
-				<form ref={formRef} action={handleSubmit} className='space-y-4 '>
+				<form ref={formRef} action={formAction} className='space-y-4 '>
 					<div className='space-y-1.5'>
 						<Label htmlFor='subject'>Subject</Label>
 						<Input
@@ -171,24 +142,21 @@ export default function ContactDialog({
 						)}
 					</div>
 
-					{captchaHook.CaptchaWidget({})}
-
-					<SubmitButton disabled={!!!captchaHook.captchaStatus.solution} />
-					<div className='[&>button]:bg-red-600'></div>
+					<SubmitButton />
 				</form>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
-function SubmitButton({ disabled = false }: { disabled?: boolean }) {
+function SubmitButton() {
 	const { pending } = useFormStatus();
 
 	return (
 		<Button
 			type='submit'
-			disabled={disabled || pending}
-			className='text-white flex items-center justify-center gap-2 '
+			disabled={pending}
+			className='text-white flex items-center justify-center gap-2'
 		>
 			{pending ? (
 				<Loader className='h-4 w-4 animate-spin' />

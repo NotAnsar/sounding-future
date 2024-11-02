@@ -44,8 +44,7 @@ export default async function TopNav({ className }: { className?: string }) {
 					<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden sm:block ' />
 					<div className='ml-auto flex items-center gap-2'>
 						<Link
-							href={'https://www.soundingfuture.com/en/support'}
-							target='_blank'
+							href={'/support-us'}
 							className={cn(
 								buttonVariants({ variant: 'secondary' }),
 								'text-[13px] sm:text-sm px-3 h-8 sm:px-4 border-foreground/80'
