@@ -130,6 +130,3 @@
 .frc-text {
 	@apply !text-sm;
 }
-.frc-content {
-	@apply !max-w-60;
-}

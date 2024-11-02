@@ -35,7 +35,6 @@ export default function ContactDialog({
 	children: React.ReactNode;
 	setopen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-	
 	const formRef = useRef<HTMLFormElement>(null);
 	const [state, formAction] = useFormState(submitContact, initialState);
 
@@ -86,7 +85,7 @@ export default function ContactDialog({
 				</DialogHeader>
 
 				{/* <form ref={formRef} action={formAction} className='space-y-4 '> */}
-				<form ref={formRef} action={handleSubmit} className='space-y-4 '>
+				<form ref={formRef} action={handleSubmit} className='space-y-4 '>   
 					<div className='space-y-1.5'>
 						<Label htmlFor='subject'>Subject</Label>
 						<Input

@@ -8,14 +8,38 @@ import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import { register } from '@/actions/auth/signup';
 import SignWithGoogle from './SignWithGoogle';
+import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
+import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
+import { toast } from '@/hooks/use-toast';
 
 export default function SignInForm() {
 	const [state, formAction] = useFormState(register, {});
+	const captchaHook = useCaptchaHook({
+		siteKey: FRIENDLY_CAPTCHA_SITEKEY,
+		endpoint: 'GLOBAL1',
+		language: 'en',
+		startMode: 'none',
+		showAttribution: true,
+	});
+
+	const handleSubmit = async (formData: FormData) => {
+		if (captchaHook.captchaStatus.solution === null) {
+			toast({
+				description: "Cant submit form, puzzle hasn't been solved yet!",
+				title: 'Error',
+				variant: 'destructive',
+				duration: 5000,
+			});
+			return;
+		}
+
+		return formAction(formData);
+	};
 
 	return (
 		<div className={`grid gap-2.5`}>
-			<form action={formAction}>
-				<div className='grid gap-2.5'>
+			<form action={handleSubmit}>
+				<div className='grid gap-2'>
 					<div className='grid gap-2'>
 						<Label className='font-semibold text-[15px]'>Username</Label>
 						<Input
@@ -23,6 +47,7 @@ export default function SignInForm() {
 							placeholder='JohnDoe'
 							className={cn(
 								'h-12 text-base placeholder:text-base ring-1 ring-transparent focus-visible:ring-1 focus-visible:ring-primary/40',
+
 								state?.errors?.username
 									? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive'
 									: ''
@@ -67,7 +92,12 @@ export default function SignInForm() {
 						<ErrorMessage
 							errors={state.message ? [state.message] : undefined}
 						/>
-						<SubmitButton className='mt-1.5 w-full'>
+						{captchaHook.CaptchaWidget({})}
+
+						<SubmitButton
+							className='mt-2.5 w-full'
+							disabled={!!!captchaHook.captchaStatus.solution}
+						>
 							Sign Up with Email
 						</SubmitButton>
 					</div>

@@ -6,10 +6,12 @@ import { Loader } from 'lucide-react';
 export function SubmitButton({
 	children,
 	className,
+	disabled = false,
 	...props
 }: {
 	children: React.ReactNode;
 	className?: string;
+	disabled?: boolean;
 } & React.ComponentPropsWithoutRef<typeof Button>) {
 	const { pending } = useFormStatus();
 
@@ -17,7 +19,7 @@ export function SubmitButton({
 		<Button
 			type='submit'
 			size='xl'
-			disabled={pending}
+			disabled={disabled || pending}
 			className={cn('flex items-center font-semibold text-[15px]', className)}
 			{...props}
 		>

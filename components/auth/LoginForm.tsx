@@ -9,13 +9,39 @@ import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import SignWithGoogle from './SignWithGoogle';
+import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
+import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
+import { toast } from '@/hooks/use-toast';
 
 export default function LoginForm() {
 	const [state, formAction] = useFormState(login, {});
 
+	const captchaHook = useCaptchaHook({
+		siteKey: FRIENDLY_CAPTCHA_SITEKEY,
+		endpoint: 'GLOBAL1',
+		language: 'en',
+		startMode: 'none',
+		showAttribution: true,
+	});
+
+	const handleSubmit = async (formData: FormData) => {
+		if (captchaHook.captchaStatus.solution === null) {
+			toast({
+				description: "Cant submit form, puzzle hasn't been solved yet!",
+				title: 'Error',
+				variant: 'destructive',
+				duration: 5000,
+			});
+			return;
+		}
+
+		return formAction(formData);
+	};
+
 	return (
 		<div className={`grid gap-3 `}>
-			<form action={formAction}>
+			{/* <form action={formAction}> */}
+			<form action={handleSubmit}>
 				<div className='grid gap-3'>
 					<div className='grid gap-2'>
 						<Label className='font-semibold text-[15px]'>Email</Label>
@@ -63,7 +89,12 @@ export default function LoginForm() {
 						<ErrorMessage
 							errors={state?.message ? [state.message] : undefined}
 						/>
-						<SubmitButton className='mt-2.5 w-full'>
+						{captchaHook.CaptchaWidget({})}
+
+						<SubmitButton
+							className='mt-2.5 w-full'
+							disabled={!!!captchaHook.captchaStatus.solution}
+						>
 							Login With Email
 						</SubmitButton>
 					</div>
