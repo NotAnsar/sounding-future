@@ -40,7 +40,7 @@ export default async function TopNav({ className }: { className?: string }) {
 						/>
 					</Link>
 				</div>
-				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 md:gap-0'>
+				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 '>
 					<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden sm:block ' />
 					<div className='ml-auto flex items-center gap-2'>
 						<Link

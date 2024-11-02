@@ -89,7 +89,7 @@ export default function LoginForm() {
 						<ErrorMessage
 							errors={state?.message ? [state.message] : undefined}
 						/>
-						{captchaHook.CaptchaWidget({})}
+						<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 
 						<SubmitButton
 							className='mt-2.5 w-full'

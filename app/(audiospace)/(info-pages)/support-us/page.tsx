@@ -10,8 +10,8 @@ import React from 'react';
 
 export default function page() {
 	return (
-		<div className='grid xl:grid-cols-3 gap-6'>
-			<div className='md:col-span-2 max-w-2xl space-y-6'>
+		<div className='grid xl:grid-cols-3 gap-6 '>
+			<div className='md:col-span-2 max-w-2xl space-y-6 mt-4'>
 				<SubscriptionCard />
 				<NewsLetter />
 				<SocialLinks />

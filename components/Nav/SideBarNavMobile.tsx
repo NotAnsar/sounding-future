@@ -5,7 +5,12 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { mainNav } from '@/config/sidenav';
 
-import { SheetContent, SheetDescription, SheetTitle } from '../ui/sheet';
+import {
+	SheetClose,
+	SheetContent,
+	SheetDescription,
+	SheetTitle,
+} from '../ui/sheet';
 import Image from 'next/image';
 import NavItem from './NavItem';
 import { Fragment } from 'react';
@@ -83,7 +88,9 @@ export default function SideBarNavMobile({
 				<div className='flex mt-auto pl-4 text-muted'>
 					{LEGAL_NAV.filter((l) => l.show).map((l, index, t) => (
 						<Fragment key={l.href}>
-							<Link href={l.href}>{l.label}</Link>
+							<SheetClose asChild>
+								<Link href={l.href}>{l.label}</Link>
+							</SheetClose>
 							{index < t.length - 1 && <span className='px-1'>|</span>}
 						</Fragment>
 					))}

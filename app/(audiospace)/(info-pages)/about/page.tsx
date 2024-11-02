@@ -16,8 +16,8 @@ import React from 'react';
 
 export default function page() {
 	return (
-		<div className='space-y-14'>
-			<div className='max-w-6xl'>
+		<div className='grid gap-14 '>
+			<div className='max-w-6xl mt-4'>
 				<div className='space-y-14'>
 					<header className='space-y-2'>
 						<p className=' max-w-5xl'>

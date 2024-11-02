@@ -85,7 +85,7 @@ export default function ContactDialog({
 				</DialogHeader>
 
 				{/* <form ref={formRef} action={formAction} className='space-y-4 '> */}
-				<form ref={formRef} action={handleSubmit} className='space-y-4 '>   
+				<form ref={formRef} action={handleSubmit} className='space-y-4 '>
 					<div className='space-y-1.5'>
 						<Label htmlFor='subject'>Subject</Label>
 						<Input
@@ -170,7 +170,7 @@ export default function ContactDialog({
 						)}
 					</div>
 
-					{captchaHook.CaptchaWidget({})}
+					<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 
 					<SubmitButton disabled={!!!captchaHook.captchaStatus.solution} />
 					<div className='[&>button]:bg-red-600'></div>
