@@ -106,7 +106,7 @@ export default function TrackList({
 									<Heart
 										className={cn(
 											'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
-											track.liked ? 'text-foreground fill-foreground' : ''
+											true ? 'text-foreground fill-foreground' : ''
 										)}
 									/>
 								</TableCell>

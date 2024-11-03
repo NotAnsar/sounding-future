@@ -13,18 +13,6 @@ export interface Artist {
 	genres: Genre[]; //min 1 , max 3
 }
 
-export type Track = {
-	id: string;
-	title: string;
-	artist: Artist;
-	collection: Collection; // Added this field
-	genre: Genre;
-	duration: number;
-	cover: string;
-	url: string;
-	liked: boolean;
-};
-
 export type Genre = {
 	id: string;
 	name: string;
@@ -151,6 +139,19 @@ export const artists: Artist[] = [
 		genres: [genres[1], genres[2], genres[4]], // Field Recordings, Contemporary Music, Sound Art
 	},
 ];
+export type Track = {
+	id: string;
+	title: string;
+	artist: Artist;
+	collection: Collection;
+	genre: Genre;
+	duration: number;
+	created_at: string;
+	cover: string;
+	url: string;
+	liked: number; // Updated from boolean to number
+	played: number; // New property
+};
 
 export const tracks: Track[] = [
 	{
@@ -158,12 +159,13 @@ export const tracks: Track[] = [
 		title: 'Neon Dreams',
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
 		collection: collections.find((c) => c.name === 'Audiomatch')!,
-		// genre: genres.find((c) => c.name === 'Electronic Music')!,
 		genre: genres.find((c) => c.name === 'Electronic Music')!,
 		duration: 474,
 		cover: '/tracks/Neon-Dreams.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t3.mp3?t=2024-10-02T19%3A40%3A31.399Z',
-		liked: false,
+		liked: 5,
+		played: 120,
+		created_at: '2024-10-02T19:40:31Z',
 	},
 	{
 		id: '2',
@@ -174,7 +176,9 @@ export const tracks: Track[] = [
 		duration: 344,
 		cover: '/tracks/Synthwave-Sunset.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t2.mp3?t=2024-10-02T19%3A40%3A19.046Z',
-		liked: true,
+		liked: 2,
+		played: 75,
+		created_at: '2024-10-02T19:40:19Z',
 	},
 	{
 		id: '4',
@@ -185,7 +189,9 @@ export const tracks: Track[] = [
 		duration: 734,
 		cover: '/tracks/Cyber-Flux.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t4.mp3?t=2024-10-02T19%3A40%3A40.642Z',
-		liked: false,
+		liked: 0,
+		played: 10,
+		created_at: '2022-10-23T19:40:40Z',
 	},
 	{
 		id: '5',
@@ -196,7 +202,9 @@ export const tracks: Track[] = [
 		duration: 792,
 		cover: '/tracks/Electric-Horizon.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t5.mp3?t=2024-10-02T19%3A40%3A59.206Z',
-		liked: false,
+		liked: 8,
+		played: 200,
+		created_at: '2024-10-12T19:40:59Z',
 	},
 	{
 		id: '6',
@@ -206,30 +214,23 @@ export const tracks: Track[] = [
 		genre: genres.find((c) => c.name === 'Electronic Music')!,
 		duration: 132,
 		cover: '/tracks/Gravity-Shift.png',
-		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t6.mp3?t=2024-10-02T19%3A41%3A18.707Z',
-		liked: false,
-	},
-	{
-		id: '1',
-		title: 'Digital Mirage',
-		artist: artists.find((a) => a.name === 'Anna Novak')!,
-		collection: collections.find((c) => c.name === 'Audiostuff')!,
-		genre: genres.find((c) => c.name === 'Electronic Music')!,
-		duration: 233,
-		cover: '/tracks/Digital-Mirage.png',
-		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t1.mp3?t=2024-10-02T19%3A40%3A04.164Z',
-		liked: false,
+		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t6.mp3?t=2024-10-02T19%3A41%3A12.623Z',
+		liked: 3,
+		played: 90,
+		created_at: '2021-10-02T19:41:12Z',
 	},
 	{
 		id: '7',
-		title: 'Leaves of 342',
+		title: 'Waves of the Ocean',
 		artist: artists.find((a) => a.name === 'Anna Novak')!,
 		collection: collections.find((c) => c.name === 'Soco festival')!,
-		genre: genres.find((c) => c.name === 'Electronic Music')!,
-		duration: 524,
+		genre: genres.find((c) => c.name === 'Field Recordings')!,
+		duration: 540,
 		cover: '/tracks/Leaves-of-342.png',
-		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t7.mp3?t=2024-10-02T19%3A41%3A31.746Z',
-		liked: true,
+		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t7.mp3?t=2024-10-02T19%3A41%3A31.098Z',
+		liked: 6,
+		played: 45,
+		created_at: '2024-1-02T19:41:31Z',
 	},
 	{
 		id: '8',
@@ -239,8 +240,10 @@ export const tracks: Track[] = [
 		genre: genres.find((c) => c.name === 'Field Recordings')!,
 		duration: 444,
 		cover: '/tracks/Pulse-of-the-City.png',
-		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t8.mp3?t=2024-10-02T19%3A41%3A46.065Z',
-		liked: false,
+		url: 'https://oekyfpijfbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t8.mp3?t=2024-10-02T19%3A41%3A46.065Z',
+		liked: 1,
+		played: 65,
+		created_at: '2020-10-22T19:41:46Z',
 	},
 	{
 		id: '9',
@@ -251,7 +254,9 @@ export const tracks: Track[] = [
 		duration: 540,
 		cover: '/tracks/Silent-Frequencies.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t9.mp3?t=2024-10-02T19%3A41%3A53.253Z',
-		liked: true,
+		liked: 3,
+		played: 50,
+		created_at: '2021-10-02T19:41:53Z',
 	},
 	{
 		id: '10',
@@ -262,7 +267,9 @@ export const tracks: Track[] = [
 		duration: 396,
 		cover: '/tracks/Digital-Mirage.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t10.mp3?t=2024-10-02T19%3A42%3A08.713Z',
-		liked: false,
+		liked: 4,
+		played: 150,
+		created_at: '2022-10-02T19:42:08Z',
 	},
 	{
 		id: '11',
@@ -273,7 +280,9 @@ export const tracks: Track[] = [
 		duration: 504,
 		cover: '/tracks/Cyber-Flux.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t11.mp3?t=2024-10-02T19%3A42%3A16.855Z',
-		liked: false,
+		liked: 7,
+		played: 25,
+		created_at: '2024-4-02T19:42:16Z',
 	},
 	{
 		id: '12',
@@ -284,14 +293,21 @@ export const tracks: Track[] = [
 		duration: 204,
 		cover: '/tracks/Neon-Dreams.png',
 		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t12.mp3',
-		liked: false,
+		liked: 3,
+		played: 12,
+		created_at: '2024-9-02T19:42:30Z',
 	},
-];
-
-export const gradients = [
-	'linear-gradient(180deg,  0%,  100%)',
-	'linear-gradient(180deg, 100%)',
-	'linear-gradient(180deg, 100%)',
-	'linear-gradient(180deg, 100%)',
-	'linear-gradient(180deg, 100%)',
+	{
+		id: '13',
+		title: 'Leaves of 342',
+		artist: artists.find((a) => a.name === 'Anna Novak')!,
+		collection: collections.find((c) => c.name === 'Soco festival')!,
+		genre: genres.find((c) => c.name === 'Field Recordings')!,
+		duration: 540,
+		cover: '/tracks/Leaves-of-342.png',
+		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t7.mp3?t=2024-10-02T19%3A41%3A31.098Z',
+		liked: 45,
+		played: 200,
+		created_at: '2024-10-04T19:41:31Z',
+	},
 ];

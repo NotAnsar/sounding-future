@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
+	AudioLines,
 	Newspaper,
 	Settings,
-	Upload,
 	UserIcon,
 	UserRoundCog,
 } from 'lucide-react';
@@ -97,11 +97,11 @@ export default function UserNav({
 
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
-						href={'/user/upload-track'}
+						href={'/user/tracks'}
 						className='px-2 py-2.5 w-full flex items-center'
 					>
-						<Upload className='w-4 h-auto mr-2 ' />
-						Upload Track
+						<AudioLines className='w-4 h-auto mr-2 ' />
+						My Tracks
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />

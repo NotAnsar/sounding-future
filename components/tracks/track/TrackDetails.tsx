@@ -11,7 +11,7 @@ import { Track } from '@/config/dummy-data';
 
 export default function TrackDetails({ track }: { track: Track }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
-	const [liked, setliked] = useState(track.liked);
+	const [liked, setliked] = useState(false);
 	const [followed, setFollowed] = useState(false);
 	const isCurrentTrack = currentTrack?.id === track.id;
 
