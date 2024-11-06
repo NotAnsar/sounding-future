@@ -1,4 +1,3 @@
-import NotFound from '@/app/not-found';
 import { columns } from '@/components/TracksForm/table/columns';
 import { DataTable } from '@/components/TracksForm/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
@@ -7,12 +6,13 @@ import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Upload } from 'lucide-react';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export default async function page() {
 	const session = await auth();
 
 	if (!session) {
-		NotFound();
+		notFound();
 	}
 
 	return (

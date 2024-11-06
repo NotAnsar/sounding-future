@@ -1,7 +1,7 @@
 'use client';
-import NotFound from '@/app/not-found';
+
 import { LEGAL_NAV } from '@/config/legal';
-import { usePathname } from 'next/navigation';
+import { notFound, usePathname } from 'next/navigation';
 import React from 'react';
 
 export default function TermsLegalBanner() {
@@ -9,7 +9,7 @@ export default function TermsLegalBanner() {
 	const nav = LEGAL_NAV.find((l) => l.href === path);
 
 	if (!nav) {
-		NotFound();
+		notFound();
 	}
 
 	return (

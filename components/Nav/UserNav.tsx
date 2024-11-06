@@ -10,8 +10,10 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
 	AudioLines,
+	Handshake,
 	Newspaper,
 	Settings,
+	Tags,
 	UserIcon,
 	UserRoundCog,
 } from 'lucide-react';
@@ -28,6 +30,7 @@ export default function UserNav({
 	className?: string;
 	user: User;
 }) {
+	const isAdmin = user.role === 'admin';
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className={cn('relative', className)}>
@@ -95,15 +98,40 @@ export default function UserNav({
 					</Link>
 				</DropdownMenuItem>
 
+				{isAdmin ? <DropdownMenuSeparator /> : null}
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'/user/tracks'}
 						className='px-2 py-2.5 w-full flex items-center'
 					>
 						<AudioLines className='w-4 h-auto mr-2 ' />
-						My Tracks
+						{`${isAdmin ? '' : 'My '}Tracks`}
 					</Link>
 				</DropdownMenuItem>
+
+				{isAdmin ? (
+					<>
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/curated'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<Handshake className='w-4 h-auto mr-2 ' />
+								Curating Partners
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/tags'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<Tags className='w-4 h-auto mr-2 ' />
+								Tags Management
+							</Link>
+						</DropdownMenuItem>
+					</>
+				) : null}
+
 				<DropdownMenuSeparator />
 
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>

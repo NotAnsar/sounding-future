@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation';
-
 import { artists } from '@/config/dummy-data';
-
 import ArtistDetails from '@/components/artists/ArtistDetails';
 import { Tabs } from '@/components/ui/tabs';
 import ArtistNav from '@/components/artists/ArtistNav';

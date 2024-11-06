@@ -1,19 +1,18 @@
-import NotFound from '@/app/not-found';
 import { columns } from '@/components/curatedForm/table/columns';
 import { DataTable } from '@/components/curatedForm/table/data-table';
-
 import { buttonVariants } from '@/components/ui/button';
 import { collections } from '@/config/dummy-data';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export default async function page() {
 	const session = await auth();
 
-	if (!session) {
-		NotFound();
+	if (!session || session.user.role !== 'admin') {
+		notFound();
 	}
 
 	return (
