@@ -1,5 +1,5 @@
-import { columns } from '@/components/curatedForm/table/columns';
-import { DataTable } from '@/components/curatedForm/table/data-table';
+import { columns } from '@/components/CuratedCrud/table/columns';
+import { DataTable } from '@/components/CuratedCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
 import { collections } from '@/config/dummy-data';
 import { auth } from '@/lib/auth';

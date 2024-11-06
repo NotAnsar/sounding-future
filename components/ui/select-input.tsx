@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 export interface Option {
 	label: string;
 	value: string;
+	code?: string;
 }
 
 interface SelectProps {
@@ -81,30 +82,47 @@ export function SelectInput({
 						<ChevronsUpDown className='h-4 w-4 shrink-0 opacity-50' />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className='w-full p-0 popover-content-width-same-as-its-trigger '>
-					<Command className='bg-background'>
+				<PopoverContent className='w-full p-0 popover-content-width-same-as-its-trigger'>
+					<Command className='bg-background '>
 						<CommandInput
 							placeholder={searchPlaceholder}
 							value={searchQuery}
 							onValueChange={setSearchQuery}
 						/>
 						<CommandEmpty>{emptyMessage}</CommandEmpty>
-						<CommandGroup className='max-h-64 overflow-auto'>
-							<CommandList>
+
+						<CommandGroup>
+							<CommandList className='max-h-64 overflow-auto'>
 								{filteredOptions.map((option) => (
 									<CommandItem
 										key={option.value}
 										onSelect={() => handleSelect(option.value)}
 									>
-										<Check
-											className={cn(
-												'mr-2 h-4 w-4',
-												selectedItem === option.value
-													? 'opacity-100'
-													: 'opacity-0'
-											)}
-										/>
+										{!option.code && (
+											<Check
+												className={cn(
+													'mr-2 h-4 w-4',
+													selectedItem === option.value
+														? 'opacity-100'
+														: 'opacity-0'
+												)}
+											/>
+										)}
+
+										{option.code && (
+											<span className={`fi fi-${option.code} w-4 h-4 mr-2`} />
+										)}
 										{option.label}
+										{option.code && (
+											<Check
+												className={cn(
+													'mr-2 ml-auto h-4 w-4',
+													selectedItem === option.value
+														? 'opacity-100'
+														: 'opacity-0'
+												)}
+											/>
+										)}
 									</CommandItem>
 								))}
 							</CommandList>
