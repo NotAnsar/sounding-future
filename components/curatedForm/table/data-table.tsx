@@ -23,9 +23,9 @@ import {
 } from '@/components/ui/table';
 
 import { useState } from 'react';
-import PaginationTable from './PaginationTable';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import PaginationTable from '@/components/TracksForm/table/PaginationTable';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -54,11 +54,11 @@ export function DataTable<TData, TValue>({
 	return (
 		<>
 			<Input
-				placeholder='Filter by track name'
+				placeholder='Filter by name'
 				className='flex gap-1 w-full md:w-80 '
-				value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+				value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
 				onChange={(event) =>
-					table.getColumn('title')?.setFilterValue(event.target.value)
+					table.getColumn('name')?.setFilterValue(event.target.value)
 				}
 			/>
 			<div className='rounded-md border border-transparent'>
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
 											key={cell.id}
 											className={cn(
 												'py-5 ',
-												cell.column.id === 'cover' ? 'w-14' : ''
+												cell.column.id === 'picture' ? 'w-14' : ''
 											)}
 										>
 											{flexRender(

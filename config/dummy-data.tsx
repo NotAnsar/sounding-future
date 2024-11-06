@@ -4,6 +4,9 @@ export type Collection = {
 	name: string;
 	country: string;
 	studioPic: string;
+	tracks: number;
+	liked: number;
+	played: number;
 };
 
 export interface Artist {
@@ -27,6 +30,9 @@ export const collections: Collection[] = [
 		name: 'Audiomatch',
 		country: 'Austria',
 		studioPic: '/curators-about/Audiomatch.png',
+		tracks: 100,
+		liked: 50,
+		played: 1000,
 	},
 	{
 		id: '2',
@@ -34,6 +40,9 @@ export const collections: Collection[] = [
 		name: 'Audiostuff',
 		country: 'USA',
 		studioPic: '/curators-about/Audiostuff.png',
+		tracks: 75,
+		liked: 30,
+		played: 750,
 	},
 	{
 		id: '3',
@@ -41,6 +50,9 @@ export const collections: Collection[] = [
 		name: 'Soco festival',
 		country: 'France',
 		studioPic: '/curators-about/Soco-Festival.png',
+		tracks: 120,
+		liked: 80,
+		played: 1200,
 	},
 	{
 		id: '4',
@@ -48,6 +60,9 @@ export const collections: Collection[] = [
 		name: 'Unsounded',
 		country: 'India',
 		studioPic: '/curators-about/Unsounded.png',
+		tracks: 90,
+		liked: 40,
+		played: 900,
 	},
 ];
 

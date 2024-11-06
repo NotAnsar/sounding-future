@@ -60,7 +60,7 @@ export const Faq = [
 	{
 		question: 'How do I send my audio track to Sounding Future?',
 		answer:
-			'If you are logged in, you can enter the meta data (track info, credits, ..) of your track under Upload Tracks. Then you can send us your audio track via a file sharing service like Wetransfer, Filemail, Dropbox, ... to office@soundingfuture.com.',
+			"Once logged in, you can enter your track's metadata (title information, credits, etc.) under 'Upload Tracks'. You can also access our secure high-speed upload service from there. You can also upload tracks that are several GB in size.",
 	},
 	{
 		question: 'Which format must my audio track have?',
