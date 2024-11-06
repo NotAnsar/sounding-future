@@ -2,14 +2,14 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button, buttonVariants } from '../../ui/button';
-import { ArrowUpDown, Trash2 } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Collection } from '@/config/dummy-data';
-
 import Image from 'next/image';
 import { Icons } from '@/components/icons/track-icons';
 import { MainNavIcons } from '@/config/sidenav';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { DeletePartner } from './DeletePartner';
 
 export const columns: ColumnDef<Collection>[] = [
 	{
@@ -114,7 +114,7 @@ export const columns: ColumnDef<Collection>[] = [
 		id: 'edit',
 		cell: ({ row }) => (
 			<Link
-				href={`user/curated/${row.original.id}`}
+				href={`/user/curated/edit/${row.original.id}`}
 				className={cn(buttonVariants({ variant: 'ghost' }))}
 			>
 				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
@@ -122,14 +122,7 @@ export const columns: ColumnDef<Collection>[] = [
 		),
 	},
 	{
-		id: 'edit',
-		cell: ({ row }) => (
-			<Link
-				href={`user/curated/${row.original.id}`}
-				className={cn(buttonVariants({ variant: 'ghost' }))}
-			>
-				<Trash2 className='w-5 h-auto aspect-square text-muted' />
-			</Link>
-		),
+		id: 'delete',
+		cell: ({ row }) => <DeletePartner id={row.original.id} />,
 	},
 ];

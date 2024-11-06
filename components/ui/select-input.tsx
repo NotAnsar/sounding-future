@@ -25,6 +25,7 @@ export interface Option {
 interface SelectProps {
 	options: Option[];
 	onChange?: (value: string) => void;
+	initialValue?: string;
 	placeholder?: string;
 	searchPlaceholder?: string;
 	emptyMessage?: string;
@@ -37,6 +38,7 @@ interface SelectProps {
 
 export function SelectInput({
 	options,
+	initialValue,
 	onChange,
 	placeholder = 'Select an option',
 	searchPlaceholder = 'Search options...',
@@ -49,7 +51,9 @@ export function SelectInput({
 }: SelectProps) {
 	const [open, setOpen] = React.useState(false);
 	const [searchQuery, setSearchQuery] = React.useState('');
-	const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
+	const [selectedItem, setSelectedItem] = React.useState<string | null>(
+		initialValue || null
+	);
 
 	const handleSelect = (itemValue: string) => {
 		setSelectedItem(itemValue);
@@ -77,6 +81,11 @@ export function SelectInput({
 						onBlur={onBlur}
 					>
 						<span className='truncate'>
+							{selectedOption?.code && (
+								<span
+									className={`fi fi-${selectedOption?.code} w-4 h-4 mr-2`}
+								/>
+							)}
 							{selectedOption ? selectedOption.label : placeholder}
 						</span>
 						<ChevronsUpDown className='h-4 w-4 shrink-0 opacity-50' />

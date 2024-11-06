@@ -38,7 +38,7 @@ export const collections: Collection[] = [
 		id: '2',
 		picture: '/collections/Audiostuff.png',
 		name: 'Audiostuff',
-		country: 'USA',
+		country: 'United States',
 		studioPic: '/curators-about/Audiostuff.png',
 		tracks: 75,
 		liked: 30,

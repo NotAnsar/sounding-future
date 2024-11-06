@@ -16,8 +16,13 @@ import { addPartner } from '@/actions/curated';
 import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { SelectInput } from '@/components/ui/select-input';
 import { countries } from '@/config/countries';
+import { Collection } from '@/config/dummy-data';
 
-export default function CuratedForm() {
+export default function CuratedForm({
+	initialData,
+}: {
+	initialData?: Collection;
+}) {
 	const initialState = { message: null, errors: {} };
 	const [state, action] = useFormState(addPartner, initialState);
 	const router = useRouter();
@@ -48,6 +53,7 @@ export default function CuratedForm() {
 						type='text'
 						name='name'
 						id='name'
+						defaultValue={initialData?.name || undefined}
 						className={cn(
 							'max-w-lg',
 							state?.errors?.name
@@ -62,6 +68,7 @@ export default function CuratedForm() {
 					name='image'
 					size='lg'
 					error={state?.errors?.image}
+					initialData={initialData?.picture || undefined}
 					label='Upload Partner Image *'
 					message='Upload Partner Image in jpg format'
 					type='square'
@@ -75,11 +82,17 @@ export default function CuratedForm() {
 					</Label>
 					<Textarea
 						className={cn(
-							'max-w-lg min-h-48',
+							'max-w-lg min-h-80',
 							state?.errors?.info
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
+						defaultValue={
+							initialData
+								? 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi fugiat culpa reprehenderit hic eum molestias, quam sapiente sit! Laborum suscipit dolore exercitationem iure porro consequatur error ipsa incidunt repellat sapiente commodi, earum ipsum in nostrum rem beatae quam! Totam, fugit? Provident minima nam possimus! Perspiciatis libero in ipsum facilis dolor cumque. Ex doloribus incidunt suscipit officia ipsa qui harum sequi nobis ratione animi pariatur deserunt, odit beatae asperiores distinctio error itaque voluptatem iste exercitationem provident ab saepe unde soluta? Culpa tenetur ipsum porro accusantium magnam quod esse eaque eum temporibus expedita veniam non, recusandae blanditiis. Quas voluptatibus reprehenderit veniam facere esse nemo quaerat maiores temporibus in beatae est, odio reiciendis omnis facilis totam ipsum, dignissimos libero repudiandae aspernatur? Illo, explicabo?'
+								: undefined
+						}
+						// initialData={initialData.info || undefined}
 						name='info'
 						id='info'
 					/>
@@ -102,6 +115,7 @@ export default function CuratedForm() {
 							value: c.name,
 							code: c.code,
 						}))}
+						initialValue={initialData?.country || undefined}
 						name='country'
 						placeholder='Select Country'
 						searchPlaceholder='Search Country...'
@@ -120,6 +134,7 @@ export default function CuratedForm() {
 					label='Upload Studio Image'
 					message='Upload Studio Image in jpg format'
 					type='square'
+					initialData={initialData?.studioPic || undefined}
 				/>
 				<div className='grid gap-2 items-center'>
 					<Label
