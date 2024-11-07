@@ -53,11 +53,11 @@ export function DataTable<TData, TValue>({
 	return (
 		<>
 			<Input
-				placeholder='Filter by track name'
-				className='flex gap-1 w-full md:w-80 '
-				value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+				placeholder='Filter by Format Name'
+				className='flex gap-1 w-full md:w-80 mt-10 mb-4'
+				value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
 				onChange={(event) =>
-					table.getColumn('title')?.setFilterValue(event.target.value)
+					table.getColumn('name')?.setFilterValue(event.target.value)
 				}
 			/>
 			<div className='rounded-md border border-transparent'>

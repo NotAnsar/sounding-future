@@ -68,6 +68,7 @@ export const collections: Collection[] = [
 
 export const genres: Genre[] = [
 	{ id: '1', name: 'Electronic Music', from: '#A42F67', to: '#513383' },
+
 	{ id: '2', name: 'Field Recordings', from: '#267B43', to: '#2F489F' },
 	{ id: '3', name: 'Contemporary Music', from: '#7F8128', to: '#1F1D7B' },
 	{ id: '4', name: 'Game Audio', from: '#f46217', to: '#0b486b' },

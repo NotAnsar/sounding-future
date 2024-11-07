@@ -25,7 +25,7 @@ import {
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import PaginationTable from '@/components/TracksForm/table/PaginationTable';
+import PaginationTable from '@/components/PaginationTable';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
