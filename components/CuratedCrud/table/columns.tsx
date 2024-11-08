@@ -9,7 +9,7 @@ import { Icons } from '@/components/icons/track-icons';
 import { MainNavIcons } from '@/config/sidenav';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { DeletePartner } from './DeletePartner';
+import { DeletePartnerButton } from './DeletePartner';
 
 export const columns: ColumnDef<Collection>[] = [
 	{
@@ -123,6 +123,6 @@ export const columns: ColumnDef<Collection>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartner id={row.original.id} />,
+		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
 	},
 ];

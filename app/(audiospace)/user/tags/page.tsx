@@ -16,7 +16,7 @@ export default async function page() {
 
 	return (
 		<>
-			<div className='flex items-center justify-between mt-4 mb-12'>
+			<div className='flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mb-12 gap-2'>
 				<BreadCrumb
 					items={[
 						{ link: '/user/tags', text: 'Tags' },

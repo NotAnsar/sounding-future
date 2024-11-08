@@ -145,7 +145,14 @@ export function EditGenreButton({ data }: { data: GenreTag }) {
 			<Button variant={'ghost'} onClick={() => setOpen(true)}>
 				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
 			</Button>
-			<GenreDialog open={open} setopen={setOpen} initialData={data} />
+			{open && (
+				<GenreDialog
+					open={open}
+					setopen={setOpen}
+					initialData={data}
+					key={open ? 'opened' : 'closed'}
+				/>
+			)}
 		</>
 	);
 }

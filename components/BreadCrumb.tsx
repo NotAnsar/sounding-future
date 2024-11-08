@@ -14,7 +14,7 @@ type Props = { items: BreadcrumbItem[] };
 export default function BreadCrumb({ items }: Props) {
 	return (
 		<Breadcrumb>
-			<BreadcrumbList className='h-10 flex items-center'>
+			<BreadcrumbList className='flex items-center'>
 				{items.map((item, i) => (
 					<Fragment key={i}>
 						<BreadcrumbItem>

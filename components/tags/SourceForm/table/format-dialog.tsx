@@ -137,7 +137,10 @@ export function CreateFormatButton() {
 
 	return (
 		<>
-			<Button onClick={() => setIsCreateDialogOpen(true)}>
+			<Button
+				onClick={() => setIsCreateDialogOpen(true)}
+				className='w-full sm:w-auto'
+			>
 				<Plus className='w-4 h-auto aspect-square mr-2' /> Add Source Format
 			</Button>
 			<FormatDialog open={isCreateDialogOpen} setopen={setIsCreateDialogOpen} />

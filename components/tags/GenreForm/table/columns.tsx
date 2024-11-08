@@ -4,9 +4,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../../../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { convertDateFormat } from '@/lib/utils';
-
 import { GenreTag } from '@/config/tags';
-import { DeletePartner } from '@/components/CuratedCrud/table/DeletePartner';
+import { DeletePartnerButton } from '@/components/CuratedCrud/table/DeletePartner';
 import { EditGenreButton } from './genre-dialog';
 
 export const columns: ColumnDef<GenreTag>[] = [
@@ -58,6 +57,6 @@ export const columns: ColumnDef<GenreTag>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartner id={row.original.id} />,
+		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
 	},
 ];

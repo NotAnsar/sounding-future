@@ -9,15 +9,21 @@ import {
 } from '@/components/ui/alert-dialog';
 // import { toast } from '../../ui/use-toast';
 // import { DeleteProductState, deleteProduct } from '@/actions/product-action';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 // import { useFormState, useFormStatus } from 'react-dom';
-import { Button, buttonVariants } from '../../ui/button';
+import { Button } from '../../ui/button';
 import { Loader, Trash2 } from 'lucide-react';
-import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 
-export const DeletePartner = ({ id }: { id: string }) => {
-	const [open, setOpen] = useState<boolean>(false);
+export const DeletePartner = ({
+	id,
+	open,
+	setOpen,
+}: {
+	id: string;
+	open: boolean;
+	setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
 	console.log(id);
 
 	// const initialState: DeleteProductState = { message: null, type: null };
@@ -38,11 +44,6 @@ export const DeletePartner = ({ id }: { id: string }) => {
 
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
-			<AlertDialogTrigger>
-				<div className={buttonVariants({ variant: 'ghost' })}>
-					<Trash2 className='w-5 h-auto aspect-square text-muted' />
-				</div>
-			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -65,7 +66,11 @@ export const DeletePartner = ({ id }: { id: string }) => {
 function PendingButton() {
 	const { pending } = useFormStatus();
 	return (
-		<Button type='button' variant={'destructive'}>
+		<Button
+			type='button'
+			variant={'destructive'}
+			className='bg-destructive text-white hover:bg-destructive/90 w-full'
+		>
 			Delete
 		</Button>
 	);
@@ -79,5 +84,25 @@ function PendingButton() {
 			{pending && <Loader className='mr-2 h-4 w-4 animate-spin' />}
 			Delete
 		</Button>
+	);
+}
+
+export function DeletePartnerButton({ id }: { id: string }) {
+	const [open, setOpen] = useState<boolean>(false);
+
+	return (
+		<>
+			<Button variant={'ghost'} onClick={() => setOpen(true)}>
+				<Trash2 className='w-5 h-auto aspect-square text-muted' />
+			</Button>
+			{open && (
+				<DeletePartner
+					id={id}
+					open={open}
+					setOpen={setOpen}
+					key={open ? 'opened' : 'closed'}
+				/>
+			)}
+		</>
 	);
 }

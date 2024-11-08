@@ -5,7 +5,7 @@ import { Button } from '../../../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { convertDateFormat } from '@/lib/utils';
 import { SourceFormat } from '@/config/tags';
-import { DeletePartner } from '@/components/CuratedCrud/table/DeletePartner';
+import { DeletePartnerButton } from '@/components/CuratedCrud/table/DeletePartner';
 import { EditFormatButton } from './format-dialog';
 
 export const columns: ColumnDef<SourceFormat>[] = [
@@ -57,6 +57,6 @@ export const columns: ColumnDef<SourceFormat>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartner id={row.original.id} />,
+		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
 	},
 ];
