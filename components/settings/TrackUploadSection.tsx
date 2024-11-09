@@ -12,6 +12,7 @@ interface TrackUploadProps {
 export default function TrackUploadSection({ errors }: TrackUploadProps) {
 	return (
 		<div className='grid gap-6'>
+			<h2 className='text-xl font-bold'>Converted tracks</h2>
 			<div className='grid gap-2'>
 				<Label
 					htmlFor='mp3File'

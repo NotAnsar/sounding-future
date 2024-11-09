@@ -12,7 +12,6 @@ const TrackSchema = z.object({
 		.string()
 		.min(1, 'Track name is required')
 		.max(100, 'Track name must be 100 characters or less'),
-
 	releaseYear: z.string().min(1, 'Release year is required'),
 	release: z.string().min(1, 'Release is required'),
 	genreTags: z

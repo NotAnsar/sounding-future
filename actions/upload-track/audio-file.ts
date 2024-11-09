@@ -32,11 +32,11 @@ type UploadImageData = z.infer<typeof UploadImageSchema>;
 export type ImageUploadState = State<UploadImageData>;
 
 export async function uploadTrackInfo(
+	id: string,
 	prevState: ImageUploadState,
 	formData: FormData
 ): Promise<ImageUploadState> {
 	const validatedFields = UploadImageSchema.safeParse({
-		sourceFormat: formData.get('sourceFormat'),
 		mp3File:
 			(formData.get('mp3File') as File).size === 0
 				? undefined
@@ -45,7 +45,6 @@ export async function uploadTrackInfo(
 			(formData.get('flacFile') as File).size === 0
 				? undefined
 				: formData.get('flacFile'),
-		imageFile: formData.get('imageFile'),
 	});
 
 	if (!validatedFields.success) {
@@ -55,18 +54,13 @@ export async function uploadTrackInfo(
 		};
 	}
 
-	const { sourceFormat, mp3File, flacFile, imageFile } = validatedFields.data;
+	const { mp3File, flacFile } = validatedFields.data;
 
 	try {
-		console.log('Uploading files:', {
-			sourceFormat,
-			mp3File,
-			flacFile,
-			imageFile,
-		});
+		console.log('Uploading files:', { mp3File, flacFile, id });
 
 		revalidatePath('/', 'layout');
-		return { message: 'Files uploaded successfully' };
+		return { message: 'Audio files uploaded successfully' };
 	} catch (error) {
 		console.error('Upload error:', error);
 		return { message: 'Failed to upload files. Please try again.' };
