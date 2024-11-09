@@ -1,9 +1,20 @@
-import SubmitTrackForm from '@/components/upload-track/SubmitTrackForm';
-import { auth } from '@/lib/auth';
-import React from 'react';
+import BreadCrumb from '@/components/BreadCrumb';
 
 export default async function page() {
-	const session = await auth();
+	return (
+		<>
+			<BreadCrumb
+				items={[
+					{ link: '/user/tracks', text: 'Tracks' },
 
-	return <SubmitTrackForm role={session?.user?.role || ''} />;
+					{
+						link: '/user/tracks/upload',
+						text: 'Upload Track',
+						isCurrent: true,
+					},
+				]}
+			/>
+			<h1>New Upload Page</h1>;
+		</>
+	);
 }

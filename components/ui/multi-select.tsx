@@ -35,9 +35,11 @@ interface MultiSelectProps {
 	onFocus?: () => void;
 	onBlur?: () => void;
 	name?: string;
+	required?: boolean;
 }
 
 export function MultiSelect({
+	required = false,
 	options,
 	onChange,
 	placeholder = 'Select options',
@@ -117,6 +119,7 @@ export function MultiSelect({
 							placeholder={searchPlaceholder}
 							value={searchQuery}
 							onValueChange={setSearchQuery}
+							required={required}
 						/>
 						<CommandEmpty>{emptyMessage}</CommandEmpty>
 						<CommandGroup className='max-h-64 overflow-auto'>

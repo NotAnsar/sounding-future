@@ -5,27 +5,41 @@ import { z } from 'zod';
 import { State } from '../utils';
 import { convertDateFormat } from '@/lib/utils';
 import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 const TrackSchema = z.object({
 	trackName: z
 		.string()
 		.min(1, 'Track name is required')
 		.max(100, 'Track name must be 100 characters or less'),
-	// artist: z
-	// 	.string()
-	// 	.min(1, 'Artist name is required')
-	// 	.max(100, 'Artist name must be 100 characters or less'),
-	artist: z.array(z.string()).min(1, 'At least one Artist must be selected'),
-	releaseYear: z.string().min(1, 'Release year is required'),
-	recognitions: z.array(z.string()).optional(),
 
-	curatedBy: z
-		.array(z.string())
-		.min(1, 'At least one curator must be selected'),
+	releaseYear: z.string().min(1, 'Release year is required'),
+	release: z.string().min(1, 'Release is required'),
 	genreTags: z
 		.array(z.string())
 		.min(1, 'At least one genre tag is required')
 		.max(3, 'You can only select up to 3 genre tags'),
+	sourceFormat: z
+		.string()
+		.min(1, { message: 'Track Source Format is required' }),
+	imageFile: z
+		.instanceof(File)
+		.refine((file) => {
+			return file.type === 'image/jpeg' || file.type === 'image/jpg';
+		}, 'Image must be in JPG format')
+		.refine((file) => {
+			return file.size <= 5 * 1024 * 1024;
+		}, 'Image must be less than 5MB'),
+
+	// admin
+	artist: z
+		.string()
+		.min(1, { message: 'You must select an artist' })
+		.optional(),
+	curatedBy: z
+		.string()
+		.min(1, { message: 'You must select a curated collection' })
+		.optional(),
 });
 
 type TrackData = z.infer<typeof TrackSchema>;
@@ -41,27 +55,21 @@ export async function submitTrack(
 	const genreTags = formData
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
-	const recognitions = formData
-		.getAll('recognitions')
-		.filter((r) => r !== '') as string[];
-	const curators = formData
-		.getAll('curatedBy')
-		.filter((c) => c !== '') as string[];
-
-	// const artist = formData.getAll('artist').filter((c) => c !== '') as string[];
 
 	const artist =
-		session?.user?.role === 'user'
-			? [session?.user?.id]
-			: (formData.getAll('artist').filter((c) => c !== '') as string[]);
+		session?.user?.role === 'user' ? session?.user?.id : formData.get('artist');
+	const curatedBy =
+		session?.user?.role === 'user' ? undefined : formData.get('curatedBy');
 
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
-		artist: artist,
-		releaseYear: formData.get('releaseYear'),
-		recognitions: recognitions,
-		curatedBy: session?.user?.role === 'user' ? ['audiospace'] : curators,
+		artist,
+		imageFile: formData.get('imageFile'),
+		curatedBy,
 		genreTags: genreTags,
+		releaseYear: formData.get('releaseYear'),
+		sourceFormat: formData.get('sourceFormat'),
+		release: formData.get('release'),
 	});
 
 	if (!validatedFields.success) {
@@ -76,24 +84,29 @@ export async function submitTrack(
 			trackName,
 			artist,
 			releaseYear,
-			recognitions,
 			curatedBy,
 			genreTags,
+			imageFile,
+			sourceFormat,
+			release,
 		} = validatedFields.data;
 
 		console.log('Submitting track:', {
 			trackName,
 			artist,
 			releaseYear: convertDateFormat(new Date(releaseYear)),
-			recognitions,
 			curatedBy,
 			genreTags,
+			imageFile,
+			sourceFormat,
+			release,
 		});
 
 		revalidatePath('/', 'layout');
-		return { message: 'Track submitted successfully' };
 	} catch (error) {
 		console.error('Track submission error:', error);
-		return { message: 'Failed to submit track. Please try again.' };
+		return { message: 'Failed to upload track basic info. Please try again.' };
 	}
+
+	redirect(`/user/tracks/upload/${Math.floor(Math.random() * 100)}/info`);
 }

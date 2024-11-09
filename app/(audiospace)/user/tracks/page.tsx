@@ -1,5 +1,5 @@
-import { columns } from '@/components/TracksForm/table/columns';
-import { DataTable } from '@/components/TracksForm/table/data-table';
+import { columns } from '@/components/TracksCrud/table/columns';
+import { DataTable } from '@/components/TracksCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
 import { tracks } from '@/config/dummy-data';
 import { auth } from '@/lib/auth';
@@ -18,9 +18,9 @@ export default async function page() {
 	return (
 		<>
 			<div className='flex items-center justify-between mt-4 mb-12'>
-				<h2 className='text-3xl md:text-5xl font-semibold'>My Tracks</h2>
+				<h2 className='text-3xl md:text-5xl font-semibold'>Tracks</h2>
 
-				<Link href={'/user/upload-track'} className={cn(buttonVariants())}>
+				<Link href={'/user/tracks/upload'} className={cn(buttonVariants())}>
 					<Upload className='w-4 h-auto aspect-square mr-2' /> Upload Track
 				</Link>
 			</div>

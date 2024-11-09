@@ -5,7 +5,9 @@ import { z } from 'zod';
 import { State } from '../utils';
 
 const UploadImageSchema = z.object({
-	sourceFormat: z.string().min(1, { message: 'La ville est requise' }),
+	sourceFormat: z
+		.string()
+		.min(1, { message: 'Track Source Format is required' }),
 	mp3File: z
 		.instanceof(File)
 		.refine((file) => {
@@ -14,7 +16,7 @@ const UploadImageSchema = z.object({
 		.refine((file) => {
 			return file.size <= 50 * 1024 * 1024;
 		}, 'Mp3 File must be less than 50MB'),
-	flacFile: z.instanceof(File).optional(), 
+	flacFile: z.instanceof(File).optional(),
 	imageFile: z
 		.instanceof(File)
 		.refine((file) => {
