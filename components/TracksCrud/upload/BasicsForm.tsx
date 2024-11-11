@@ -6,17 +6,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useFormState } from 'react-dom';
-import { DatePickerInput } from '@/components/ui/datepickerInput';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { artists, collections, genres } from '@/config/dummy-data';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import TrackNavUpload from '@/components/upload-track/TrackNav';
 import { SelectInput } from '@/components/ui/select-input';
 import ImageUpload from '@/components/profile/ImageUpload';
 import { sourceFormatData } from '@/config/tags';
 import ReleaseSelector from './ReleaseSelector';
+import { YearSelect } from '@/components/YearSelect';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function TrackBasicsForm({ role }: { role: string }) {
 	const initialState = { message: null, errors: {} };
@@ -25,6 +25,8 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
 			<TrackNavUpload />
+			<AlertUploadTrack />
+
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
 				<ErrorMessage errors={state?.message ? [state.message] : undefined} />
 				<div className='grid gap-2'>
@@ -83,13 +85,13 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 						Release Year *
 					</Label>
 
-					<DatePickerInput
-						name='releaseYear'
+					<YearSelect
 						className={cn(
 							state?.errors?.releaseYear
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
+						name='releaseYear'
 					/>
 
 					<ErrorMessage errors={state?.errors?.releaseYear} />
@@ -195,8 +197,8 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 				</div>
 
 				<ReleaseSelector errors={state?.errors?.release} />
-
-				<div>
+				<LegalAgreementSection />
+				{/* <div>
 					<div className='border rounded-lg p-4 space-y-2'>
 						<div className='flex items-start space-x-2 relative'>
 							<Checkbox id='legal-agreement' name='legal-agreement' required />
@@ -207,7 +209,7 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 								>
 									By adding my audio track and press SAVE, I agree to the legal
 									terms and conditions of publishing my audio track in the
-									Sounding Future 3Daudiospace.
+									Sounding Future AudioSpace.
 								</label>
 							</div>
 						</div>
@@ -223,8 +225,58 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 							</Button>
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</form>
 	);
 }
+
+export function AlertUploadTrack() {
+	return (
+		<Alert className='border-transparent bg-secondary mt-3'>
+			<AlertDescription>
+				{
+					"We're glad you want to add an audio track to our AudioSpace! In steps 1 and 2, you can enter your track's metadata (title information, text, credits, etc.). In step 3, you can upload the audio using our high-speed upload service."
+				}
+			</AlertDescription>
+			<AlertDescription className='mt-2 '>
+				All fields marked with * are mandatory.
+			</AlertDescription>
+		</Alert>
+	);
+}
+
+const LegalAgreementSection = () => {
+	return (
+		<div className='border rounded-lg p-4 bg-card text-white'>
+			<div className='flex items-start gap-3'>
+				<Checkbox
+					id='legal-agreement'
+					name='legal-agreement'
+					required
+					className='mt-1'
+				/>
+				<div className='space-y-2'>
+					<label htmlFor='legal-agreement' className='text-sm font-medium '>
+						By adding my audio track and press SAVE, I agree to the legal terms
+						and conditions of publishing my audio track in the Sounding Future
+						AudioSpace.
+					</label>
+					<p className='text-xs text-muted'>
+						By checking this box and saving, you acknowledge that you have read
+						and agree to our{' '}
+						<Link
+							href='/legal'
+							target='_blank'
+							rel='noopener noreferrer'
+							className='text-primary hover:underline font-semibold'
+						>
+							legal terms and conditions
+						</Link>{' '}
+						for audio track publication.
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+};

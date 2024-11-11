@@ -7,7 +7,10 @@ import { redirect } from 'next/navigation';
 
 const UploadTrackTextInfoSchema = z.object({
 	articleLink: z.string().url('Invalid Article URL').optional(),
-	trackInfo: z.string().max(500, 'Track Info must be 500 characters or less'),
+	trackInfo: z
+		.string()
+		.min(3, 'Track Info must be 3 characters or more')
+		.max(500, 'Track Info must be 500 characters or less'),
 	more: z.string().max(300, 'More must be 300 characters or less'),
 });
 

@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils';
-import { convertDateFormat } from '@/lib/utils';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
@@ -93,7 +92,7 @@ export async function submitTrack(
 		console.log('Submitting track:', {
 			trackName,
 			artist,
-			releaseYear: convertDateFormat(new Date(releaseYear)),
+			releaseYear,
 			curatedBy,
 			genreTags,
 			imageFile,

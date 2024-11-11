@@ -8,6 +8,7 @@ import { useFormState } from 'react-dom';
 import TrackNavUpload from '@/components/upload-track/TrackNav';
 import { addTrackTextInfo } from '@/actions/upload-track/text-info';
 import { Textarea } from '@/components/ui/textarea';
+import { AlertUploadTrack } from './BasicsForm';
 
 export default function TrackInfoForm({ id }: { id: string }) {
 	const initialState = { message: null, errors: {} };
@@ -19,6 +20,7 @@ export default function TrackInfoForm({ id }: { id: string }) {
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
 			<TrackNavUpload step={2} />
+			<AlertUploadTrack />
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
 				<ErrorMessage errors={state?.message ? [state.message] : undefined} />
 				<div className='grid gap-2'>

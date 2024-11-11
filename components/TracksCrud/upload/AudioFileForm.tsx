@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import TrackUpload from '@/components/settings/TrackUploadSection';
 import { uploadTrackInfo } from '@/actions/upload-track/audio-file';
+import { AlertUploadTrack } from './BasicsForm';
 
 export default function AudioFileForm({
 	id,
@@ -24,7 +25,8 @@ export default function AudioFileForm({
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
-			<TrackNavUpload step={3} />
+			<TrackNavUpload step={3} isAdmin={role === 'admin'} />
+			<AlertUploadTrack />
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
 				<ErrorMessage errors={state?.message ? [state.message] : undefined} />
 
@@ -67,13 +69,7 @@ export default function AudioFileForm({
 							</div>
 						</div>
 
-						{/* <Alert className='bg-gray-800 border-gray-700'>
-							<AlertDescription>
-								File specification: Provide multichannel .wav at 48kHz/24bit.
-								<br />
-								Use our secure high-speed upload service.
-							</AlertDescription>
-						</Alert> */}
+						
 					</div>
 
 					{/* Upload Section */}
@@ -104,6 +100,12 @@ export default function AudioFileForm({
 									</code>
 								</span>
 							</div>
+
+							<p>
+								Your track will be published after we have checked it and
+								converted it to a binaural audio file. We will notify you as
+								soon as it is online.
+							</p>
 						</div>
 					)}
 

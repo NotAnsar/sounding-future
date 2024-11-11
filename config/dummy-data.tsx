@@ -165,8 +165,9 @@ export type Track = {
 	created_at: string;
 	cover: string;
 	url: string;
-	liked: number; // Updated from boolean to number
-	played: number; // New property
+	liked: number;
+	played: number;
+	published: boolean; // New property
 };
 
 export const tracks: Track[] = [
@@ -182,6 +183,7 @@ export const tracks: Track[] = [
 		liked: 5,
 		played: 120,
 		created_at: '2024-10-02T19:40:31Z',
+		published: true,
 	},
 	{
 		id: '2',
@@ -195,6 +197,7 @@ export const tracks: Track[] = [
 		liked: 2,
 		played: 75,
 		created_at: '2024-10-02T19:40:19Z',
+		published: true,
 	},
 	{
 		id: '4',
@@ -208,6 +211,7 @@ export const tracks: Track[] = [
 		liked: 0,
 		played: 10,
 		created_at: '2022-10-23T19:40:40Z',
+		published: false,
 	},
 	{
 		id: '5',
@@ -221,6 +225,7 @@ export const tracks: Track[] = [
 		liked: 8,
 		played: 200,
 		created_at: '2024-10-12T19:40:59Z',
+		published: true,
 	},
 	{
 		id: '6',
@@ -234,6 +239,7 @@ export const tracks: Track[] = [
 		liked: 3,
 		played: 90,
 		created_at: '2021-10-02T19:41:12Z',
+		published: true,
 	},
 	{
 		id: '7',
@@ -247,6 +253,7 @@ export const tracks: Track[] = [
 		liked: 6,
 		played: 45,
 		created_at: '2024-1-02T19:41:31Z',
+		published: true,
 	},
 	{
 		id: '8',
@@ -256,10 +263,11 @@ export const tracks: Track[] = [
 		genre: genres.find((c) => c.name === 'Field Recordings')!,
 		duration: 444,
 		cover: '/tracks/Pulse-of-the-City.png',
-		url: 'https://oekyfpijfbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t8.mp3?t=2024-10-02T19%3A41%3A46.065Z',
+		url: 'https://oekyfpijfizbaexjkhbg.supabase.co/storage/v1/object/public/music/audiofiles/t8.mp3?t=2024-10-02T19%3A41%3A46.065Z',
 		liked: 1,
 		played: 65,
 		created_at: '2020-10-22T19:41:46Z',
+		published: true,
 	},
 	{
 		id: '9',
@@ -273,6 +281,7 @@ export const tracks: Track[] = [
 		liked: 3,
 		played: 50,
 		created_at: '2021-10-02T19:41:53Z',
+		published: true,
 	},
 	{
 		id: '10',
@@ -286,6 +295,7 @@ export const tracks: Track[] = [
 		liked: 4,
 		played: 150,
 		created_at: '2022-10-02T19:42:08Z',
+		published: false,
 	},
 	{
 		id: '11',
@@ -299,6 +309,7 @@ export const tracks: Track[] = [
 		liked: 7,
 		played: 25,
 		created_at: '2024-4-02T19:42:16Z',
+		published: false,
 	},
 	{
 		id: '12',
@@ -312,6 +323,7 @@ export const tracks: Track[] = [
 		liked: 3,
 		played: 12,
 		created_at: '2024-9-02T19:42:30Z',
+		published: false,
 	},
 	{
 		id: '13',
@@ -325,5 +337,6 @@ export const tracks: Track[] = [
 		liked: 45,
 		played: 200,
 		created_at: '2024-10-04T19:41:31Z',
+		published: false,
 	},
 ];

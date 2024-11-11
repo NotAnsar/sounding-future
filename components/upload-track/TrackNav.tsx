@@ -5,7 +5,13 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '../ui/button';
 import { Loader } from 'lucide-react';
 
-export default function TrackNavUpload({ step = 1 }: { step?: number }) {
+export default function TrackNavUpload({
+	step = 1,
+	isAdmin = false,
+}: {
+	step?: number;
+	isAdmin?: boolean;
+}) {
 	return (
 		<div className='flex flex-col sm:flex-row items-center w-full gap-2 justify-between'>
 			<ol className='flex items-center w-full text-sm font-medium text-center text-muted sm:text-base max-w-screen-sm'>
@@ -48,7 +54,8 @@ export default function TrackNavUpload({ step = 1 }: { step?: number }) {
 					</span>
 				</li>
 			</ol>
-			<SaveButton className='w-full sm:w-auto' step={step} />
+
+			<SaveButton className='w-full sm:w-auto' step={step} isAdmin={isAdmin} />
 		</div>
 	);
 }
@@ -56,13 +63,15 @@ export default function TrackNavUpload({ step = 1 }: { step?: number }) {
 function SaveButton({
 	className,
 	step = 1,
+	isAdmin,
 }: {
 	className?: string;
 	step?: number;
+	isAdmin?: boolean;
 }) {
 	const { pending } = useFormStatus();
 
-	if (step >= 3) return null;
+	if (step >= 3 && !isAdmin) return null;
 
 	return (
 		<Button

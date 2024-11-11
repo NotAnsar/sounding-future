@@ -3,11 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils';
+import { redirect } from 'next/navigation';
 
 const UploadImageSchema = z.object({
-	sourceFormat: z
-		.string()
-		.min(1, { message: 'Track Source Format is required' }),
 	mp3File: z
 		.instanceof(File)
 		.refine((file) => {
@@ -17,14 +15,7 @@ const UploadImageSchema = z.object({
 			return file.size <= 50 * 1024 * 1024;
 		}, 'Mp3 File must be less than 50MB'),
 	flacFile: z.instanceof(File).optional(),
-	imageFile: z
-		.instanceof(File)
-		.refine((file) => {
-			return file.type === 'image/jpeg' || file.type === 'image/jpg';
-		}, 'Image must be in JPG format')
-		.refine((file) => {
-			return file.size <= 5 * 1024 * 1024;
-		}, 'Image must be less than 5MB'),
+	published: z.boolean().default(false),
 });
 
 type UploadImageData = z.infer<typeof UploadImageSchema>;
@@ -45,6 +36,7 @@ export async function uploadTrackInfo(
 			(formData.get('flacFile') as File).size === 0
 				? undefined
 				: formData.get('flacFile'),
+		published: formData.get('published') === 'true', // Convert string to boolean
 	});
 
 	if (!validatedFields.success) {
@@ -54,15 +46,15 @@ export async function uploadTrackInfo(
 		};
 	}
 
-	const { mp3File, flacFile } = validatedFields.data;
+	const { mp3File, flacFile, published } = validatedFields.data;
 
 	try {
-		console.log('Uploading files:', { mp3File, flacFile, id });
+		console.log('Uploading files:', { mp3File, flacFile, id, published });
 
 		revalidatePath('/', 'layout');
-		return { message: 'Audio files uploaded successfully' };
 	} catch (error) {
 		console.error('Upload error:', error);
 		return { message: 'Failed to upload files. Please try again.' };
 	}
+	redirect('/user/tracks');
 }

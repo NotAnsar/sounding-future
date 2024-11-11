@@ -3,13 +3,14 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '../../ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Shield, ShieldCheck } from 'lucide-react';
 import { Artist, Track } from '@/config/dummy-data';
 import { convertDateFormat } from '@/lib/utils';
 import ActionCell from './ActionCell';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
+import Badge from '@/components/Badge';
 
 export const columns: ColumnDef<Track>[] = [
 	{
@@ -145,6 +146,27 @@ export const columns: ColumnDef<Track>[] = [
 					Liked
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
+			);
+		},
+	},
+	{
+		accessorKey: 'published',
+		header: () => <div className='text-nowrap text-sm'>Status</div>,
+		cell: ({ row }) => {
+			const published = row.getValue('published');
+
+			return (
+				<Badge variant={published ? 'success' : 'archive'}>
+					{published ? (
+						<>
+							<ShieldCheck className='w-3 h-auto' /> Published
+						</>
+					) : (
+						<>
+							<Shield className='w-3 h-auto' /> UnPublished
+						</>
+					)}
+				</Badge>
 			);
 		},
 	},
