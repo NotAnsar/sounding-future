@@ -187,6 +187,7 @@ export default function TrackBasicsForm({ role }: { role: string }) {
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
+						other
 					/>
 
 					<p className='text-muted text-sm '>
