@@ -6,6 +6,7 @@ import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import CustomSlider from './CustomSlider';
 import { cn, formatTime } from '@/lib/utils';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function AudioPlayer() {
 	const {
@@ -76,7 +77,7 @@ export default function AudioPlayer() {
 						max={duration}
 						value={currentTime}
 						onChange={(e) => seek(parseFloat(e.target.value))}
-						className='w-full xl:w-[500px]'
+						className='w-full xl:w-[400px]'
 					/>
 
 					<span className='text-xs font-semibold w-8'>
@@ -100,7 +101,8 @@ export default function AudioPlayer() {
 			</div>
 
 			<div className='hidden gap-3 items-center mr-4 md:flex'>
-				<Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
+				{/* <Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' /> */}
+				<AudioType />
 				<button onClick={toggleMute}>
 					{isMuted ? (
 						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
@@ -119,6 +121,48 @@ export default function AudioPlayer() {
 				<Link href={'/about'} target='_blank'>
 					<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
 				</Link>
+			</div>
+		</div>
+	);
+}
+
+function AudioType() {
+	const [isBinaural, setisBinaural] = useState<boolean>(true);
+	return (
+		<div className='flex gap-3 px-2'>
+			<div
+				className={cn(
+					'flex flex-col items-center gap-0.5 cursor-pointer ',
+					isBinaural ? 'text-white' : 'dark:text-muted text-muted/75'
+				)}
+				onClick={() => setisBinaural(true)}
+			>
+				<div
+					className={cn(
+						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
+						isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/75'
+					)}
+				>
+					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
+				</div>
+				<p className='text-[11px] text-inherit'>Binaural</p>
+			</div>
+			<div
+				className={cn(
+					'flex flex-col items-center gap-0.5 cursor-pointer ',
+					!isBinaural ? 'text-white' : 'dark:text-muted text-muted/75'
+				)}
+				onClick={() => setisBinaural(false)}
+			>
+				<div
+					className={cn(
+						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
+						!isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/75'
+					)}
+				>
+					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
+				</div>
+				<p className='text-[11px] text-inherit'>Sterio</p>
 			</div>
 		</div>
 	);
