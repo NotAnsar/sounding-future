@@ -133,14 +133,14 @@ function AudioType() {
 			<div
 				className={cn(
 					'flex flex-col items-center gap-0.5 cursor-pointer ',
-					isBinaural ? 'text-white' : 'dark:text-muted text-muted/75'
+					isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
 				)}
 				onClick={() => setisBinaural(true)}
 			>
 				<div
 					className={cn(
 						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/75'
+						isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/50'
 					)}
 				>
 					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
@@ -150,14 +150,14 @@ function AudioType() {
 			<div
 				className={cn(
 					'flex flex-col items-center gap-0.5 cursor-pointer ',
-					!isBinaural ? 'text-white' : 'dark:text-muted text-muted/75'
+					!isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
 				)}
 				onClick={() => setisBinaural(false)}
 			>
 				<div
 					className={cn(
 						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						!isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/75'
+						!isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/50'
 					)}
 				>
 					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
