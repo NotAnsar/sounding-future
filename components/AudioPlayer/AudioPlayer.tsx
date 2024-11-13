@@ -146,7 +146,7 @@ function AudioType() {
 				>
 					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
 				</div>
-				<p className='text-[10px] text-inherit'>Binaural</p>
+				<p className='text-[10px] text-inherit lowercase'>Binaural</p>
 			</div>
 			<div
 				className={cn(
@@ -163,7 +163,7 @@ function AudioType() {
 				>
 					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
 				</div>
-				<p className='text-[10px] text-inherit'>Stereo</p>
+				<p className='text-[10px] text-inherit lowercase'>Stereo</p>
 			</div>
 		</div>
 	);
