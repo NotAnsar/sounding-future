@@ -25,7 +25,7 @@ export default function SocialLinks() {
 					<Icons.linkedin className='w-8 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
 				</Link>
 				<Link href={'https://mastodon.social/@soundingfuture'} target='_blank'>
-					<Icons.mastodon className='w-8 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+					<Icons.mastodon className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
 				</Link>
 			</div>
 		</div>
