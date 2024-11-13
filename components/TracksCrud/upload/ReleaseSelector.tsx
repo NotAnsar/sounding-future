@@ -41,7 +41,7 @@ export default function ReleaseSelector({ errors }: ReleaseSelectorProps) {
 						id='self-published'
 						className={cn(errors ? 'border-destructive' : '')}
 					/>
-					<Label htmlFor='self-published' className='text-gray-300 font-medium'>
+					<Label htmlFor='self-published' className='text-muted font-medium'>
 						Self Published
 					</Label>
 				</div>
@@ -52,10 +52,7 @@ export default function ReleaseSelector({ errors }: ReleaseSelectorProps) {
 						id='label'
 						className={cn(errors ? 'border-destructive' : '')}
 					/>
-					<Label
-						htmlFor='label'
-						className='text-gray-300 font-medium text-nowrap'
-					>
+					<Label htmlFor='label' className='text-muted font-medium text-nowrap'>
 						By Label
 					</Label>
 					{selectedType === 'label' && (

@@ -103,6 +103,7 @@ export default function AudioPlayer() {
 			<div className='hidden gap-3 items-center mr-4 md:flex'>
 				{/* <Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' /> */}
 				<AudioType />
+
 				<button onClick={toggleMute}>
 					{isMuted ? (
 						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
@@ -129,10 +130,10 @@ export default function AudioPlayer() {
 function AudioType() {
 	const [isBinaural, setisBinaural] = useState<boolean>(true);
 	return (
-		<div className='flex gap-3 px-2'>
+		<div className='flex gap-3 px-2 mt-2'>
 			<div
 				className={cn(
-					'flex flex-col items-center gap-0.5 cursor-pointer ',
+					'flex flex-col items-center cursor-pointer ',
 					isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
 				)}
 				onClick={() => setisBinaural(true)}
@@ -145,11 +146,11 @@ function AudioType() {
 				>
 					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
 				</div>
-				<p className='text-[11px] text-inherit'>Binaural</p>
+				<p className='text-[10px] text-inherit'>Binaural</p>
 			</div>
 			<div
 				className={cn(
-					'flex flex-col items-center gap-0.5 cursor-pointer ',
+					'flex flex-col items-center cursor-pointer ',
 					!isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
 				)}
 				onClick={() => setisBinaural(false)}
@@ -162,7 +163,7 @@ function AudioType() {
 				>
 					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
 				</div>
-				<p className='text-[11px] text-inherit'>Sterio</p>
+				<p className='text-[10px] text-inherit'>Stereo</p>
 			</div>
 		</div>
 	);
