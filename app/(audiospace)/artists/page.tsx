@@ -7,12 +7,16 @@ import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons/audio-player';
 import ArtistList from '@/components/artists/ArtistList';
+import { prisma } from '@/lib/prisma';
 
-export default function page({
+export default async function page({
 	searchParams: { type },
 }: {
 	searchParams: { type: string };
 }) {
+	const res = await prisma.user.findMany();
+	console.log(res);
+
 	const isTable = type === 'table';
 	return (
 		<>

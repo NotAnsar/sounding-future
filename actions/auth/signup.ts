@@ -44,13 +44,14 @@ export async function register(
 	try {
 		const hashedPassword = await hash(password, 10);
 
-		await prisma.user.create({
+		const res = await prisma.user.create({
 			data: {
 				name: username,
 				email,
 				password: hashedPassword,
 			},
 		});
+		console.log(res);
 
 		const result = await signIn('credentials', {
 			email,

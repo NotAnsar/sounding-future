@@ -16,48 +16,105 @@ model User {
   password  String?
   emailVerified DateTime?
   name  String   @unique
-  role      String   @default("user") // Set default value for role  
+  role      String   @default("user") 
+  artistId   String?   @unique @map("artist_id")   
 
 
   accounts      Account[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 
-  // Relations
-  artist    Artist?
+  // Relations  
+  artist     Artist?   @relation("UserArtist", fields: [artistId], references: [id]) 
   follows   Follow[]
   likes     Like[]
+  listeningHistory ListeningHistory[]
 
-  @@map("users")
+  @@map("user")
 }
 
 model Artist {
   id                        String   @id @default(cuid())
   name                      String
   pic                       String?
-  info                      String?  @db.Text
-  websiteLink               String?  @map("website_link")
-  socialMediaLinks          String[] @map("social_media_links")
-  soundingFutureArticleLink String?  @map("sounding_future_article_link")
-  userId                    String   @unique @map("user_id")
+  bio                      String?  @db.Text
+  socialId      String?        @map("social_id") 
   createdAt                 DateTime @default(now()) @map("created_at")
 
   // Relations
-  user         User           @relation(fields: [userId], references: [id])
+  user       User?    @relation("UserArtist")
   tracks       Track[]
-  artistGenres ArtistGenre[]
+  genres ArtistGenre[]
   followers    Follow[]
+  socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id])
+  articles        ArtistArticle[] 
 
-  @@map("artists")
+
+  @@index([name])
+  @@map("artist")
 }
 
-model Genre {
-  id   String @id @default(cuid())
-  name String @unique
+model Track {
+  id           String   @id @default(cuid())
+  title        String
+  cover        String?
+  info         String?  @db.Text
+  urlMp3       String?  @map("url_mp3")
+  urlFlac      String?  @map("url_flac")
+  releaseYear  Int?     @map("release_year") 
+  credits      String?
+  published    Boolean          @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+  duration     Int?      // Track length in seconds
+
+
+  // Foreign keys
+  curatedBy    String?          @map("curated_by") 
+  artistId     String           @map("artist_id") 
+  formatId     String?          @map("format_id") 
+  
 
   // Relations
-  tracks       Track[]
-  artistGenres ArtistGenre[]
+  artist Artist @relation(fields: [artistId], references: [id])
+  curator      Partner?         @relation("PartnerCurated", fields: [curatedBy], references: [id])
+  sourceFormat SourceFormat?    @relation(fields: [formatId], references: [id])
+  genres       TrackGenre[]  
+  likes  Like[]
+  listeners    ListeningHistory[]
+
+  
+  @@index([title])
+  @@map("tracks")
+}
+
+model Partner {
+  id          String       @id @default(cuid()) 
+  name        String
+  picture     String?
+  country     String?
+  studioPic   String?      @map("studio_pic")
+  bio         String?
+  socialId    String?      @map("social_id") 
+  createdAt   DateTime     @default(now()) @map("created_at")
+  
+  // Relations
+  socialLinks SocialLinks? @relation(fields: [socialId], references: [id])
+  tracks      Track[]      @relation("PartnerCurated")
+  articles      PartnerArticle[] // New relation
+
+
+  @@map("partner")
+}
+
+
+model Genre {
+  id        String        @id @default(cuid()) 
+  name      String
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  artists   ArtistGenre[]
+  tracks    TrackGenre[]
 
   @@map("genres")
 }
@@ -65,6 +122,7 @@ model Genre {
 model ArtistGenre {
   artistId String @map("artist_id")
   genreId  String @map("genre_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
   // Relations
   artist Artist @relation(fields: [artistId], references: [id])
@@ -74,28 +132,17 @@ model ArtistGenre {
   @@map("artist_genres")
 }
 
-model Track {
-  id           String   @id @default(cuid())
-  title        String
-  cover        String?
-  info         String?  @db.Text
-  artistId     String   @map("artist_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  genreId      String   @map("genre_id")
-  urlMp3       String?  @map("url_mp3")
-  urlFlac      String?  @map("url_flac")
-  releaseYear  Int?     @map("release_year")
-  recognitions String[]
-  curatedBy    String?  @map("curated_by")
+model TrackGenre {
+  trackId   String   @map("track_id") 
+  genreId   String   @map("genre_id") 
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  track     Track    @relation(fields: [trackId], references: [id])
+  genre     Genre    @relation(fields: [genreId], references: [id])
 
-  // Relations
-  artist Artist @relation(fields: [artistId], references: [id])
-  genre  Genre  @relation(fields: [genreId], references: [id])
-  likes  Like[]
-
-  @@map("tracks")
+  @@id([trackId, genreId])
+  @@map("track_genres")
 }
-
 model Follow {
   followingUserId  String   @map("following_user_id")
   followedArtistId String   @map("followed_artist_id")
@@ -123,8 +170,85 @@ model Like {
   @@map("likes")
 }
 
+model SourceFormat {
+  id        String    @id @default(cuid()) 
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  tracks    Track[]
+
+  @@map("source_format")
+}
+
+model SocialLinks {
+  id        String    @id @default(cuid()) 
+  facebook  String?
+  instagram String?
+  linkedin  String?
+  vimeo     String?
+  website   String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  artists   Artist[]
+  partners  Partner[]
+
+  @@map("social_links")
+}
+
+model ArticleLink {
+  id         String           @id @default(cuid()) 
+  url        String
+  title      String?
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  // Relations
+  artists    ArtistArticle[]
+  partners   PartnerArticle[]
+
+  @@map("article_links")
+}
+
+model ArtistArticle {
+  artistId     String      @map("artist_id")
+  articleId    String      @map("article_id") 
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  artist       Artist      @relation(fields: [artistId], references: [id])
+  article      ArticleLink @relation(fields: [articleId], references: [id])
+
+  @@id([artistId, articleId])
+  @@map("artist_articles")
+}
+
+model PartnerArticle {
+  partnerId    String      @map("partner_id") 
+  articleId    String      @map("article_id") 
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  partner      Partner     @relation(fields: [partnerId], references: [id])
+  article      ArticleLink @relation(fields: [articleId], references: [id])
+
+  @@id([partnerId, articleId])
+  @@map("partner_articles")
+}
 
 
+model ListeningHistory {
+  id         String   @id @default(cuid()) 
+  userId     String   @map("user_id") 
+  trackId    String   @map("track_id") 
+  listenedAt DateTime @default(now()) @map("listened_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  user       User     @relation(fields: [userId], references: [id])
+  track      Track    @relation(fields: [trackId], references: [id])
+
+  @@map("listening_history")
+}
+
+// auth js models
  
 model Account {
   userId            String
