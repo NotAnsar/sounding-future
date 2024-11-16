@@ -4,11 +4,11 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../../../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { convertDateFormat } from '@/lib/utils';
-import { GenreTag } from '@/config/tags';
-import { DeletePartnerButton } from '@/components/CuratedCrud/table/DeletePartner';
 import { EditGenreButton } from './genre-dialog';
+import { Genre } from '@prisma/client';
+import { DeleteGenreButton } from './delete-genre';
 
-export const columns: ColumnDef<GenreTag>[] = [
+export const columns: ColumnDef<Genre>[] = [
 	{
 		accessorKey: 'name',
 		cell: ({ row }) => {
@@ -30,11 +30,11 @@ export const columns: ColumnDef<GenreTag>[] = [
 		},
 	},
 	{
-		accessorKey: 'created_at',
+		accessorKey: 'createdAt',
 		cell: ({ row }) => {
 			return (
 				<div className='text-[15px] text-nowrap'>
-					{convertDateFormat(new Date(row.getValue('created_at')))}
+					{convertDateFormat(new Date(row.getValue('createdAt')))}
 				</div>
 			);
 		},
@@ -57,6 +57,6 @@ export const columns: ColumnDef<GenreTag>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
+		cell: ({ row }) => <DeleteGenreButton id={row.original.id} />,
 	},
 ];

@@ -18,20 +18,23 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { GenreState, createGenre, updateGenre } from '@/actions/genre-action';
 import { toast } from '@/hooks/use-toast';
-import { GenreTag } from '@/config/tags';
 import { Icons } from '@/components/icons/track-icons';
+import { Genre } from '@prisma/client';
 
 export function GenreDialog({
 	open,
 	setopen,
 	initialData,
 }: {
-	initialData?: GenreTag;
+	initialData?: Genre;
 	open: boolean;
 	setopen: Dispatch<SetStateAction<boolean>>;
 }) {
 	const isEdit = !!initialData?.id;
-	const initialState: GenreState = { message: null, errors: {} };
+	const initialState: GenreState = {
+		message: undefined,
+		errors: {},
+	};
 	const [state, action] = useFormState(
 		isEdit ? updateGenre.bind(null, initialData.id) : createGenre,
 		initialState
@@ -137,7 +140,7 @@ export function CreateGenreButton() {
 	);
 }
 
-export function EditGenreButton({ data }: { data: GenreTag }) {
+export function EditGenreButton({ data }: { data: Genre }) {
 	const [open, setOpen] = useState(false);
 
 	return (

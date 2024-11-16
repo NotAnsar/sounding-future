@@ -3,12 +3,12 @@ import { columns } from '@/components/tags/GenreForm/table/columns';
 import { DataTable } from '@/components/tags/GenreForm/table/data-table';
 import { CreateGenreButton } from '@/components/tags/GenreForm/table/genre-dialog';
 import TagsNav from '@/components/tags/TagsNav';
-import { genreTags } from '@/config/tags';
+import { getGenres } from '@/db/genre';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 
 export default async function page() {
-	const session = await auth();
+	const [session, genres] = await Promise.all([auth(), getGenres()]);
 
 	if (!session || session.user.role !== 'admin') {
 		notFound();
@@ -31,7 +31,7 @@ export default async function page() {
 				<CreateGenreButton />
 			</div>
 			<TagsNav />
-			<DataTable columns={columns} data={genreTags} />
+			<DataTable columns={columns} data={genres} />
 		</>
 	);
 }
