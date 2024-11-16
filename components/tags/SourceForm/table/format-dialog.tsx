@@ -22,8 +22,9 @@ import {
 	updateFormat,
 } from '@/actions/format-action';
 import { toast } from '@/hooks/use-toast';
-import { SourceFormat } from '@/config/tags';
+
 import { Icons } from '@/components/icons/track-icons';
+import { SourceFormat } from '@prisma/client';
 
 export function FormatDialog({
 	open,
@@ -46,7 +47,7 @@ export function FormatDialog({
 			setopen(false);
 
 			toast({
-				description: `Format Tag ${
+				description: `Source Format ${
 					isEdit ? 'updated' : 'created'
 				} successfully.`,
 			});
@@ -143,7 +144,11 @@ export function CreateFormatButton() {
 			>
 				<Plus className='w-4 h-auto aspect-square mr-2' /> Add Source Format
 			</Button>
-			<FormatDialog open={isCreateDialogOpen} setopen={setIsCreateDialogOpen} />
+			<FormatDialog
+				open={isCreateDialogOpen}
+				setopen={setIsCreateDialogOpen}
+				key={isCreateDialogOpen ? 'open' : 'close'}
+			/>
 		</>
 	);
 }
@@ -156,7 +161,12 @@ export function EditFormatButton({ data }: { data: SourceFormat }) {
 			<Button variant={'ghost'} onClick={() => setOpen(true)}>
 				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
 			</Button>
-			<FormatDialog open={open} setopen={setOpen} initialData={data} />
+			<FormatDialog
+				open={open}
+				setopen={setOpen}
+				initialData={data}
+				key={open ? 'open' : 'close'}
+			/>
 		</>
 	);
 }

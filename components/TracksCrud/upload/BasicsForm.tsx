@@ -13,12 +13,19 @@ import Link from 'next/link';
 import TrackNavUpload from '@/components/upload-track/TrackNav';
 import { SelectInput } from '@/components/ui/select-input';
 import ImageUpload from '@/components/profile/ImageUpload';
-import { sourceFormatData } from '@/config/tags';
+
 import ReleaseSelector from './ReleaseSelector';
 import { YearSelect } from '@/components/YearSelect';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { SourceFormat } from '@prisma/client';
 
-export default function TrackBasicsForm({ role }: { role: string }) {
+export default function TrackBasicsForm({
+	role,
+	sourceFormatData,
+}: {
+	role: string;
+	sourceFormatData: SourceFormat[];
+}) {
 	const initialState = { message: null, errors: {} };
 	const [state, action] = useFormState(submitTrack, initialState);
 

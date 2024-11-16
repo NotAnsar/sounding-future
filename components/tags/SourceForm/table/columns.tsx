@@ -4,9 +4,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../../../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { convertDateFormat } from '@/lib/utils';
-import { SourceFormat } from '@/config/tags';
-import { DeletePartnerButton } from '@/components/CuratedCrud/table/DeletePartner';
 import { EditFormatButton } from './format-dialog';
+import { SourceFormat } from '@prisma/client';
+import { DeleteSourceFormatButton } from './delete-source-format';
 
 export const columns: ColumnDef<SourceFormat>[] = [
 	{
@@ -30,11 +30,11 @@ export const columns: ColumnDef<SourceFormat>[] = [
 		},
 	},
 	{
-		accessorKey: 'created_at',
+		accessorKey: 'createdAt',
 		cell: ({ row }) => {
 			return (
 				<div className='text-[15px] text-nowrap'>
-					{convertDateFormat(new Date(row.getValue('created_at')))}
+					{convertDateFormat(new Date(row.getValue('createdAt')))}
 				</div>
 			);
 		},
@@ -57,6 +57,6 @@ export const columns: ColumnDef<SourceFormat>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
+		cell: ({ row }) => <DeleteSourceFormatButton id={row.original.id} />,
 	},
 ];

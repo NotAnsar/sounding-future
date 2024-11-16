@@ -1,14 +1,17 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import { columns } from '@/components/tags/SourceForm/table/columns';
 import { DataTable } from '@/components/tags/SourceForm/table/data-table';
-import { sourceFormatData } from '@/config/tags';
 import TagsNav from '@/components/tags/TagsNav';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import { CreateFormatButton } from '@/components/tags/SourceForm/table/format-dialog';
+import { getSourceFormats } from '@/db/source-format';
 
 export default async function page() {
-	const session = await auth();
+	const [session, sourceFormats] = await Promise.all([
+		auth(),
+		getSourceFormats(),
+	]);
 
 	if (!session || session.user.role !== 'admin') {
 		notFound();
@@ -32,7 +35,7 @@ export default async function page() {
 			</div>
 			<TagsNav isFormatPage />
 
-			<DataTable columns={columns} data={sourceFormatData} />
+			<DataTable columns={columns} data={sourceFormats} />
 		</>
 	);
 }

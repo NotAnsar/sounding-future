@@ -7,15 +7,14 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { Loader, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { deleteGenre } from '@/actions/genre-action';
+import { deleteFormat } from '@/actions/format-action';
 import { toast } from '@/hooks/use-toast';
 
-export const DeleteGenre = ({
+export const DeleteSourceFormat = ({
 	id,
 	open,
 	setOpen,
@@ -24,7 +23,7 @@ export const DeleteGenre = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const [state, action] = useFormState(deleteGenre.bind(null, id), {});
+	const [state, action] = useFormState(deleteFormat.bind(null, id), {} );
 
 	useEffect(() => {
 		if (state.message) {
@@ -43,7 +42,7 @@ export const DeleteGenre = ({
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your
-						genre and remove its data from our servers.
+						source format and remove its data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
@@ -73,7 +72,7 @@ function PendingButton() {
 	);
 }
 
-export function DeleteGenreButton({ id }: { id: string }) {
+export function DeleteSourceFormatButton({ id }: { id: string }) {
 	const [open, setOpen] = useState<boolean>(false);
 
 	return (
@@ -82,13 +81,13 @@ export function DeleteGenreButton({ id }: { id: string }) {
 				<Trash2 className='w-5 h-auto aspect-square text-muted' />
 			</Button>
 			{open && (
-				<DeleteGenre
+				<DeleteSourceFormat
 					id={id}
 					open={open}
 					setOpen={setOpen}
 					key={open ? 'opened' : 'closed'}
 				/>
-			)}
+			)}   
 		</>
 	);
 }

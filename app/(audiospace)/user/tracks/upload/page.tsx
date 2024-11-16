@@ -1,10 +1,14 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import TrackBasicsForm from '@/components/TracksCrud/upload/BasicsForm';
+import { getSourceFormats } from '@/db/source-format';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 
 export default async function page() {
-	const session = await auth();
+	const [session, sourceFormatData] = await Promise.all([
+		auth(),
+		getSourceFormats(),
+	]);
 
 	if (!session) {
 		notFound();
@@ -26,7 +30,10 @@ export default async function page() {
 				/>
 			</div>
 
-			<TrackBasicsForm role={session?.user?.role || ''} />
+			<TrackBasicsForm
+				role={session?.user?.role || ''}
+				sourceFormatData={sourceFormatData}
+			/>
 		</>
 	);
 }
