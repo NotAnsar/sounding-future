@@ -135,7 +135,11 @@ export function CreateGenreButton() {
 			<Button onClick={() => setIsCreateDialogOpen(true)}>
 				<Plus className='w-4 h-auto aspect-square mr-2' /> Add Genre
 			</Button>
-			<GenreDialog open={isCreateDialogOpen} setopen={setIsCreateDialogOpen} />
+			<GenreDialog
+				open={isCreateDialogOpen}
+				setopen={setIsCreateDialogOpen}
+				key={isCreateDialogOpen ? 'opened' : 'closed'}
+			/>
 		</>
 	);
 }
