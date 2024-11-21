@@ -1,7 +1,14 @@
 'use server';
 
 import { z } from 'zod';
-import { checkImage, State, updateImage, uploadImage } from './utils';
+import {
+	checkImage,
+	deleteImage,
+	DeleteState,
+	State,
+	updateImage,
+	uploadImage,
+} from './utils';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -82,12 +89,18 @@ export async function addPartner(
 		};
 	}
 
-	const { name, info, image, country, studioPic } = validatedFields.data;
+	const { name, info, image, country, studioPic, ...socialLinksData } =
+		validatedFields.data;
 
 	try {
 		const imageUrl = await uploadImage(image);
 		let studioPicUrl;
 		if (studioPic) studioPicUrl = await uploadImage(studioPic);
+
+		// Create social links
+		const socialLinks = await prisma.socialLinks.create({
+			data: socialLinksData,
+		});
 
 		await prisma.partner.create({
 			data: {
@@ -96,6 +109,7 @@ export async function addPartner(
 				bio: info,
 				studioPic: studioPicUrl,
 				picture: imageUrl,
+				socialId: socialLinks.id,
 			},
 		});
 
@@ -139,18 +153,9 @@ export async function updatePartner(
 		};
 	}
 
-	const { name, info, country } = validatedFields.data;
+	const { name, info, country, ...socialLinksData } = validatedFields.data;
 
 	try {
-		// const imageFile = await checkImage(formData.get('image'));
-		// let imageUrl = prevState?.prev?.image;
-		// if (imageFile) {
-		// 	if (imageUrl) {
-		// 		await deleteImage(imageUrl);
-		// 	}
-		// 	imageUrl = await uploadImage(imageFile);
-		// }
-
 		const imageUrl = await updateImage(
 			formData.get('image'),
 			prevState?.prev?.image
@@ -160,6 +165,32 @@ export async function updatePartner(
 			prevState?.prev?.studioPic
 		);
 
+		// await prisma.partner.update({
+		// 	where: { id },
+		// 	data: {
+		// 		name,
+		// 		country,
+		// 		bio: info,
+		// 		studioPic: studioPicUrl,
+		// 		picture: imageUrl,
+		// 	},
+		// });
+
+		// Retrieve existing social ID or create new social links
+
+		const existingPartner = await prisma.partner.findUnique({
+			where: { id },
+			select: { socialId: true },
+		});
+
+		// Upsert social links
+		const socialLink = await prisma.socialLinks.upsert({
+			where: { id: existingPartner?.socialId || '' },
+			create: socialLinksData,
+			update: socialLinksData,
+		});
+
+		// Update partner details
 		await prisma.partner.update({
 			where: { id },
 			data: {
@@ -168,6 +199,7 @@ export async function updatePartner(
 				bio: info,
 				studioPic: studioPicUrl,
 				picture: imageUrl,
+				socialId: socialLink?.id,
 			},
 		});
 
@@ -184,4 +216,36 @@ export async function updatePartner(
 		return { message: 'Failed to update partner' };
 	}
 	redirect('/user/curated');
+}
+
+export async function deletePartner(id: string): Promise<DeleteState> {
+	try {
+		const partner = await prisma.partner.delete({ where: { id } });
+
+		if (!partner) {
+			return { success: false, message: 'Partner not found' };
+		}
+
+		// Delete images if they exist
+		if (partner.picture) await deleteImage(partner.picture);
+		if (partner.studioPic) await deleteImage(partner.studioPic);
+
+		if (partner.socialId) {
+			await prisma.socialLinks.delete({ where: { id: partner.socialId } });
+		}
+
+		revalidatePath('/', 'layout');
+		return { success: true, message: 'Partner deleted successfully' };
+	} catch (error) {
+		console.error('Delete error:', error);
+
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			return {
+				success: false,
+				message: 'Partner not found or cannot be deleted',
+			};
+		}
+
+		return { success: false, message: 'Failed to delete partner' };
+	}
 }

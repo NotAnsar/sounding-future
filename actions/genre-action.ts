@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const formSchema = z.object({
-	name: z   
+	name: z
 		.string()
 		.min(2, 'Genre Name must be at least 2 characters')
 		.max(50, 'Genre Name must be less than 50 characters')

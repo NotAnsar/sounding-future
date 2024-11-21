@@ -9,11 +9,13 @@ import {
 } from '@/components/ui/alert-dialog';
 // import { toast } from '../../ui/use-toast';
 // import { DeleteProductState, deleteProduct } from '@/actions/product-action';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 // import { useFormState, useFormStatus } from 'react-dom';
 import { Button } from '../../ui/button';
 import { Loader, Trash2 } from 'lucide-react';
+import { deletePartner } from '@/actions/curated';
+import { toast } from '@/hooks/use-toast';
 
 export const DeletePartner = ({
 	id,
@@ -24,23 +26,17 @@ export const DeletePartner = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	console.log(id);
+	const [state, action] = useFormState(deletePartner.bind(null, id), {});
 
-	// const initialState: DeleteProductState = { message: null, type: null };
-	// const [state, action] = useFormState(
-	// 	deleteProduct.bind(null, id),
-	// 	initialState
-	// );
-
-	// useEffect(() => {
-	// 	if (state?.message) {
-	// 		setOpen(false);
-	// 		toast({
-	// 			description: state?.message,
-	// 			variant: state.type === 'error' ? 'destructive' : 'default',
-	// 		});
-	// 	}
-	// }, [state, setOpen]);
+	useEffect(() => {
+		if (state?.message) {
+			setOpen(false);
+			toast({
+				description: state?.message,
+				variant: state.success ? 'default' : 'destructive',
+			});
+		}
+	}, [state, setOpen]);
 
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
@@ -54,7 +50,7 @@ export const DeletePartner = ({
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<form /* action={action} */>
+					<form action={action}>
 						<PendingButton />
 					</form>
 				</AlertDialogFooter>
@@ -65,15 +61,7 @@ export const DeletePartner = ({
 
 function PendingButton() {
 	const { pending } = useFormStatus();
-	return (
-		<Button
-			type='button'
-			variant={'destructive'}
-			className='bg-destructive text-white hover:bg-destructive/90 w-full'
-		>
-			Delete
-		</Button>
-	);
+
 	return (
 		<Button
 			type='submit'

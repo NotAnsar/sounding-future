@@ -82,3 +82,8 @@ export async function updateImage(
 	}
 	return imageUrl;
 }
+
+export type DeleteState = {
+	message?: string | null;
+	success?: boolean;
+};
