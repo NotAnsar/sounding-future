@@ -2,8 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { State } from '../utils';
+import { imageSchema, State } from '../utils/utils';
 import { auth } from '@/lib/auth';
+
+import { checkImage, updateImage, uploadImage } from '../utils/s3-image';
+import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
 const TrackSchema = z.object({
@@ -20,15 +23,7 @@ const TrackSchema = z.object({
 	sourceFormat: z
 		.string()
 		.min(1, { message: 'Track Source Format is required' }),
-	imageFile: z
-		.instanceof(File)
-		.refine((file) => {
-			return file.type === 'image/jpeg' || file.type === 'image/jpg';
-		}, 'Image must be in JPG format')
-		.refine((file) => {
-			return file.size <= 5 * 1024 * 1024;
-		}, 'Image must be less than 5MB'),
-
+	imageFile: imageSchema.shape.file,
 	// admin
 	artist: z
 		.string()
@@ -42,7 +37,9 @@ const TrackSchema = z.object({
 
 type TrackData = z.infer<typeof TrackSchema>;
 
-export type TrackFormState = State<TrackData>;
+export type TrackFormState = State<TrackData> & {
+	prev?: { image?: string | undefined; genres?: string[] | undefined };
+};
 
 export async function submitTrack(
 	prevState: TrackFormState,
@@ -62,7 +59,7 @@ export async function submitTrack(
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
 		artist,
-		imageFile: formData.get('imageFile'),
+		imageFile: await checkImage(formData.get('imageFile')),
 		curatedBy,
 		genreTags: genreTags,
 		releaseYear: formData.get('releaseYear'),
@@ -77,6 +74,7 @@ export async function submitTrack(
 		};
 	}
 
+	let trackId: string;
 	try {
 		const {
 			trackName,
@@ -89,15 +87,24 @@ export async function submitTrack(
 			release,
 		} = validatedFields.data;
 
-		console.log('Submitting track:', {
-			trackName,
-			artist,
-			releaseYear,
-			curatedBy,
-			genreTags,
-			imageFile,
-			sourceFormat,
-			release,
+		const imageUrl = await uploadImage(imageFile);
+
+		const track = await prisma.track.create({
+			data: {
+				title: trackName,
+				releaseYear: +releaseYear,
+				artistId: artist || '1',
+				cover: imageUrl,
+				formatId: sourceFormat,
+				releasedBy: release,
+				curatedBy,
+			},
+		});
+
+		trackId = track.id;
+
+		await prisma.trackGenre.createMany({
+			data: genreTags.map((genreId) => ({ trackId, genreId })),
 		});
 
 		revalidatePath('/', 'layout');
@@ -106,5 +113,106 @@ export async function submitTrack(
 		return { message: 'Failed to upload track basic info. Please try again.' };
 	}
 
-	redirect(`/user/tracks/upload/${Math.floor(Math.random() * 100)}/info`);
+	redirect(`/user/tracks/upload/${trackId}/info`);
+}
+
+export async function updateTrack(
+	id: string,
+	prevState: TrackFormState,
+	formData: FormData
+): Promise<TrackFormState> {
+	console.log('update');
+
+	const session = await auth();
+
+	const genreTags = formData
+		.getAll('genreTags')
+		.filter((tag) => tag !== '') as string[];
+
+	const artist =
+		session?.user?.role === 'user' ? session?.user?.id : formData.get('artist');
+	const curatedBy =
+		session?.user?.role === 'user' ? undefined : formData.get('curatedBy');
+
+	const validatedFields = TrackSchema.omit({
+		imageFile: true,
+	}).safeParse({
+		trackName: formData.get('trackName'),
+		artist,
+		curatedBy,
+		genreTags: genreTags,
+		releaseYear: formData.get('releaseYear'),
+		sourceFormat: formData.get('sourceFormat'),
+		release: formData.get('release'),
+	});
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Failed to update track. Please check the form for errors.',
+		};
+	}
+
+	try {
+		const {
+			trackName,
+			artist,
+			releaseYear,
+			curatedBy,
+			genreTags,
+			sourceFormat,
+			release,
+		} = validatedFields.data;
+
+		const imageUrl = await updateImage(
+			formData.get('imageFile'),
+			prevState?.prev?.image
+		);
+
+		await prisma.track.update({
+			where: { id },
+			data: {
+				title: trackName,
+				releaseYear: +releaseYear,
+				artistId: artist || '1',
+				cover: imageUrl,
+				formatId: sourceFormat,
+				releasedBy: release,
+				curatedBy,
+			},
+		});
+
+		const oldGenres = prevState?.prev?.genres || [];
+
+		const genresToAdd = genreTags.filter(
+			(genreId) => !oldGenres.includes(genreId)
+		);
+		const genresToRemove = oldGenres.filter(
+			(genreId) => !genreTags.includes(genreId)
+		);
+
+		// Add new genres
+		if (genresToAdd.length > 0) {
+			await prisma.trackGenre.createMany({
+				data: genresToAdd.map((genreId) => ({ trackId: id, genreId })),
+			});
+		}
+
+		// Remove old genres
+		if (genresToRemove.length > 0) {
+			await prisma.trackGenre.deleteMany({
+				where: {
+					trackId: id,
+					genreId: { in: genresToRemove },
+				},
+			});
+		}
+
+		revalidatePath('/', 'layout');
+	} catch (error) {
+		console.error('Track update error:', error);
+		return { message: 'Failed to update track info. Please try again.' };
+	}
+
+	redirect(`/user/tracks/upload/${id}/info`);
 }

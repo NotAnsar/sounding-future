@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { State } from '../utils';
+import { State } from '../utils/utils';
 
 // Define the schema for profile update
 const ProfileLinksSchema = z.object({

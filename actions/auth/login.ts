@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { compare } from 'bcrypt';
 import { prisma } from '@/lib/prisma';
-import { State } from '@/actions/utils';
+import { State } from '@/actions/utils/utils';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 

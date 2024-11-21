@@ -1,13 +1,16 @@
 'use client';
 
-import { submitTrack } from '@/actions/upload-track/basics';
+import {
+	submitTrack,
+	TrackFormState,
+	updateTrack,
+} from '@/actions/upload-track/basics';
 import ErrorMessage from '@/components/ErrorMessage';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useFormState } from 'react-dom';
 import { MultiSelect } from '@/components/ui/multi-select';
-import { artists, collections, genres } from '@/config/dummy-data';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 import TrackNavUpload from '@/components/upload-track/TrackNav';
@@ -17,17 +20,36 @@ import ImageUpload from '@/components/profile/ImageUpload';
 import ReleaseSelector from './ReleaseSelector';
 import { YearSelect } from '@/components/YearSelect';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { SourceFormat } from '@prisma/client';
+import { Artist, Genre, Partner, SourceFormat } from '@prisma/client';
+import { TrackWithgenres } from '@/db/tracks';
 
 export default function TrackBasicsForm({
 	role,
 	sourceFormatData,
+	artistsData,
+	genresData,
+	partnersData,
+	initialData,
 }: {
+	initialData?: TrackWithgenres;
 	role: string;
 	sourceFormatData: SourceFormat[];
+	partnersData: Partner[];
+	artistsData: Artist[];
+	genresData: Genre[];
 }) {
-	const initialState = { message: null, errors: {} };
-	const [state, action] = useFormState(submitTrack, initialState);
+	const initialState: TrackFormState = {
+		message: null,
+		errors: {},
+		prev: {
+			image: initialData?.cover,
+			genres: initialData?.genres.map((g) => g.id),
+		},
+	};
+	const [state, action] = useFormState(
+		initialData?.id ? updateTrack.bind(null, initialData?.id) : submitTrack,
+		initialState
+	);
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
@@ -47,6 +69,7 @@ export default function TrackBasicsForm({
 						type='text'
 						name='trackName'
 						id='trackName'
+						defaultValue={initialData?.title}
 						className={cn(
 							state?.errors?.trackName
 								? 'border-destructive focus-visible:ring-destructive '
@@ -69,7 +92,8 @@ export default function TrackBasicsForm({
 
 						<SelectInput
 							name='artist'
-							options={artists.map((a) => ({ label: a.name, value: a.id }))}
+							options={artistsData.map((a) => ({ label: a.name, value: a.id }))}
+							initialValue={initialData?.artistId}
 							placeholder='Select Artist'
 							searchPlaceholder='Search Artist...'
 							emptyMessage='No Artist found.'
@@ -93,6 +117,11 @@ export default function TrackBasicsForm({
 					</Label>
 
 					<YearSelect
+						initialValue={
+							initialData?.releaseYear
+								? initialData?.releaseYear.toString()
+								: undefined
+						}
 						className={cn(
 							state?.errors?.releaseYear
 								? 'border-destructive focus-visible:ring-destructive '
@@ -113,8 +142,9 @@ export default function TrackBasicsForm({
 							Curated by
 						</Label>
 						<SelectInput
+							initialValue={initialData?.curatedBy || undefined}
 							name='curatedBy'
-							options={collections.map((c) => ({
+							options={partnersData.map((c) => ({
 								label: c.name,
 								value: c.id,
 							}))}
@@ -146,7 +176,8 @@ export default function TrackBasicsForm({
 						Track genre tags *
 					</Label>
 					<MultiSelect
-						options={genres.map((g) => ({ label: g.name, value: g.id }))}
+						options={genresData.map((g) => ({ label: g.name, value: g.id }))}
+						initialValue={initialData?.genres?.map((g) => g.id)}
 						name='genreTags'
 						placeholder='Select genre tags'
 						searchPlaceholder='Search genre tags...'
@@ -166,6 +197,7 @@ export default function TrackBasicsForm({
 				<ImageUpload
 					name='imageFile'
 					error={state?.errors?.imageFile}
+					initialData={initialData?.cover}
 					type='square'
 					message='Upload a cover photo for your track (jpeg, min. 1000x1000px)'
 					size='lg'
@@ -185,8 +217,9 @@ export default function TrackBasicsForm({
 					<SelectInput
 						options={sourceFormatData.map((s) => ({
 							label: s.name,
-							value: s.name,
+							value: s.id,
 						}))}
+						initialValue={initialData?.formatId || undefined}
 						name='sourceFormat'
 						placeholder='Select format'
 						className={cn(
@@ -204,36 +237,11 @@ export default function TrackBasicsForm({
 					<ErrorMessage errors={state?.errors?.sourceFormat} />
 				</div>
 
-				<ReleaseSelector errors={state?.errors?.release} />
+				<ReleaseSelector
+					errors={state?.errors?.release}
+					initialValue={initialData?.releasedBy || undefined}
+				/>
 				<LegalAgreementSection />
-				{/* <div>
-					<div className='border rounded-lg p-4 space-y-2'>
-						<div className='flex items-start space-x-2 relative'>
-							<Checkbox id='legal-agreement' name='legal-agreement' required />
-							<div className='space-y-1 leading-none'>
-								<label
-									htmlFor='legal-agreement'
-									className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-								>
-									By adding my audio track and press SAVE, I agree to the legal
-									terms and conditions of publishing my audio track in the
-									Sounding Future AudioSpace.
-								</label>
-							</div>
-						</div>
-
-						<div className='space-y-2'>
-							<p className='text-sm text-muted-foreground'>
-								Learn more about our legal platform terms and conditions:
-							</p>
-							<Button variant='outline' asChild className='w-full'>
-								<Link href='/legal' target='_blank'>
-									Legal Terms
-								</Link>
-							</Button>
-						</div>
-					</div>
-				</div> */}
 			</div>
 		</form>
 	);

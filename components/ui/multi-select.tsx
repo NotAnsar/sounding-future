@@ -36,6 +36,7 @@ interface MultiSelectProps {
 	onBlur?: () => void;
 	name?: string;
 	required?: boolean;
+	initialValue?: string[];
 }
 
 export function MultiSelect({
@@ -52,10 +53,13 @@ export function MultiSelect({
 	onBlur,
 	name,
 	classNameMaxWidth = 'max-w-lg',
+	initialValue,
 }: MultiSelectProps) {
 	const [open, setOpen] = React.useState(false);
 	const [searchQuery, setSearchQuery] = React.useState('');
-	const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+	const [selectedItems, setSelectedItems] = React.useState<string[]>(
+		getFilteredValues(initialValue, options)
+	);
 
 	const handleUnselect = (itemValue: string) => {
 		const newValue = selectedItems.filter((val) => val !== itemValue);
@@ -188,4 +192,14 @@ export function MultiSelect({
 			)}
 		</div>
 	);
+}
+
+function getFilteredValues(
+	initialValue: string[] | undefined,
+	options: Option[]
+): string[] {
+	if (!initialValue) return [];
+
+	const optionValues = new Set(options.map((o) => o.value));
+	return initialValue.filter((i) => optionValues.has(i));
 }

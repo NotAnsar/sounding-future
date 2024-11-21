@@ -8,7 +8,7 @@ class PartnerError extends Error {
 	}
 }
 
-export async function getPartners(): Promise<PartnerStats[]> {
+export async function getPartnersStats(): Promise<PartnerStats[]> {
 	try {
 		const data = await prisma.partner.findMany({
 			include: {
@@ -64,6 +64,32 @@ export async function getPartners(): Promise<PartnerStats[]> {
 		console.error('Error fetching partners data:', error);
 		throw new PartnerError(
 			'Unable to retrieve partners data. Please try again later.',
+			error
+		);
+	}
+}
+
+export async function getPartners(): Promise<Partner[]> {
+	try {
+		const partners = await prisma.partner.findMany({
+			orderBy: { createdAt: 'desc' },
+		});
+
+		return partners;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			throw new PartnerError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new PartnerError('Invalid data provided');
+		}
+
+		console.error('Error fetching partners:', error);
+		throw new PartnerError(
+			'Unable to retrieve partner data. Please try again later.',
 			error
 		);
 	}

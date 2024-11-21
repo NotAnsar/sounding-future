@@ -63,7 +63,8 @@ model Track {
   urlFlac      String?  @map("url_flac")
   releaseYear  Int?     @map("release_year") 
   credits      String?
-  published    Boolean          @default(false)
+  releasedBy   String   @default("self-published")
+  published    Boolean  @default(false)
   createdAt    DateTime @default(now()) @map("created_at")
   duration     Int?      // Track length in seconds
 
@@ -78,7 +79,7 @@ model Track {
   artist Artist @relation(fields: [artistId], references: [id])
   curator      Partner?         @relation("PartnerCurated", fields: [curatedBy], references: [id])
   sourceFormat SourceFormat?    @relation(fields: [formatId], references: [id])
-  genres       TrackGenre[]  
+  genres TrackGenre[] 
   likes  Like[]
   listeners    ListeningHistory[]
 
@@ -98,7 +99,8 @@ model Partner {
   createdAt   DateTime     @default(now()) @map("created_at")
   
   // Relations
-  socialLinks SocialLinks? @relation(fields: [socialId], references: [id])
+  
+  socialLinks SocialLinks? @relation(fields: [socialId], references: [id], onDelete: Cascade) // Cascade delete
   tracks      Track[]      @relation("PartnerCurated")
   articles      PartnerArticle[] // New relation
 
@@ -136,9 +138,10 @@ model TrackGenre {
   trackId   String   @map("track_id") 
   genreId   String   @map("genre_id") 
   createdAt DateTime @default(now()) @map("created_at")
-  
-  track     Track    @relation(fields: [trackId], references: [id])
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade) // Cascade delete
   genre     Genre    @relation(fields: [genreId], references: [id])
+    
+
 
   @@id([trackId, genreId])
   @@map("track_genres")
@@ -191,7 +194,7 @@ model SocialLinks {
   
   // Relations
   artists   Artist[]
-  partners  Partner[]
+  partners  Partner[] 
 
   @@map("social_links")
 }

@@ -1,7 +1,7 @@
 import { columns } from '@/components/CuratedCrud/table/columns';
 import { DataTable } from '@/components/CuratedCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
-import { getPartners } from '@/db/partner';
+import { getPartnersStats } from '@/db/partner';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 export default async function page() {
-	const [session, data] = await Promise.all([auth(), getPartners()]);
+	const [session, data] = await Promise.all([auth(), getPartnersStats()]);
 
 	if (!session || session.user.role !== 'admin') {
 		notFound();

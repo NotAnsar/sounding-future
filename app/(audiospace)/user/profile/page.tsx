@@ -64,7 +64,7 @@ export default function Page() {
 							htmlFor='biography'
 							className={cn(state?.errors?.biography ? 'text-destructive' : '')}
 						>
-							User Biography
+							Artist Biography
 						</Label>
 						<Textarea
 							className={cn(

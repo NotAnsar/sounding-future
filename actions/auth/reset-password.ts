@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { State } from '@/actions/utils';
+import { State } from '@/actions/utils/utils';
 import { randomBytes } from 'crypto';
 import { hash } from 'bcrypt';
 import { sendPasswordResetEmail } from '@/lib/email';

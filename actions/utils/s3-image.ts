@@ -3,13 +3,7 @@
 import { AWS_URL } from '@/config/links';
 import { s3 } from '@/lib/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-
-import { v4 as uuidv4 } from 'uuid'; // For generating unique file names
-
-export type State<T> = {
-	errors?: { [K in keyof T]?: string[] };
-	message?: string | null;
-};
+import { v4 as uuidv4 } from 'uuid';
 
 export async function checkImage(image: FormDataEntryValue | null) {
 	const imageFile = image as File | null;
@@ -82,8 +76,3 @@ export async function updateImage(
 	}
 	return imageUrl;
 }
-
-export type DeleteState = {
-	message?: string | null;
-	success?: boolean;
-};

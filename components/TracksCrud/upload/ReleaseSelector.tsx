@@ -6,14 +6,27 @@ import { cn } from '@/lib/utils';
 import ErrorMessage from '@/components/ErrorMessage';
 
 interface ReleaseSelectorProps {
+	initialValue?: string;
 	errors?: string[];
 }
 
-export default function ReleaseSelector({ errors }: ReleaseSelectorProps) {
+export default function ReleaseSelector({
+	errors,
+	initialValue,
+}: ReleaseSelectorProps) {
+	console.log(
+		initialValue,
+		initialValue === undefined || initialValue === 'self-published'
+	);
+
+	const isSelfPublished =
+		initialValue === undefined || initialValue === 'self-published';
 	const [selectedType, setSelectedType] = React.useState<
 		'self-published' | 'label'
-	>('self-published');
-	const [labelName, setLabelName] = React.useState('');
+	>(isSelfPublished ? 'self-published' : 'label');
+	const [labelName, setLabelName] = React.useState(
+		isSelfPublished ? '' : initialValue || ''
+	);
 
 	const handleTypeChange = (value: string) => {
 		const type = value as 'self-published' | 'label';
@@ -31,7 +44,7 @@ export default function ReleaseSelector({ errors }: ReleaseSelectorProps) {
 
 			<RadioGroup
 				// name='release'
-				defaultValue='self-published'
+				defaultValue={selectedType}
 				onValueChange={handleTypeChange}
 				className='space-y-2'
 			>

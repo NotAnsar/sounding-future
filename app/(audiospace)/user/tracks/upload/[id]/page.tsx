@@ -4,17 +4,23 @@ import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
 import { getSourceFormats } from '@/db/source-format';
+import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 
-export default async function page() {
-	const [session, sourceFormatData, partners, artists, genres] =
+export default async function page({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const [session, sourceFormatData, partners, artists, genres, track] =
 		await Promise.all([
 			auth(),
 			getSourceFormats(),
 			getPartners(),
 			getArtists(),
 			getGenres(),
+			getTrackById(id),
 		]);
 
 	if (!session) {
@@ -43,6 +49,7 @@ export default async function page() {
 				partnersData={partners}
 				artistsData={artists}
 				genresData={genres}
+				initialData={track}
 			/>
 		</>
 	);
