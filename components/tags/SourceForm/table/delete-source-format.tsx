@@ -23,13 +23,13 @@ export const DeleteSourceFormat = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const [state, action] = useFormState(deleteFormat.bind(null, id), {} );
+	const [state, action] = useFormState(deleteFormat.bind(null, id), {});
 
 	useEffect(() => {
-		if (state.message) {
+		if (state?.message) {
 			setOpen(false);
 			toast({
-				description: state.message,
+				description: state?.message,
 				variant: state.success ? 'default' : 'destructive',
 			});
 		}
@@ -87,7 +87,7 @@ export function DeleteSourceFormatButton({ id }: { id: string }) {
 					setOpen={setOpen}
 					key={open ? 'opened' : 'closed'}
 				/>
-			)}   
+			)}
 		</>
 	);
 }

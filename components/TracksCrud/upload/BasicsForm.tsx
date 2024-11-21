@@ -35,7 +35,7 @@ export default function TrackBasicsForm({
 			<AlertUploadTrack />
 
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
-				<ErrorMessage errors={state?.message ? [state.message] : undefined} />
+				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 				<div className='grid gap-2'>
 					<Label
 						htmlFor='trackName'

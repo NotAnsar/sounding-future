@@ -1,7 +1,11 @@
 'use server';
 
 import { z } from 'zod';
-import { State } from './utils';
+import { checkImage, State, updateImage, uploadImage } from './utils';
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { Prisma } from '@prisma/client';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -31,7 +35,7 @@ const PartnerSchema = z.object({
 		.max(100, 'Partner name must be 100 characters or less'),
 	info: z
 		.string()
-		.max(500, 'Partner must be 500 characters or less')
+		.max(1500, 'Partner must be 1500 characters or less')
 		.optional(),
 	image: imageSchema.shape.file,
 	country: z
@@ -49,7 +53,9 @@ const PartnerSchema = z.object({
 
 type PartnerData = z.infer<typeof PartnerSchema>;
 
-export type PartnerFormState = State<PartnerData>;
+export type PartnerFormState = State<PartnerData> & {
+	prev?: { image?: string | undefined; studioPic?: string | undefined };
+};
 
 export async function addPartner(
 	prevState: PartnerFormState,
@@ -58,9 +64,15 @@ export async function addPartner(
 	const validatedFields = PartnerSchema.safeParse({
 		name: formData.get('name'),
 		info: formData.get('info'),
-		image: formData.get('image'),
 		country: formData.get('country'),
-		studioPic: formData.get('studioPic'),
+		image: await checkImage(formData.get('image')),
+		studioPic: await checkImage(formData.get('studioPic')),
+		website: formData.get('website') || undefined,
+		facebook: formData.get('facebook') || undefined,
+		instagram: formData.get('instagram') || undefined,
+		vimeo: formData.get('vimeo') || undefined,
+		linkedin: formData.get('linkedin') || undefined,
+		youtube: formData.get('youtube') || undefined,
 	});
 
 	if (!validatedFields.success) {
@@ -73,24 +85,103 @@ export async function addPartner(
 	const { name, info, image, country, studioPic } = validatedFields.data;
 
 	try {
-		// Example image upload logic (replace with your actual implementation)
-		console.log(`Uploading image: ${(image as File).name}`);
-		// const imageUrl = await uploadImageToStorage(image.file)
-		// await updateUserProfileImage(userId, imageUrl)
+		const imageUrl = await uploadImage(image);
+		let studioPicUrl;
+		if (studioPic) studioPicUrl = await uploadImage(studioPic);
 
-		if (studioPic && studioPic.size > 0) {
-			// Example studioPic upload logic (replace with your actual implementation)
-			console.log(`Uploading studioPic: ${studioPic.name}`);
-			// const studioPicUrl = await uploadStudioPicToStorage(studioPic)
-			// await updateUserStudioPic(userId, studioPicUrl)
-		}
+		await prisma.partner.create({
+			data: {
+				name,
+				country,
+				bio: info,
+				studioPic: studioPicUrl,
+				picture: imageUrl,
+			},
+		});
 
-		console.log(name, info, image, country, studioPic);
-
-		// revalidatePath('/', 'layout');
-		return { message: 'Partner added successfully' };
+		revalidatePath('/', 'layout');
 	} catch (error) {
-		console.error('Partner creation error:', error);
-		return { message: 'Failed to adding new partner. Please try again.' };
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'Partner already exists' };
+		}
+		return { message: 'Failed to create partner' };
 	}
+	redirect('/user/curated');
+}
+
+export async function updatePartner(
+	id: string,
+	prevState: PartnerFormState,
+	formData: FormData
+): Promise<PartnerFormState> {
+	const validatedFields = PartnerSchema.omit({
+		image: true,
+		studioPic: true,
+	}).safeParse({
+		name: formData.get('name'),
+		info: formData.get('info'),
+		country: formData.get('country'),
+		website: formData.get('website') || undefined,
+		facebook: formData.get('facebook') || undefined,
+		instagram: formData.get('instagram') || undefined,
+		vimeo: formData.get('vimeo') || undefined,
+		linkedin: formData.get('linkedin') || undefined,
+		youtube: formData.get('youtube') || undefined,
+	});
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Failed to update Partner. Please check the form for errors.',
+		};
+	}
+
+	const { name, info, country } = validatedFields.data;
+
+	try {
+		// const imageFile = await checkImage(formData.get('image'));
+		// let imageUrl = prevState?.prev?.image;
+		// if (imageFile) {
+		// 	if (imageUrl) {
+		// 		await deleteImage(imageUrl);
+		// 	}
+		// 	imageUrl = await uploadImage(imageFile);
+		// }
+
+		const imageUrl = await updateImage(
+			formData.get('image'),
+			prevState?.prev?.image
+		);
+		const studioPicUrl = await updateImage(
+			formData.get('studioPic'),
+			prevState?.prev?.studioPic
+		);
+
+		await prisma.partner.update({
+			where: { id },
+			data: {
+				name,
+				country,
+				bio: info,
+				studioPic: studioPicUrl,
+				picture: imageUrl,
+			},
+		});
+
+		revalidatePath('/', 'layout');
+	} catch (error) {
+		console.log(error);
+
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'Partner already exists' };
+		}
+		return { message: 'Failed to update partner' };
+	}
+	redirect('/user/curated');
 }

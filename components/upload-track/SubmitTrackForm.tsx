@@ -25,7 +25,7 @@ export default function SubmitTrackForm() {
 	// const [state, action] = useFormState(submitTrack, initialState);
 	// const router = useRouter();
 	// useEffect(() => {
-	// 	if (state.message === 'Track submitted successfully') {
+	// 	if (state?.message === 'Track submitted successfully') {
 	// 		// router.push('/');
 	// 		toast({ description: 'Track submitted successfully', title: 'Success' });
 	// 	}
@@ -35,7 +35,7 @@ export default function SubmitTrackForm() {
 	// 		<Tabs value={'basics'} className='mt-4 sm:mt-8 grid sm:gap-3'>
 	// 			<UploadTrackNav isAdmin={role === 'admin'} />
 	// 			<TabsContent value='basics' className='lg:w-2/3 mt-2 grid gap-3'>
-	// 				<ErrorMessage errors={state.message ? [state.message] : undefined} />
+	// 				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 	// 				<div className='grid gap-2'>
 	// 					<Label
 	// 						htmlFor='trackName'

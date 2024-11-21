@@ -5,3 +5,5 @@ export const NEWS_LETTER_LINK = 'https://seu2.cleverreach.com/f/378520-378210/';
 
 export const FRIENDLY_CAPTCHA_SITEKEY =
 	process.env.NEXT_PUBLIC_FRIENDLY_CAPTCHA_SITEKEY!;
+
+export const AWS_URL = process.env.AWS_URL!;

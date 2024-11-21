@@ -33,10 +33,10 @@ export const DeletePartner = ({
 	// );
 
 	// useEffect(() => {
-	// 	if (state.message) {
+	// 	if (state?.message) {
 	// 		setOpen(false);
 	// 		toast({
-	// 			description: state.message,
+	// 			description: state?.message,
 	// 			variant: state.type === 'error' ? 'destructive' : 'default',
 	// 		});
 	// 	}

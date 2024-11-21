@@ -101,7 +101,7 @@ export function GenreDialog({
 					<DialogFooter>
 						{(state?.message || state?.errors) && (
 							<p className='text-sm font-medium text-destructive mr-auto'>
-								{state.message}
+								{state?.message}
 							</p>
 						)}
 						<PendingButton isUpdate={!!initialData} />

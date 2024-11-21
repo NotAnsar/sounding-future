@@ -20,12 +20,12 @@ export default function UpdatePasswordForm({ token }: { token: string }) {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (state.message) {
+		if (state?.message) {
 			if (state.success) {
 				router.replace('/login');
 			}
 			toast({
-				description: state.message,
+				description: state?.message,
 				title: state?.success ? 'Success' : 'Error',
 				variant: state?.success ? 'default' : 'destructive',
 				duration: 5000,

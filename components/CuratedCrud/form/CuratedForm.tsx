@@ -1,8 +1,5 @@
 'use client';
 
-import { toast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import ErrorMessage from '@/components/ErrorMessage';
 import ImageUpload from '@/components/profile/ImageUpload';
@@ -12,27 +9,29 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Globe, Facebook, Instagram, Linkedin, Youtube } from 'lucide-react';
-import { addPartner } from '@/actions/curated';
+import { addPartner, PartnerFormState, updatePartner } from '@/actions/curated';
 import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { SelectInput } from '@/components/ui/select-input';
 import { countries } from '@/config/countries';
-import { Collection } from '@/config/dummy-data';
+import { PartnerLinks } from '@/db/partner';
 
 export default function CuratedForm({
 	initialData,
 }: {
-	initialData?: Collection;
+	initialData?: PartnerLinks;
 }) {
-	const initialState = { message: null, errors: {} };
-	const [state, action] = useFormState(addPartner, initialState);
-	const router = useRouter();
-
-	useEffect(() => {
-		if (state.message === 'Partner Added successfully') {
-			router.push('/');
-			toast({ description: 'Partner Added successfully', title: 'Success' });
-		}
-	}, [state, router]);
+	const initialState: PartnerFormState = {
+		message: null,
+		errors: {},
+		prev: {
+			image: initialData?.picture,
+			studioPic: initialData?.studioPic || undefined,
+		},
+	};
+	const [state, action] = useFormState(
+		initialData?.id ? updatePartner.bind(null, initialData?.id) : addPartner,
+		initialState
+	);
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid '>
@@ -40,7 +39,7 @@ export default function CuratedForm({
 				<SaveButton />
 			</div>
 			<div className='grid gap-4'>
-				<ErrorMessage errors={state.message ? [state.message] : undefined} />
+				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 
 				<div className='grid gap-2'>
 					<Label
@@ -87,12 +86,7 @@ export default function CuratedForm({
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
-						defaultValue={
-							initialData
-								? 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi fugiat culpa reprehenderit hic eum molestias, quam sapiente sit! Laborum suscipit dolore exercitationem iure porro consequatur error ipsa incidunt repellat sapiente commodi, earum ipsum in nostrum rem beatae quam! Totam, fugit? Provident minima nam possimus! Perspiciatis libero in ipsum facilis dolor cumque. Ex doloribus incidunt suscipit officia ipsa qui harum sequi nobis ratione animi pariatur deserunt, odit beatae asperiores distinctio error itaque voluptatem iste exercitationem provident ab saepe unde soluta? Culpa tenetur ipsum porro accusantium magnam quod esse eaque eum temporibus expedita veniam non, recusandae blanditiis. Quas voluptatibus reprehenderit veniam facere esse nemo quaerat maiores temporibus in beatae est, odio reiciendis omnis facilis totam ipsum, dignissimos libero repudiandae aspernatur? Illo, explicabo?'
-								: undefined
-						}
-						// initialData={initialData.info || undefined}
+						defaultValue={initialData?.bio || undefined}
 						name='info'
 						id='info'
 					/>
@@ -149,6 +143,7 @@ export default function CuratedForm({
 							type='text'
 							name='website'
 							id='website'
+							defaultValue={initialData?.socialLinks?.website || undefined}
 							className={cn(
 								'flex-1',
 								state?.errors?.website
@@ -172,6 +167,7 @@ export default function CuratedForm({
 							type='text'
 							name='facebook'
 							id='facebook'
+							defaultValue={initialData?.socialLinks?.facebook || undefined}
 							className={cn(
 								'flex-1',
 								state?.errors?.facebook
@@ -195,6 +191,7 @@ export default function CuratedForm({
 							type='text'
 							name='instagram'
 							id='instagram'
+							defaultValue={initialData?.socialLinks?.instagram || undefined}
 							className={cn(
 								'flex-1',
 								state?.errors?.instagram
@@ -219,6 +216,7 @@ export default function CuratedForm({
 							type='text'
 							name='linkedin'
 							id='linkedin'
+							defaultValue={initialData?.socialLinks?.linkedin || undefined}
 							className={cn(
 								'flex-1',
 								state?.errors?.linkedin
@@ -242,6 +240,7 @@ export default function CuratedForm({
 							type='text'
 							name='youtube'
 							id='youtube'
+							defaultValue={initialData?.socialLinks?.youtube || undefined}
 							className={cn(
 								'flex-1',
 								state?.errors?.youtube

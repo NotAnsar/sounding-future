@@ -15,9 +15,9 @@ export default function ResetForm() {
 	const [state, formAction] = useFormState(resetPasswordRequest, {});
 
 	useEffect(() => {
-		if (state.message) {
+		if (state?.message) {
 			toast({
-				description: state.message,
+				description: state?.message,
 				title: state?.success ? 'Success' : 'Error',
 				variant: state?.success ? 'default' : 'destructive',
 				duration: 5000,

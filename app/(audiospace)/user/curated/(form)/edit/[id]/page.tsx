@@ -1,12 +1,16 @@
-import CuratedForm from '@/components/CuratedCrud/form/CuratedForm';
 import BreadCrumb from '@/components/BreadCrumb';
-import { collections } from '@/config/dummy-data';
 import { notFound } from 'next/navigation';
+import { getPartnerById } from '@/db/partner';
+import CuratedForm from '@/components/CuratedCrud/form/CuratedForm';
 
-export default function Page({ params: { id } }: { params: { id: string } }) {
-	const collection = collections.find((c) => c.id === id);
+export default async function Page({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const partner = await getPartnerById(id);
 
-	if (!collection) {
+	if (!partner) {
 		notFound();
 	}
 
@@ -23,7 +27,7 @@ export default function Page({ params: { id } }: { params: { id: string } }) {
 					},
 				]}
 			/>{' '}
-			<CuratedForm initialData={collection} />
+			<CuratedForm initialData={partner} />
 		</div>
 	);
 }

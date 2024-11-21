@@ -28,7 +28,7 @@ export default function AudioFileForm({
 			<TrackNavUpload step={3} isAdmin={role === 'admin'} />
 			<AlertUploadTrack />
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
-				<ErrorMessage errors={state?.message ? [state.message] : undefined} />
+				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 
 				<div className='space-y-6'>
 					<div className='space-y-4'>
@@ -68,8 +68,6 @@ export default function AudioFileForm({
 								</p>
 							</div>
 						</div>
-
-						
 					</div>
 
 					{/* Upload Section */}

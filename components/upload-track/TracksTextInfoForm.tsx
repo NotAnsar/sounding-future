@@ -20,7 +20,7 @@ export default function TracksTextInfoForm() {
 	// const router = useRouter();
 
 	// useEffect(() => {
-	// 	if (state.message === 'Profile updated successfully') {
+	// 	if (state?.message === 'Profile updated successfully') {
 	// 		router.push('/');
 	// 		toast({ description: 'Profile updated successfully', title: 'Success' });
 	// 	}
@@ -32,7 +32,7 @@ export default function TracksTextInfoForm() {
 	// 			<UploadTrackNav isAdmin={role === 'admin'} />
 
 	// 			<TabsContent value='text-info' className='lg:w-2/3 mt-2 grid gap-6'>
-	// 				<ErrorMessage errors={state.message ? [state.message] : undefined} />
+	// 				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 
 	// 				<div className='grid gap-2'>
 	// 					<Label

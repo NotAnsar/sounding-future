@@ -17,7 +17,7 @@ export default function Page() {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (state.message === 'Account updated successfully') {
+		if (state?.message === 'Account updated successfully') {
 			router.push('/');
 			toast({ description: 'Account updated successfully', title: 'Success' });
 		}
@@ -28,7 +28,9 @@ export default function Page() {
 			<Tabs value={'settings'} className='mt-4 sm:mt-8 grid sm:gap-3'>
 				<SettingsNav />
 				<TabsContent value='settings' className='lg:w-2/3 mt-2 grid gap-6'>
-					<ErrorMessage errors={state.message ? [state.message] : undefined} />
+					<ErrorMessage
+						errors={state?.message ? [state?.message] : undefined}
+					/>
 					<div className='grid gap-x-4 gap-y-2 sm:grid-cols-2 max-w-lg'>
 						<div className='grid gap-2'>
 							<Label

@@ -3,15 +3,15 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Button, buttonVariants } from '../../ui/button';
 import { ArrowUpDown } from 'lucide-react';
-import { Collection } from '@/config/dummy-data';
 import Image from 'next/image';
 import { Icons } from '@/components/icons/track-icons';
 import { MainNavIcons } from '@/config/sidenav';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DeletePartnerButton } from './DeletePartner';
+import { PartnerStats } from '@/db/partner';
 
-export const columns: ColumnDef<Collection>[] = [
+export const columns: ColumnDef<PartnerStats>[] = [
 	{
 		accessorKey: 'picture',
 		header: '',
@@ -19,13 +19,17 @@ export const columns: ColumnDef<Collection>[] = [
 			const collection = row.original;
 			return (
 				<div className='max-w-14'>
-					<Image
-						src={collection.picture}
-						alt={collection.name}
-						width={56}
-						height={56}
-						className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md '
-					/>
+					{collection?.picture ? (
+						<Image
+							src={collection?.picture}
+							alt={collection.name}
+							width={56}
+							height={56}
+							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md '
+						/>
+					) : (
+						<div className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md bg-muted' />
+					)}
 				</div>
 			);
 		},

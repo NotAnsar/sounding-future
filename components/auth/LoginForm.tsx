@@ -87,7 +87,7 @@ export default function LoginForm() {
 
 					<div>
 						<ErrorMessage
-							errors={state?.message ? [state.message] : undefined}
+							errors={state?.message ? [state?.message] : undefined}
 						/>
 						<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 

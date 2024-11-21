@@ -36,7 +36,7 @@ model User {
 model Artist {
   id                        String   @id @default(cuid())
   name                      String
-  pic                       String?
+  pic                       String
   bio                      String?  @db.Text
   socialId      String?        @map("social_id") 
   createdAt                 DateTime @default(now()) @map("created_at")
@@ -57,7 +57,7 @@ model Artist {
 model Track {
   id           String   @id @default(cuid())
   title        String
-  cover        String?
+  cover        String
   info         String?  @db.Text
   urlMp3       String?  @map("url_mp3")
   urlFlac      String?  @map("url_flac")
@@ -90,8 +90,8 @@ model Track {
 model Partner {
   id          String       @id @default(cuid()) 
   name        String
-  picture     String?
-  country     String?
+  picture     String
+  country     String
   studioPic   String?      @map("studio_pic")
   bio         String?
   socialId    String?      @map("social_id") 
@@ -186,6 +186,7 @@ model SocialLinks {
   linkedin  String?
   vimeo     String?
   website   String?
+  youtube   String?
   createdAt DateTime  @default(now()) @map("created_at")
   
   // Relations

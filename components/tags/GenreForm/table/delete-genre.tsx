@@ -27,10 +27,10 @@ export const DeleteGenre = ({
 	const [state, action] = useFormState(deleteGenre.bind(null, id), {});
 
 	useEffect(() => {
-		if (state.message) {
+		if (state?.message) {
 			setOpen(false);
 			toast({
-				description: state.message,
+				description: state?.message,
 				variant: state.success ? 'default' : 'destructive',
 			});
 		}
