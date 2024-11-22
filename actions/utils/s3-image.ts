@@ -44,7 +44,7 @@ export async function uploadFile(
 	}
 }
 
-export async function deleteImage(fileUrl: string): Promise<void> {
+export async function deleteFile(fileUrl: string): Promise<void> {
 	if (!fileUrl) throw new Error('File URL is required for deletion.');
 
 	const fileKey = fileUrl.replace(AWS_URL, '');
@@ -73,7 +73,7 @@ export async function updateFile(
 	let imageUrl = prevImageUrl;
 	if (imageFile) {
 		if (imageUrl) {
-			await deleteImage(imageUrl);
+			await deleteFile(imageUrl);
 		}
 		imageUrl = await uploadFile(imageFile, type);
 	}

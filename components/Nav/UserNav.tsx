@@ -36,7 +36,7 @@ export default function UserNav({
 			<DropdownMenuTrigger className={cn('relative', className)}>
 				<Avatar className='flex items-center justify-center'>
 					<AvatarImage
-						className='h-9 w-auto aspect-square rounded-full'
+						className='h-9 w-auto aspect-square rounded-full object-cover'
 						src={user?.image || undefined}
 					/>
 
@@ -55,7 +55,7 @@ export default function UserNav({
 				<div className='flex items-center p-1.5'>
 					<Avatar className='flex items-center justify-center'>
 						<AvatarImage
-							className='h-9 w-auto aspect-square rounded-full'
+							className='h-9 w-auto aspect-square rounded-full object-cover'
 							src={user?.image || undefined}
 						/>
 

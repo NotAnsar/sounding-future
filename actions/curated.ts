@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 import {
 	checkFile,
-	deleteImage,
+	deleteFile,
 	updateFile,
 	uploadFile,
 } from './utils/s3-image';
@@ -185,8 +185,8 @@ export async function deletePartner(id: string): Promise<DeleteState> {
 		}
 
 		// Delete images if they exist
-		if (partner.picture) await deleteImage(partner.picture);
-		if (partner.studioPic) await deleteImage(partner.studioPic);
+		if (partner.picture) await deleteFile(partner.picture);
+		if (partner.studioPic) await deleteFile(partner.studioPic);
 
 		if (partner.socialId) {
 			await prisma.socialLinks.delete({ where: { id: partner.socialId } });
