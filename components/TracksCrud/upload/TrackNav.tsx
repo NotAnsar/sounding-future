@@ -2,20 +2,26 @@
 import { cn } from '@/lib/utils';
 import React from 'react';
 import { useFormStatus } from 'react-dom';
-import { Button } from '../ui/button';
+
 import { Loader } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 
 export default function TrackNavUpload({
 	step = 1,
 	isAdmin = false,
+	id,
 }: {
+	id?: string;
 	step?: number;
 	isAdmin?: boolean;
 }) {
 	return (
 		<div className='flex flex-col sm:flex-row items-center w-full gap-2 justify-between'>
 			<ol className='flex items-center w-full text-sm font-medium text-center text-muted sm:text-base max-w-screen-sm'>
-				<li
+				<Link
+					href={id ? `/user/tracks/upload/${id}` : '#'}
 					className={`flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-muted after:border-1 after:hidden md:after:inline-block after:mx-3  `}
 				>
 					<span
@@ -30,8 +36,11 @@ export default function TrackNavUpload({
 						</span>{' '}
 						Basics
 					</span>
-				</li>
-				<li className="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-muted after:border-1 after:hidden md:after:inline-block after:mx-3 ">
+				</Link>
+				<Link
+					href={id ? `/user/tracks/upload/${id}/info` : '#'}
+					className="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-muted after:border-1 after:hidden md:after:inline-block after:mx-3 "
+				>
 					<span
 						className={cn(
 							"flex items-center after:content-['/'] md:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500 md:me-2",
@@ -41,8 +50,11 @@ export default function TrackNavUpload({
 						{step >= 2 ? <ConfirmSvg /> : <span className='me-2'>2</span>}
 						<span className='hidden sm:inline-flex me-2'>Track</span> Info
 					</span>
-				</li>
-				<li className='flex items-center'>
+				</Link>
+				<Link
+					href={id ? `/user/tracks/upload/${id}/audio` : '#'}
+					className='flex items-center'
+				>
 					<span
 						className={cn(
 							'flex items-center text-nowrap',
@@ -52,7 +64,7 @@ export default function TrackNavUpload({
 						{step >= 3 ? <ConfirmSvg /> : <span className='me-2'>3</span>}
 						Audio File
 					</span>
-				</li>
+				</Link>
 			</ol>
 
 			<SaveButton className='w-full sm:w-auto' step={step} isAdmin={isAdmin} />
@@ -79,6 +91,14 @@ function SaveButton({
 			size={'submit'}
 			disabled={pending}
 			className={className}
+			onClick={() => {
+				if (step >= 3 && isAdmin) {
+					toast({
+						description:
+							'Thank you for your patience. Uploading tracks may take some time.',
+					});
+				}
+			}}
 		>
 			{pending ? <Loader className='mr-2 h-4 w-4 animate-spin' /> : null}{' '}
 			{`Save & go next`}

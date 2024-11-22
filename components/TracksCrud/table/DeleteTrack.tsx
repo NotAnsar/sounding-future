@@ -9,10 +9,13 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Dispatch, SetStateAction } from 'react';
-import { useFormStatus } from 'react-dom';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { Button } from '../../ui/button';
 import { Loader } from 'lucide-react';
+
+import { toast } from '@/hooks/use-toast';
+import { deleteTrack } from '@/actions/upload-track/delete-track';
 
 export const DeleteTrack = ({
 	id,
@@ -23,7 +26,17 @@ export const DeleteTrack = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	console.log(id);
+	const [state, action] = useFormState(deleteTrack.bind(null, id), {});
+
+	useEffect(() => {
+		if (state?.message) {
+			setOpen(false);
+			toast({
+				description: state?.message,
+				variant: state.success ? 'default' : 'destructive',
+			});
+		}
+	}, [state, setOpen]);
 
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
@@ -32,13 +45,13 @@ export const DeleteTrack = ({
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your
-						Partner and remove its data from our servers.
+						Track and remove its data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 
-					<form /* action={action} */>
+					<form action={action}>
 						<PendingButton />
 					</form>
 				</AlertDialogFooter>
@@ -49,11 +62,7 @@ export const DeleteTrack = ({
 
 function PendingButton() {
 	const { pending } = useFormStatus();
-	return (
-		<Button type='button' variant={'destructive'} className='w-full'>
-			Delete
-		</Button>
-	);
+
 	return (
 		<Button
 			type='submit'

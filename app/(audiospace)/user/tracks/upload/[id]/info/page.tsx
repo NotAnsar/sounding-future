@@ -1,5 +1,6 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import TrackInfoForm from '@/components/TracksCrud/upload/InfoForm';
+import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 
@@ -8,7 +9,7 @@ export default async function page({
 }: {
 	params: { id: string };
 }) {
-	const session = await auth();
+	const [session, track] = await Promise.all([auth(), getTrackById(id)]);
 
 	if (!session) {
 		notFound();
@@ -30,7 +31,7 @@ export default async function page({
 				/>
 			</div>
 
-			<TrackInfoForm id={id} />
+			<TrackInfoForm id={id} initialData={track} />
 		</>
 	);
 }

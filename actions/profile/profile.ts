@@ -52,7 +52,7 @@ export async function updateProfile(
 		if (image && image.size > 0) {
 			// Example image upload logic (replace with your actual implementation)
 			console.log(`Uploading image: ${image.name}`);
-			// const imageUrl = await uploadImageToStorage(image)
+			// const imageUrl = await uploadFileToStorage(image)
 			// await updateUserProfileImage(userId, imageUrl)
 		}
 		console.log(name, biography, image, genres);

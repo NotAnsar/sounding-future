@@ -7,10 +7,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 import {
-	checkImage,
+	checkFile,
 	deleteImage,
-	updateImage,
-	uploadImage,
+	updateFile,
+	uploadFile,
 } from './utils/s3-image';
 
 const PartnerSchema = z.object({
@@ -50,8 +50,8 @@ export async function addPartner(
 		name: formData.get('name'),
 		info: formData.get('info'),
 		country: formData.get('country'),
-		image: await checkImage(formData.get('image')),
-		studioPic: await checkImage(formData.get('studioPic')),
+		image: await checkFile(formData.get('image')),
+		studioPic: await checkFile(formData.get('studioPic')),
 		website: formData.get('website') || undefined,
 		facebook: formData.get('facebook') || undefined,
 		instagram: formData.get('instagram') || undefined,
@@ -71,9 +71,8 @@ export async function addPartner(
 		validatedFields.data;
 
 	try {
-		const imageUrl = await uploadImage(image);
-		let studioPicUrl;
-		if (studioPic) studioPicUrl = await uploadImage(studioPic);
+		const imageUrl = await uploadFile(image);
+		const studioPicUrl = studioPic ? await uploadFile(studioPic) : undefined;
 
 		// Create social links
 		const socialLinks = await prisma.socialLinks.create({
@@ -134,27 +133,14 @@ export async function updatePartner(
 	const { name, info, country, ...socialLinksData } = validatedFields.data;
 
 	try {
-		const imageUrl = await updateImage(
+		const imageUrl = await updateFile(
 			formData.get('image'),
 			prevState?.prev?.image
 		);
-		const studioPicUrl = await updateImage(
+		const studioPicUrl = await updateFile(
 			formData.get('studioPic'),
 			prevState?.prev?.studioPic
 		);
-
-		// await prisma.partner.update({
-		// 	where: { id },
-		// 	data: {
-		// 		name,
-		// 		country,
-		// 		bio: info,
-		// 		studioPic: studioPicUrl,
-		// 		picture: imageUrl,
-		// 	},
-		// });
-
-		// Retrieve existing social ID or create new social links
 
 		const existingPartner = await prisma.partner.findUnique({
 			where: { id },
@@ -185,12 +171,6 @@ export async function updatePartner(
 	} catch (error) {
 		console.log(error);
 
-		if (
-			error instanceof Prisma.PrismaClientKnownRequestError &&
-			error.code === 'P2002'
-		) {
-			return { message: 'Partner already exists' };
-		}
 		return { message: 'Failed to update partner' };
 	}
 	redirect('/user/curated');

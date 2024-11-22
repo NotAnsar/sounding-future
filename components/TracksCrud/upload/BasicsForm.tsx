@@ -13,7 +13,7 @@ import { useFormState } from 'react-dom';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
-import TrackNavUpload from '@/components/upload-track/TrackNav';
+import TrackNavUpload from './TrackNav';
 import { SelectInput } from '@/components/ui/select-input';
 import ImageUpload from '@/components/profile/ImageUpload';
 
@@ -53,7 +53,7 @@ export default function TrackBasicsForm({
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
-			<TrackNavUpload />
+			<TrackNavUpload id={initialData?.id} />
 			<AlertUploadTrack />
 
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>

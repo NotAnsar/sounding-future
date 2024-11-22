@@ -12,44 +12,23 @@ export async function getPartnersStats(): Promise<PartnerStats[]> {
 	try {
 		const data = await prisma.partner.findMany({
 			include: {
+				_count: { select: { tracks: true } },
 				tracks: {
-					include: {
-						likes: true,
-						listeners: true,
-					},
+					select: { _count: { select: { likes: true, listeners: true } } },
 				},
 			},
 			orderBy: { createdAt: 'desc' },
 		});
 
-		// Compute statistics
-		const partnersWithStats: PartnerStats[] = data.map((partner) => {
-			const totalTracks = partner.tracks.length;
-			const totalLikes = partner.tracks.reduce(
-				(sum, track) => sum + track.likes.length,
+		return data.map((partner) => ({
+			...partner,
+			tracks: partner._count.tracks,
+			liked: partner.tracks.reduce((sum, track) => sum + track._count.likes, 0),
+			played: partner.tracks.reduce(
+				(sum, track) => sum + track._count.listeners,
 				0
-			);
-			const totalPlays = partner.tracks.reduce(
-				(sum, track) => sum + track.listeners.length,
-				0
-			);
-
-			return {
-				id: partner.id,
-				name: partner.name,
-				picture: partner.picture,
-				country: partner.country,
-				studioPic: partner.studioPic,
-				bio: partner.bio,
-				socialId: partner.socialId,
-				createdAt: partner.createdAt,
-				tracks: totalTracks,
-				liked: totalLikes,
-				played: totalPlays,
-			};
-		});
-
-		return partnersWithStats;
+			),
+		}));
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);

@@ -59,14 +59,16 @@ model Track {
   title        String
   cover        String
   info         String?  @db.Text
-  urlMp3       String?  @map("url_mp3")
-  urlFlac      String?  @map("url_flac")
+  variant1     String?  
+  variant2     String?  
+  variant3     String?  
   releaseYear  Int?     @map("release_year") 
   credits      String?
   releasedBy   String   @default("self-published")
   published    Boolean  @default(false)
   createdAt    DateTime @default(now()) @map("created_at")
-  duration     Int?      // Track length in seconds
+  duration     Int?      
+  articleLink  String?      
 
 
   // Foreign keys
@@ -74,7 +76,6 @@ model Track {
   artistId     String           @map("artist_id") 
   formatId     String?          @map("format_id") 
   
-
   // Relations
   artist Artist @relation(fields: [artistId], references: [id])
   curator      Partner?         @relation("PartnerCurated", fields: [curatedBy], references: [id])

@@ -2,22 +2,38 @@
 
 import ErrorMessage from '@/components/ErrorMessage';
 import { useFormState } from 'react-dom';
-import TrackNavUpload from '@/components/upload-track/TrackNav';
+import TrackNavUpload from './TrackNav';
 import { buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import TrackUpload from '@/components/settings/TrackUploadSection';
-import { uploadTrackInfo } from '@/actions/upload-track/audio-file';
+
+import {
+	AudioUploadState,
+	uploadTrackInfo,
+} from '@/actions/upload-track/audio-file';
 import { AlertUploadTrack } from './BasicsForm';
+import TrackUploadSection from './TrackUploadSection';
+import { TrackWithgenres } from '@/db/tracks';
 
 export default function AudioFileForm({
 	id,
 	role,
+	initialData,
 }: {
+	initialData: TrackWithgenres;
 	id: string;
 	role: string;
 }) {
-	const initialState = { message: null, errors: {} };
+	const initialState: AudioUploadState = {
+		message: null,
+		errors: {},
+		prev: {
+			variant1: initialData?.variant1 || undefined,
+			variant2: initialData?.variant2 || undefined,
+			variant3: initialData?.variant3 || undefined,
+		},
+	};
+
 	const [state, action] = useFormState(
 		uploadTrackInfo.bind(null, id),
 		initialState
@@ -25,7 +41,7 @@ export default function AudioFileForm({
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
-			<TrackNavUpload step={3} isAdmin={role === 'admin'} />
+			<TrackNavUpload step={3} isAdmin={role === 'admin'} id={id} />
 			<AlertUploadTrack />
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
 				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
@@ -72,7 +88,10 @@ export default function AudioFileForm({
 
 					{/* Upload Section */}
 					{role === 'admin' ? (
-						<TrackUpload errors={state?.errors} />
+						<TrackUploadSection
+							errors={state?.errors}
+							initialData={initialData}
+						/>
 					) : (
 						<div className='space-y-4'>
 							<h2 className='text-2xl font-semibold text-primary-foreground'>
@@ -106,20 +125,6 @@ export default function AudioFileForm({
 							</p>
 						</div>
 					)}
-
-					{/* Converted Tracks Section */}
-					{/* <div className='space-y-4'>
-						<h3 className='text-lg font-medium'>Converted tracks</h3>
-
-						<div className='space-y-2'>
-							<div className='bg-gray-800 p-4 rounded'>track - variant 1</div>
-							<div className='bg-gray-800 p-4 rounded'>track - variant 2</div>
-						</div>
-
-						<p className='text-sm text-gray-400'>
-							Converted Track upload will be done by admin.
-						</p>
-					</div> */}
 				</div>
 			</div>
 		</form>

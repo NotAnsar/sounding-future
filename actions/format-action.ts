@@ -67,12 +67,6 @@ export async function updateFormat(
 		await prisma.sourceFormat.update({ where: { id }, data: { name } });
 		revalidatePath('/user', 'layout');
 	} catch (error) {
-		if (
-			error instanceof Prisma.PrismaClientKnownRequestError &&
-			error.code === 'P2002'
-		) {
-			return { message: 'Source format already exists' };
-		}
 		return { message: 'Failed to update source format' };
 	}
 }

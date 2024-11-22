@@ -45,9 +45,7 @@ export async function getTrackById(id: string): Promise<TrackWithgenres> {
 			// include: { genres: true },
 			include: {
 				genres: {
-					include: {
-						genre: true,
-					},
+					include: { genre: true },
 				},
 			},
 		});
@@ -83,4 +81,51 @@ export async function getTrackById(id: string): Promise<TrackWithgenres> {
 		);
 	}
 }
-// type Trackwithgenres:{ genres: Genre[] } & Track
+
+export type TrackWithCounts = Prisma.TrackGetPayload<{
+	include: {
+		artist: true;
+		genres: true;
+		curator: true;
+		_count: {
+			select: {
+				likes: true;
+				listeners: true;
+			};
+		};
+	};
+}>;
+
+export async function getTracksStats(): Promise<TrackWithCounts[]> {
+	try {
+		const data = await prisma.track.findMany({
+			include: {
+				artist: true,
+				genres: true,
+				curator: true,
+				_count: { select: { likes: true, listeners: true } },
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}

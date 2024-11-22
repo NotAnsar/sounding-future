@@ -16,13 +16,13 @@ export const columns: ColumnDef<PartnerStats>[] = [
 		accessorKey: 'picture',
 		header: '',
 		cell: ({ row }) => {
-			const collection = row.original;
+			const partner = row.original;
 			return (
 				<div className='max-w-14'>
-					{collection?.picture ? (
+					{partner?.picture ? (
 						<Image
-							src={collection?.picture}
-							alt={collection.name}
+							src={partner?.picture}
+							alt={partner.name}
 							width={56}
 							height={56}
 							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md '

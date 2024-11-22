@@ -5,7 +5,7 @@ import { s3 } from '@/lib/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function checkImage(image: FormDataEntryValue | null) {
+export async function checkFile(image: FormDataEntryValue | null) {
 	const imageFile = image as File | null;
 	if (imageFile && imageFile?.size > 0) {
 		return imageFile;
@@ -13,7 +13,7 @@ export async function checkImage(image: FormDataEntryValue | null) {
 	return undefined;
 }
 
-export async function uploadImage(
+export async function uploadFile(
 	file: File,
 	type: 'image' | 'audio' = 'image'
 ) {
@@ -34,6 +34,8 @@ export async function uploadImage(
 		});
 
 		await s3.send(command);
+
+		console.log(`Successfully uploaded file: ${fileName}`);
 
 		return `${AWS_URL}${fileName}`;
 	} catch (error) {
@@ -62,17 +64,18 @@ export async function deleteImage(fileUrl: string): Promise<void> {
 	}
 }
 
-export async function updateImage(
+export async function updateFile(
 	imageFormdata: FormDataEntryValue | null,
-	prevImageUrl: string | undefined
+	prevImageUrl: string | undefined,
+	type: 'image' | 'audio' = 'image'
 ) {
-	const imageFile = await checkImage(imageFormdata);
+	const imageFile = await checkFile(imageFormdata);
 	let imageUrl = prevImageUrl;
 	if (imageFile) {
 		if (imageUrl) {
 			await deleteImage(imageUrl);
 		}
-		imageUrl = await uploadImage(imageFile);
+		imageUrl = await uploadFile(imageFile, type);
 	}
 	return imageUrl;
 }

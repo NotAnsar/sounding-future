@@ -5,12 +5,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useFormState } from 'react-dom';
-import TrackNavUpload from '@/components/upload-track/TrackNav';
+import TrackNavUpload from './TrackNav';
 import { addTrackTextInfo } from '@/actions/upload-track/text-info';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertUploadTrack } from './BasicsForm';
+import { TrackWithgenres } from '@/db/tracks';
 
-export default function TrackInfoForm({ id }: { id: string }) {
+export default function TrackInfoForm({
+	id,
+	initialData,
+}: {
+	id: string;
+	initialData: TrackWithgenres;
+}) {
 	const initialState = { message: null, errors: {} };
 	const [state, action] = useFormState(
 		addTrackTextInfo.bind(null, id),
@@ -19,7 +26,7 @@ export default function TrackInfoForm({ id }: { id: string }) {
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
-			<TrackNavUpload step={2} />
+			<TrackNavUpload step={2} id={id} />
 			<AlertUploadTrack />
 			<div className='lg:w-2/3 mt-2 grid gap-4 max-w-screen-sm'>
 				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
@@ -38,6 +45,7 @@ export default function TrackInfoForm({ id }: { id: string }) {
 								: ''
 						)}
 						name='trackInfo'
+						defaultValue={initialData.info || undefined}
 						id='trackInfo'
 						required
 					/>
@@ -63,6 +71,7 @@ export default function TrackInfoForm({ id }: { id: string }) {
 								: ''
 						)}
 						name='more'
+						defaultValue={initialData.credits || undefined}
 						id='more'
 						required
 					/>
@@ -84,6 +93,7 @@ export default function TrackInfoForm({ id }: { id: string }) {
 						type='text'
 						name='articleLink'
 						id='articleLink'
+						defaultValue={initialData.articleLink || undefined}
 						placeholder='http://'
 						className={cn(
 							'max-w-lg',

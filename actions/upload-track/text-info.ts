@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils/utils';
 import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
 
 const UploadTrackTextInfoSchema = z.object({
 	articleLink: z.string().url('Invalid Article URL').optional(),
@@ -39,12 +40,15 @@ export async function addTrackTextInfo(
 	const { articleLink, more, trackInfo } = validatedFields.data;
 
 	try {
-		console.log('Text info:', { articleLink, more, trackInfo, id });
+		await prisma.track.update({
+			where: { id },
+			data: { info: trackInfo, credits: more, articleLink },
+		});
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
-		console.error('Profile update error:', error);
-		return { message: 'Failed to upload track info. Please try again.' };
+		console.error('Track update error:', error);
+		return { message: 'Failed to update/upload track info. Please try again.' };
 	}
 
 	redirect(`/user/tracks/upload/${id}/audio`);

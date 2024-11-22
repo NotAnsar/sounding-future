@@ -67,12 +67,6 @@ export async function updateGenre(
 		await prisma.genre.update({ where: { id }, data: { name } });
 		revalidatePath('/', 'layout');
 	} catch (error) {
-		if (
-			error instanceof Prisma.PrismaClientKnownRequestError &&
-			error.code === 'P2002'
-		) {
-			return { message: 'Genre already exists' };
-		}
 		return { message: 'Failed to update genre' };
 	}
 }

@@ -35,7 +35,7 @@ export default function ActionCell({ id }: { id: string }) {
 						<DropdownMenuSeparator />
 						<DropdownMenuItem className='p-0'>
 							<Link
-								href={`/user/tracks/upload/${id}/audio`}
+								href={`/user/tracks/upload/${id}`}
 								className='px-2 py-1.5 w-full'
 							>
 								Edit Track

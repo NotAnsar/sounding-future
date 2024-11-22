@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { imageSchema, State } from '../utils/utils';
 import { auth } from '@/lib/auth';
 
-import { checkImage, updateImage, uploadImage } from '../utils/s3-image';
+import { checkFile, updateFile, uploadFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
@@ -52,14 +52,16 @@ export async function submitTrack(
 		.filter((tag) => tag !== '') as string[];
 
 	const artist =
-		session?.user?.role === 'user' ? session?.user?.id : formData.get('artist');
+		session?.user?.role === 'user'
+			? 'cm3rhs9u00003n1xb1oap6sdu'
+			: formData.get('artist');
 	const curatedBy =
 		session?.user?.role === 'user' ? undefined : formData.get('curatedBy');
 
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
 		artist,
-		imageFile: await checkImage(formData.get('imageFile')),
+		imageFile: await checkFile(formData.get('imageFile')),
 		curatedBy,
 		genreTags: genreTags,
 		releaseYear: formData.get('releaseYear'),
@@ -87,13 +89,13 @@ export async function submitTrack(
 			release,
 		} = validatedFields.data;
 
-		const imageUrl = await uploadImage(imageFile);
+		const imageUrl = await uploadFile(imageFile);
 
 		const track = await prisma.track.create({
 			data: {
 				title: trackName,
 				releaseYear: +releaseYear,
-				artistId: artist || '1',
+				artistId: artist || 'cm3rhs9u00003n1xb1oap6sdu',
 				cover: imageUrl,
 				formatId: sourceFormat,
 				releasedBy: release,
@@ -164,7 +166,7 @@ export async function updateTrack(
 			release,
 		} = validatedFields.data;
 
-		const imageUrl = await updateImage(
+		const imageUrl = await updateFile(
 			formData.get('imageFile'),
 			prevState?.prev?.image
 		);
@@ -184,12 +186,8 @@ export async function updateTrack(
 
 		const oldGenres = prevState?.prev?.genres || [];
 
-		const genresToAdd = genreTags.filter(
-			(genreId) => !oldGenres.includes(genreId)
-		);
-		const genresToRemove = oldGenres.filter(
-			(genreId) => !genreTags.includes(genreId)
-		);
+		const genresToAdd = genreTags.filter((id) => !oldGenres.includes(id));
+		const genresToRemove = oldGenres.filter((id) => !genreTags.includes(id));
 
 		// Add new genres
 		if (genresToAdd.length > 0) {

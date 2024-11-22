@@ -1,5 +1,6 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import AudioFileForm from '@/components/TracksCrud/upload/AudioFileForm';
+import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 
@@ -8,7 +9,7 @@ export default async function page({
 }: {
 	params: { id: string };
 }) {
-	const session = await auth();
+	const [session, track] = await Promise.all([auth(), getTrackById(id)]);
 
 	if (!session) {
 		notFound();
@@ -30,7 +31,11 @@ export default async function page({
 				/>
 			</div>
 
-			<AudioFileForm id={id} role={session?.user?.role || ''} />
+			<AudioFileForm
+				id={id}
+				role={session?.user?.role || ''}
+				initialData={track}
+			/>
 		</>
 	);
 }

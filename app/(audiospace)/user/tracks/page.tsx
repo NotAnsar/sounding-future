@@ -1,7 +1,7 @@
 import { columns } from '@/components/TracksCrud/table/columns';
 import { DataTable } from '@/components/TracksCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
-import { tracks } from '@/config/dummy-data';
+import { getTracksStats } from '@/db/tracks';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Upload } from 'lucide-react';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 export default async function page() {
-	const session = await auth();
+	const [session, tracks] = await Promise.all([auth(), getTracksStats()]);
 
 	if (!session) {
 		notFound();
