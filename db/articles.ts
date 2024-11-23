@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 class ArticleError extends Error {
 	constructor(message: string, public readonly cause?: unknown) {
 		super(message);
-		this.name = 'GenreError';
+		this.name = 'ArticleError';
 	}
 }
 
