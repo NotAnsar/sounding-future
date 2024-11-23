@@ -8,11 +8,15 @@ import ErrorMessage from '@/components/ErrorMessage';
 import { PlusCircle, X } from 'lucide-react';
 
 export default function SoundingFutureArticlesInput({
+	defaultValue,
 	errors,
 }: {
 	errors?: string[];
+	defaultValue?: string[];
 }) {
-	const [articleLinks, setArticleLinks] = useState<string[]>(['']);
+	const [articleLinks, setArticleLinks] = useState<string[]>(
+		defaultValue?.length ? defaultValue : ['']
+	);
 
 	const addArticleLink = () => {
 		if (articleLinks.length < 10) {

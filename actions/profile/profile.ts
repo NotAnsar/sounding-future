@@ -3,6 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils/utils';
+import { updateFile } from '../utils/s3-image';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 // Define the schema for profile update
 const ProfileSchema = z.object({
@@ -20,7 +23,10 @@ const ProfileSchema = z.object({
 
 type ProfileData = z.infer<typeof ProfileSchema>;
 
-export type ProfileFormState = State<ProfileData>;
+export type ProfileFormState = State<ProfileData> & {
+	prev?: { image?: string; genres?: string[] | undefined };
+	success?: boolean;
+};
 
 export async function updateProfile(
 	prevState: ProfileFormState,
@@ -29,11 +35,10 @@ export async function updateProfile(
 	const genresData = formData
 		.getAll('genres')
 		.filter((genre) => genre !== '') as string[];
-	const validatedFields = ProfileSchema.safeParse({
+	const validatedFields = ProfileSchema.omit({ image: true }).safeParse({
 		name: formData.get('name'),
 		biography: formData.get('biography'),
 		genres: genresData,
-		image: formData.get('image'),
 	});
 
 	if (!validatedFields.success) {
@@ -43,25 +48,60 @@ export async function updateProfile(
 		};
 	}
 
-	const { name, biography, genres, image } = validatedFields.data;
+	const { name, biography, genres } = validatedFields.data;
 
 	try {
-		// Here you would typically update the user's profile in your database
-		// For the image, you'd upload it to a file storage service
-
-		if (image && image.size > 0) {
-			// Example image upload logic (replace with your actual implementation)
-			console.log(`Uploading image: ${image.name}`);
-			// const imageUrl = await uploadFileToStorage(image)
-			// await updateUserProfileImage(userId, imageUrl)
+		const session = await auth();
+		if (!session?.user) {
+			throw new Error('User not authenticated');
 		}
-		console.log(name, biography, image, genres);
 
-		// Example profile update logic (replace with your actual implementation)
-		// await updateUserProfile(userId, { name, biography, genres })
+		const imageUrl = await updateFile(
+			formData.get('image'),
+			prevState?.prev?.image
+		);
+
+		const artist = await prisma.artist.upsert({
+			where: { id: session?.user?.artistId || '' },
+			create: {
+				name,
+				bio: biography,
+				pic: imageUrl,
+			},
+			update: {
+				name,
+				bio: biography,
+				pic: imageUrl,
+			},
+		});
+
+		const oldGenres = prevState?.prev?.genres || [];
+		const genresToAdd = genres.filter((id) => !oldGenres.includes(id));
+		const genresToRemove = oldGenres.filter((id) => !genres.includes(id));
+
+		// Add new genres
+		if (genresToAdd.length > 0) {
+			await prisma.artistGenre.createMany({
+				data: genresToAdd.map((genreId) => ({ artistId: artist.id, genreId })),
+			});
+		}
+
+		// Remove old genres
+		if (genresToRemove.length > 0) {
+			await prisma.artistGenre.deleteMany({
+				where: { artistId: artist.id, genreId: { in: genresToRemove } },
+			});
+		}
+
+		if (!session?.user?.artistId) {
+			await prisma.user.update({
+				where: { id: session?.user?.id },
+				data: { artistId: artist.id },
+			});
+		}
 
 		revalidatePath('/', 'layout');
-		return { message: 'Profile updated successfully' };
+		return { success: true };
 	} catch (error) {
 		console.error('Profile update error:', error);
 		return { message: 'Failed to update profile. Please try again.' };

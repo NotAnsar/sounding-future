@@ -1,5 +1,7 @@
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Prisma, type Artist } from '@prisma/client';
+import { AuthenticationError, UserNotFoundError } from './user';
 
 class ArtistError extends Error {
 	constructor(message: string, public readonly cause?: unknown) {
@@ -35,3 +37,33 @@ export async function getArtists(): Promise<Artist[]> {
 		);
 	}
 }
+
+export async function getMyArtist(): Promise<myArtistData | undefined> {
+	try {
+		const session = await auth();
+
+		if (!session?.user?.email) {
+			throw new AuthenticationError();
+		}
+
+		const data = await prisma.user.findUnique({
+			where: { email: session.user.email },
+			include: { artist: { include: { genres: true, socialLinks: true } } },
+		});
+
+		if (!data) {
+			throw new UserNotFoundError(session.user.email);
+		}
+
+		return data?.artist || undefined;
+	} catch (error) {
+		return undefined;
+	}
+}
+
+export type myArtistData = Prisma.ArtistGetPayload<{
+	include: {
+		genres: true;
+		socialLinks: true;
+	};
+}>;

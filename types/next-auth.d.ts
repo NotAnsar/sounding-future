@@ -5,6 +5,7 @@ declare module 'next-auth' {
 		user: {
 			id: string;
 			role?: string;
+			artistId?: string | null;
 		} & DefaultSession['user'];
 	}
 

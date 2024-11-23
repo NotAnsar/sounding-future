@@ -18,7 +18,7 @@ export default function TracksCards({
 	return (
 		<div
 			className={cn(
-				'grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 2xl:grid-cols-4 sm:gap-x-6 sm:gap-y-10 2xl:gap-x-10 ',
+				'grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-10 2xl:gap-x-10 ',
 				className
 			)}
 		>

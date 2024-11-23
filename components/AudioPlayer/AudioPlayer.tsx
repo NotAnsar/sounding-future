@@ -103,34 +103,54 @@ export default function AudioPlayer() {
 			<div className='hidden gap-3 items-center mr-4 md:flex'>
 				{/* <Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' /> */}
 				<AudioType />
+				<div className='gap-3 items-center md:flex'>
+					<button onClick={toggleMute}>
+						{isMuted ? (
+							<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
+						) : (
+							<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
+						)}
+					</button>
 
-				<button onClick={toggleMute}>
-					{isMuted ? (
-						<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
-					) : (
-						<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
-					)}
-				</button>
-
-				<CustomSlider
-					max={1}
-					step={0.1}
-					value={volume}
-					onChange={(e) => setVolume(parseFloat(e.target.value))}
-					className='w-[100px]'
-				/>
-				<Link href={'/about'} target='_blank'>
-					<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
-				</Link>
+					<CustomSlider
+						max={1}
+						step={0.1}
+						value={volume}
+						onChange={(e) => setVolume(parseFloat(e.target.value))}
+						className='w-[100px]'
+					/>
+					<Link href={'/about'} target='_blank'>
+						<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
+					</Link>
+				</div>
 			</div>
 		</div>
 	);
 }
 
 function AudioType() {
-	const [isBinaural, setisBinaural] = useState<boolean>(true);
+	const [isBinaural, setisBinaural] = useState<boolean | undefined>(true);
 	return (
-		<div className='flex gap-3 px-2 mt-2'>
+		<div className='sm:flex gap-3 px-2 mt-2'>
+			<div
+				className={cn(
+					'flex flex-col items-center cursor-pointer ',
+					isBinaural === undefined
+						? 'text-white'
+						: 'dark:text-muted text-muted/50'
+				)}
+				onClick={() => setisBinaural(undefined)}
+			>
+				<div
+					className={cn(
+						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
+						isBinaural === undefined ? 'bg-white' : 'dark:bg-muted bg-muted/50'
+					)}
+				>
+					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
+				</div>
+				<p className='text-[10px] text-inherit lowercase'>Binaural+</p>
+			</div>
 			<div
 				className={cn(
 					'flex flex-col items-center cursor-pointer ',
@@ -148,17 +168,18 @@ function AudioType() {
 				</div>
 				<p className='text-[10px] text-inherit lowercase'>Binaural</p>
 			</div>
+
 			<div
 				className={cn(
 					'flex flex-col items-center cursor-pointer ',
-					!isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
+					isBinaural === false ? 'text-white' : 'dark:text-muted text-muted/50'
 				)}
 				onClick={() => setisBinaural(false)}
 			>
 				<div
 					className={cn(
 						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						!isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/50'
+						isBinaural === false ? 'bg-white' : 'dark:bg-muted bg-muted/50'
 					)}
 				>
 					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
