@@ -11,8 +11,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
 	AudioLines,
 	Handshake,
+	MicVocal,
 	Newspaper,
-	Settings,
 	Tags,
 	UserIcon,
 	UserRoundCog,
@@ -78,23 +78,24 @@ export default function UserNav({
 				</div>
 
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className='cursor-pointer p-0 ' asChild>
-					<Link
-						href={'/user/profile'}
-						className='px-2 py-2.5 w-full flex items-center '
-					>
-						<UserRoundCog className='w-4 h-auto mr-2' />
-						Profile
-					</Link>
-				</DropdownMenuItem>
 
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'/user/settings'}
 						className='px-2 py-2.5 w-full flex items-center'
 					>
-						<Settings className='w-4 h-auto mr-2' />
-						Settings
+						<UserRoundCog className='w-4 h-auto mr-2' />
+						Account Settings
+					</Link>
+				</DropdownMenuItem>
+
+				<DropdownMenuItem className='cursor-pointer p-0 ' asChild>
+					<Link
+						href={'/user/profile'}
+						className='px-2 py-2.5 w-full flex items-center '
+					>
+						<MicVocal className='w-4 h-auto mr-2' />
+						Artist Profile
 					</Link>
 				</DropdownMenuItem>
 

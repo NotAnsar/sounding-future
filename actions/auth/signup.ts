@@ -44,14 +44,24 @@ export async function register(
 	try {
 		const hashedPassword = await hash(password, 10);
 
-		const res = await prisma.user.create({
-			data: {
-				name: username,
-				email,
-				password: hashedPassword,
-			},
+		await prisma.$transaction(async (tx) => {
+			// Create the Artist first
+			const artist = await tx.artist.create({
+				data: { name: username },
+			});
+
+			// Create the User with the artist relation
+			const user = await tx.user.create({
+				data: {
+					name: username,
+					email,
+					password: hashedPassword,
+					artistId: artist.id,
+				},
+				include: { artist: true },
+			});
+			return user;
 		});
-		console.log(res);
 
 		const result = await signIn('credentials', {
 			email,

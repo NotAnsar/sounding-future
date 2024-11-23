@@ -31,6 +31,7 @@ export const authConfig: NextAuthConfig = {
 					name: user.name,
 					role: user.role,
 					password: user.password,
+					artistId: user.artistId,
 				};
 			},
 		}),
@@ -44,6 +45,7 @@ export const authConfig: NextAuthConfig = {
 				token.id = user.id;
 				token.email = user.email;
 				token.name = user.name;
+
 				// token.role = user.role;
 			}
 			return token;

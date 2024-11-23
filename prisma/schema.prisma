@@ -36,9 +36,9 @@ model User {
 model Artist {
   id                        String   @id @default(cuid())
   name                      String
-  pic                       String
-  bio                      String?  @db.Text
-  socialId      String?        @map("social_id") 
+  pic                       String?
+  bio                       String?  @db.Text
+  socialId                  String?  @map("social_id") 
   createdAt                 DateTime @default(now()) @map("created_at")
 
   // Relations
