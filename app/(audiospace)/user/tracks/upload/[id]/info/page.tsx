@@ -2,7 +2,7 @@ import BreadCrumb from '@/components/BreadCrumb';
 import TrackInfoForm from '@/components/TracksCrud/upload/InfoForm';
 import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default async function page({
 	params: { id },
@@ -11,8 +11,23 @@ export default async function page({
 }) {
 	const [session, track] = await Promise.all([auth(), getTrackById(id)]);
 
+	// Handle authentication
 	if (!session) {
-		notFound();
+		redirect('/login');
+	}
+
+	// Handle missing track
+	if (!track) {
+		throw new Error('Track not found');
+	}
+
+	// Authorization check
+	const isUnauthorizedAccess =
+		session?.user?.role === 'user' &&
+		session?.user?.artistId !== track?.artistId;
+
+	if (isUnauthorizedAccess) {
+		throw new Error('You do not have permission to edit this track');
 	}
 
 	return (

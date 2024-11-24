@@ -5,8 +5,9 @@ import { useAudio } from '@/context/AudioContext';
 import { useAudioKeyboardControls } from '@/hooks/useAudioKeyboardControls';
 import CustomSlider from './CustomSlider';
 import { cn, formatTime } from '@/lib/utils';
-import Link from 'next/link';
-import { useState } from 'react';
+
+import AudioType from './AudioType';
+import AudioVolume from './AudioVolume';
 
 export default function AudioPlayer() {
 	const {
@@ -14,23 +15,20 @@ export default function AudioPlayer() {
 		isPlaying,
 		currentTime,
 		duration,
-		volume,
-		isMuted,
 		togglePlayPause,
-		setVolume,
 		seek,
-		toggleMute,
 		nextTrack,
 		previousTrack,
 		isLoop,
 		toggleLoop,
 	} = useAudio();
+
 	useAudioKeyboardControls();
 
 	if (!currentTrack) return null;
 
 	return (
-		<div className='w-full dark:bg-player bg-[#dadafa] fixed bottom-0 py-3 px-4 flex items-center justify-between gap-2 z-10 '>
+		<div className='w-full dark:bg-player bg-[#dadafa] fixed bottom-0 py-3 px-4 md:px-5 flex items-center justify-between gap-2 z-10 '>
 			<div className='flex gap-3 items-center w-auto md:min-w-[200px] xl:min-w-[250px] max-w-[250px] md:w-[250px]'>
 				<Image
 					src={currentTrack.cover}
@@ -100,91 +98,9 @@ export default function AudioPlayer() {
 				</div>
 			</div>
 
-			<div className='hidden gap-3 items-center mr-4 md:flex'>
-				{/* <Icons.setting className='w-5 h-auto aspect-square cursor-pointer text-foreground fill-foreground' /> */}
+			<div className='gap-3 items-center flex ml-auto'>
 				<AudioType />
-				<div className='gap-3 items-center md:flex'>
-					<button onClick={toggleMute}>
-						{isMuted ? (
-							<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
-						) : (
-							<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
-						)}
-					</button>
-
-					<CustomSlider
-						max={1}
-						step={0.1}
-						value={volume}
-						onChange={(e) => setVolume(parseFloat(e.target.value))}
-						className='w-[100px]'
-					/>
-					<Link href={'/about'} target='_blank'>
-						<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
-					</Link>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-function AudioType() {
-	const [isBinaural, setisBinaural] = useState<boolean | undefined>(true);
-	return (
-		<div className='sm:flex gap-3 px-2 mt-2'>
-			<div
-				className={cn(
-					'flex flex-col items-center cursor-pointer ',
-					isBinaural === undefined
-						? 'text-white'
-						: 'dark:text-muted text-muted/50'
-				)}
-				onClick={() => setisBinaural(undefined)}
-			>
-				<div
-					className={cn(
-						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						isBinaural === undefined ? 'bg-white' : 'dark:bg-muted bg-muted/50'
-					)}
-				>
-					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
-				</div>
-				<p className='text-[10px] text-inherit lowercase'>Binaural+</p>
-			</div>
-			<div
-				className={cn(
-					'flex flex-col items-center cursor-pointer ',
-					isBinaural ? 'text-white' : 'dark:text-muted text-muted/50'
-				)}
-				onClick={() => setisBinaural(true)}
-			>
-				<div
-					className={cn(
-						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						isBinaural ? 'bg-white' : 'dark:bg-muted bg-muted/50'
-					)}
-				>
-					<Icons.binaural className='w-5 h-auto aspect-square   fill-black' />
-				</div>
-				<p className='text-[10px] text-inherit lowercase'>Binaural</p>
-			</div>
-
-			<div
-				className={cn(
-					'flex flex-col items-center cursor-pointer ',
-					isBinaural === false ? 'text-white' : 'dark:text-muted text-muted/50'
-				)}
-				onClick={() => setisBinaural(false)}
-			>
-				<div
-					className={cn(
-						'w-8 h-auto aspect-square flex items-center justify-center  rounded-full',
-						isBinaural === false ? 'bg-white' : 'dark:bg-muted bg-muted/50'
-					)}
-				>
-					<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
-				</div>
-				<p className='text-[10px] text-inherit lowercase'>Stereo</p>
+				<AudioVolume />
 			</div>
 		</div>
 	);

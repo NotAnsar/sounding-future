@@ -25,10 +25,7 @@ const TrackSchema = z.object({
 		.min(1, { message: 'Track Source Format is required' }),
 	imageFile: imageSchema.shape.file,
 	// admin
-	artist: z
-		.string()
-		.min(1, { message: 'You must select an artist' })
-		.optional(),
+	artist: z.string().min(1, { message: 'You must select an artist' }),
 	curatedBy: z
 		.string()
 		.min(1, { message: 'You must select a curated collection' })
@@ -45,24 +42,24 @@ export async function submitTrack(
 	prevState: TrackFormState,
 	formData: FormData
 ): Promise<TrackFormState> {
-	const session = await auth();
-
 	const genreTags = formData
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
 
-	const artist =
-		session?.user?.role === 'user'
-			? 'cm3rhs9u00003n1xb1oap6sdu'
-			: formData.get('artist');
-	const curatedBy =
-		session?.user?.role === 'user' ? undefined : formData.get('curatedBy');
+	const { isUser, artistId, needsArtistProfile } = await checkAuth();
+
+	if (needsArtistProfile) {
+		return {
+			message:
+				'You need to set up an artist profile first. Please visit your artist profile settings to create one before uploading your tracks.',
+		};
+	}
 
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
-		artist,
+		artist: isUser ? artistId : formData.get('artist'),
 		imageFile: await checkFile(formData.get('imageFile')),
-		curatedBy,
+		curatedBy: formData.get('curatedBy') || undefined,
 		genreTags: genreTags,
 		releaseYear: formData.get('releaseYear'),
 		sourceFormat: formData.get('sourceFormat'),
@@ -70,6 +67,10 @@ export async function submitTrack(
 	});
 
 	if (!validatedFields.success) {
+		console.log({
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Failed to submit track. Please check the form for errors.',
+		});
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to submit track. Please check the form for errors.',
@@ -95,11 +96,11 @@ export async function submitTrack(
 			data: {
 				title: trackName,
 				releaseYear: +releaseYear,
-				artistId: artist || 'cm3rhs9u00003n1xb1oap6sdu',
+				artistId: artist,
 				cover: imageUrl,
 				formatId: sourceFormat,
 				releasedBy: release,
-				curatedBy,
+				curatedBy: isUser ? undefined : curatedBy,
 			},
 		});
 
@@ -123,26 +124,26 @@ export async function updateTrack(
 	prevState: TrackFormState,
 	formData: FormData
 ): Promise<TrackFormState> {
-	console.log('update');
+	const { isUser, artistId, needsArtistProfile } = await checkAuth();
 
-	const session = await auth();
+	if (needsArtistProfile) {
+		return {
+			message:
+				'You need to set up an artist profile first. Please visit your artist profile settings to create one before uploading your tracks.',
+		};
+	}
 
-	const genreTags = formData
+	const genreTagsData = formData
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
-
-	const artist =
-		session?.user?.role === 'user' ? session?.user?.id : formData.get('artist');
-	const curatedBy =
-		session?.user?.role === 'user' ? undefined : formData.get('curatedBy');
 
 	const validatedFields = TrackSchema.omit({
 		imageFile: true,
 	}).safeParse({
 		trackName: formData.get('trackName'),
-		artist,
-		curatedBy,
-		genreTags: genreTags,
+		artist: isUser ? artistId : formData.get('artist'),
+		curatedBy: formData.get('curatedBy') || undefined,
+		genreTags: genreTagsData,
 		releaseYear: formData.get('releaseYear'),
 		sourceFormat: formData.get('sourceFormat'),
 		release: formData.get('release'),
@@ -155,17 +156,17 @@ export async function updateTrack(
 		};
 	}
 
-	try {
-		const {
-			trackName,
-			artist,
-			releaseYear,
-			curatedBy,
-			genreTags,
-			sourceFormat,
-			release,
-		} = validatedFields.data;
+	const {
+		trackName,
+		artist,
+		releaseYear,
+		curatedBy,
+		genreTags,
+		sourceFormat,
+		release,
+	} = validatedFields.data;
 
+	try {
 		const imageUrl = await updateFile(
 			formData.get('imageFile'),
 			prevState?.prev?.image
@@ -176,11 +177,11 @@ export async function updateTrack(
 			data: {
 				title: trackName,
 				releaseYear: +releaseYear,
-				artistId: artist || '1',
+				artistId: artist,
 				cover: imageUrl,
 				formatId: sourceFormat,
 				releasedBy: release,
-				curatedBy,
+				curatedBy: isUser ? undefined : curatedBy,
 			},
 		});
 
@@ -213,4 +214,16 @@ export async function updateTrack(
 	}
 
 	redirect(`/user/tracks/upload/${id}/info`);
+}
+
+export async function checkAuth() {
+	const session = await auth();
+	const isUser = session?.user?.role === 'user';
+	const artistId = session?.user?.artistId;
+
+	return {
+		isUser,
+		artistId,
+		needsArtistProfile: isUser && !artistId,
+	};
 }

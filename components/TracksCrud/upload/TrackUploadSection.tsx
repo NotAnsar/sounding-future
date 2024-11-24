@@ -35,19 +35,19 @@ export default function TrackUploadSection({
 
 					<div className='grid gap-4'>
 						<UploadInput
-							message='Upload from track version 1'
+							message='track - variant 1 - binaural'
 							name='variant1'
 							errors={errors?.variant1}
 							url={initialData.variant1 || undefined}
 						/>
 						<UploadInput
-							message='Upload from track version 2'
+							message='track - variant 2 - binaural+'
 							name='variant2'
 							errors={errors?.variant2}
 							url={initialData.variant2 || undefined}
 						/>
 						<UploadInput
-							message='Upload from track version 3'
+							message='track - variant 3 - sterio'
 							name='variant3'
 							errors={errors?.variant3}
 							url={initialData.variant3 || undefined}
