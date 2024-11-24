@@ -44,11 +44,14 @@ model Artist {
   // Relations
   user       User?    @relation("UserArtist")
   tracks       Track[]
-  genres ArtistGenre[]
+  
   followers    Follow[]
-  socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id])
-  articles        ArtistArticle[] 
-
+  // genres ArtistGenre[]
+  // socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id])
+  // articles        ArtistArticle[] 
+  genres ArtistGenre[] @relation("ArtistToGenre")
+  socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id], onDelete: SetNull)
+  articles        ArtistArticle[] @relation("ArtistToArticle")
 
   @@index([name])
   @@map("artist")
@@ -128,7 +131,9 @@ model ArtistGenre {
   createdAt DateTime @default(now()) @map("created_at")
 
   // Relations
-  artist Artist @relation(fields: [artistId], references: [id])
+  // artist Artist @relation(fields: [artistId], references: [id])
+  artist Artist @relation("ArtistToGenre", fields: [artistId], references: [id], onDelete: Cascade)
+
   genre  Genre  @relation(fields: [genreId], references: [id])
 
   @@id([artistId, genreId])
@@ -219,7 +224,8 @@ model ArtistArticle {
   createdAt    DateTime    @default(now()) @map("created_at")
 
   // Relations
-  artist       Artist      @relation(fields: [artistId], references: [id])
+  // artist       Artist      @relation(fields: [artistId], references: [id])
+  artist       Artist      @relation("ArtistToArticle", fields: [artistId], references: [id], onDelete: Cascade)
   article      ArticleLink @relation(fields: [articleId], references: [id])
 
   @@id([artistId, articleId])
@@ -294,3 +300,4 @@ model PasswordResetToken {
 
   @@map("password_reset_tokens")
 }
+

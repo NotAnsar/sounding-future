@@ -53,7 +53,7 @@ export default function ImageUpload({
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			const file = e.target.files?.[0];
 			if (file) {
-				if (file.size > 2 * 1024 * 1024) {
+				if (file?.size > 2 * 1024 * 1024) {
 					alert('File size must be less than 2MB');
 					return;
 				}

@@ -30,7 +30,7 @@ export async function uploadFile(
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: fileName,
 			Body: Buffer.from(arrayBuffer),
-			ContentType: file.type,
+			ContentType: file?.type,
 		});
 
 		await s3.send(command);

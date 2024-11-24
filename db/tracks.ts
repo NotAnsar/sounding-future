@@ -121,6 +121,9 @@ export async function getTracksStats(): Promise<TrackWithCounts[]> {
 
 		return data;
 	} catch (error) {
+		if (error instanceof TrackError) {
+			throw new TrackError(error.message, error);
+		}
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);

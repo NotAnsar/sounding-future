@@ -155,6 +155,7 @@ export const artists: Artist[] = [
 		genres: [genres[1], genres[2], genres[4]], // Field Recordings, Contemporary Music, Sound Art
 	},
 ];
+
 export type Track = {
 	id: string;
 	title: string;
@@ -230,6 +231,7 @@ export const tracks: Track[] = [
 	{
 		id: '6',
 		title: 'Gravity Shift',
+
 		artist: artists.find((a) => a.name === 'Carlos Ruiz')!,
 		collection: collections.find((c) => c.name === 'Audiomatch')!,
 		genre: genres.find((c) => c.name === 'Electronic Music')!,
