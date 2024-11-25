@@ -7,8 +7,8 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
-import { Genre } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
+import { Genre } from '@prisma/client';
 import Link from 'next/link';
 
 export default function GenresCarousel({
@@ -49,10 +49,14 @@ export default function GenresCarousel({
 					{genres.map((genre, i) => (
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>
 							<Link
-								href={`/genres/${genre.id}`}
+								href={`/genres/${genre?.id}`}
 								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white cursor-pointer'
 								style={{
-									background: `linear-gradient(180deg, ${genre.from} 0%, ${genre.to} 100%)`,
+									background: `linear-gradient(180deg, ${
+										GENRES_GRADIENT[i % GENRES_GRADIENT.length].from
+									} 0%, ${
+										GENRES_GRADIENT[i % GENRES_GRADIENT.length].to
+									} 100%)`,
 								}}
 							>
 								<h5 className='text-[11px] font-bold ml-auto'>3D Audio</h5>
@@ -61,7 +65,7 @@ export default function GenresCarousel({
 										'text-lg sm:text-xl font-semibold line-clamp-2 mt-auto'
 									)}
 								>
-									{genre.name}
+									{genre?.name}
 								</h3>
 							</Link>
 						</CarouselItem>
@@ -71,3 +75,10 @@ export default function GenresCarousel({
 		</div>
 	);
 }
+const GENRES_GRADIENT = [
+	{ from: '#A42F67', to: '#513383' },
+	{ from: '#267B43', to: '#2F489F' },
+	{ from: '#7F8128', to: '#1F1D7B' },
+	{ from: '#f46217', to: '#0b486b' },
+	{ from: '#4b1248', to: '#efc27b' },
+];

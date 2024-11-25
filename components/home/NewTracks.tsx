@@ -8,8 +8,8 @@ import {
 } from '@/components/ui/carousel';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Track } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
+import { TracksWithArtist } from '@/db/tracks';
 
 export default function TracksCarousel({
 	tracks,
@@ -18,7 +18,7 @@ export default function TracksCarousel({
 	classNameItem,
 	classNameTitle,
 }: {
-	tracks: Track[];
+	tracks: TracksWithArtist;
 	title?: string;
 	className?: string;
 	classNameItem?: string;
@@ -61,12 +61,12 @@ export default function TracksCarousel({
 							className={cn('basis-40 md:basis-52 lg:basis-56', classNameItem)}
 						>
 							<Link
-								href={`/tracks/${track.id}`}
+								href={`/tracks/${track?.id}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image
-									src={track.cover}
-									alt={track.title}
+									src={track?.cover}
+									alt={track?.title}
 									width={220}
 									height={220}
 									className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
@@ -74,10 +74,10 @@ export default function TracksCarousel({
 							</Link>
 
 							<Link
-								href={`/artists/${track.artist.id}`}
+								href={`/artists/${track?.artist?.id}`}
 								className='text-muted text-sm md:text-base font-semibold text-nowrap'
 							>
-								{track.artist.name}
+								{track?.artist?.name}
 							</Link>
 							<Link
 								href={`/tracks/${track.id}`}
@@ -86,10 +86,10 @@ export default function TracksCarousel({
 									// isCurrentTrack ? 'text-primary' : ''
 								)}
 							>
-								{track.title}
+								{track?.title}
 							</Link>
 							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track.genre.name}
+								{track?.genres?.map((g) => g.genre.name).join(', ')}
 							</h6>
 						</CarouselItem>
 					))}

@@ -1,13 +1,14 @@
 import CuratedList from '@/components/curated/CuratedList';
 import HeaderBanner from '@/components/HeaderBanner';
-import { collections } from '@/config/dummy-data';
+import { getPartners } from '@/db/partner';
 import React from 'react';
 
-export default function page() {
+export default async function page() {
+	const partners = await getPartners();
 	return (
 		<>
 			<HeaderBanner img={'/banners/curated.jpg'} title='Curated' />
-			<CuratedList collections={collections} className='mt-12' />
+			<CuratedList partners={partners} className='mt-12' />
 		</>
 	);
 }

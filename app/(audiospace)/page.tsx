@@ -1,11 +1,20 @@
 import HeaderBanner from '@/components/HeaderBanner';
 import ArtistsCarousel from '@/components/home/ArtistCarousel';
-import CollectionsCarousel from '@/components/home/CollectionsCarousel';
+import PartnersCarousel from '@/components/home/CollectionsCarousel';
 import GenresCarousel from '@/components/home/GenresCarousel';
 import TracksCarousel from '@/components/home/NewTracks';
-import { artists, collections, genres, tracks } from '@/config/dummy-data';
+import { getArtists } from '@/db/artist';
+import { getGenres } from '@/db/genre';
+import { getPartners } from '@/db/partner';
+import { getPublicTracks } from '@/db/tracks';
 
 export default async function page() {
+	const [tracks, genres, partners, artists] = await Promise.all([
+		getPublicTracks(8),
+		getGenres(),
+		getPartners(),
+		getArtists(8),
+	]);
 	return (
 		<>
 			<HeaderBanner
@@ -24,10 +33,10 @@ export default async function page() {
 					title='Tracks by genre'
 					genres={genres}
 				/>
-				<CollectionsCarousel
+				<PartnersCarousel
 					className='xl:w-2/3'
 					title='Curated Collections'
-					collections={collections}
+					partners={partners}
 				/>
 				<ArtistsCarousel className='xl:w-2/3' artists={artists} />
 			</div>

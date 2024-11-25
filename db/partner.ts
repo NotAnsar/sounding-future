@@ -106,6 +106,52 @@ export async function getPartnerById(partnerId: string): Promise<PartnerLinks> {
 	}
 }
 
+export type PartnerDetails = Prisma.PartnerGetPayload<{
+	include: {
+		socialLinks: true;
+		tracks: { include: { artist: true; genres: { include: { genre: true } } } };
+	};
+}>;
+
+export async function getPartnerDetailsById(
+	partnerId: string
+): Promise<PartnerDetails> {
+	try {
+		// Fetch partner data by ID
+		const partner = await prisma.partner.findUnique({
+			where: { id: partnerId },
+			include: {
+				socialLinks: true,
+				tracks: {
+					include: { artist: true, genres: { include: { genre: true } } },
+				},
+			},
+		});
+
+		if (!partner) {
+			throw new PartnerError(`Partner with ID ${partnerId} not found.`);
+		}
+
+		return partner;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			throw new PartnerError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new PartnerError('Invalid data provided');
+		}
+
+		console.error(`Error fetching partner with ID ${partnerId}:`, error);
+		throw new PartnerError(
+			`Unable to retrieve partner data for ID ${partnerId}. Please try again later.`,
+			error
+		);
+	}
+}
+
 export type PartnerLinks = Partner & { socialLinks: SocialLinks | null };
 
 export type PartnerStats = Partner & {

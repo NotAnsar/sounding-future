@@ -5,13 +5,13 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useAudio } from '@/context/AudioContext';
 import { PauseIcon, PlayIcon } from 'lucide-react';
-import { Track } from '@/config/dummy-data';
+import { TracksWithArtist } from '@/db/tracks';
 
 export default function TracksCards({
 	tracks,
 	className,
 }: {
-	tracks: Track[];
+	tracks: TracksWithArtist;
 	className?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
@@ -22,11 +22,11 @@ export default function TracksCards({
 				className
 			)}
 		>
-			{tracks.length === 0 && (
+			{tracks?.length === 0 && (
 				<p className='text-base text-muted'>No tracks found</p>
 			)}
-			{tracks.map((track, i) => {
-				const isCurrentTrack = currentTrack?.id === track.id;
+			{tracks?.map((track, i) => {
+				const isCurrentTrack = currentTrack?.id === track?.id;
 				return (
 					<div key={i}>
 						<div
@@ -72,17 +72,17 @@ export default function TracksCards({
 
 						<Link href={`/tracks/${track.id}`} className='cursor-pointer'>
 							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap'>
-								{track.artist.name}
+								{track?.artist?.name}
 							</h5>
 							<h4
 								className={cn(
 									'text-sm sm:text-[17px] font-semibold line-clamp-1 '
 								)}
 							>
-								{track.title}
+								{track?.title}
 							</h4>
 							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track.genre.name}
+								{track?.genres?.map((genre) => genre.genre.name).join(', ')}
 							</h6>
 						</Link>
 					</div>

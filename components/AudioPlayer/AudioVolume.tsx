@@ -69,7 +69,7 @@ export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
 						mobile ? 'w-7' : ''
 					)}
 				/>
-				<p className='text-[10px] text-inherit lowercase'>info</p>
+				{mobile && <p className='text-[10px] text-inherit lowercase'>info</p>}
 			</DialogTrigger>
 			<DialogContent className='max-w-xl bg-player'>
 				<DialogHeader>

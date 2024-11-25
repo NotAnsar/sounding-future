@@ -10,7 +10,7 @@ import React, {
 	useCallback,
 } from 'react';
 import { Howl } from 'howler';
-import { Track } from '@/config/dummy-data';
+import { Track } from '@prisma/client';
 
 interface AudioContextType {
 	currentTrack: Track | null;
@@ -115,7 +115,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
 			// Create the new sound
 			const newSound = new Howl({
-				src: [track?.url],
+				src: [track?.variant1, track?.variant2, track.variant3].filter(
+					(src) => src !== null
+				) as string[],
 				html5: true,
 				preload: true,
 				onload: () => {
@@ -177,7 +179,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			// Preload the next track
 			if (tracks.length > 1) {
 				const nextIndex = (index + 1) % tracks.length;
-				new Howl({ src: [tracks[nextIndex].url], preload: true });
+				new Howl({
+					src: [tracks[nextIndex].variant1].filter(
+						(src) => src !== null
+					) as string[],
+					preload: true,
+				});
 			}
 		},
 		[playTrack]

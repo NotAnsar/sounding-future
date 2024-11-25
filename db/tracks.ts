@@ -36,6 +36,42 @@ export async function getTracks(): Promise<Track[]> {
 		);
 	}
 }
+export type TracksWithArtist = Prisma.TrackGetPayload<{
+	include: { artist: true; genres: { include: { genre: true } } };
+}>[];
+
+export async function getPublicTracks(
+	limit?: number
+): Promise<TracksWithArtist> {
+	try {
+		const data = await prisma.track.findMany({
+			include: { artist: true, genres: { include: { genre: true } } },
+			take: limit,
+			where: { published: true },
+			orderBy: { releaseYear: 'desc' },
+		});
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
 
 export type TrackWithgenres = { genres: Genre[] } & Track;
 

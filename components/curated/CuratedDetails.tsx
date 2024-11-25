@@ -2,15 +2,15 @@
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Collection } from '@/config/dummy-data';
 import { MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { PartnerDetails } from '@/db/partner';
 
 export default function CuratedDetails({
 	curated,
 	isAbout = false,
 }: {
-	curated: Collection;
+	curated: PartnerDetails;
 	isAbout?: boolean;
 }) {
 	return (
@@ -27,8 +27,8 @@ export default function CuratedDetails({
 				)}
 			>
 				<Image
-					alt={curated.name}
-					src={curated.picture}
+					alt={curated?.name}
+					src={curated?.picture}
 					width={640}
 					height={640}
 				/>
@@ -36,7 +36,7 @@ export default function CuratedDetails({
 
 			<div className='flex flex-col gap-3 mt-auto mb-2'>
 				<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
-					{curated.name}
+					{curated?.name}
 				</h2>
 				<h5
 					className={cn(
@@ -44,7 +44,7 @@ export default function CuratedDetails({
 					)}
 				>
 					<MapPin className='w-[18px] h-auto aspect-square ' />
-					{curated.country}
+					{curated?.country}
 				</h5>
 				<Link
 					className={cn(
@@ -55,7 +55,7 @@ export default function CuratedDetails({
 						isAbout ? `/curated/${curated.id}` : `/curated/${curated.id}/about`
 					}
 				>
-					About {curated.name}
+					About {curated?.name}
 				</Link>
 			</div>
 		</div>

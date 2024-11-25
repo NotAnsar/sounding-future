@@ -1,18 +1,23 @@
 import { notFound } from 'next/navigation';
-import { collections, tracks } from '@/config/dummy-data';
+
 import CuratedDetails from '@/components/curated/CuratedDetails';
 import TracksCarousel from '@/components/home/NewTracks';
 import { Icons } from '@/components/icons/socials';
 import Image from 'next/image';
+import { getPartnerDetailsById } from '@/db/partner';
+import Link from 'next/link';
 
-export default function page({ params: { id } }: { params: { id: string } }) {
-	const curated = collections.find((a) => a.id === id);
+export default async function page({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const curated = await getPartnerDetailsById(id);
 
 	if (!curated) {
 		notFound();
 	}
 
-	const filteredTracks = tracks.filter((t) => t.collection.id === curated.id);
 	return (
 		<>
 			<CuratedDetails curated={curated} isAbout={true} />
@@ -31,27 +36,44 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 					)}
 					<div className='flex flex-col gap-y-6 xl:flex-row gap-x-12'>
 						<p className='text-pretty leading-7 max-w-2xl xl:w-2/3'>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
-							architecto illo optio, sed, ratione unde voluptate fuga ullam qui
-							obcaecati nostrum enim? Enim provident ut eum praesentium aliquid
-							deleniti. Mollitia delectus vitae dolorem dicta laboriosam tenetur
-							at, corporis accusantium facere, ducimus eum. Quidem sunt
-							reiciendis magni distinctio nihil nemo et consectetur in corrupti
-							blanditiis vitae, fugiat, iure molestias suscipit accusantium
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti
-							soluta labore voluptates quidem ducimus maxime dolore expedita
-							doloremque autem nihil? Nobis sed consequuntur at architecto.
+							{curated?.bio}
 						</p>
 						<div>
 							<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
 								Links
 							</h1>
 							<div className='flex gap-4 items-center'>
-								<Icons.facebook className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
-								<Icons.instagram className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
-								<Icons.linkedin className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
-								<Icons.vimeo className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
-								<Icons.youtube className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+								{curated.socialLinks?.website && (
+									<Link href={curated?.socialLinks?.website} target='_blank'>
+										<Icons.world className='w-9 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
+								{curated.socialLinks?.facebook && (
+									<Link href={curated?.socialLinks?.facebook} target='_blank'>
+										<Icons.facebook className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
+								{curated.socialLinks?.instagram && (
+									<Link href={curated?.socialLinks?.instagram} target='_blank'>
+										<Icons.instagram className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
+
+								{curated.socialLinks?.linkedin && (
+									<Link href={curated?.socialLinks?.linkedin} target='_blank'>
+										<Icons.linkedin className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
+								{curated.socialLinks?.vimeo && (
+									<Link href={curated?.socialLinks?.vimeo} target='_blank'>
+										<Icons.vimeo className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
+								{curated.socialLinks?.youtube && (
+									<Link href={curated?.socialLinks?.youtube} target='_blank'>
+										<Icons.youtube className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+									</Link>
+								)}
 							</div>
 						</div>
 					</div>
@@ -59,8 +81,8 @@ export default function page({ params: { id } }: { params: { id: string } }) {
 			</main>
 
 			<TracksCarousel
-				tracks={filteredTracks}
-				title={`Tracks selected by ${curated.name}`}
+				tracks={curated?.tracks}
+				title={`Tracks selected by ${curated?.name}`}
 				classNameItem='basis-36 sm:basis-52 lg:basis-64'
 				className='mt-12 xl:w-2/3'
 				classNameTitle='text-[18px] sm:text-[22px]'

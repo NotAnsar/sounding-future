@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation';
-import { collections, tracks } from '@/config/dummy-data';
 import CuratedDetails from '@/components/curated/CuratedDetails';
 import TrackList from '@/components/tracks/TrackList';
 import TracksCards from '@/components/tracks/TracksCards';
 import { Tabs } from '@radix-ui/react-tabs';
 import { TabsContent } from '@/components/ui/tabs';
 import DynamicNav from '@/components/curated/DynamicNav';
+import { getPartnerDetailsById } from '@/db/partner';
 
-export default function page({
+export default async function page({
 	params: { id },
 	searchParams: { sort, type },
 }: {
@@ -16,15 +16,12 @@ export default function page({
 }) {
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
 	const isTable = type === 'table';
-	const curated = collections.find((a) => {
-		return a.id === id;
-	});
+	const curated = await getPartnerDetailsById(id);
 
 	if (!curated) {
 		notFound();
 	}
 
-	const filteredTracks = tracks.filter((t) => t.collection.id === curated.id);
 	return (
 		<>
 			<CuratedDetails curated={curated} />
@@ -41,16 +38,16 @@ export default function page({
 				</h1>
 				<TabsContent value='new'>
 					{isTable ? (
-						<TrackList tracks={filteredTracks} className='p-0' />
+						<TrackList tracks={curated.tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={filteredTracks} />
+						<TracksCards tracks={curated.tracks} />
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
 					{isTable ? (
-						<TrackList tracks={filteredTracks} className='p-0' />
+						<TrackList tracks={curated.tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={filteredTracks} />
+						<TracksCards tracks={curated.tracks} />
 					)}
 				</TabsContent>
 			</Tabs>

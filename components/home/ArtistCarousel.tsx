@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Artist } from '@prisma/client';
 
 export default function ArtistsCarousel({
 	artists,
@@ -16,7 +17,7 @@ export default function ArtistsCarousel({
 	className,
 	classNameItem,
 }: {
-	artists: { id: string; name: string; picture: string }[];
+	artists: Artist[];
 	title?: string;
 	className?: string;
 	classNameItem?: string;
@@ -53,16 +54,20 @@ export default function ArtistsCarousel({
 							className={cn('basis-32 sm:basis-40 lg:basis-44', classNameItem)}
 						>
 							<Link
-								href={`/artists/${artist.id}`}
+								href={`/artists/${artist?.id}`}
 								className='rounded-full block border overflow-hidden w-full h-auto mb-2'
 							>
-								<Image
-									src={artist.picture}
-									alt={artist.name}
-									width={220}
-									height={220}
-									className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
-								/>
+								{artist?.pic ? (
+									<Image
+										src={artist?.pic}
+										alt={artist?.name}
+										width={220}
+										height={220}
+										className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
+									/>
+								) : (
+									<div className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border bg-gray-300' />
+								)}
 							</Link>
 
 							<Link

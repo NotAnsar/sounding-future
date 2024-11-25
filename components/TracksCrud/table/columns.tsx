@@ -4,7 +4,6 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '../../ui/button';
 import { ArrowUpDown, Shield, ShieldCheck } from 'lucide-react';
-import { convertDateFormat } from '@/lib/utils';
 import ActionCell from './ActionCell';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -83,11 +82,12 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorKey: 'releaseYear',
 		cell: ({ row }) => {
 			return (
 				<div className='text-sm text-nowrap'>
-					{convertDateFormat(new Date(row.getValue('createdAt')))}
+					{/* {convertDateFormat(new Date(row.getValue('createdAt')))} */}
+					{row.getValue('releaseYear')}
 				</div>
 			);
 		},
@@ -98,7 +98,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					Uploaded At
+					Release Year
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);

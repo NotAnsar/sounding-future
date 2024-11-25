@@ -10,14 +10,14 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Collection } from '@/config/dummy-data';
+import { Partner } from '@prisma/client';
 
-export default function CollectionsCarousel({
-	collections,
+export default function PartnersCarousel({
+	partners,
 	title,
 	className,
 }: {
-	collections: Collection[];
+	partners: Partner[];
 	title?: string;
 	className?: string;
 }) {
@@ -47,15 +47,15 @@ export default function CollectionsCarousel({
 				</div>
 
 				<CarouselContent>
-					{collections.map((collection, i) => (
+					{partners?.map((partner, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
 							<Link
-								href={`/curated/${collection.id}`}
+								href={`/curated/${partner?.id}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image
-									src={collection.picture}
-									alt={collection.name}
+									src={partner?.picture}
+									alt={partner?.name}
 									width={220}
 									height={220}
 									className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
@@ -67,7 +67,7 @@ export default function CollectionsCarousel({
 									'text-sm sm:text-[17px] font-semibold line-clamp-1'
 								)}
 							>
-								{collection.name}
+								{partner?.name}
 							</h3>
 						</CarouselItem>
 					))}

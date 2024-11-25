@@ -10,10 +10,11 @@ class ArtistError extends Error {
 	}
 }
 
-export async function getArtists(): Promise<Artist[]> {
+export async function getArtists(limit?: number): Promise<Artist[]> {
 	try {
 		const data = await prisma.artist.findMany({
 			orderBy: { createdAt: 'desc' },
+			take: limit,
 		});
 
 		return data;

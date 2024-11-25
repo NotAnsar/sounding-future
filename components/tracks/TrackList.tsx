@@ -6,13 +6,13 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
-import { Track } from '@/config/dummy-data';
+import { TracksWithArtist } from '@/db/tracks';
 
 export default function TrackList({
 	tracks,
 	className,
 }: {
-	tracks: Track[];
+	tracks: TracksWithArtist;
 	className?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
@@ -20,11 +20,11 @@ export default function TrackList({
 		<div className={cn('p-4 lg:w-2/3', className)}>
 			<Table>
 				<TableBody>
-					{tracks.length === 0 && (
+					{tracks?.length === 0 && (
 						<p className='text-base text-muted'>No tracks found</p>
 					)}
-					{tracks.map((track, index) => {
-						const isCurrentTrack = currentTrack?.id === track.id;
+					{tracks?.map((track, index) => {
+						const isCurrentTrack = currentTrack?.id === track?.id;
 						return (
 							<TableRow
 								key={index}
@@ -66,8 +66,8 @@ export default function TrackList({
 									</div>
 
 									<Image
-										src={track.cover}
-										alt={track.title}
+										src={track?.cover}
+										alt={track?.title}
 										width={56}
 										height={56}
 										className=' min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md '
@@ -75,30 +75,30 @@ export default function TrackList({
 								</TableCell>
 								<TableCell className=''>
 									<Link
-										href={`/tracks/${track.id}`}
+										href={`/tracks/${track?.id}`}
 										className={cn(
 											' text-base font-semibold line-clamp-1 hover:opacity-80',
 											isCurrentTrack ? 'text-primary-foreground' : ''
 										)}
 									>
-										{track.title}
+										{track?.title}
 									</Link>
 									<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
-										{track.genre.name}
+										{track?.genres?.map((genre) => genre.genre.name).join(', ')}
 									</h6>
 									<Link
-										href={`/artists/${track.artist.id}`}
+										href={`/artists/${track?.artist?.id}`}
 										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
 									>
-										{track.artist.name}
+										{track?.artist?.name}
 									</Link>
 								</TableCell>
 								<TableCell className='hidden sm:block'>
 									<Link
-										href={`/artists/${track.artist.id}`}
+										href={`/artists/${track?.artist?.id}`}
 										className='text-muted text-base font-semibold text-nowrap hover:text-primary'
 									>
-										{track.artist.name}
+										{track?.artist?.name}
 									</Link>
 								</TableCell>
 
@@ -112,7 +112,7 @@ export default function TrackList({
 								</TableCell>
 
 								<TableCell className='text-right pr-4'>
-									{formatTime(track.duration)}
+									{track?.duration && formatTime(track?.duration)}
 								</TableCell>
 							</TableRow>
 						);
