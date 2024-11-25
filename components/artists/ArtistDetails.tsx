@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Artist } from '@/config/dummy-data';
 import { Icons } from '@/components/icons/track-icons';
 import { useState } from 'react';
+import { type ArtistDetails } from '@/db/artist';
 
-export default function ArtistDetails({ artist }: { artist: Artist }) {
+export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
 	const [followed, setFollowed] = useState(false);
 
 	return (
@@ -22,12 +22,11 @@ export default function ArtistDetails({ artist }: { artist: Artist }) {
 					'rounded-full border border-border/15 overflow-hidden relative group cursor-pointer w-full sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] h-auto aspect-square'
 				)}
 			>
-				<Image
-					alt={artist.name}
-					src={artist.picture}
-					width={640}
-					height={640}
-				/>
+				{artist.pic ? (
+					<Image alt={artist.name} src={artist.pic} width={640} height={640} />
+				) : (
+					<div className='w-full h-full bg-muted' />
+				)}
 			</div>
 
 			<div className='flex flex-col gap-3 mt-auto mb-2'>
@@ -47,14 +46,16 @@ export default function ArtistDetails({ artist }: { artist: Artist }) {
 					</div>
 				</div>
 
-				<h5
-					className={cn(
-						'text-sm sm:text-[15px] flex items-center gap-1 text-[#ddd] sm:font-medium'
-					)}
-				>
-					<Icons.tag className='w-5 h-auto aspect-auto fill-white' />{' '}
-					{artist.genres.map((g) => g.name).join(', ')}
-				</h5>
+				{artist.genres.length > 0 && (
+					<h5
+						className={cn(
+							'text-sm sm:text-[15px] flex items-center gap-1 text-[#ddd] sm:font-medium'
+						)}
+					>
+						<Icons.tag className='w-5 h-auto aspect-auto fill-white' />{' '}
+						{artist.genres.map((g) => g.genre.name).join(', ')}
+					</h5>
+				)}
 			</div>
 		</div>
 	);

@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { TracksWithArtist } from '@/db/tracks';
+import { PublicTrack } from '@/db/tracks';
 
 export default function TracksCarousel({
 	tracks,
@@ -18,7 +18,7 @@ export default function TracksCarousel({
 	classNameItem,
 	classNameTitle,
 }: {
-	tracks: TracksWithArtist;
+	tracks: PublicTrack[];
 	title?: string;
 	className?: string;
 	classNameItem?: string;

@@ -1,23 +1,21 @@
 import ExploreArtists from '@/components/artists/ExploreArtists';
 import HeaderBanner from '@/components/HeaderBanner';
 import React from 'react';
-import { artists } from '@/config/dummy-data';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons/audio-player';
 import ArtistList from '@/components/artists/ArtistList';
-import { prisma } from '@/lib/prisma';
+import { getArtistsList } from '@/db/artist';
 
 export default async function page({
 	searchParams: { type },
 }: {
 	searchParams: { type: string };
 }) {
-	const res = await prisma.user.findMany();
-	console.log(res);
-
 	const isTable = type === 'table';
+	const artists = await getArtistsList();
+
 	return (
 		<>
 			<HeaderBanner img={'/banners/artists.jpg'} title='Artists' />

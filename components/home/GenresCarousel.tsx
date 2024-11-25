@@ -7,6 +7,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
+import { GENRES_GRADIENT } from '@/db/genre';
 import { cn } from '@/lib/utils';
 import { Genre } from '@prisma/client';
 import Link from 'next/link';
@@ -75,10 +76,3 @@ export default function GenresCarousel({
 		</div>
 	);
 }
-const GENRES_GRADIENT = [
-	{ from: '#A42F67', to: '#513383' },
-	{ from: '#267B43', to: '#2F489F' },
-	{ from: '#7F8128', to: '#1F1D7B' },
-	{ from: '#f46217', to: '#0b486b' },
-	{ from: '#4b1248', to: '#efc27b' },
-];

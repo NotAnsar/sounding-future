@@ -6,13 +6,13 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
-import { TracksWithArtist } from '@/db/tracks';
+import { PublicTrack } from '@/db/tracks';
 
 export default function TrackList({
 	tracks,
 	className,
 }: {
-	tracks: TracksWithArtist;
+	tracks: PublicTrack[];
 	className?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();

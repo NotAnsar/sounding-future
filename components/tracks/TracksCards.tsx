@@ -5,16 +5,17 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useAudio } from '@/context/AudioContext';
 import { PauseIcon, PlayIcon } from 'lucide-react';
-import { TracksWithArtist } from '@/db/tracks';
+import { PublicTrack } from '@/db/tracks';
 
 export default function TracksCards({
 	tracks,
 	className,
 }: {
-	tracks: TracksWithArtist;
+	tracks: PublicTrack[];
 	className?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
+
 	return (
 		<div
 			className={cn(

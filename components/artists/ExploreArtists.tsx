@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { ArtistList } from '@/db/artist';
 
 export default function ExploreArtists({
 	artists,
 
 	className,
 }: {
-	artists: { id: string; name: string; picture: string }[];
-
+	artists: ArtistList[];
 	className?: string;
 }) {
 	return (
@@ -26,13 +26,17 @@ export default function ExploreArtists({
 						href={`/artists/${artist.id}`}
 						className='rounded-full block border overflow-hidden w-full h-auto mb-2'
 					>
-						<Image
-							src={artist.picture}
-							alt={artist.name}
-							width={220}
-							height={220}
-							className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
-						/>
+						{artist?.pic ? (
+							<Image
+								src={artist?.pic}
+								alt={artist.name}
+								width={220}
+								height={220}
+								className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border '
+							/>
+						) : (
+							<div className='w-full h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border ' />
+						)}
 					</Link>
 
 					<Link

@@ -7,9 +7,9 @@ import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
 import { useState } from 'react';
-import { Track } from '@/config/dummy-data';
+import { PublicTrack } from '@/db/tracks';
 
-export default function TrackDetails({ track }: { track: Track }) {
+export default function TrackDetails({ track }: { track: PublicTrack }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	const [liked, setliked] = useState(false);
 	const [followed, setFollowed] = useState(false);
@@ -20,7 +20,6 @@ export default function TrackDetails({ track }: { track: Track }) {
 			className='w-full flex flex-col sm:flex-row gap-4 p-4 rounded-3xl text-white'
 			style={{
 				background: '#cc2b5e',
-				// backgroundImage: '-webkit-linear-gradient(to right, #cc2b5e,#753a88 )',
 				backgroundImage: 'linear-gradient(to right,  #cc2b5e,#753a88)',
 			}}
 		>
@@ -57,20 +56,12 @@ export default function TrackDetails({ track }: { track: Track }) {
 						)}
 					/>
 				</div>
-				<Image alt={track.title} src={track.cover} width={640} height={640} />
+				<Image alt={track?.title} src={track?.cover} width={640} height={640} />
 			</div>
 			<div className='flex flex-col gap-3 mt-auto mb-2'>
-				{/* <span
-					className={cn(
-						'text-xs px-2 py-1 rounded-sm uppercase font-medium text-white bg-primary w-fit'
-					)}
-				>
-					Track
-				</span> */}
-
 				<div className='flex gap-3 flex-col xl:flex-row'>
 					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
-						{track.title}
+						{track?.title}
 					</h2>
 
 					<div className='flex gap-3 items-center ml-auto sm:ml-0'>
@@ -89,13 +80,18 @@ export default function TrackDetails({ track }: { track: Track }) {
 				</div>
 
 				<div className='flex gap-2.5 items-center'>
-					<Image
-						alt={track.artist.name}
-						src={track.artist.picture}
-						className='rounded-full w-8 sm:w-12 h-auto'
-						width={48}
-						height={48}
-					/>
+					{track?.artist?.pic ? (
+						<Image
+							alt={track?.artist?.name}
+							src={track?.artist?.pic}
+							className='rounded-full w-8 sm:w-12 h-auto'
+							width={48}
+							height={48}
+						/>
+					) : (
+						<div className='rounded-full w-8 sm:w-12 h-auto bg-muted' />
+					)}
+
 					<Link
 						href={`/artists/${track.artist.id}`}
 						className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer line-clamp-1 '

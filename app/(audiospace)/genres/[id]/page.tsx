@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation';
-import { genres, tracks } from '@/config/dummy-data';
 import TrackList from '@/components/tracks/TrackList';
 import TracksCards from '@/components/tracks/TracksCards';
 import { Tabs } from '@radix-ui/react-tabs';
 import { TabsContent } from '@/components/ui/tabs';
 import GenreDetails from '@/components/genres/GenreDetails';
 import DynamicNav from '@/components/curated/DynamicNav';
+import { getGenreDetailsById } from '@/db/genre';
 
-export default function page({
+export default async function page({
 	params: { id },
 	searchParams: { sort, type },
 }: {
@@ -16,13 +16,14 @@ export default function page({
 }) {
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
 	const isTable = type === 'table';
-	const genre = genres.find((a) => a.id === id);
+	const genre = await getGenreDetailsById(id);
+
+	const tracks = genre.tracks.map((t) => t.track);
 
 	if (!genre) {
 		notFound();
 	}
 
-	const filteredTracks = tracks.filter((t) => t.genre.id === genre.id);
 	return (
 		<>
 			<GenreDetails genre={genre} />
@@ -39,16 +40,16 @@ export default function page({
 				</h1>
 				<TabsContent value='new'>
 					{isTable ? (
-						<TrackList tracks={filteredTracks} className='p-0' />
+						<TrackList tracks={tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={filteredTracks} />
+						<TracksCards tracks={tracks} />
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
 					{isTable ? (
-						<TrackList tracks={filteredTracks} className='p-0' />
+						<TrackList tracks={tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={filteredTracks} />
+						<TracksCards tracks={tracks} />
 					)}
 				</TabsContent>
 			</Tabs>

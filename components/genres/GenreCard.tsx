@@ -1,15 +1,23 @@
-import { Genre } from '@/config/dummy-data';
 import { cn } from '@/lib/utils';
+import { Genre } from '@prisma/client';
 import Link from 'next/link';
 import React from 'react';
 
-export default function GenreCard({ genre }: { genre: Genre }) {
+export default function GenreCard({
+	genre,
+	from,
+	to,
+}: {
+	genre: Genre;
+	from: string;
+	to: string;
+}) {
 	return (
 		<Link
 			href={`/genres/${genre.id}`}
 			className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-40  md:h-52 text-white'
 			style={{
-				background: `linear-gradient(180deg, ${genre.from} 0%, ${genre.to} 100%)`,
+				background: `linear-gradient(180deg, ${from} 0%, ${to} 100%)`,
 			}}
 		>
 			<h5 className='text-[11px] font-bold ml-auto'>3D Audio</h5>

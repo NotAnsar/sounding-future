@@ -36,20 +36,161 @@ export async function getTracks(): Promise<Track[]> {
 		);
 	}
 }
-export type TracksWithArtist = Prisma.TrackGetPayload<{
-	include: { artist: true; genres: { include: { genre: true } } };
-}>[];
+export type PublicTrack = Prisma.TrackGetPayload<{
+	include: {
+		artist: true;
+		genres: { include: { genre: true } };
+	};
+}>;
 
-export async function getPublicTracks(
-	limit?: number
-): Promise<TracksWithArtist> {
+export async function getPublicTracks(limit?: number): Promise<PublicTrack[]> {
 	try {
 		const data = await prisma.track.findMany({
-			include: { artist: true, genres: { include: { genre: true } } },
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+			},
 			take: limit,
 			where: { published: true },
 			orderBy: { releaseYear: 'desc' },
 		});
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
+
+export async function getPublicTracksByArtist(
+	artistId: string,
+	limit?: number
+): Promise<PublicTrack[]> {
+	try {
+		const data = await prisma.track.findMany({
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+			},
+			take: limit,
+			where: { artistId, published: true },
+			orderBy: { releaseYear: 'desc' },
+		});
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
+
+export async function getPublicTrackByGenres(
+	genres: string[],
+	limit?: number,
+	myTrackId?: string
+): Promise<PublicTrack[]> {
+	try {
+		const data = await prisma.track.findMany({
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+			},
+			take: limit,
+			where: {
+				published: true,
+				genres: {
+					some: genres.length ? { genre: { id: { in: genres } } } : undefined,
+				},
+				id: { not: myTrackId },
+			},
+			orderBy: { releaseYear: 'desc' },
+		});
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
+
+export type ArtistDetails = Prisma.ArtistGetPayload<{
+	include: { socialLinks: true; articles: { include: { article: true } } };
+}>;
+
+export type TrackDetails = Prisma.TrackGetPayload<{
+	include: {
+		artist: {
+			include: { articles: { include: { article: true } }; socialLinks: true };
+		};
+		genres: { include: { genre: true } };
+		curator: true;
+	};
+}>;
+
+export async function getPublicTracksById(id: string): Promise<TrackDetails> {
+	try {
+		const data = await prisma.track.findUnique({
+			include: {
+				artist: {
+					include: {
+						articles: { include: { article: true } },
+						socialLinks: true,
+					},
+				},
+				genres: { include: { genre: true } },
+				curator: true,
+			},
+			where: { id, published: true },
+		});
+
+		if (!data) {
+			throw new TrackError(`Track with ID ${id} not found.`);
+		}
 
 		return data;
 	} catch (error) {

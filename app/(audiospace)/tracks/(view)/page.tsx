@@ -1,17 +1,18 @@
 import TracksCards from '@/components/tracks/TracksCards';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import TrackList from '@/components/tracks/TrackList';
-import { tracks } from '@/config/dummy-data';
 import HeaderBanner from '@/components/HeaderBanner';
 import DynamicNav from '@/components/curated/DynamicNav';
+import { getPublicTracks } from '@/db/tracks';
 
-export default function page({
+export default async function page({
 	searchParams: { type, sort },
 }: {
 	searchParams: { type: string; sort: string };
 }) {
 	const isTable = type === 'table';
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
+	const tracks = await getPublicTracks(12);
 
 	return (
 		<>

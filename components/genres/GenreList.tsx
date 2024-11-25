@@ -2,7 +2,8 @@
 
 import { cn } from '@/lib/utils';
 import GenreCard from './GenreCard';
-import { Genre } from '@/config/dummy-data';
+import { Genre } from '@prisma/client';
+import { GENRES_GRADIENT } from '@/db/genre';
 
 export default function GenreList({
 	genres,
@@ -18,8 +19,13 @@ export default function GenreList({
 				className
 			)}
 		>
-			{genres.map((genre, i) => (
-				<GenreCard genre={genre} key={i} />
+			{[...genres]?.map((genre, i) => (
+				<GenreCard
+					genre={genre}
+					key={i}
+					from={GENRES_GRADIENT[i % GENRES_GRADIENT.length].from}
+					to={GENRES_GRADIENT[i % GENRES_GRADIENT.length].to}
+				/>
 			))}
 		</div>
 	);

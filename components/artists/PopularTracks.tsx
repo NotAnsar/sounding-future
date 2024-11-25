@@ -6,11 +6,12 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
-import { Track } from '@/config/dummy-data';
 import { useState } from 'react';
+import { PublicTrack } from '@/db/tracks';
 
-export default function PopularTracks({ tracks }: { tracks: Track[] }) {
-	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
+export default function PopularTracks({ tracks }: { tracks: PublicTrack[] }) {
+	const { currentTrack, isPlaying, togglePlayPause, playNewTrack, duration } =
+		useAudio();
 	const [showMore, setshowMore] = useState(false);
 	const songsShown = showMore ? tracks.length : 5;
 
@@ -84,7 +85,7 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 									{track.title}
 								</Link>
 								<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
-									{track.genre.name}
+									{track?.genres?.map((genre) => genre.genre.name).join(', ')}
 								</h6>
 								<Link
 									href={`/artists/${track.artist.id}`}
@@ -101,7 +102,6 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 									{track.artist.name}
 								</Link>
 							</TableCell>
-
 							<TableCell>
 								<Heart
 									className={cn(
@@ -112,7 +112,7 @@ export default function PopularTracks({ tracks }: { tracks: Track[] }) {
 							</TableCell>
 
 							<TableCell className='text-right pr-4'>
-								{formatTime(track.duration)}
+								{formatTime(duration)}
 							</TableCell>
 						</TableRow>
 					);

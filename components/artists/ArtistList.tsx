@@ -2,14 +2,14 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { Artist, tracks } from '@/config/dummy-data';
 import { Icons } from '../icons/track-icons';
+import { type ArtistList } from '@/db/artist';
 
 export default function ArtistList({
 	artists,
 	className,
 }: {
-	artists: Artist[];
+	artists: ArtistList[];
 	className?: string;
 }) {
 	return (
@@ -20,9 +20,7 @@ export default function ArtistList({
 						<p className='text-base text-muted'>No artists found</p>
 					)}
 					{artists.map((artist, index) => {
-						const tracksCount = tracks.filter(
-							(a) => a.artist.id === artist.id
-						).length;
+						const tracksCount = artist._count.tracks;
 
 						const artistTracks = `${tracksCount} track${
 							tracksCount !== 1 ? 's' : ''
@@ -34,13 +32,17 @@ export default function ArtistList({
 								className={cn('hover:bg-player/50 border-none group')}
 							>
 								<TableCell className='w-16 relative'>
-									<Image
-										src={artist.picture}
-										alt={artist.name}
-										width={64}
-										height={64}
-										className=' min-w-16 max-w-16 h-auto aspect-square object-cover border border-border rounded-full'
-									/>
+									{artist?.pic ? (
+										<Image
+											src={artist.pic}
+											alt={artist.name}
+											width={64}
+											height={64}
+											className=' min-w-16 max-w-16 h-auto aspect-square object-cover border border-border rounded-full'
+										/>
+									) : (
+										<div className='min-w-16 max-w-16  h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border bg-muted rounded-full' />
+									)}
 								</TableCell>
 								<TableCell>
 									<Link
@@ -69,12 +71,12 @@ export default function ArtistList({
 
 								<TableCell className='hidden sm:table-cell'>
 									<ul>
-										{artist.genres.map((genre) => (
+										{artist?.genres?.map((genre) => (
 											<li
-												key={genre.id}
+												key={genre?.genreId}
 												className='font-medium text-muted text-[15px]'
 											>
-												{genre.name}
+												{genre?.genre?.name}
 											</li>
 										))}
 									</ul>

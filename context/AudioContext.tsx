@@ -10,7 +10,8 @@ import React, {
 	useCallback,
 } from 'react';
 import { Howl } from 'howler';
-import { Track } from '@prisma/client';
+
+import { PublicTrack as Track } from '@/db/tracks';
 
 interface AudioContextType {
 	currentTrack: Track | null;

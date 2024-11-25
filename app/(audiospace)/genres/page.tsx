@@ -1,9 +1,10 @@
 import GenreList from '@/components/genres/GenreList';
 import HeaderBanner from '@/components/HeaderBanner';
-import { genres } from '@/config/dummy-data';
+import { getGenres } from '@/db/genre';
 
 export default async function page() {
-	
+	const genres = await getGenres();
+
 	return (
 		<>
 			<HeaderBanner img={'/banners/genres.jpg'} title='Genres' />
