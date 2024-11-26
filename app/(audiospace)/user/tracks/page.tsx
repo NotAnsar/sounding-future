@@ -1,3 +1,4 @@
+import ArtistError from '@/components/ArtistError';
 import { columns } from '@/components/TracksCrud/table/columns';
 import { DataTable } from '@/components/TracksCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
@@ -11,8 +12,10 @@ import { notFound } from 'next/navigation';
 export default async function page() {
 	const [session, tracks] = await Promise.all([auth(), getTracksStats()]);
 
-	if (!session) {
-		notFound();
+	if (!session) notFound();
+
+	if (tracks.artistError) {
+		return <ArtistError />;
 	}
 
 	return (
@@ -24,7 +27,7 @@ export default async function page() {
 					<Upload className='w-4 h-auto aspect-square mr-2' /> Upload Track
 				</Link>
 			</div>
-			<DataTable columns={columns} data={tracks} />
+			<DataTable columns={columns} data={tracks.data} />
 		</>
 	);
 }

@@ -13,16 +13,16 @@ export type myArticles = Prisma.ArtistArticleGetPayload<{
 	include: { article: true };
 }>;
 
-export async function getMyArticle(): Promise<myArticles[]> {
+export async function getMyArticle(): Promise<{
+	artistError: boolean;
+	data: myArticles[];
+}> {
+	const session = await auth();
+	const artistId = session?.user?.artistId;
+
 	try {
-		const session = await auth();
-
-		const artistId = session?.user?.artistId;
-
 		if (!artistId) {
-			throw new ArticleError(
-				'You need to set up an artist profile first. Please visit your profile settings to create one before managing your links.'
-			);
+			return { artistError: true, data: [] };
 		}
 
 		const data = await prisma.artistArticle.findMany({
@@ -30,10 +30,12 @@ export async function getMyArticle(): Promise<myArticles[]> {
 			include: { article: true },
 		});
 
-		return data;
+		return { artistError: false, data };
 	} catch (error) {
 		if (error instanceof ArticleError) {
-			throw error; // Re-throw ArticleError as is
+			throw new ArticleError(
+				'You need to set up an artist profile first. Please visit your profile settings to create one before managing your links.'
+			);
 		}
 
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {

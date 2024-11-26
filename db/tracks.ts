@@ -274,15 +274,16 @@ export type TrackWithCounts = Prisma.TrackGetPayload<{
 	};
 }>;
 
-export async function getTracksStats(): Promise<TrackWithCounts[]> {
+export async function getTracksStats(): Promise<{
+	artistError: boolean;
+	data: TrackWithCounts[];
+}> {
 	try {
 		const session = await auth();
 		const isUser = session?.user.role === 'user';
 		const artistId = session?.user?.artistId;
 		if (isUser && !artistId) {
-			throw new TrackError(
-				'You need to set up an artist profile first. Please visit your profile settings to create one before managing your links.'
-			);
+			return { artistError: true, data: [] };
 		}
 
 		const data = await prisma.track.findMany({
@@ -296,11 +297,14 @@ export async function getTracksStats(): Promise<TrackWithCounts[]> {
 			orderBy: { createdAt: 'desc' },
 		});
 
-		return data;
+		return { artistError: false, data };
 	} catch (error) {
 		if (error instanceof TrackError) {
-			throw new TrackError(error.message, error);
+			throw new TrackError(
+				'You need to set up an artist profile first. Please visit your profile settings to create one before managing your links.'
+			);
 		}
+
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
