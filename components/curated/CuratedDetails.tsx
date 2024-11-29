@@ -23,7 +23,7 @@ export default function CuratedDetails({
 		>
 			<div
 				className={cn(
-					'rounded-3xl border border-border/15 overflow-hidden relative group cursor-pointer w-full sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] h-auto aspect-square'
+					'rounded-3xl border border-border/15 overflow-hidden relative group cursor-pointer sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] '
 				)}
 			>
 				<Image
@@ -31,6 +31,7 @@ export default function CuratedDetails({
 					src={curated?.picture}
 					width={640}
 					height={640}
+					className='object-cover h-auto aspect-square w-full '
 				/>
 			</div>
 

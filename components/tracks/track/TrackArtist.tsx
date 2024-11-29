@@ -16,7 +16,7 @@ export default function TrackArtistDetails({
 			{artist?.pic && (
 				<div className='max-w-2xl '>
 					<Image
-						className='w-full rounded-3xl aspect-video object-cover'
+						className='w-full rounded-3xl aspect-video object-cover '
 						src={artist?.pic}
 						width={500}
 						height={500}

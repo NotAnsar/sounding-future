@@ -34,21 +34,33 @@ export default async function Page() {
 						</Link>
 					</p>
 
-					{/* <SignAsGuest /> */}
-
-					<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
-						By clicking continue, you agree to our{' '}
-						<Link href={'/legal'} className='font-semibold hover:underline'>
-							Legal Terms
-						</Link>{' '}
-						and{' '}
-						<Link href={'/privacy'} className='font-semibold hover:underline'>
-							Privacy Policy
-						</Link>
-						.
-					</p>
+					<TermsAndPolicy />
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export function TermsAndPolicy() {
+	return (
+		<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
+			By clicking continue, you agree to our{' '}
+			<Link
+				target='_blank'
+				href={'/legal'}
+				className='font-semibold hover:underline'
+			>
+				Legal Terms
+			</Link>{' '}
+			and{' '}
+			<Link
+				target='_blank'
+				href={'/privacy'}
+				className='font-semibold hover:underline'
+			>
+				Privacy Policy
+			</Link>
+			.
+		</p>
 	);
 }

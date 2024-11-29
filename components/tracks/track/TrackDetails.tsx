@@ -12,7 +12,7 @@ import { PublicTrack } from '@/db/tracks';
 export default function TrackDetails({ track }: { track: PublicTrack }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	const [liked, setliked] = useState(false);
-	const [followed, setFollowed] = useState(false);
+	// const [followed, setFollowed] = useState(false);
 	const isCurrentTrack = currentTrack?.id === track.id;
 
 	return (
@@ -56,7 +56,13 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 						)}
 					/>
 				</div>
-				<Image alt={track?.title} src={track?.cover} width={640} height={640} />
+				<Image
+					alt={track?.title}
+					src={track?.cover}
+					width={640}
+					height={640}
+					className='object-cover h-auto aspect-square w-full'
+				/>
 			</div>
 			<div className='flex flex-col gap-3 mt-auto mb-2'>
 				<div className='flex gap-3 flex-col xl:flex-row'>
@@ -84,7 +90,7 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 						<Image
 							alt={track?.artist?.name}
 							src={track?.artist?.pic}
-							className='rounded-full w-8 sm:w-12 h-auto'
+							className='rounded-full w-8 sm:w-12 h-auto aspect-square object-cover'
 							width={48}
 							height={48}
 						/>
@@ -98,7 +104,7 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 					>
 						{track.artist.name}
 					</Link>
-					<div
+					{/* <div
 						onClick={() => setFollowed((l) => !l)}
 						className='cursor-pointer h-full flex justify-center items-center'
 					>
@@ -107,7 +113,7 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 						) : (
 							<Icons.unfollow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 						)}
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</div>

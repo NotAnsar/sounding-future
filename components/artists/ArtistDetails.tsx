@@ -3,11 +3,11 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Icons } from '@/components/icons/track-icons';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { type ArtistDetails } from '@/db/artist';
 
 export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
-	const [followed, setFollowed] = useState(false);
+	// const [followed, setFollowed] = useState(false);
 
 	return (
 		<div
@@ -19,11 +19,17 @@ export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
 		>
 			<div
 				className={cn(
-					'rounded-full border border-border/15 overflow-hidden relative group cursor-pointer w-full sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] h-auto aspect-square'
+					'rounded-full border border-border/15 overflow-hidden relative group cursor-pointer sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] '
 				)}
 			>
 				{artist.pic ? (
-					<Image alt={artist.name} src={artist.pic} width={640} height={640} />
+					<Image
+						alt={artist.name}
+						src={artist.pic}
+						width={640}
+						height={640}
+						className='w-full h-auto aspect-square object-cover'
+					/>
 				) : (
 					<div className='w-full h-full bg-muted' />
 				)}
@@ -34,7 +40,7 @@ export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
 					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
 						{artist.name}
 					</h2>
-					<div
+					{/* <div
 						onClick={() => setFollowed((l) => !l)}
 						className='cursor-pointer h-full flex justify-center items-center'
 					>
@@ -43,7 +49,7 @@ export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
 						) : (
 							<Icons.unfollow className='min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
 						)}
-					</div>
+					</div> */}
 				</div>
 
 				{artist.genres.length > 0 && (

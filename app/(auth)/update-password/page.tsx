@@ -1,6 +1,7 @@
 import UpdatePasswordForm from '@/components/auth/UpdateForm';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { TermsAndPolicy } from '../login/page';
 
 export const metadata: Metadata = {
 	title: 'Sounding Future | Update Password',
@@ -46,17 +47,7 @@ export default async function Page({
 						</Link>
 					</p>
 
-					<p className='text-[15px] text-muted text-center w-4/5 mx-auto'>
-						By clicking continue, you agree to our{' '}
-						<Link href={'/legal'} className='font-semibold hover:underline'>
-							Legal Terms
-						</Link>{' '}
-						and{' '}
-						<Link href={'/privacy'} className='font-semibold hover:underline'>
-							Privacy Policy
-						</Link>
-						.
-					</p>
+					<TermsAndPolicy />
 				</div>
 			</div>
 		</div>

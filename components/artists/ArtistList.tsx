@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { Icons } from '../icons/track-icons';
+// import { Icons } from '../icons/track-icons';
 import { type ArtistList } from '@/db/artist';
 
 export default function ArtistList({
@@ -69,7 +69,7 @@ export default function ArtistList({
 									</Link>
 								</TableCell>
 
-								<TableCell className='hidden sm:table-cell'>
+								<TableCell>
 									<ul>
 										{artist?.genres?.map((genre) => (
 											<li
@@ -82,7 +82,7 @@ export default function ArtistList({
 									</ul>
 								</TableCell>
 
-								<TableCell>
+								{/* <TableCell>
 									{+artist.id % 2 == 0 ? (
 										<Icons.follow
 											className={cn(
@@ -96,7 +96,7 @@ export default function ArtistList({
 											)}
 										/>
 									)}
-								</TableCell>
+								</TableCell> */}
 							</TableRow>
 						);
 					})}

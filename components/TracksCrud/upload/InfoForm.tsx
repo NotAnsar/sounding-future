@@ -39,18 +39,21 @@ export default function TrackInfoForm({
 					</Label>
 					<Textarea
 						className={cn(
-							'max-w-lg min-h-40',
+							'max-w-lg min-h-96',
 							state?.errors?.trackInfo
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
 						name='trackInfo'
 						defaultValue={initialData.info || undefined}
+						maxLength={3000}
 						id='trackInfo'
 						required
 					/>
 					<p className='text-muted text-sm max-w-lg'>
 						Give your listeners an introduction to the track
+						<br />
+						(Max. 3000 characters)
 					</p>
 
 					<ErrorMessage errors={state?.errors?.trackInfo} />
@@ -65,18 +68,21 @@ export default function TrackInfoForm({
 					</Label>
 					<Textarea
 						className={cn(
-							'max-w-lg min-h-28',
+							'max-w-lg min-h-48',
 							state?.errors?.more
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
+						maxLength={1000}
 						name='more'
 						defaultValue={initialData.credits || undefined}
 						id='more'
 						required
 					/>
+
 					<p className='text-muted text-sm max-w-lg'>
-						Add additional information such as credits or mentions
+						Add additional information such as credits or mentions <br />
+						(Max. 1000 characters)
 					</p>
 
 					<ErrorMessage errors={state?.errors?.more} />

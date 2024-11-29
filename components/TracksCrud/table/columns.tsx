@@ -43,7 +43,9 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 				<>
 					<Link
 						href={`/tracks/${track.id}`}
-						className={'text-base font-semibold line-clamp-1 hover:opacity-80'}
+						className={
+							'text-base font-semibold line-clamp-1 hover:opacity-80 max-w-40 text-nowrap'
+						}
 					>
 						{track.title}
 					</Link>
@@ -55,8 +57,33 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: 'curator',
+		accessorKey: 'artist',
 		accessorFn: (row) => row.artist.name,
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Artist Name
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const name = row?.original?.artist?.name;
+
+			return (
+				<h1 className='text-muted text-base font-semibold text-nowrap'>
+					{name}
+				</h1>
+			);
+		},
+	},
+	{
+		accessorKey: 'curator',
+		accessorFn: (row) => row.curator?.name,
 		header: ({ column }) => {
 			return (
 				<Button
@@ -81,6 +108,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 			);
 		},
 	},
+
 	{
 		accessorKey: 'releaseYear',
 		cell: ({ row }) => {
@@ -105,9 +133,9 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: '_count',
+		accessorKey: '_count.listeners',
 		cell: ({ row }) => {
-			const { listeners } = row?.original?._count;
+			const listeners = row.original._count?.listeners ?? 0;
 			return (
 				<div className='text-sm text-nowrap flex gap-1 items-center'>
 					<Icons.played className='w-4 h-auto aspect-square fill-muted' />
@@ -129,11 +157,11 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: '_count',
+		accessorKey: '_count.likes',
 		cell: ({ row }) => {
-			const { likes } = row?.original?._count;
+			const likes = row.original._count?.likes ?? 0;
 			return (
-				<div className='text-sm text-nowrap flex gap-1 items-center '>
+				<div className='text-sm text-nowrap flex gap-1 items-center'>
 					<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
 					<p>{likes}</p>
 				</div>

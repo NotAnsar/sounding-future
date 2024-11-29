@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Artist, Track } from '@/config/dummy-data';
 import Link from 'next/link';
 
-interface SearchResultsProps { 
+interface SearchResultsProps {
 	searchResults: {
 		artists: Artist[];
 		tracks: Track[];
@@ -52,7 +52,7 @@ export default function SearchResults({
 							<Image
 								src={artist.picture}
 								alt={artist.name}
-								className='w-10 h-10 rounded-full'
+								className='w-10 h-10 rounded-full object-cover'
 								height={40}
 								width={40}
 							/>
@@ -77,7 +77,7 @@ export default function SearchResults({
 								alt={track.title}
 								height={40}
 								width={40}
-								className='w-10 h-10 rounded-lg'
+								className='w-10 h-10 rounded-lg object-cover'
 							/>
 							<div>
 								<p>{track.title}</p>

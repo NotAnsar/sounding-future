@@ -1,4 +1,3 @@
-import ArtistError from '@/components/ArtistError';
 import { columns } from '@/components/TracksCrud/table/columns';
 import { DataTable } from '@/components/TracksCrud/table/data-table';
 import { buttonVariants } from '@/components/ui/button';
@@ -14,10 +13,6 @@ export default async function page() {
 
 	if (!session) notFound();
 
-	if (tracks.artistError) {
-		return <ArtistError />;
-	}
-
 	return (
 		<>
 			<div className='flex items-center justify-between mt-4 mb-12'>
@@ -27,7 +22,7 @@ export default async function page() {
 					<Upload className='w-4 h-auto aspect-square mr-2' /> Upload Track
 				</Link>
 			</div>
-			<DataTable columns={columns} data={tracks.data} />
+			<DataTable columns={columns} data={tracks} />
 		</>
 	);
 }

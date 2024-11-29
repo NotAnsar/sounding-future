@@ -16,7 +16,7 @@ export default function AudioPlayer() {
 		currentTime,
 		duration,
 		togglePlayPause,
-		
+
 		seek,
 		nextTrack,
 		previousTrack,
@@ -36,7 +36,7 @@ export default function AudioPlayer() {
 					alt='cover'
 					width={56}
 					height={56}
-					className='rounded-md'
+					className='rounded-md w-14 h-14 aspect-square object-cover'
 				/>
 				<div className='truncate hidden md:block'>
 					<h2 className='font-semibold truncate'>{currentTrack.title}</h2>

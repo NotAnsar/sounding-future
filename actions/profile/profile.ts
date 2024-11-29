@@ -15,7 +15,7 @@ const ProfileSchema = z.object({
 		.max(100, 'Artist name must be 100 characters or less'),
 	biography: z
 		.string()
-		.max(500, 'Biography must be 500 characters or less')
+		.max(1000, 'Biography must be 1000 characters or less')
 		.optional(),
 	genres: z.array(z.string()).max(3, 'You can only select up to 3 genre tags'),
 	image: z.instanceof(File).optional(),

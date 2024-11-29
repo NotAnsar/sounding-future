@@ -12,10 +12,11 @@ import { myArtistData } from '@/db/artist';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Genre } from '@prisma/client';
-
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
+
+const MaxChar = 1000;
 
 export default function ArtistProfileForm({
 	initialData,
@@ -91,16 +92,19 @@ export default function ArtistProfileForm({
 						</Label>
 						<Textarea
 							className={cn(
-								'max-w-lg min-h-32',
+								'max-w-lg min-h-72',
 								state?.errors?.biography
 									? 'border-destructive focus-visible:ring-destructive '
 									: ''
 							)}
+							maxLength={MaxChar}
 							name='biography'
 							id='biography'
 							defaultValue={initialData?.bio || undefined}
 						/>
-						<p className='text-muted text-sm max-w-lg'>Max. 500 characters</p>
+						<p className='text-muted text-sm max-w-lg'>
+							Max. {MaxChar} characters
+						</p>
 						<ErrorMessage errors={state?.errors?.biography} />
 					</div>
 
