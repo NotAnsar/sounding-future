@@ -47,7 +47,7 @@ export default function TrackUploadSection({
 							url={initialData.variant2 || undefined}
 						/>
 						<UploadInput
-							message='track - variant 3 - sterio'
+							message='track - variant 3 - stereo'
 							name='variant3'
 							errors={errors?.variant3}
 							url={initialData.variant3 || undefined}

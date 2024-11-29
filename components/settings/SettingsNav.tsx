@@ -16,6 +16,11 @@ export default function SettingsNav() {
 						Appearance
 					</Link>
 				</TabsTrigger>
+				<TabsTrigger value='change-password' className='!p-0'>
+					<Link href={'/user/settings/change-password'} className='py-1 px-3'>
+						Change Password
+					</Link>
+				</TabsTrigger>
 			</TabsList>
 			<SaveButton />
 		</div>
