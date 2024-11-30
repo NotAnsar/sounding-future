@@ -1,13 +1,21 @@
 'use client';
 
 import Image from 'next/image';
-import { PauseIcon, PlayIcon } from 'lucide-react';
+import { Copy, PauseIcon, PlayIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
 import { useState } from 'react';
 import { PublicTrack } from '@/db/tracks';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from '@/hooks/use-toast';
 
 export default function TrackDetails({ track }: { track: PublicTrack }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
@@ -81,7 +89,8 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 								<Icons.heartOutline className='w-7 h-auto aspect-square fill-white' />
 							)}
 						</div>
-						<Icons.share className='w-6 h-auto aspect-square fill-white cursor-pointer' />
+
+						<ShareButton artistId={track.artist.id} />
 					</div>
 				</div>
 
@@ -117,5 +126,50 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function ShareButton({
+	className,
+	artistId,
+}: {
+	className?: string;
+	artistId?: string;
+}) {
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger className={cn('relative', className)}>
+				<Icons.share className='w-6 h-auto aspect-square fill-white cursor-pointer' />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align='start'>
+				<DropdownMenuItem
+					onClick={() => {
+						navigator.clipboard.writeText(window.location.href);
+						toast({
+							description: 'Track link copied to clipboard',
+						});
+					}}
+					className='cursor-pointer'
+				>
+					<Copy className='w-4 h-auto aspect-square text-muted mr-1.5' />
+					Copy link to track
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onClick={() => {
+						navigator.clipboard.writeText(
+							`${window.location.origin}/artists/${artistId}`
+						);
+						toast({
+							description: 'Artist link copied to clipboard',
+						});
+					}}
+					className='cursor-pointer'
+				>
+					<Copy className='w-4 h-auto aspect-square text-muted mr-1.5' />
+					Copy link to artist
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }
