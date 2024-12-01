@@ -133,8 +133,8 @@ model ArtistGenre {
   // Relations
   // artist Artist @relation(fields: [artistId], references: [id])
   artist Artist @relation("ArtistToGenre", fields: [artistId], references: [id], onDelete: Cascade)
-
-  genre  Genre  @relation(fields: [genreId], references: [id])
+  // genre  Genre  @relation(fields: [genreId], references: [id])
+  genre  Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade)
 
   @@id([artistId, genreId])
   @@map("artist_genres")
@@ -145,7 +145,7 @@ model TrackGenre {
   genreId   String   @map("genre_id") 
   createdAt DateTime @default(now()) @map("created_at")
   track Track @relation(fields: [trackId], references: [id], onDelete: Cascade) // Cascade delete
-  genre     Genre    @relation(fields: [genreId], references: [id])
+  genre     Genre    @relation(fields: [genreId], references: [id], onDelete: Cascade)
     
 
 

@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useEffect } from 'react';
-
 import Image from 'next/image';
-import { Artist, Track } from '@/config/dummy-data';
 import Link from 'next/link';
+import { Artist } from '@prisma/client';
+import { SearchedTrack } from '@/db/search';
 
 interface SearchResultsProps {
 	searchResults: {
 		artists: Artist[];
-		tracks: Track[];
+		tracks: SearchedTrack[];
 	};
 	onClose: (reset?: boolean) => void;
 
@@ -39,6 +39,12 @@ export default function SearchResults({
 
 	return (
 		<div className='absolute z-10 w-full mt-2 bg-player rounded-xl border border-background max-h-96 overflow-y-auto'>
+			{searchResults.artists.length === 0 &&
+				searchResults.tracks.length === 0 && (
+					<div className='p-4'>
+						<p className='text-muted text-sm'>No results found</p>
+					</div>
+				)}
 			{searchResults.artists.length > 0 && (
 				<div className='p-4'>
 					<h3 className=' text-sm font-semibold mb-2'>Artists</h3>
@@ -49,13 +55,17 @@ export default function SearchResults({
 							className='flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer'
 							onClick={() => onClose()}
 						>
-							<Image
-								src={artist.picture}
-								alt={artist.name}
-								className='w-10 h-10 rounded-full object-cover'
-								height={40}
-								width={40}
-							/>
+							{artist?.pic ? (
+								<Image
+									src={artist?.pic}
+									alt={artist?.name}
+									className='w-10 h-10 rounded-full object-cover'
+									height={40}
+									width={40}
+								/>
+							) : (
+								<div className='min-w-10 max-w-10  h-auto aspect-square object-cover transition-all hover:scale-105 cursor-pointer border-border bg-muted rounded-full' />
+							)}
 							<span>{artist.name}</span>
 						</Link>
 					))}

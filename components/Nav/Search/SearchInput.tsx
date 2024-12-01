@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Artist, artists, Track, tracks } from '@/config/dummy-data';
 import SearchResults from './SearchResults';
+import { Artist } from '@prisma/client';
+import { SearchedTrack } from '@/db/search';
 
 interface SearchInputProps {
 	className?: string;
@@ -24,31 +25,57 @@ export default function SearchInput({
 	const searchRef = useRef<HTMLDivElement>(null);
 	const [searchResults, setSearchResults] = useState<{
 		artists: Artist[];
-		tracks: Track[];
-	}>({
-		artists: [],
-		tracks: [],
-	});
+		tracks: SearchedTrack[];
+	} | null>(null);
+
+	// useEffect(() => {
+	// 	if (searchTerm.trim() === '') {
+	// 		setSearchResults({ artists: [], tracks: [] });
+	// 		return;
+	// 	}
+
+	// 	const filteredArtists = artists.filter((artist) =>
+	// 		artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+	// 	);
+
+	// 	const filteredTracks = tracks.filter((track) =>
+	// 		track.title.toLowerCase().includes(searchTerm.toLowerCase())
+	// 	);
+
+	// 	setSearchResults({
+	// 		artists: filteredArtists,
+	// 		tracks: filteredTracks,
+	// 	});
+	// 	setIsOpen(true);
+	// }, [searchTerm]);
+
+	// const handleClose = (reset: boolean = true) => {
+	// 	setIsOpen(false);
+	// 	if (reset) setSearchTerm('');
+	// };
 
 	useEffect(() => {
-		if (searchTerm.trim() === '') {
-			setSearchResults({ artists: [], tracks: [] });
-			return;
-		}
+		const fetchSearchResults = async () => {
+			if (searchTerm.trim() === '') {
+				setSearchResults(null);
+				return;
+			}
 
-		const filteredArtists = artists.filter((artist) =>
-			artist.name.toLowerCase().includes(searchTerm.toLowerCase())
-		);
+			try {
+				const response = await fetch(
+					`/api/search?query=${encodeURIComponent(searchTerm)}`
+				);
+				if (!response.ok) throw new Error('Failed to fetch search results');
 
-		const filteredTracks = tracks.filter((track) =>
-			track.title.toLowerCase().includes(searchTerm.toLowerCase())
-		);
+				const data = await response.json();
+				setSearchResults(data);
+			} catch (error) {
+				console.error('Error fetching search results:', error);
+			}
+		};
 
-		setSearchResults({
-			artists: filteredArtists,
-			tracks: filteredTracks,
-		});
-		setIsOpen(true);
+		const debounce = setTimeout(fetchSearchResults, 300); // Add debounce to reduce API calls
+		return () => clearTimeout(debounce);
 	}, [searchTerm]);
 
 	const handleClose = (reset: boolean = true) => {
@@ -75,15 +102,13 @@ export default function SearchInput({
 				/>
 			</div>
 
-			{isOpen &&
-				(searchResults.artists.length > 0 ||
-					searchResults.tracks.length > 0) && (
-					<SearchResults
-						searchResults={searchResults}
-						onClose={handleClose}
-						searchRef={searchRef}
-					/>
-				)}
+			{isOpen && searchResults && (
+				<SearchResults
+					searchResults={searchResults}
+					onClose={handleClose}
+					searchRef={searchRef}
+				/>
+			)}
 		</div>
 	);
 }
