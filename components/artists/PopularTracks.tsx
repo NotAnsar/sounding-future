@@ -1,15 +1,21 @@
 'use client';
 import { cn, formatTime } from '@/lib/utils';
-import { Heart, PauseIcon } from 'lucide-react';
+import { PauseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { useState } from 'react';
-import { PublicTrack } from '@/db/tracks';
+import { PublicTrackWithLikeStatus } from '@/db/tracks';
 
-export default function PopularTracks({ tracks }: { tracks: PublicTrack[] }) {
+import LikeForm from '../LikeForm';
+
+export default function PopularTracks({
+	tracks,
+}: {
+	tracks: PublicTrackWithLikeStatus[];
+}) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack, duration } =
 		useAudio();
 	const [showMore, setshowMore] = useState(false);
@@ -103,12 +109,24 @@ export default function PopularTracks({ tracks }: { tracks: PublicTrack[] }) {
 								</Link>
 							</TableCell>
 							<TableCell>
-								<Heart
-									className={cn(
-										'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
-										true ? 'text-foreground fill-foreground' : ''
-									)}
-								/>
+								{/* <form
+									action={async () => {
+										const result = await likeTrack(track.id);
+										if (!result.success && result.error) {
+											console.error(result.error);
+										}
+									}}
+								>
+									<button type='submit'>
+										<Heart
+											className={cn(
+												'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
+												track.isLiked ? 'text-foreground fill-foreground' : ''
+											)}
+										/>
+									</button>
+								</form> */}
+								<LikeForm trackId={track.id} liked={track.isLiked} />
 							</TableCell>
 
 							<TableCell className='text-right pr-4'>

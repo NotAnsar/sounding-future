@@ -107,10 +107,7 @@ export async function getPartnerById(partnerId: string): Promise<PartnerLinks> {
 }
 
 export type PartnerDetails = Prisma.PartnerGetPayload<{
-	include: {
-		socialLinks: true;
-		tracks: { include: { artist: true; genres: { include: { genre: true } } } };
-	};
+	include: { socialLinks: true };
 }>;
 
 export async function getPartnerDetailsById(
@@ -120,12 +117,7 @@ export async function getPartnerDetailsById(
 		// Fetch partner data by ID
 		const partner = await prisma.partner.findUnique({
 			where: { id: partnerId },
-			include: {
-				socialLinks: true,
-				tracks: {
-					include: { artist: true, genres: { include: { genre: true } } },
-				},
-			},
+			include: { socialLinks: true },
 		});
 
 		if (!partner) {

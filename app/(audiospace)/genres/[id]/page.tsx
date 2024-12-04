@@ -6,6 +6,7 @@ import { TabsContent } from '@/components/ui/tabs';
 import GenreDetails from '@/components/genres/GenreDetails';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getGenreDetailsById } from '@/db/genre';
+import { getPublicTracksByGenre } from '@/db/tracks';
 
 export default async function page({
 	params: { id },
@@ -16,9 +17,10 @@ export default async function page({
 }) {
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
 	const isTable = type === 'table';
-	const genre = await getGenreDetailsById(id);
-
-	const tracks = genre.tracks.map((t) => t.track);
+	const [genre, tracks] = await Promise.all([
+		getGenreDetailsById(id),
+		getPublicTracksByGenre(id),
+	]);
 
 	if (!genre) {
 		notFound();

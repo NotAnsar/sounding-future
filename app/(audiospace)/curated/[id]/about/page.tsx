@@ -6,13 +6,17 @@ import { Icons } from '@/components/icons/socials';
 import Image from 'next/image';
 import { getPartnerDetailsById } from '@/db/partner';
 import Link from 'next/link';
+import { getPublicTracksByPartner } from '@/db/tracks';
 
 export default async function page({
 	params: { id },
 }: {
 	params: { id: string };
 }) {
-	const curated = await getPartnerDetailsById(id);
+	const [curated, tracks] = await Promise.all([
+		getPartnerDetailsById(id),
+		getPublicTracksByPartner(id),
+	]);
 
 	if (!curated) {
 		notFound();
@@ -81,7 +85,7 @@ export default async function page({
 			</main>
 
 			<TracksCarousel
-				tracks={curated?.tracks}
+				tracks={tracks}
 				title={`Tracks selected by ${curated?.name}`}
 				classNameItem='basis-36 sm:basis-52 lg:basis-64'
 				className='mt-12 xl:w-2/3'

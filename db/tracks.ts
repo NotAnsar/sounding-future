@@ -36,6 +36,7 @@ export async function getTracks(): Promise<Track[]> {
 		);
 	}
 }
+
 export type PublicTrack = Prisma.TrackGetPayload<{
 	include: {
 		artist: true;
@@ -43,19 +44,37 @@ export type PublicTrack = Prisma.TrackGetPayload<{
 	};
 }>;
 
-export async function getPublicTracks(limit?: number): Promise<PublicTrack[]> {
+export type PublicTrackWithLikeStatus = PublicTrack & {
+	isLiked: boolean;
+	_count?: { likes: number };
+};
+
+export async function getPublicTracks(
+	limit?: number
+): Promise<PublicTrackWithLikeStatus[]> {
+	const session = await auth();
+
 	try {
 		const data = await prisma.track.findMany({
 			include: {
 				artist: true,
 				genres: { include: { genre: true } },
+				likes: session?.user.id
+					? {
+							where: { userId: session.user.id },
+					  }
+					: false,
+				_count: { select: { likes: true } },
 			},
 			take: limit,
 			where: { published: true },
-			orderBy: { releaseYear: 'desc' },
+			// orderBy: { releaseYear: 'desc' },
 		});
 
-		return data;
+		return data.map((track) => ({
+			...track,
+			isLiked: session?.user ? track.likes.length > 0 : false,
+		}));
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
@@ -80,19 +99,30 @@ export async function getPublicTracks(limit?: number): Promise<PublicTrack[]> {
 export async function getPublicTracksByArtist(
 	artistId: string,
 	limit?: number
-): Promise<PublicTrack[]> {
+): Promise<PublicTrackWithLikeStatus[]> {
+	const session = await auth();
+
 	try {
 		const data = await prisma.track.findMany({
 			include: {
 				artist: true,
 				genres: { include: { genre: true } },
+				likes: session?.user.id
+					? {
+							where: { userId: session.user.id },
+					  }
+					: false,
+				_count: { select: { likes: true } },
 			},
 			take: limit,
 			where: { artistId, published: true },
-			orderBy: { releaseYear: 'desc' },
+			// orderBy: { releaseYear: 'desc' },
 		});
 
-		return data;
+		return data.map((track) => ({
+			...track,
+			isLiked: session?.user ? track.likes.length > 0 : false,
+		}));
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
@@ -170,9 +200,11 @@ export type TrackDetails = Prisma.TrackGetPayload<{
 		genres: { include: { genre: true } };
 		curator: true;
 	};
-}>;
+}> & { isLiked: boolean };
 
 export async function getPublicTracksById(id: string): Promise<TrackDetails> {
+	const session = await auth();
+
 	try {
 		const data = await prisma.track.findUnique({
 			include: {
@@ -184,6 +216,11 @@ export async function getPublicTracksById(id: string): Promise<TrackDetails> {
 				},
 				genres: { include: { genre: true } },
 				curator: true,
+				likes: session?.user.id
+					? {
+							where: { userId: session.user.id },
+					  }
+					: false,
 			},
 			where: { id, published: true },
 		});
@@ -192,7 +229,10 @@ export async function getPublicTracksById(id: string): Promise<TrackDetails> {
 			throw new TrackError(`Track with ID ${id} not found.`);
 		}
 
-		return data;
+		return {
+			...data,
+			isLiked: session?.user ? data.likes.length > 0 : false,
+		};
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
@@ -337,6 +377,102 @@ export async function getMyTracksStats(): Promise<TrackWithCounts[]> {
 		});
 
 		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
+
+export async function getPublicTracksByPartner(
+	partnerId: string,
+	limit?: number
+): Promise<PublicTrackWithLikeStatus[]> {
+	const session = await auth();
+
+	try {
+		const data = await prisma.track.findMany({
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+				likes: session?.user.id
+					? {
+							where: { userId: session.user.id },
+					  }
+					: false,
+				_count: { select: { likes: true } },
+			},
+			take: limit,
+			where: { curatedBy: partnerId, published: true },
+			// orderBy: { releaseYear: 'desc' },
+		});
+
+		return data.map((track) => ({
+			...track,
+			isLiked: session?.user ? track.likes.length > 0 : false,
+		}));
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+			throw new TrackError(`Database error: ${error.message}`);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			throw new TrackError('Invalid data provided');
+		}
+
+		// Generic error handling
+		console.error('Error fetching tracks:', error);
+		throw new TrackError(
+			'Unable to retrieve tracks. Please try again later.',
+			error
+		);
+	}
+}
+
+export async function getPublicTracksByGenre(
+	genreId: string,
+	limit?: number
+): Promise<PublicTrackWithLikeStatus[]> {
+	const session = await auth();
+
+	try {
+		const data = await prisma.track.findMany({
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+				likes: session?.user.id
+					? {
+							where: { userId: session.user.id },
+					  }
+					: false,
+				_count: { select: { likes: true } },
+			},
+			take: limit,
+			where: { genres: { some: { genreId } }, published: true },
+			// orderBy: { releaseYear: 'desc' },
+		});
+
+		return data.map((track) => ({
+			...track,
+			isLiked: session?.user ? track.likes.length > 0 : false,
+		}));
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors

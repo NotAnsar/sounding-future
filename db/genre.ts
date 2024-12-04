@@ -36,32 +36,12 @@ export async function getGenres(): Promise<Genre[]> {
 	}
 }
 
-export type GenreDetails = Prisma.GenreGetPayload<{
-	include: {
-		tracks: {
-			include: {
-				track: {
-					include: { artist: true; genres: { include: { genre: true } } };
-				};
-			};
-		};
-	};
-}>;
+export type GenreDetails = Genre;
 
 export async function getGenreDetailsById(id?: string): Promise<GenreDetails> {
 	try {
 		const genre = await prisma.genre.findUnique({
 			where: { id },
-
-			include: {
-				tracks: {
-					include: {
-						track: {
-							include: { artist: true, genres: { include: { genre: true } } },
-						},
-					},
-				},
-			},
 		});
 
 		if (!genre) {

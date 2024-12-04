@@ -6,8 +6,7 @@ import { cn } from '@/lib/utils';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
-import { useState } from 'react';
-import { PublicTrack } from '@/db/tracks';
+import { PublicTrackWithLikeStatus } from '@/db/tracks';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,11 +15,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
+import LikeForm from '@/components/LikeForm';
 
-export default function TrackDetails({ track }: { track: PublicTrack }) {
+export default function TrackDetails({
+	track,
+}: {
+	track: PublicTrackWithLikeStatus;
+}) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
-	const [liked, setliked] = useState(false);
-	// const [followed, setFollowed] = useState(false);
 	const isCurrentTrack = currentTrack?.id === track.id;
 
 	return (
@@ -79,15 +81,17 @@ export default function TrackDetails({ track }: { track: PublicTrack }) {
 					</h2>
 
 					<div className='flex gap-3 items-center ml-auto sm:ml-0'>
-						<div
-							onClick={() => setliked((l) => !l)}
-							className='cursor-pointer h-full flex justify-center items-center'
-						>
-							{liked ? (
+						<div className='cursor-pointer h-full flex justify-center items-center'>
+							{/* {track?.isLiked ? (
 								<Icons.heartFilled className='w-7 h-auto aspect-square fill-white ' />
 							) : (
 								<Icons.heartOutline className='w-7 h-auto aspect-square fill-white' />
-							)}
+							)} */}
+							<LikeForm
+								trackId={track.id}
+								liked={track.isLiked}
+								className='w-7 h-auto text-white'
+							/>
 						</div>
 
 						<ShareButton artistId={track.artist.id} />

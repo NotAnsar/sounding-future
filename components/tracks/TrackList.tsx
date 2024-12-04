@@ -1,18 +1,19 @@
 'use client';
 import { cn, formatTime } from '@/lib/utils';
-import { Heart, PauseIcon } from 'lucide-react';
+import { PauseIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { PlayIcon } from 'lucide-react';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
-import { PublicTrack } from '@/db/tracks';
+import { PublicTrackWithLikeStatus } from '@/db/tracks';
+import LikeForm from '../LikeForm';
 
 export default function TrackList({
 	tracks,
 	className,
 }: {
-	tracks: PublicTrack[];
+	tracks: PublicTrackWithLikeStatus[];
 	className?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
@@ -103,12 +104,13 @@ export default function TrackList({
 								</TableCell>
 
 								<TableCell>
-									<Heart
+									{/* <Heart
 										className={cn(
 											'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
-											true ? 'text-foreground fill-foreground' : ''
+											track.isLiked ? 'text-foreground fill-foreground' : ''
 										)}
-									/>
+									/> */}
+									<LikeForm trackId={track.id} liked={track.isLiked} />
 								</TableCell>
 
 								<TableCell className='text-right pr-4'>

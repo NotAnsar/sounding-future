@@ -6,6 +6,7 @@ import { Tabs } from '@radix-ui/react-tabs';
 import { TabsContent } from '@/components/ui/tabs';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getPartnerDetailsById } from '@/db/partner';
+import { getPublicTracksByPartner } from '@/db/tracks';
 
 export default async function page({
 	params: { id },
@@ -16,7 +17,10 @@ export default async function page({
 }) {
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
 	const isTable = type === 'table';
-	const curated = await getPartnerDetailsById(id);
+	const [curated, tracks] = await Promise.all([
+		getPartnerDetailsById(id),
+		getPublicTracksByPartner(id),
+	]);
 
 	if (!curated) {
 		notFound();
@@ -38,16 +42,16 @@ export default async function page({
 				</h1>
 				<TabsContent value='new'>
 					{isTable ? (
-						<TrackList tracks={curated.tracks} className='p-0' />
+						<TrackList tracks={tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={curated.tracks} />
+						<TracksCards tracks={tracks} />
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
 					{isTable ? (
-						<TrackList tracks={curated.tracks} className='p-0' />
+						<TrackList tracks={tracks} className='p-0' />
 					) : (
-						<TracksCards tracks={curated.tracks} />
+						<TracksCards tracks={tracks} />
 					)}
 				</TabsContent>
 			</Tabs>
