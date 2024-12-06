@@ -34,9 +34,9 @@ export default function LikeForm({
 			<button type='submit'>
 				<Heart
 					className={cn(
-						'w-5 h-auto text-muted hover:text-foreground cursor-pointer',
+						'w-5 h-auto text-muted hover:text-white cursor-pointer',
 						className,
-						optimisticLiked ? 'text-foreground fill-foreground' : ''
+						optimisticLiked ? 'text-white fill-white' : ''
 					)}
 				/>
 			</button>
