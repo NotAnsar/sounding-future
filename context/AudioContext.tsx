@@ -120,13 +120,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ trackId: track.id }),
-			})
-				.then((response) => {
-					console.log(response.json());
-				})
-				.catch((error) =>
-					console.error('Error logging listening history:', error)
-				);
+			}).catch(() => console.error('Error logging listening history:'));
 
 			// Create the new sound
 			const newSound = new Howl({

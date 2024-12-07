@@ -19,7 +19,7 @@ export default async function page({
 	const isTable = type === 'table';
 	const [curated, tracks] = await Promise.all([
 		getPartnerDetailsById(id),
-		getPublicTracksByPartner(id),
+		getPublicTracksByPartner(id, tabValue),
 	]);
 
 	if (!curated) {

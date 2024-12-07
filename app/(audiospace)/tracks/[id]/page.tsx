@@ -8,7 +8,7 @@ import TrackNav from '@/components/tracks/track/TrackNav';
 import TracksCarousel from '@/components/home/NewTracks';
 import CollapsibleText from '@/components/CollapsibleText';
 import {
-	getPublicTrackByGenres,
+	getArtistSimilarTracks,
 	getPublicTracksByArtist,
 	getPublicTracksById,
 } from '@/db/tracks';
@@ -99,8 +99,9 @@ export default async function page({
 }
 
 async function SimilarTracks({ genres, id }: { genres: Genre[]; id?: string }) {
-	const tracks = await getPublicTrackByGenres(
+	const tracks = await getArtistSimilarTracks(
 		genres.map((g) => g.id),
+		'default',
 		8,
 		id
 	);

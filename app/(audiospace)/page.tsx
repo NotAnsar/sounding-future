@@ -10,7 +10,7 @@ import { getPublicTracks } from '@/db/tracks';
 
 export default async function page() {
 	const [tracks, genres, partners, artists] = await Promise.all([
-		getPublicTracks(8),
+		getPublicTracks(8, 'new'),
 		getGenres(),
 		getPartners(),
 		getArtists(8),

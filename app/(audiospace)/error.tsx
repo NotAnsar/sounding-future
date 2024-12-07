@@ -13,8 +13,11 @@ export default function Error({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		console.log(error.message);
+		console.log('Error occurred');
 
+		console.log(error);
+		console.log(error.digest);
+		console.log(error.cause);
 		console.error(error.message);
 	}, [error]);
 

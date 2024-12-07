@@ -9,34 +9,6 @@ class TrackError extends Error {
 	}
 }
 
-export async function getTracks(): Promise<Track[]> {
-	try {
-		const data = await prisma.track.findMany({
-			orderBy: { createdAt: 'desc' },
-		});
-
-		return data;
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
-			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
-		}
-
-		if (error instanceof Prisma.PrismaClientValidationError) {
-			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
-		}
-
-		// Generic error handling
-		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
-	}
-}
-
 export type PublicTrack = Prisma.TrackGetPayload<{
 	include: {
 		artist: true;
@@ -50,7 +22,8 @@ export type PublicTrackWithLikeStatus = PublicTrack & {
 };
 
 export async function getPublicTracks(
-	limit?: number
+	limit?: number,
+	type: 'new' | 'popular' | 'default' = 'default'
 ): Promise<PublicTrackWithLikeStatus[]> {
 	const session = await auth();
 
@@ -64,11 +37,21 @@ export async function getPublicTracks(
 							where: { userId: session.user.id },
 					  }
 					: false,
-				_count: { select: { likes: true } },
+				_count: {
+					select: {
+						likes: true,
+						listeners: true, // Include listeners count
+					},
+				},
 			},
 			take: limit,
 			where: { published: true },
-			// orderBy: { releaseYear: 'desc' },
+			orderBy:
+				type === 'popular'
+					? { listeners: { _count: 'desc' } }
+					: type === 'new'
+					? { releaseYear: 'desc' }
+					: undefined,
 		});
 
 		return data.map((track) => ({
@@ -116,7 +99,7 @@ export async function getPublicTracksByArtist(
 			},
 			take: limit,
 			where: { artistId, published: true },
-			// orderBy: { releaseYear: 'desc' },
+			orderBy: { releaseYear: 'desc' },
 		});
 
 		return data.map((track) => ({
@@ -144,8 +127,9 @@ export async function getPublicTracksByArtist(
 	}
 }
 
-export async function getPublicTrackByGenres(
+export async function getArtistSimilarTracks(
 	genres: string[],
+	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number,
 	myTrackId?: string
 ): Promise<PublicTrack[]> {
@@ -163,7 +147,12 @@ export async function getPublicTrackByGenres(
 				},
 				id: { not: myTrackId },
 			},
-			orderBy: { releaseYear: 'desc' },
+			orderBy:
+				type === 'popular'
+					? { listeners: { _count: 'desc' } }
+					: type === 'new'
+					? { releaseYear: 'desc' }
+					: undefined,
 		});
 
 		return data;
@@ -260,7 +249,7 @@ export async function getTrackById(id: string): Promise<TrackWithgenres> {
 	try {
 		const data = await prisma.track.findUnique({
 			where: { id },
-			// include: { genres: true },
+
 			include: {
 				genres: {
 					include: { genre: true },
@@ -362,44 +351,9 @@ export async function getTracksStats(): Promise<TrackWithCounts[]> {
 	}
 }
 
-export async function getMyTracksStats(): Promise<TrackWithCounts[]> {
-	try {
-		const session = await auth();
-		const data = await prisma.track.findMany({
-			where: { artistId: session?.user?.artistId || undefined },
-			include: {
-				artist: true,
-				genres: true,
-				curator: true,
-				_count: { select: { likes: true, listeners: true } },
-			},
-			orderBy: { createdAt: 'desc' },
-		});
-
-		return data;
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
-			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
-		}
-
-		if (error instanceof Prisma.PrismaClientValidationError) {
-			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
-		}
-
-		// Generic error handling
-		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
-	}
-}
-
 export async function getPublicTracksByPartner(
 	partnerId: string,
+	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
 ): Promise<PublicTrackWithLikeStatus[]> {
 	const session = await auth();
@@ -418,7 +372,12 @@ export async function getPublicTracksByPartner(
 			},
 			take: limit,
 			where: { curatedBy: partnerId, published: true },
-			// orderBy: { releaseYear: 'desc' },
+			orderBy:
+				type === 'popular'
+					? { listeners: { _count: 'desc' } }
+					: type === 'new'
+					? { releaseYear: 'desc' }
+					: undefined,
 		});
 
 		return data.map((track) => ({
@@ -448,6 +407,7 @@ export async function getPublicTracksByPartner(
 
 export async function getPublicTracksByGenre(
 	genreId: string,
+	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
 ): Promise<PublicTrackWithLikeStatus[]> {
 	const session = await auth();
@@ -466,7 +426,12 @@ export async function getPublicTracksByGenre(
 			},
 			take: limit,
 			where: { genres: { some: { genreId } }, published: true },
-			// orderBy: { releaseYear: 'desc' },
+			orderBy:
+				type === 'popular'
+					? { listeners: { _count: 'desc' } }
+					: type === 'new'
+					? { releaseYear: 'desc' }
+					: undefined,
 		});
 
 		return data.map((track) => ({

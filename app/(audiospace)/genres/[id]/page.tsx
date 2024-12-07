@@ -19,7 +19,7 @@ export default async function page({
 	const isTable = type === 'table';
 	const [genre, tracks] = await Promise.all([
 		getGenreDetailsById(id),
-		getPublicTracksByGenre(id),
+		getPublicTracksByGenre(id, tabValue),
 	]);
 
 	if (!genre) {
