@@ -11,6 +11,7 @@ import { InfoPopUp } from './AudioVolume';
 
 export default function AudioType() {
 	const [isBinaural, setisBinaural] = useState<boolean | undefined>(true);
+
 	return (
 		<>
 			<MobileAudioType isBinaural={isBinaural} setisBinaural={setisBinaural} />

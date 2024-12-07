@@ -28,32 +28,6 @@ export default function SearchInput({
 		tracks: SearchedTrack[];
 	} | null>(null);
 
-	// useEffect(() => {
-	// 	if (searchTerm.trim() === '') {
-	// 		setSearchResults({ artists: [], tracks: [] });
-	// 		return;
-	// 	}
-
-	// 	const filteredArtists = artists.filter((artist) =>
-	// 		artist.name.toLowerCase().includes(searchTerm.toLowerCase())
-	// 	);
-
-	// 	const filteredTracks = tracks.filter((track) =>
-	// 		track.title.toLowerCase().includes(searchTerm.toLowerCase())
-	// 	);
-
-	// 	setSearchResults({
-	// 		artists: filteredArtists,
-	// 		tracks: filteredTracks,
-	// 	});
-	// 	setIsOpen(true);
-	// }, [searchTerm]);
-
-	// const handleClose = (reset: boolean = true) => {
-	// 	setIsOpen(false);
-	// 	if (reset) setSearchTerm('');
-	// };
-
 	useEffect(() => {
 		const fetchSearchResults = async () => {
 			if (searchTerm.trim() === '') {

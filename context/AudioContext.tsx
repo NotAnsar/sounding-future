@@ -10,7 +10,6 @@ import React, {
 	useCallback,
 } from 'react';
 import { Howl } from 'howler';
-
 import { PublicTrack as Track } from '@/db/tracks';
 
 interface AudioContextType {
@@ -113,6 +112,21 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				setCurrentTrack(null);
 				return;
 			}
+
+			// Log listening history
+			fetch('/api/listening', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ trackId: track.id }),
+			})
+				.then((response) => {
+					console.log(response.json());
+				})
+				.catch((error) =>
+					console.error('Error logging listening history:', error)
+				);
 
 			// Create the new sound
 			const newSound = new Howl({

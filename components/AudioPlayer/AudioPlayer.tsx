@@ -16,7 +16,6 @@ export default function AudioPlayer() {
 		currentTime,
 		duration,
 		togglePlayPause,
-
 		seek,
 		nextTrack,
 		previousTrack,
