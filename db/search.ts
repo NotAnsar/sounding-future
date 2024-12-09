@@ -11,7 +11,10 @@ export async function searchTrack(
 ): Promise<SearchedTrack[]> {
 	try {
 		const data = await prisma.track.findMany({
-			where: { title: { contains: query.trim(), mode: 'insensitive' } },
+			where: {
+				title: { contains: query.trim(), mode: 'insensitive' },
+				published: true,
+			},
 			include: { artist: true },
 			take: limit,
 			orderBy: { createdAt: 'desc' },

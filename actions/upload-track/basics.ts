@@ -39,7 +39,7 @@ export type TrackFormState = State<TrackData> & {
 };
 
 export async function submitTrack(
-	prevState: TrackFormState,
+	_prevState: TrackFormState,
 	formData: FormData
 ): Promise<TrackFormState> {
 	const genreTags = formData

@@ -70,7 +70,7 @@ export default function ImageUpload({
 	);
 
 	const onCropComplete = useCallback(
-		(croppedArea: Area, croppedAreaPixels: Area) => {
+		(_croppedArea: Area, croppedAreaPixels: Area) => {
 			setCroppedAreaPixels(croppedAreaPixels);
 		},
 		[]
@@ -144,6 +144,23 @@ export default function ImageUpload({
 				originalImage,
 				croppedAreaPixels
 			);
+			// Convert base64 to blob
+			const base64Response = await fetch(croppedImage);
+			const blob = await base64Response.blob();
+
+			// Create a new file from the blob
+			const croppedFile = new File([blob], 'cropped-image.jpg', {
+				type: 'image/jpeg',
+			});
+
+			// Create a new DataTransfer object and add the file
+			const dataTransfer = new DataTransfer();
+			dataTransfer.items.add(croppedFile);
+
+			// Set the files property of the hidden input
+			const fileInput = document.getElementById(name) as HTMLInputElement;
+			fileInput.files = dataTransfer.files;
+
 			setPreview(croppedImage);
 			onImageChange?.(croppedImage);
 			setShowCropper(false);
@@ -151,7 +168,7 @@ export default function ImageUpload({
 		} catch (e) {
 			console.error('Error in handleCropConfirm:', e);
 		}
-	}, [originalImage, croppedAreaPixels, onImageChange]);
+	}, [originalImage, croppedAreaPixels, onImageChange, name]);
 
 	const previewSize = size === 'default' ? 'w-28' : 'w-36';
 
