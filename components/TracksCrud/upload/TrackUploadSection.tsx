@@ -75,6 +75,11 @@ function UploadInput({
 }) {
 	return (
 		<div className='grid gap-2'>
+			{url && (
+				<p className='text-[13px] text-[#FBFF00]'>
+					{url.split('/').pop() || url}
+				</p>
+			)}
 			<div className='relative max-w-lg cursor-pointer'>
 				<Input
 					type='file'
@@ -92,7 +97,7 @@ function UploadInput({
 			</div>
 
 			{url && (
-				<audio controls className='w-full max-w-lg'>
+				<audio controls className='w-full max-w-lg h-10 rounded-md '>
 					<source src={url} type='audio/mpeg' />
 					Your browser does not support the audio element.
 				</audio>

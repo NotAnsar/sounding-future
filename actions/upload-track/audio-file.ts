@@ -53,20 +53,42 @@ export async function uploadTrackInfo(
 	}
 
 	try {
+		const track = await prisma.track.findUnique({
+			where: { id },
+			include: { artist: true },
+		});
+
+		if (!track) {
+			return { message: 'Track not found' };
+		}
+
+		console.log(
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin`
+		);
+		console.log(
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin-plus`
+		);
+		console.log(
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-stereo`
+		);
+
 		const variant1Url = await updateFile(
 			formData.get('variant1'),
 			prevState?.prev?.variant1,
-			'audio'
+			'audio',
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin`
 		);
 		const variant2Url = await updateFile(
 			formData.get('variant2'),
 			prevState?.prev?.variant2,
-			'audio'
+			'audio',
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin-plus`
 		);
 		const variant3Url = await updateFile(
 			formData.get('variant3'),
 			prevState?.prev?.variant3,
-			'audio'
+			'audio',
+			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-stereo`
 		);
 
 		await prisma.track.update({

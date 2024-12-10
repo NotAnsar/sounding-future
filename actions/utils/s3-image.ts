@@ -16,13 +16,17 @@ export async function checkFile(image: FormDataEntryValue | null) {
 
 export async function uploadFile(
 	file: File,
-	type: 'image' | 'audio' = 'image'
+	type: 'image' | 'audio' = 'image',
+	audioFileName?: string
 ) {
 	if (!file) throw new Error('File is required for upload.');
 
 	// Extract file metadata
 	const extension = file.name.split('.').pop();
-	const fileName = `${type}s/${uuidv4()}.${extension}`; // Unique file name
+	const randomSuffix = Math.floor(Math.random() * 10000);
+	const fileName = `${type}s/${
+		audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
+	}.${extension}`; // Unique file name
 	const arrayBuffer = await file.arrayBuffer();
 
 	try {
@@ -68,7 +72,8 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 export async function updateFile(
 	imageFormdata: FormDataEntryValue | null,
 	prevImageUrl: string | undefined,
-	type: 'image' | 'audio' = 'image'
+	type: 'image' | 'audio' = 'image',
+	audioFileName?: string
 ) {
 	const imageFile = await checkFile(imageFormdata);
 	let imageUrl = prevImageUrl;
@@ -76,7 +81,7 @@ export async function updateFile(
 		if (imageUrl) {
 			await deleteFile(imageUrl);
 		}
-		imageUrl = await uploadFile(imageFile, type);
+		imageUrl = await uploadFile(imageFile, type, audioFileName);
 	}
 	return imageUrl;
 }
