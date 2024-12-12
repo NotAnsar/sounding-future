@@ -1,6 +1,6 @@
 'use client';
 
-import React, {
+import {
 	createContext,
 	useContext,
 	useState,
@@ -27,11 +27,19 @@ interface AudioContextType {
 	setVolume: (volume: number) => void;
 	seek: (time: number) => void;
 	playNewTrack: (tracks: Track[], index?: number) => void;
-	playTrack: (track: Track) => void;
+	playTrack: (
+		track: Track,
+		tracks?: Track[],
+		variant?: 'variant1' | 'variant2' | 'variant3'
+	) => void;
 	nextTrack: () => void;
 	previousTrack: () => void;
 	setPlaylist: (tracks: Track[]) => void;
 	resetAudio: () => void;
+	currentVariant: 'variant1' | 'variant2' | 'variant3' | undefined;
+	switchVariant: (
+		variant: 'variant1' | 'variant2' | 'variant3' | undefined
+	) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -59,6 +67,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	const [isMuted, setIsMuted] = useState(false);
 	const previousVolume = useRef(volume);
 	const [isLoop, setIsLoop] = useState(false); // Initialize isLoop state
+	const [currentVariant, setCurrentVariant] = useState<
+		'variant1' | 'variant2' | 'variant3' | undefined
+	>('variant1');
 
 	const toggleLoop = useCallback(() => {
 		setIsLoop((prev) => !prev);
@@ -104,8 +115,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	};
 
 	const playTrack = useCallback(
-		(track: Track, tracks?: Track[]) => {
+		(
+			track: Track,
+			tracks?: Track[],
+			variant?: 'variant1' | 'variant2' | 'variant3'
+		) => {
 			const loadStartTime = performance.now();
+			const tracksToUse = tracks || playlist;
+			let variantToUse = variant || currentVariant || 'variant1';
 
 			if (!track) {
 				setIsPlaying(false);
@@ -113,77 +130,91 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				return;
 			}
 
+			if (!track[variantToUse]) {
+				if (track.variant1) variantToUse = 'variant1';
+				else if (track.variant2) variantToUse = 'variant2';
+				else if (track.variant3) variantToUse = 'variant3';
+				else {
+					console.error('No valid variant found for track:', track);
+					return;
+				}
+				setCurrentVariant(variantToUse);
+			}
+
 			// Log listening history
 			fetch('/api/listening', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ trackId: track.id }),
 			}).catch(() => console.error('Error logging listening history:'));
 
-			// Create the new sound
 			const newSound = new Howl({
-				src: [track?.variant1, track?.variant2, track.variant3].filter(
-					(src) => src !== null
-				) as string[],
+				src: [track[variantToUse]].filter(Boolean) as string[],
 				html5: true,
 				preload: true,
+				volume: isMuted ? 0 : volume,
 				onload: () => {
 					setDuration(newSound.duration());
 					const loadEndTime = performance.now();
-					const loadingDuration = loadEndTime - loadStartTime;
-					console.log(`Track loaded in: ${loadingDuration} ms`);
+					console.log(`Track loaded in: ${loadEndTime - loadStartTime} ms`);
 				},
-
 				onend: () => {
-					const currentIndex = (tracks || playlist).findIndex(
-						(t) => t.id === track.id
-					);
-					if (currentIndex === (tracks || playlist).length - 1) {
-						// Last song in playlist
+					const currentIndex = tracksToUse.findIndex((t) => t.id === track.id);
+					if (currentIndex === tracksToUse.length - 1) {
 						if (isLoop) {
-							// If loop is true, start from the first song
-							playTrack((tracks || playlist)[0], tracks);
+							playTrack(tracksToUse[0], tracksToUse, variantToUse);
 						} else {
-							// If loop is false, pause playback
 							setIsPlaying(false);
 						}
 					} else {
-						// Not the last song, play next track as normal
-						const nextIndex = (currentIndex + 1) % (tracks || playlist).length;
-						playTrack((tracks || playlist)[nextIndex], tracks);
+						const nextIndex = (currentIndex + 1) % tracksToUse.length;
+						playTrack(tracksToUse[nextIndex], tracksToUse, variantToUse);
 					}
 				},
 			});
 
-			// Update state once
+			if (variant) {
+				setCurrentVariant(variant);
+			}
+
 			setCurrentTrack(track);
 			setCurrentTime(0);
+			setIsPlaying(true);
 
-			setIsPlaying((prevState) => {
-				if (!prevState) return true;
-
-				return prevState;
-			});
-
-			// Start playing the new sound
-			newSound.play();
-
-			// Clean up the old sound
 			if (soundRef.current) {
 				soundRef.current.unload();
 			}
-
 			soundRef.current = newSound;
+			newSound.play();
 		},
-		[playlist, isLoop]
+		[playlist, isLoop, currentVariant, isMuted, volume]
+	);
+
+	const switchVariant = useCallback(
+		(variant: 'variant1' | 'variant2' | 'variant3' | undefined) => {
+			if (currentTrack) {
+				playTrack(currentTrack, undefined, variant);
+			}
+		},
+		[currentTrack, playTrack]
 	);
 
 	const playNewTrack = useCallback(
 		(tracks: Track[], index: number = 0) => {
+			const track = tracks[index];
+			let variant: 'variant1' | 'variant2' | 'variant3' | undefined =
+				'variant1';
+			if (track.variant2) {
+				variant = 'variant2'; // Set to variant2 if it exists
+			} else if (track.variant1) {
+				variant = 'variant1';
+			} else if (track.variant3) {
+				variant = 'variant3';
+			}
+
+			setCurrentVariant(variant);
 			setPlaylist(tracks);
-			playTrack(tracks[index], tracks);
+			playTrack(track, tracks, variant);
 
 			// Preload the next track
 			if (tracks.length > 1) {
@@ -239,7 +270,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		setIsPlaying(false);
 		setCurrentTime(0);
 		setDuration(0);
-		// Reset any other relevant state
 	}, []);
 
 	const value = {
@@ -262,6 +292,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 		playNewTrack,
 		toggleLoop,
 		resetAudio,
+		currentVariant,
+		switchVariant,
 	};
 
 	return (
