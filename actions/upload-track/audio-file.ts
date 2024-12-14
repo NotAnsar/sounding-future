@@ -62,16 +62,6 @@ export async function uploadTrackInfo(
 			return { message: 'Track not found' };
 		}
 
-		console.log(
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin`
-		);
-		console.log(
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin-plus`
-		);
-		console.log(
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-stereo`
-		);
-
 		const variant1Url = await updateFile(
 			formData.get('variant1'),
 			prevState?.prev?.variant1,

@@ -1,5 +1,4 @@
 import { TabsContent } from '@/components/ui/tabs';
-
 import TrackDetails from '@/components/tracks/track/TrackDetails';
 import { Tabs } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons/track-icons';
@@ -28,7 +27,7 @@ export default async function page({
 
 	const tabValue = sort === 'artist' || sort === 'others' ? sort : 'info';
 
-	if (!trackRes.error || !trackRes.data) {
+	if (trackRes.error || !trackRes.data) {
 		return <Error message={trackRes.message} />;
 	}
 
