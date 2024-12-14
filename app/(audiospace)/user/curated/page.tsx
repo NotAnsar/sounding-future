@@ -1,5 +1,6 @@
 import { columns } from '@/components/CuratedCrud/table/columns';
 import { DataTable } from '@/components/CuratedCrud/table/data-table';
+import Error from '@/components/Error';
 import { buttonVariants } from '@/components/ui/button';
 import { getPartnersStats } from '@/db/partner';
 import { auth } from '@/lib/auth';
@@ -15,6 +16,10 @@ export default async function page() {
 		notFound();
 	}
 
+	if (data.error) {
+		return <Error message={data.message} />;
+	}
+
 	return (
 		<>
 			<div className='flex flex-col sm:flex-row sm:items-center justify-between mt-4 mb-4 sm:mb-12 gap-2'>
@@ -26,7 +31,7 @@ export default async function page() {
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add Partner
 				</Link>
 			</div>
-			<DataTable columns={columns} data={data} />
+			<DataTable columns={columns} data={data.data} />
 		</>
 	);
 }

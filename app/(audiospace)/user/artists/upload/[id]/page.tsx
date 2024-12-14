@@ -5,22 +5,44 @@ import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
 import { getSourceFormats } from '@/db/source-format';
+import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
-export default async function page() {
-	const [session, sourceFormatData, partners, artists, genres] =
+export default async function page({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const [session, sourceFormatData, partners, artists, genres, track] =
 		await Promise.all([
 			auth(),
 			getSourceFormats(),
 			getPartners(),
 			getArtists(),
 			getGenres(),
+			getTrackById(id),
 		]);
 
+	// Handle authentication
 	if (!session) {
-		notFound();
+		redirect('/login');
 	}
+
+	// Handle missing track
+	if (track.error) {
+		return <Error message={track.message} />;
+	}
+
+	// Authorization check
+	const isUnauthorizedAccess =
+		session?.user?.role === 'user' &&
+		session?.user?.artistId !== track.data?.artistId;
+
+	if (isUnauthorizedAccess) {
+		return <Error message='You do not have permission to edit this track' />;
+	}
+
 	if (
 		artists.error ||
 		genres.error ||
@@ -52,6 +74,7 @@ export default async function page() {
 				partnersData={partners.data}
 				artistsData={artists.data}
 				genresData={genres.data}
+				initialData={track.data || undefined}
 			/>
 		</>
 	);

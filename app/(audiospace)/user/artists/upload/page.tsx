@@ -21,6 +21,7 @@ export default async function page() {
 	if (!session) {
 		notFound();
 	}
+
 	if (
 		artists.error ||
 		genres.error ||

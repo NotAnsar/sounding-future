@@ -17,6 +17,8 @@ export default async function page({
 		redirect('/login');
 	}
 
+	// Handle missing track
+
 	if (track.error || !track.data) {
 		return <Error message={track.message} />;
 	}

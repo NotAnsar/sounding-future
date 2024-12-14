@@ -7,6 +7,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons/audio-player';
 import ArtistList from '@/components/artists/ArtistList';
 import { getArtistsList } from '@/db/artist';
+import Error from '@/components/Error';
 
 export default async function page({
 	searchParams: { type },
@@ -15,6 +16,10 @@ export default async function page({
 }) {
 	const isTable = type === 'table';
 	const artists = await getArtistsList();
+
+	if (artists.error) {
+		return <Error message={artists.message} />;
+	}
 
 	return (
 		<>
@@ -58,9 +63,9 @@ export default async function page({
 			</div>
 			<div className='xl:w-2/3'>
 				{isTable ? (
-					<ArtistList artists={artists} />
+					<ArtistList artists={artists.data} />
 				) : (
-					<ExploreArtists artists={artists} />
+					<ExploreArtists artists={artists.data} />
 				)}
 			</div>
 		</>

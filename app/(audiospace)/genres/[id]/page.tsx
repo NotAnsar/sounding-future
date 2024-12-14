@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import TrackList from '@/components/tracks/TrackList';
 import TracksCards from '@/components/tracks/TracksCards';
 import { Tabs } from '@radix-ui/react-tabs';
@@ -7,6 +6,7 @@ import GenreDetails from '@/components/genres/GenreDetails';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getGenreDetailsById } from '@/db/genre';
 import { getPublicTracksByGenre } from '@/db/tracks';
+import Error from '@/components/Error';
 
 export default async function page({
 	params: { id },
@@ -22,13 +22,13 @@ export default async function page({
 		getPublicTracksByGenre(id, tabValue),
 	]);
 
-	if (!genre) {
-		notFound();
+	if (genre.error || !genre.data) {
+		return <Error message={genre.message} />;
 	}
 
 	return (
 		<>
-			<GenreDetails genre={genre} />
+			<GenreDetails genre={genre.data} />
 
 			<Tabs value={tabValue} className='mt-4 sm:mt-6 grid gap-2 '>
 				<DynamicNav type={type} sort={sort} />
@@ -38,20 +38,32 @@ export default async function page({
 						'text-xl md:text-[22px] font-semibold text-primary-foreground mt-4 '
 					}
 				>
-					All files of the genre {genre.name}
+					All files of the genre {genre.data.name}
 				</h1>
 				<TabsContent value='new'>
-					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+					{tracks.error ? (
+						<p>{tracks.message}</p>
 					) : (
-						<TracksCards tracks={tracks} />
+						<>
+							{isTable ? (
+								<TrackList tracks={tracks.data} className='p-0' />
+							) : (
+								<TracksCards tracks={tracks.data} />
+							)}
+						</>
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
-					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+					{tracks.error ? (
+						<p>{tracks.message}</p>
 					) : (
-						<TracksCards tracks={tracks} />
+						<>
+							{isTable ? (
+								<TrackList tracks={tracks.data} className='p-0' />
+							) : (
+								<TracksCards tracks={tracks.data} />
+							)}
+						</>
 					)}
 				</TabsContent>
 			</Tabs>

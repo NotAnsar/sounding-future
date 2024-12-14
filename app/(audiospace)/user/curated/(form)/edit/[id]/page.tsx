@@ -1,7 +1,7 @@
 import BreadCrumb from '@/components/BreadCrumb';
-import { notFound } from 'next/navigation';
 import { getPartnerById } from '@/db/partner';
 import CuratedForm from '@/components/CuratedCrud/form/CuratedForm';
+import Error from '@/components/Error';
 
 export default async function Page({
 	params: { id },
@@ -10,8 +10,8 @@ export default async function Page({
 }) {
 	const partner = await getPartnerById(id);
 
-	if (!partner) {
-		notFound();
+	if (partner.error) {
+		return <Error message={partner.message} />;
 	}
 
 	return (
@@ -27,7 +27,7 @@ export default async function Page({
 					},
 				]}
 			/>{' '}
-			<CuratedForm initialData={partner} />
+			<CuratedForm initialData={partner.data || undefined} />
 		</div>
 	);
 }

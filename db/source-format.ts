@@ -1,37 +1,40 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma, type SourceFormat } from '@prisma/client';
 
-class SourceFormatError extends Error {
-	constructor(message: string, public readonly cause?: unknown) {
-		super(message);
-		this.name = 'SourceFormatError';
-	}
-}
+// class SourceFormatError extends Error {
+// 	constructor(message: string, public readonly cause?: unknown) {
+// 		super(message);
+// 		this.name = 'SourceFormatError';
+// 	}
+// }
 
-export async function getSourceFormats(): Promise<SourceFormat[]> {
+export async function getSourceFormats(): Promise<{
+	data: SourceFormat[];
+	message?: string;
+	error?: boolean;
+}> {
 	try {
 		const sourceFormats = await prisma.sourceFormat.findMany({
 			orderBy: { createdAt: 'desc' },
 		});
 
-		return sourceFormats;
+		return { data: sourceFormats, error: false };
 	} catch (error) {
+		let message =
+			'Unable to retrieve source formats data. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new SourceFormatError(`Database error: ${error.message}`);
+			message = `Database error: ${error.code}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new SourceFormatError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching source formats data:', error);
-		throw new SourceFormatError(
-			'Unable to retrieve source formats data. Please try again later.',
-			error
-		);
+		return { data: [], message, error: true };
 	}
 }

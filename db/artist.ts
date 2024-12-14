@@ -3,39 +3,49 @@ import { prisma } from '@/lib/prisma';
 import { Prisma, type Artist } from '@prisma/client';
 import { AuthenticationError, UserNotFoundError } from './user';
 
-class ArtistError extends Error {
-	constructor(message: string, public readonly cause?: unknown) {
-		super(message);
-		this.name = 'ArtistError';
-	}
-}
+// class ArtistError extends Error {
+// 	constructor(message: string, public readonly cause?: unknown) {
+// 		super(message);
+// 		this.name = 'ArtistError';
+// 	}
+// }
 
-export async function getArtists(limit?: number): Promise<Artist[]> {
+type ArtistRes = { data: Artist[]; error?: boolean; message?: string };
+
+export async function getArtists(limit?: number): Promise<ArtistRes> {
 	try {
 		const data = await prisma.artist.findMany({
+			where: { published: true },
 			orderBy: { tracks: { _count: 'desc' } },
 			take: limit,
 		});
 
-		return data;
+		return { data, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new ArtistError(`Database error: ${error.message}`);
+			// throw new ArtistError(`Database error: ${error.message}`);
+			return { data: [], error: true, message: error.message };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new ArtistError('Invalid data provided');
+			// throw new ArtistError('Invalid data provided');
+			return { data: [], error: true, message: 'Invalid data provided' };
 		}
 
 		// Generic error handling
 		console.error('Error fetching artists:', error);
-		throw new ArtistError(
-			'Unable to retrieve artists. Please try again later.',
-			error
-		);
+		// throw new ArtistError(
+		// 	'Unable to retrieve artists. Please try again later.',
+		// 	error
+		// );
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve artists. Please try again later.',
+		};
 	}
 }
 
@@ -43,11 +53,12 @@ export async function getSimilarArtists(
 	genres: string[],
 	limit?: number,
 	artistId?: string
-): Promise<Artist[]> {
+): Promise<ArtistRes> {
 	try {
 		const data = await prisma.artist.findMany({
 			orderBy: { tracks: { _count: 'desc' } },
 			where: {
+				published: true,
 				genres:
 					genres.length > 0
 						? { some: { genre: { id: { in: genres } } } }
@@ -57,25 +68,32 @@ export async function getSimilarArtists(
 			take: limit,
 		});
 
-		return data;
+		return { data, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new ArtistError(`Database error: ${error.message}`);
+			return {
+				data: [],
+				error: true,
+				message: `Database error: ${error.message}`,
+			};
+			// throw new ArtistError(`Database error: ${error.message}`);
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new ArtistError('Invalid data provided');
+			// throw new ArtistError('Invalid data provided');
+			return { data: [], error: true, message: 'Invalid data provided' };
 		}
 
 		// Generic error handling
 		console.error('Error fetching artists:', error);
-		throw new ArtistError(
-			'Unable to retrieve artists. Please try again later.',
-			error
-		);
+		// throw new ArtistError(
+		// 	'Unable to retrieve artists. Please try again later.',
+		// 	error
+		// );
+		return { data: [], error: true, message: 'Unable to retrieve artists' };
 	}
 }
 
@@ -86,10 +104,13 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 		articles: { include: { article: true } };
 	};
 }>;
-export async function getArtistsById(id: string): Promise<ArtistDetails> {
+
+export async function getArtistsById(
+	id: string
+): Promise<ArtistDetails | undefined> {
 	try {
 		const data = await prisma.artist.findUnique({
-			where: { id },
+			where: { id, published: true },
 			include: {
 				genres: { include: { genre: true } },
 				socialLinks: true,
@@ -98,7 +119,7 @@ export async function getArtistsById(id: string): Promise<ArtistDetails> {
 		});
 
 		if (!data) {
-			throw new ArtistError('Artist not found');
+			return undefined;
 		}
 
 		return data;
@@ -106,20 +127,21 @@ export async function getArtistsById(id: string): Promise<ArtistDetails> {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new ArtistError(`Database error: ${error.message}`);
+			// throw new ArtistError(`Database error: ${error.message}`);
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new ArtistError('Invalid data provided');
+			// throw new ArtistError('Invalid data provided');
 		}
 
 		// Generic error handling
 		console.error('Error fetching artists:', error);
-		throw new ArtistError(
-			'Unable to retrieve artists. Please try again later.',
-			error
-		);
+		// throw new ArtistError(
+		// 	'Unable to retrieve artists. Please try again later.',
+		// 	error
+		// );
+		return undefined;
 	}
 }
 
@@ -130,9 +152,12 @@ export type ArtistList = Prisma.ArtistGetPayload<{
 	};
 }>;
 
-export async function getArtistsList(limit?: number): Promise<ArtistList[]> {
+export async function getArtistsList(
+	limit?: number
+): Promise<{ data: ArtistList[]; error?: boolean; message?: string }> {
 	try {
 		const data = await prisma.artist.findMany({
+			where: { published: true },
 			orderBy: { tracks: { _count: 'desc' } },
 			include: {
 				genres: { include: { genre: true } },
@@ -141,25 +166,23 @@ export async function getArtistsList(limit?: number): Promise<ArtistList[]> {
 			take: limit,
 		});
 
-		return data;
+		return { data, error: false };
 	} catch (error) {
+		let message = 'Unable to retrieve artists. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new ArtistError(`Database error: ${error.message}`);
+			message = `Database error: ${error.code}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new ArtistError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching artists:', error);
-		throw new ArtistError(
-			'Unable to retrieve artists. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 

@@ -21,16 +21,16 @@ export default async function page({
 				<DynamicNav type={type} sort={sort} />
 				<TabsContent value='new'>
 					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+						<TrackList tracks={tracks.data} className='p-0' />
 					) : (
-						<TracksCards tracks={tracks} />
+						<TracksCards tracks={tracks.data} />
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
 					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+						<TrackList tracks={tracks.data} className='p-0' />
 					) : (
-						<TracksCards tracks={tracks} />
+						<TracksCards tracks={tracks.data} />
 					)}
 				</TabsContent>
 			</Tabs>

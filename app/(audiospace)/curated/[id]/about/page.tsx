@@ -1,5 +1,3 @@
-import { notFound } from 'next/navigation';
-
 import CuratedDetails from '@/components/curated/CuratedDetails';
 import TracksCarousel from '@/components/home/NewTracks';
 import { Icons } from '@/components/icons/socials';
@@ -7,20 +5,22 @@ import Image from 'next/image';
 import { getPartnerDetailsById } from '@/db/partner';
 import Link from 'next/link';
 import { getPublicTracksByPartner } from '@/db/tracks';
+import Error from '@/components/Error';
 
 export default async function page({
 	params: { id },
 }: {
 	params: { id: string };
 }) {
-	const [curated, tracks] = await Promise.all([
+	const [curatedRes, tracks] = await Promise.all([
 		getPartnerDetailsById(id),
 		getPublicTracksByPartner(id),
 	]);
 
-	if (!curated) {
-		notFound();
+	if (curatedRes.error || !curatedRes.data) {
+		return <Error message={curatedRes.message} />;
 	}
+	const curated = curatedRes.data;
 
 	return (
 		<>
@@ -85,7 +85,7 @@ export default async function page({
 			</main>
 
 			<TracksCarousel
-				tracks={tracks}
+				tracks={tracks.data}
 				title={`Tracks selected by ${curated?.name}`}
 				classNameItem='basis-36 sm:basis-52 lg:basis-64'
 				className='mt-12 xl:w-2/3'

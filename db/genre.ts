@@ -1,72 +1,105 @@
+import GenreDetails from '@/components/genres/GenreDetails';
 import { prisma } from '@/lib/prisma';
 import { Prisma, type Genre } from '@prisma/client';
 
-class GenreError extends Error {
-	constructor(message: string, public readonly cause?: unknown) {
-		super(message);
-		this.name = 'GenreError';
-	}
-}
+// class GenreError extends Error {
+// 	constructor(message: string, public readonly cause?: unknown) {
+// 		super(message);
+// 		this.name = 'GenreError';
+// 	}
+// }
 
-export async function getGenres(): Promise<Genre[]> {
+type GenreRes = { data: Genre[]; error?: boolean; message?: string };
+
+export async function getGenres(): Promise<GenreRes> {
 	try {
 		const genres = await prisma.genre.findMany({
 			orderBy: { createdAt: 'desc' },
 		});
 
-		return genres;
+		return { data: genres, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new GenreError(`Database error: ${error.message}`);
+			// throw new GenreError(`Database error: ${error.message}`);
+			return {
+				data: [],
+				error: true,
+				message: `Database error: ${error.message}`,
+			};
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new GenreError('Invalid data provided');
+			// throw new GenreError('Invalid data provided');
+			return { data: [], error: true, message: 'Invalid data provided' };
 		}
 
 		// Generic error handling
 		console.error('Error fetching genres:', error);
-		throw new GenreError(
-			'Unable to retrieve genres. Please try again later.',
-			error
-		);
+		// throw new GenreError(
+		// 	'Unable to retrieve genres. Please try again later.',
+		// 	error
+		// );
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve genres. Please try again later.',
+		};
 	}
 }
 
 export type GenreDetails = Genre;
 
-export async function getGenreDetailsById(id?: string): Promise<GenreDetails> {
+type GenreDetailsRes = {
+	error?: boolean;
+	message?: string;
+	data: GenreDetails | null;
+};
+
+export async function getGenreDetailsById(
+	id?: string
+): Promise<GenreDetailsRes> {
 	try {
 		const genre = await prisma.genre.findUnique({
 			where: { id },
 		});
 
 		if (!genre) {
-			throw new GenreError(`Genre with ID ${id} not found.`);
+			return { data: null, error: true, message: 'Genre not found' };
 		}
 
-		return genre;
+		return { data: genre, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new GenreError(`Database error: ${error.message}`);
+			// throw new GenreError(`Database error: ${error.message}`);
+			return {
+				data: null,
+				error: true,
+				message: `Database error: ${error.message}`,
+			};
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new GenreError('Invalid data provided');
+			// throw new GenreError('Invalid data provided');
+			return { data: null, error: true, message: 'Invalid data provided' };
 		}
 
 		// Generic error handling
 		console.error('Error fetching genres:', error);
-		throw new GenreError(
-			'Unable to retrieve genres. Please try again later.',
-			error
-		);
+		// throw new GenreError(
+		// 	'Unable to retrieve genres. Please try again later.',
+		// 	error
+		// );
+		return {
+			data: null,
+			error: true,
+			message: 'Unable to retrieve genres. Please try again later.',
+		};
 	}
 }
 

@@ -1,4 +1,5 @@
 import BreadCrumb from '@/components/BreadCrumb';
+import Error from '@/components/Error';
 import { columns } from '@/components/tags/GenreForm/table/columns';
 import { DataTable } from '@/components/tags/GenreForm/table/data-table';
 import { CreateGenreButton } from '@/components/tags/GenreForm/table/genre-dialog';
@@ -12,6 +13,10 @@ export default async function page() {
 
 	if (!session || session.user.role !== 'admin') {
 		notFound();
+	}
+
+	if (genres.error) {
+		return <Error message={genres.message} />;
 	}
 
 	return (
@@ -31,7 +36,7 @@ export default async function page() {
 				<CreateGenreButton />
 			</div>
 			<TagsNav />
-			<DataTable columns={columns} data={genres} />
+			<DataTable columns={columns} data={genres.data} />
 		</>
 	);
 }

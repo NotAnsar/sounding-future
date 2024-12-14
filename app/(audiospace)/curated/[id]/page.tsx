@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import CuratedDetails from '@/components/curated/CuratedDetails';
 import TrackList from '@/components/tracks/TrackList';
 import TracksCards from '@/components/tracks/TracksCards';
@@ -7,6 +6,7 @@ import { TabsContent } from '@/components/ui/tabs';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getPartnerDetailsById } from '@/db/partner';
 import { getPublicTracksByPartner } from '@/db/tracks';
+import Error from '@/components/Error';
 
 export default async function page({
 	params: { id },
@@ -22,13 +22,13 @@ export default async function page({
 		getPublicTracksByPartner(id, tabValue),
 	]);
 
-	if (!curated) {
-		notFound();
+	if (curated.error || !curated.data) {
+		return <Error message={curated.message} />;
 	}
 
 	return (
 		<>
-			<CuratedDetails curated={curated} />
+			<CuratedDetails curated={curated.data} />
 
 			<Tabs value={tabValue} className='mt-4 sm:mt-6 grid gap-2 '>
 				<DynamicNav type={type} sort={sort} />
@@ -41,17 +41,29 @@ export default async function page({
 					These tracks have been compiled by Audiomatch
 				</h1>
 				<TabsContent value='new'>
-					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+					{tracks.error ? (
+						<p>{tracks.message}</p>
 					) : (
-						<TracksCards tracks={tracks} />
+						<>
+							{isTable ? (
+								<TrackList tracks={tracks.data} className='p-0' />
+							) : (
+								<TracksCards tracks={tracks.data} />
+							)}
+						</>
 					)}
 				</TabsContent>
 				<TabsContent value='popular'>
-					{isTable ? (
-						<TrackList tracks={tracks} className='p-0' />
+					{tracks.error ? (
+						<p>{tracks.message}</p>
 					) : (
-						<TracksCards tracks={tracks} />
+						<>
+							{isTable ? (
+								<TrackList tracks={tracks.data} className='p-0' />
+							) : (
+								<TracksCards tracks={tracks.data} />
+							)}
+						</>
 					)}
 				</TabsContent>
 			</Tabs>

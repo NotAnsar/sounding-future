@@ -1,8 +1,13 @@
+import Error from '@/components/Error';
 import UserInfoForm from '@/components/settings/UserInfoForm';
-import { getCurrentUser } from '@/db/user';
+import { getCurrentUserSafe } from '@/db/user';
 
 export default async function Page() {
-	const user = await getCurrentUser();
+	const user = await getCurrentUserSafe();
 
-	return <UserInfoForm initialData={user} />;
+	if (user.error || !user.user) {
+		return <Error message={user.message} />;
+	}
+
+	return <UserInfoForm initialData={user.user} />;
 }

@@ -6,6 +6,7 @@ import { auth } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import { CreateFormatButton } from '@/components/tags/SourceForm/table/format-dialog';
 import { getSourceFormats } from '@/db/source-format';
+import Error from '@/components/Error';
 
 export default async function page() {
 	const [session, sourceFormats] = await Promise.all([
@@ -15,6 +16,10 @@ export default async function page() {
 
 	if (!session || session.user.role !== 'admin') {
 		notFound();
+	}
+
+	if (sourceFormats.error) {
+		return <Error message={sourceFormats.message} />;
 	}
 
 	return (
@@ -35,7 +40,7 @@ export default async function page() {
 			</div>
 			<TagsNav isFormatPage />
 
-			<DataTable columns={columns} data={sourceFormats} />
+			<DataTable columns={columns} data={sourceFormats.data} />
 		</>
 	);
 }

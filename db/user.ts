@@ -34,11 +34,22 @@ export async function getCurrentUser(): Promise<User> {
 	return user;
 }
 
-export async function getCurrentUserSafe(): Promise<User | null> {
+export async function getCurrentUserSafe(): Promise<{
+	user: User | null;
+	message?: string;
+	error?: boolean;
+}> {
 	try {
-		return await getCurrentUser();
+		const user = await getCurrentUser();
+		return { user, error: false };
 	} catch (error) {
-		return null;
+		if (error instanceof AuthenticationError) {
+			return { user: null, message: 'User not authenticated', error: true };
+		}
+		if (error instanceof UserNotFoundError) {
+			return { user: null, message: error.message, error: true };
+		}
+		return { user: null, message: 'Unknown error occurred', error: true };
 	}
 }
 

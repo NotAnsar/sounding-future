@@ -2,29 +2,10 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Genre, Prisma, type Track } from '@prisma/client';
 
-class TrackError extends Error {
-	constructor(message: string, public readonly cause?: unknown) {
-		super(message);
-		this.name = 'TrackError';
-	}
-}
-
-export type PublicTrack = Prisma.TrackGetPayload<{
-	include: {
-		artist: true;
-		genres: { include: { genre: true } };
-	};
-}>;
-
-export type PublicTrackWithLikeStatus = PublicTrack & {
-	isLiked: boolean;
-	_count?: { likes: number };
-};
-
 export async function getPublicTracks(
 	limit?: number,
 	type: 'new' | 'popular' | 'default' = 'default'
-): Promise<PublicTrackWithLikeStatus[]> {
+): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
@@ -54,35 +35,36 @@ export async function getPublicTracks(
 					: undefined,
 		});
 
-		return data.map((track) => ({
-			...track,
-			isLiked: session?.user ? track.likes.length > 0 : false,
-		}));
+		return {
+			data: data.map((track) => ({
+				...track,
+				isLiked: session?.user ? track.likes.length > 0 : false,
+			})),
+			error: false,
+		};
 	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 
 export async function getPublicTracksByArtist(
 	artistId: string,
 	limit?: number
-): Promise<PublicTrackWithLikeStatus[]> {
+): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
@@ -102,28 +84,29 @@ export async function getPublicTracksByArtist(
 			orderBy: { releaseYear: 'desc' },
 		});
 
-		return data.map((track) => ({
-			...track,
-			isLiked: session?.user ? track.likes.length > 0 : false,
-		}));
+		return {
+			data: data.map((track) => ({
+				...track,
+				isLiked: session?.user ? track.likes.length > 0 : false,
+			})),
+			error: false,
+		};
 	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 
@@ -132,7 +115,7 @@ export async function getArtistSimilarTracks(
 	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number,
 	myTrackId?: string
-): Promise<PublicTrack[]> {
+): Promise<{ data: PublicTrack[]; error?: boolean; message?: string }> {
 	try {
 		const data = await prisma.track.findMany({
 			include: {
@@ -155,43 +138,29 @@ export async function getArtistSimilarTracks(
 					: undefined,
 		});
 
-		return data;
+		return { data, error: false };
 	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 
-export type ArtistDetails = Prisma.ArtistGetPayload<{
-	include: { socialLinks: true; articles: { include: { article: true } } };
-}>;
-
-export type TrackDetails = Prisma.TrackGetPayload<{
-	include: {
-		artist: {
-			include: { articles: { include: { article: true } }; socialLinks: true };
-		};
-		genres: { include: { genre: true } };
-		curator: true;
-	};
-}> & { isLiked: boolean };
-
-export async function getPublicTracksById(id: string): Promise<TrackDetails> {
+export async function getPublicTracksById(
+	id: string
+): Promise<{ data: TrackDetails | null; error?: boolean; message?: string }> {
 	const session = await auth();
 
 	try {
@@ -215,37 +184,40 @@ export async function getPublicTracksById(id: string): Promise<TrackDetails> {
 		});
 
 		if (!data) {
-			throw new TrackError(`Track with ID ${id} not found.`);
+			return { data: null, error: true, message: 'Track not found' };
 		}
 
 		return {
-			...data,
-			isLiked: session?.user ? data.likes.length > 0 : false,
+			data: {
+				...data,
+				isLiked: session?.user ? data.likes.length > 0 : false,
+			},
+			error: false,
 		};
 	} catch (error) {
+		let message = 'Unable to retrieve track. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: null, error: true, message };
 	}
 }
 
-export type TrackWithgenres = { genres: Genre[] } & Track;
-
-export async function getTrackById(id: string): Promise<TrackWithgenres> {
+export async function getTrackById(id: string): Promise<{
+	data: TrackWithgenres | undefined;
+	error?: boolean;
+	message?: string;
+}> {
 	try {
 		const data = await prisma.track.findUnique({
 			where: { id },
@@ -258,7 +230,7 @@ export async function getTrackById(id: string): Promise<TrackWithgenres> {
 		});
 
 		if (!data) {
-			throw new TrackError(`Track with ID ${id} not found.`);
+			return { data: undefined, error: true, message: 'Track not found' };
 		}
 
 		// Transform data to match expected return type
@@ -267,48 +239,40 @@ export async function getTrackById(id: string): Promise<TrackWithgenres> {
 			genres: data.genres.map((trackGenre) => trackGenre.genre),
 		};
 
-		return transformedData;
+		return { data: transformedData, error: false };
 	} catch (error) {
+		let message = 'Unable to retrieve track. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: undefined, error: true, message };
 	}
 }
 
-export type TrackWithCounts = Prisma.TrackGetPayload<{
-	include: {
-		artist: true;
-		genres: true;
-		curator: true;
-		_count: {
-			select: {
-				likes: true;
-				listeners: true;
-			};
-		};
-	};
-}>;
-
-export async function getTracksStats(): Promise<TrackWithCounts[]> {
+export async function getTracksStats(): Promise<{
+	data: TrackWithCounts[];
+	error?: boolean;
+	message?: string;
+}> {
 	const session = await auth();
 	const isUser = session?.user.role === 'user';
 	const artistId = session?.user?.artistId;
 	if (!artistId) {
-		throw new TrackError('You need to set up an artist profile first.');
+		return {
+			data: [],
+			error: true,
+			message: 'You need to set up an artist profile first.',
+		};
 	}
 
 	try {
@@ -323,31 +287,24 @@ export async function getTracksStats(): Promise<TrackWithCounts[]> {
 			orderBy: { createdAt: 'desc' },
 		});
 
-		return data;
+		return { data, error: false };
 	} catch (error) {
-		if (error instanceof TrackError) {
-			throw new TrackError(
-				'You need to set up an artist profile first. Please visit your profile settings to create one before managing your links.'
-			);
-		}
+		let message = 'Unable to retrieve tracks. Please try again later.';
 
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 
@@ -355,7 +312,7 @@ export async function getPublicTracksByPartner(
 	partnerId: string,
 	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
-): Promise<PublicTrackWithLikeStatus[]> {
+): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
@@ -380,28 +337,29 @@ export async function getPublicTracksByPartner(
 					: undefined,
 		});
 
-		return data.map((track) => ({
-			...track,
-			isLiked: session?.user ? track.likes.length > 0 : false,
-		}));
+		return {
+			data: data.map((track) => ({
+				...track,
+				isLiked: session?.user ? track.likes.length > 0 : false,
+			})),
+			error: false,
+		};
 	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
 
@@ -409,7 +367,7 @@ export async function getPublicTracksByGenre(
 	genreId: string,
 	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
-): Promise<PublicTrackWithLikeStatus[]> {
+): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
@@ -434,27 +392,76 @@ export async function getPublicTracksByGenre(
 					: undefined,
 		});
 
-		return data.map((track) => ({
-			...track,
-			isLiked: session?.user ? track.likes.length > 0 : false,
-		}));
+		return {
+			data: data.map((track) => ({
+				...track,
+				isLiked: session?.user ? track.likes.length > 0 : false,
+			})),
+			error: false,
+		};
 	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			throw new TrackError(`Database error: ${error.message}`);
+			message = `Database error: ${error.message}`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			throw new TrackError('Invalid data provided');
+			message = 'Invalid data provided';
 		}
 
 		// Generic error handling
 		console.error('Error fetching tracks:', error);
-		throw new TrackError(
-			'Unable to retrieve tracks. Please try again later.',
-			error
-		);
+		return { data: [], error: true, message };
 	}
 }
+
+export type ArtistDetails = Prisma.ArtistGetPayload<{
+	include: { socialLinks: true; articles: { include: { article: true } } };
+}>;
+
+export type TrackDetails = Prisma.TrackGetPayload<{
+	include: {
+		artist: {
+			include: { articles: { include: { article: true } }; socialLinks: true };
+		};
+		genres: { include: { genre: true } };
+		curator: true;
+	};
+}> & { isLiked: boolean };
+
+export type PublicTrack = Prisma.TrackGetPayload<{
+	include: {
+		artist: true;
+		genres: { include: { genre: true } };
+	};
+}>;
+
+export type PublicTrackWithLikeStatus = PublicTrack & {
+	isLiked: boolean;
+	_count?: { likes: number };
+};
+
+type PublicTrackWithLikeStatusRes = {
+	data: PublicTrackWithLikeStatus[];
+	error?: boolean;
+	message?: string;
+};
+
+export type TrackWithgenres = { genres: Genre[] } & Track;
+
+export type TrackWithCounts = Prisma.TrackGetPayload<{
+	include: {
+		artist: true;
+		genres: true;
+		curator: true;
+		_count: {
+			select: {
+				likes: true;
+				listeners: true;
+			};
+		};
+	};
+}>;

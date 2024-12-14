@@ -15,6 +15,7 @@ export default async function page() {
 		getPartners(),
 		getArtists(8),
 	]);
+
 	return (
 		<>
 			<HeaderBanner
@@ -23,22 +24,31 @@ export default async function page() {
 				className='mb-8'
 			/>
 			<div className='flex flex-col gap-12'>
-				<TracksCarousel
-					tracks={tracks}
-					title='New Tracks'
-					className='xl:w-2/3'
-				/>
-				<GenresCarousel
-					className='xl:w-2/3'
-					title='Tracks by genre'
-					genres={genres}
-				/>
-				<PartnersCarousel
-					className='xl:w-2/3'
-					title='Curated Collections'
-					partners={partners}
-				/>
-				<ArtistsCarousel className='xl:w-2/3' artists={artists} />
+				{!tracks.error && (
+					<TracksCarousel
+						tracks={tracks.data}
+						title='New Tracks'
+						className='xl:w-2/3'
+					/>
+				)}
+				{!genres.error && (
+					<GenresCarousel
+						className='xl:w-2/3'
+						title='Tracks by genre'
+						genres={genres.data}
+					/>
+				)}
+				{!partners.error && (
+					<PartnersCarousel
+						className='xl:w-2/3'
+						title='Curated Collections'
+						partners={partners.data}
+					/>
+				)}
+
+				{!artists.error && (
+					<ArtistsCarousel className='xl:w-2/3' artists={artists.data} />
+				)}
 			</div>
 		</>
 	);

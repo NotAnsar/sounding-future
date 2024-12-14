@@ -1,5 +1,5 @@
 import { TabsContent } from '@/components/ui/tabs';
-import { notFound } from 'next/navigation';
+
 import TrackDetails from '@/components/tracks/track/TrackDetails';
 import { Tabs } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons/track-icons';
@@ -15,6 +15,7 @@ import {
 import TrackArtistDetails from '@/components/tracks/track/TrackArtist';
 import { Genre } from '@prisma/client';
 import { Suspense } from 'react';
+import Error from '@/components/Error';
 
 export default async function page({
 	params: { id },
@@ -23,13 +24,15 @@ export default async function page({
 	params: { id: string };
 	searchParams: { sort: string };
 }) {
-	const track = await getPublicTracksById(id);
+	const trackRes = await getPublicTracksById(id);
 
 	const tabValue = sort === 'artist' || sort === 'others' ? sort : 'info';
 
-	if (!track) {
-		notFound();
+	if (!trackRes.error || !trackRes.data) {
+		return <Error message={trackRes.message} />;
 	}
+
+	const track = trackRes.data;
 
 	return (
 		<>
@@ -106,11 +109,15 @@ async function SimilarTracks({ genres, id }: { genres: Genre[]; id?: string }) {
 		id
 	);
 
+	if (tracks.error) {
+		return null;
+	}
+
 	return (
 		<>
-			{tracks.length > 0 && (
+			{tracks.data.length > 0 && (
 				<TracksCarousel
-					tracks={tracks}
+					tracks={tracks.data}
 					title='Tracks you may also like'
 					classNameItem='basis-36 sm:basis-52 lg:basis-64'
 					className='mt-12 '
@@ -124,5 +131,9 @@ async function SimilarTracks({ genres, id }: { genres: Genre[]; id?: string }) {
 async function TracksByCurrentArtist({ artistId }: { artistId: string }) {
 	const tracks = await getPublicTracksByArtist(artistId, 8);
 
-	return <TrackList tracks={tracks} className='lg:w-full p-0' />;
+	if (tracks.error) {
+		return null;
+	}
+
+	return <TrackList tracks={tracks.data} className='lg:w-full p-0' />;
 }

@@ -1,4 +1,5 @@
 import BreadCrumb from '@/components/BreadCrumb';
+import Error from '@/components/Error';
 import TrackBasicsForm from '@/components/TracksCrud/upload/BasicsForm';
 import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
@@ -23,23 +24,31 @@ export default async function page({
 			getTrackById(id),
 		]);
 
+	if (track.error || !track.data) {
+		return <Error message={track.message} />;
+	}
+
 	// Handle authentication
 	if (!session) {
 		redirect('/login');
 	}
 
-	// Handle missing track
-	if (!track) {
-		throw new Error('Track not found');
-	}
-
 	// Authorization check
 	const isUnauthorizedAccess =
 		session?.user?.role === 'user' &&
-		session?.user?.artistId !== track?.artistId;
+		session?.user?.artistId !== track.data?.artistId;
 
 	if (isUnauthorizedAccess) {
-		throw new Error('You do not have permission to edit this track');
+		return <Error message='You do not have permission to edit this track' />;
+	}
+
+	if (
+		artists.error ||
+		genres.error ||
+		partners.error ||
+		sourceFormatData.error
+	) {
+		return <Error message='Unable to retrieve data. Please try again later.' />;
 	}
 
 	return (
@@ -60,11 +69,11 @@ export default async function page({
 
 			<TrackBasicsForm
 				role={session?.user?.role || ''}
-				sourceFormatData={sourceFormatData}
-				partnersData={partners}
-				artistsData={artists}
-				genresData={genres}
-				initialData={track}
+				sourceFormatData={sourceFormatData.data}
+				partnersData={partners.data}
+				artistsData={artists.data}
+				genresData={genres.data}
+				initialData={track.data}
 			/>
 		</>
 	);

@@ -52,11 +52,15 @@ async function SimilarArtist({
 }) {
 	const artists = await getSimilarArtists(genresId, 8, id);
 
+	if (!artists.error) {
+		return null;
+	}
+
 	return (
 		<>
-			{artists.length > 0 && (
+			{artists.data.length > 0 && (
 				<ArtistsCarousel
-					artists={artists}
+					artists={artists.data}
 					className='mt-12 '
 					classNameItem='basis-36 sm:basis-52 lg:basis-60'
 					title='Artists you may also like'

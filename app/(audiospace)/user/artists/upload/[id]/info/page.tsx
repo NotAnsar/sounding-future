@@ -1,6 +1,6 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import Error from '@/components/Error';
-import AudioFileForm from '@/components/TracksCrud/upload/AudioFileForm';
+import TrackInfoForm from '@/components/TracksCrud/upload/InfoForm';
 import { getTrackById } from '@/db/tracks';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -17,6 +17,7 @@ export default async function page({
 		redirect('/login');
 	}
 
+	// Handle missing track
 	if (track.error || !track.data) {
 		return <Error message={track.message} />;
 	}
@@ -29,8 +30,6 @@ export default async function page({
 	if (isUnauthorizedAccess) {
 		return <Error message='You do not have permission to edit this track' />;
 	}
-
-	const userRole = session.user?.role || '';
 
 	return (
 		<>
@@ -48,7 +47,7 @@ export default async function page({
 				/>
 			</div>
 
-			<AudioFileForm id={id} role={userRole} initialData={track.data} />
+			<TrackInfoForm id={id} initialData={track.data} />
 		</>
 	);
 }

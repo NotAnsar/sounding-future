@@ -22,22 +22,29 @@ export async function searchTrack(
 
 		return data;
 	} catch (error) {
-		console.log(error);
-
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
-			console.error(`Database error: ${error.code}`, error);
-			throw new Error(`Database error: ${error.message}`);
+			console.error(`[Database Error ${error.code}]: ${error.message}`, {
+				query,
+				error: error.stack,
+			});
+			return [];
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
-			console.error('Validation error:', error);
-			throw new Error('Invalid data provided');
+			console.error('[Validation Error]:', {
+				query,
+				error: error.message,
+				stack: error.stack,
+			});
+			return [];
 		}
 
-		// Generic error handling
-		console.error('Error searching tracks:', error);
-		throw new Error('Unable to search tracks. Please try again later.');
+		console.error('[Unexpected Error] Error searching tracks:', {
+			query,
+			error: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined,
+		});
+		return [];
 	}
 }
 
@@ -47,29 +54,39 @@ export async function searchArtist(
 ): Promise<Artist[]> {
 	try {
 		const data = await prisma.artist.findMany({
-			where: { name: { contains: query.trim(), mode: 'insensitive' } },
+			where: {
+				name: { contains: query.trim(), mode: 'insensitive' },
+				published: true,
+			},
 			orderBy: { createdAt: 'desc' },
 			take: limit,
 		});
 
 		return data;
 	} catch (error) {
-		console.log(error);
-
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
-			console.error(`Database error: ${error.code}`, error);
-			throw new Error(`Database error: ${error.message}`);
+			console.error(`[Database Error ${error.code}]: ${error.message}`, {
+				query,
+				error: error.stack,
+			});
+			return [];
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
-			console.error('Validation error:', error);
-			throw new Error('Invalid data provided');
+			console.error('[Validation Error]:', {
+				query,
+				error: error.message,
+				stack: error.stack,
+			});
+			return [];
 		}
 
-		// Generic error handling
-		console.error('Error searching artists:', error);
-		throw new Error('Unable to search artists. Please try again later.');
+		console.error('[Unexpected Error] Error searching artists:', {
+			query,
+			error: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined,
+		});
+		return [];
 	}
 }
 
