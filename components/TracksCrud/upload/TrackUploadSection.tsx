@@ -75,11 +75,6 @@ function UploadInput({
 }) {
 	return (
 		<div className='grid gap-2'>
-			{url && (
-				<p className='text-[13px] text-[#FBFF00]'>
-					{url.split('/').pop() || url}
-				</p>
-			)}
 			<div className='relative max-w-lg cursor-pointer'>
 				<Input
 					type='file'
@@ -95,6 +90,12 @@ function UploadInput({
 				/>
 				<Music2 className='absolute right-3 top-1/2 transform -translate-y-1/2 text-muted w-4 h-auto aspect-square' />
 			</div>
+
+			{url && (
+				<p className='text-[13px] text-[#FBFF00]'>
+					{url.split('/').pop() || url}
+				</p>
+			)}
 
 			{url && (
 				<audio controls className='w-full max-w-lg h-10 rounded-md '>
