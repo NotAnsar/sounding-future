@@ -55,11 +55,14 @@ export async function updateProfile(
 		if (!session?.user) {
 			throw new Error('User not authenticated');
 		}
-
-		const imageUrl = await updateFile(
-			formData.get('image'),
-			prevState?.prev?.image
-		);
+		const image = formData.get('image');
+		if (image instanceof File && image.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Profile image must be less than 2MB',
+				errors: { image: ['Profile image must be less than 2MB'] },
+			};
+		}
+		const imageUrl = await updateFile(image, prevState?.prev?.image);
 
 		const artist = await prisma.artist.upsert({
 			where: { id: session?.user?.artistId || '' },

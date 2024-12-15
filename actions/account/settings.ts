@@ -35,8 +35,6 @@ export async function updateUserAccount(
 	prevState: SettingsState,
 	formData: FormData
 ): Promise<SettingsState> {
-	console.log(formData.get('deleteImage'));
-
 	const validatedFields = SettingSchema.omit({ image: true }).safeParse({
 		firstName: formData.get('firstName'),
 		secondName: formData.get('secondName'),
@@ -68,10 +66,13 @@ export async function updateUserAccount(
 			}
 			imageUrl = null;
 		} else {
-			imageUrl = await updateFile(
-				formData.get('image'),
-				prevState?.prev?.image
-			);
+			const image = formData.get('image');
+			if (image instanceof File && image.size > 2 * 1024 * 1024) {
+				return {
+					message: 'Profile image must be less than 2MB',
+				};
+			}
+			imageUrl = await updateFile(image, prevState?.prev?.image);
 		}
 
 		await prisma.user.update({

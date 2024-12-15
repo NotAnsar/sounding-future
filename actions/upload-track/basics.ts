@@ -167,6 +167,15 @@ export async function updateTrack(
 	} = validatedFields.data;
 
 	try {
+		const imageFile = formData.get('imageFile');
+
+		if (imageFile instanceof File && imageFile.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Profile image must be less than 2MB',
+				errors: { imageFile: ['Profile image must be less than 2MB'] },
+			};
+		}
+
 		const imageUrl = await updateFile(
 			formData.get('imageFile'),
 			prevState?.prev?.image

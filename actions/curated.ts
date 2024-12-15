@@ -133,12 +133,26 @@ export async function updatePartner(
 	const { name, info, country, ...socialLinksData } = validatedFields.data;
 
 	try {
-		const imageUrl = await updateFile(
-			formData.get('image'),
-			prevState?.prev?.image
-		);
+		const image = formData.get('image');
+		const studioPic = formData.get('studioPic');
+
+		// Check file sizes
+		if (image instanceof File && image.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Profile image must be less than 2MB',
+				errors: { image: ['Profile image must be less than 2MB'] },
+			};
+		}
+		if (studioPic instanceof File && studioPic.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Studio image must be less than 2MB',
+				errors: { studioPic: ['Studio image must be less than 2MB'] },
+			};
+		}
+
+		const imageUrl = await updateFile(image, prevState?.prev?.image);
 		const studioPicUrl = await updateFile(
-			formData.get('studioPic'),
+			studioPic,
 			prevState?.prev?.studioPic
 		);
 

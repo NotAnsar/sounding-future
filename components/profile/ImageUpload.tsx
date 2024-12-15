@@ -55,6 +55,7 @@ export default function ImageUpload({
 			if (file) {
 				if (file?.size > 2 * 1024 * 1024) {
 					alert('File size must be less than 2MB');
+					e.target.value = ''; // Clear the input
 					return;
 				}
 				const reader = new FileReader();
