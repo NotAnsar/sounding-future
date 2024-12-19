@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 async function addListeningHistory(trackId: string) {
 	const session = await auth();
@@ -15,6 +16,7 @@ async function addListeningHistory(trackId: string) {
 			},
 		});
 
+		revalidatePath('/', 'layout');
 		return newHistory;
 	} catch (error) {
 		console.error('Error adding listening history:', error);

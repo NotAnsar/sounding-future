@@ -267,7 +267,7 @@ export async function getTracksStats(): Promise<{
 	const session = await auth();
 	const isUser = session?.user.role === 'user';
 	const artistId = session?.user?.artistId;
-	if (!artistId) {
+	if (isUser && !artistId) {
 		return {
 			data: [],
 			error: true,

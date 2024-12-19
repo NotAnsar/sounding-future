@@ -48,6 +48,14 @@ export async function updateProfile(
 		};
 	}
 
+	const image = formData.get('image');
+	if (image instanceof File && image.size > 2 * 1024 * 1024) {
+		return {
+			message: 'Artist Profile image must be less than 2MB',
+			errors: { image: ['Artist Profile image must be less than 2MB'] },
+		};
+	}
+
 	const { name, biography, genres } = validatedFields.data;
 
 	try {
@@ -55,53 +63,44 @@ export async function updateProfile(
 		if (!session?.user) {
 			throw new Error('User not authenticated');
 		}
-		const image = formData.get('image');
-		if (image instanceof File && image.size > 2 * 1024 * 1024) {
-			return {
-				message: 'Profile image must be less than 2MB',
-				errors: { image: ['Profile image must be less than 2MB'] },
-			};
-		}
+
 		const imageUrl = await updateFile(image, prevState?.prev?.image);
 
 		const artist = await prisma.artist.upsert({
 			where: { id: session?.user?.artistId || '' },
-			create: {
-				name,
-				bio: biography,
-				pic: imageUrl,
-			},
-			update: {
-				name,
-				bio: biography,
-				pic: imageUrl,
-			},
+			create: { name, bio: biography, pic: imageUrl },
+			update: { name, bio: biography, pic: imageUrl },
 		});
 
 		const oldGenres = prevState?.prev?.genres || [];
 		const genresToAdd = genres.filter((id) => !oldGenres.includes(id));
 		const genresToRemove = oldGenres.filter((id) => !genres.includes(id));
 
-		// Add new genres
-		if (genresToAdd.length > 0) {
-			await prisma.artistGenre.createMany({
-				data: genresToAdd.map((genreId) => ({ artistId: artist.id, genreId })),
-			});
-		}
+		await prisma.$transaction(async (tx) => {
+			// Add new genres
+			if (genresToAdd.length > 0) {
+				await tx.artistGenre.createMany({
+					data: genresToAdd.map((genreId) => ({
+						artistId: artist.id,
+						genreId,
+					})),
+				});
+			}
 
-		// Remove old genres
-		if (genresToRemove.length > 0) {
-			await prisma.artistGenre.deleteMany({
-				where: { artistId: artist.id, genreId: { in: genresToRemove } },
-			});
-		}
+			// Remove old genres
+			if (genresToRemove.length > 0) {
+				await tx.artistGenre.deleteMany({
+					where: { artistId: artist.id, genreId: { in: genresToRemove } },
+				});
+			}
 
-		if (!session?.user?.artistId) {
-			await prisma.user.update({
-				where: { id: session?.user?.id },
-				data: { artistId: artist.id },
-			});
-		}
+			if (!session?.user?.artistId) {
+				await tx.user.update({
+					where: { id: session?.user?.id },
+					data: { artistId: artist.id },
+				});
+			}
+		});
 
 		revalidatePath('/', 'layout');
 		return { success: true };

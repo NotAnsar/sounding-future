@@ -139,8 +139,8 @@ export async function updatePartner(
 		// Check file sizes
 		if (image instanceof File && image.size > 2 * 1024 * 1024) {
 			return {
-				message: 'Profile image must be less than 2MB',
-				errors: { image: ['Profile image must be less than 2MB'] },
+				message: 'Partner image must be less than 2MB',
+				errors: { image: ['Partner image must be less than 2MB'] },
 			};
 		}
 		if (studioPic instanceof File && studioPic.size > 2 * 1024 * 1024) {

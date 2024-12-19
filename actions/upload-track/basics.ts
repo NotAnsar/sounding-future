@@ -171,8 +171,8 @@ export async function updateTrack(
 
 		if (imageFile instanceof File && imageFile.size > 2 * 1024 * 1024) {
 			return {
-				message: 'Profile image must be less than 2MB',
-				errors: { imageFile: ['Profile image must be less than 2MB'] },
+				message: 'Track cover image must be less than 2MB',
+				errors: { imageFile: ['Track cover image must be less than 2MB'] },
 			};
 		}
 

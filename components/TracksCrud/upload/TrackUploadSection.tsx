@@ -33,7 +33,7 @@ export default function TrackUploadSection({
 						Upload Track
 					</Label>
 
-					<div className='grid gap-4'>
+					<div className='grid gap-6'>
 						<UploadInput
 							message='track - variant 1 - binaural'
 							name='variant1'

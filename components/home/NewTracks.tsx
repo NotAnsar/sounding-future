@@ -24,6 +24,8 @@ export default function TracksCarousel({
 	classNameItem?: string;
 	classNameTitle?: string;
 }) {
+	if (!tracks || !tracks.length) return null;
+
 	return (
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>

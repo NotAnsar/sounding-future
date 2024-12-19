@@ -52,6 +52,14 @@ export async function updateUserAccount(
 	const { firstName, secondName, username, deleteImage } = validatedFields.data;
 
 	try {
+		const image = formData.get('image');
+		if (image instanceof File && image.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Profile image must be less than 2MB',
+				errors: { image: ['Profile image must be less than 2MB'] },
+			};
+		}
+
 		const session = await auth();
 		if (!session?.user?.id) {
 			throw new Error('Not authenticated');
@@ -66,12 +74,6 @@ export async function updateUserAccount(
 			}
 			imageUrl = null;
 		} else {
-			const image = formData.get('image');
-			if (image instanceof File && image.size > 2 * 1024 * 1024) {
-				return {
-					message: 'Profile image must be less than 2MB',
-				};
-			}
 			imageUrl = await updateFile(image, prevState?.prev?.image);
 		}
 
