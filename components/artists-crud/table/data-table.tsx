@@ -61,28 +61,15 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<>
-			<div className='flex flex-col lg:flex-row items-center py-4 gap-2 justify-between'>
-				<div className='flex items-center gap-2 w-full lg:w-auto '>
-					<Input
-						placeholder='Filter by track name'
-						className='flex gap-1 w-full md:w-80 '
-						value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-						onChange={(event) =>
-							table.getColumn('title')?.setFilterValue(event.target.value)
-						}
-					/>
-
-					<Input
-						placeholder='Filter by artist name'
-						className='flex gap-1 w-full md:w-80'
-						value={
-							(table.getColumn('artist')?.getFilterValue() as string) ?? ''
-						}
-						onChange={(event) =>
-							table.getColumn('artist')?.setFilterValue(event.target.value)
-						}
-					/>
-				</div>
+			<div className='flex flex-col lg:flex-row items-center gap-2 justify-between'>
+				<Input
+					placeholder='Filter by artist name'
+					className='flex gap-1 w-full md:w-80 '
+					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+					onChange={(event) =>
+						table.getColumn('name')?.setFilterValue(event.target.value)
+					}
+				/>
 
 				<div className='flex items-center gap-2 w-full lg:w-[225px] text-sm'>
 					<Select
@@ -161,7 +148,7 @@ export function DataTable<TData, TValue>({
 											key={cell.id}
 											className={cn(
 												'py-5 ',
-												cell.column.id === 'cover' ? 'w-14' : ''
+												cell.column.id === 'pic' ? 'w-14' : ''
 											)}
 										>
 											{flexRender(

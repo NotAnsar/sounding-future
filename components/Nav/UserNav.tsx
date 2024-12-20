@@ -99,7 +99,20 @@ export default function UserNav({
 					</Link>
 				</DropdownMenuItem>
 
-				{isAdmin ? <DropdownMenuSeparator /> : null}
+				{isAdmin ? (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/artists'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<MicVocal className='w-4 h-auto mr-2 ' />
+								Artists
+							</Link>
+						</DropdownMenuItem>
+					</>
+				) : null}
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>
 					<Link
 						href={'/user/tracks'}

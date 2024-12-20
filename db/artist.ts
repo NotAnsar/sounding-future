@@ -31,16 +31,11 @@ export async function getArtists(limit?: number): Promise<ArtistRes> {
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			// throw new ArtistError('Invalid data provided');
 			return { data: [], error: true, message: 'Invalid data provided' };
 		}
 
-		// Generic error handling
 		console.error('Error fetching artists:', error);
-		// throw new ArtistError(
-		// 	'Unable to retrieve artists. Please try again later.',
-		// 	error
-		// );
+
 		return {
 			data: [],
 			error: true,
@@ -212,3 +207,60 @@ export async function getMyArtist(): Promise<myArtistData | undefined> {
 export type myArtistData = Prisma.ArtistGetPayload<{
 	include: { genres: true; socialLinks: true };
 }>;
+
+export type ArtistStats = Prisma.ArtistGetPayload<{
+	include: {
+		genres: { include: { genre: true } };
+		_count: { select: { tracks: true } };
+		tracks: {
+			select: {
+				_count: { select: { listeners: true; likes: true } };
+			};
+		};
+	};
+}> & { played: number; liked: number };
+
+type ArtistStatRes = { data: ArtistStats[]; error?: boolean; message?: string };
+
+export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
+	try {
+		const data = await prisma.artist.findMany({
+			where: { published: true },
+			include: {
+				genres: { include: { genre: true } },
+				_count: { select: { tracks: true } },
+				tracks: {
+					select: {
+						_count: { select: { listeners: true, likes: true } },
+					},
+				},
+			},
+			orderBy: { tracks: { _count: 'desc' } },
+			take: limit,
+		});
+
+		// Calculate total plays across all tracks
+		const statsWithPlays = data.map((artist) => ({
+			...artist,
+			played: artist.tracks.reduce((s, t) => s + t._count.listeners, 0),
+			liked: artist.tracks.reduce((sum, track) => sum + track._count.likes, 0),
+		}));
+
+		return { data: statsWithPlays, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			return { data: [], error: true, message: error.message };
+		}
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			return { data: [], error: true, message: 'Invalid data provided' };
+		}
+		console.error('Error fetching artists:', error);
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve artists. Please try again later.',
+		};
+	}
+}

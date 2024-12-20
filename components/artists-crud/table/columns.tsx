@@ -2,27 +2,26 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Button } from '../../ui/button';
 import { ArrowUpDown, Shield, ShieldCheck } from 'lucide-react';
 import ActionCell from './ActionCell';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Icons } from '@/components/icons/track-icons';
 import Badge from '@/components/Badge';
-import { TrackWithCounts } from '@/db/tracks';
+import { ArtistStats } from '@/db/artist';
+import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/icons/track-icons';
 
-export const columns: ColumnDef<TrackWithCounts>[] = [
+export const columns: ColumnDef<ArtistStats>[] = [
 	{
-		accessorKey: 'cover',
+		accessorKey: 'pic',
 		header: '',
 		cell: ({ row }) => {
-			const track = row.original;
+			const partner = row.original;
 			return (
 				<div className='max-w-14'>
-					{track?.cover ? (
+					{partner?.pic ? (
 						<Image
-							src={track.cover}
-							alt={track.title}
+							src={partner?.pic}
+							alt={partner.name}
 							width={56}
 							height={56}
 							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md '
@@ -35,111 +34,49 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: 'title',
+		accessorKey: 'name',
 		header: '',
 		cell: ({ row }) => {
-			const track = row.original;
 			return (
-				<>
-					<Link
-						href={`/tracks/${track.id}`}
-						className={
-							'text-base font-semibold line-clamp-1 hover:opacity-80 max-w-40 text-nowrap'
-						}
-					>
-						{track.title}
-					</Link>
-					<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
-						{track.artist.name}
-					</h6>
-				</>
-			);
-		},
-	},
-	{
-		accessorKey: 'artist',
-		accessorFn: (row) => row.artist.name,
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Artist Name
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => {
-			const name = row?.original?.artist?.name;
-
-			return (
-				<h1 className='text-muted text-base font-semibold text-nowrap'>
-					{name}
-				</h1>
-			);
-		},
-	},
-	{
-		accessorKey: 'curator',
-		accessorFn: (row) => row.curator?.name,
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Curated By
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => {
-			const partner = row?.original?.curator;
-
-			return (
-				<div>
-					<h1 className='text-muted text-base font-semibold text-nowrap'>
-						{partner?.name || null}
-					</h1>
+				<div className={'text-base font-semibold line-clamp-1'}>
+					{row.getValue('name')}
 				</div>
 			);
 		},
 	},
 
 	{
-		accessorKey: 'releaseYear',
+		accessorKey: '_count.tracks',
 		cell: ({ row }) => {
-			return (
-				<div className='text-sm text-nowrap'>
-					{/* {convertDateFormat(new Date(row.getValue('createdAt')))} */}
-					{row.getValue('releaseYear')}
-				</div>
-			);
-		},
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Release Year
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-	},
-	{
-		accessorKey: '_count.listeners',
-		cell: ({ row }) => {
-			const listeners = row.original._count?.listeners ?? 0;
+			const tracks = row.original._count?.tracks ?? 0;
 			return (
 				<div className='text-sm text-nowrap flex gap-1 items-center'>
 					<Icons.played className='w-4 h-auto aspect-square fill-muted' />
-					<p>{listeners}</p>
+					<p>{tracks}</p>
+				</div>
+			);
+		},
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Tracks
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+	},
+	{
+		accessorKey: 'played',
+		cell: ({ row }) => {
+			const played = row.original.played ?? 0;
+			return (
+				<div className='text-sm text-nowrap flex gap-1 items-center'>
+					<Icons.played className='w-4 h-auto aspect-square fill-muted' />
+					<p>{played}</p>
 				</div>
 			);
 		},
@@ -157,13 +94,13 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		},
 	},
 	{
-		accessorKey: '_count.likes',
+		accessorKey: 'liked',
 		cell: ({ row }) => {
-			const likes = row.original._count?.likes ?? 0;
+			const liked = row.original.liked ?? 0;
 			return (
 				<div className='text-sm text-nowrap flex gap-1 items-center'>
 					<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
-					<p>{likes}</p>
+					<p>{liked}</p>
 				</div>
 			);
 		},
