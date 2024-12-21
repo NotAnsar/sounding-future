@@ -6,6 +6,8 @@ import { ArtistDetails } from '@/db/artist';
 import Link from 'next/link';
 
 export default function ArtistBio({ artist }: { artist: ArtistDetails }) {
+	console.log(artist?.articles);
+
 	return (
 		<TabsContent value='bio'>
 			<main>
@@ -67,16 +69,20 @@ export default function ArtistBio({ artist }: { artist: ArtistDetails }) {
 								<p className='text-muted'>No articles available</p>
 							)}
 							<ul className='space-y-2'>
-								{artist?.articles.map((a) => (
-									<Link
-										href={a?.article?.url}
-										target='_blank'
-										className='hover:underline cursor-pointer'
-										key={a?.articleId}
-									>
-										{a?.article?.title}
-									</Link>
-								))}
+								{artist?.articles.map((a) => {
+									console.log(a);
+
+									return (
+										<Link
+											href={a?.article?.url}
+											target='_blank'
+											className='hover:underline cursor-pointer'
+											key={a?.articleId}
+										>
+											{a?.article?.title || a?.article?.url}
+										</Link>
+									);
+								})}
 							</ul>
 						</div>
 					</div>
