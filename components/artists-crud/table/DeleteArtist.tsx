@@ -13,11 +13,10 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { Button } from '../../ui/button';
 import { Loader } from 'lucide-react';
-
 import { toast } from '@/hooks/use-toast';
-import { deleteTrack } from '@/actions/upload-track/delete-track';
+import { deleteArtist } from '@/actions/artists/delete-artist';
 
-export const DeleteTrack = ({
+export const DeleteArtist = ({
 	id,
 	setOpen,
 	open,
@@ -26,7 +25,7 @@ export const DeleteTrack = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const [state, action] = useFormState(deleteTrack.bind(null, id), {});
+	const [state, action] = useFormState(deleteArtist.bind(null, id), {});
 
 	useEffect(() => {
 		if (state?.message) {
@@ -45,7 +44,7 @@ export const DeleteTrack = ({
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your
-						Track and remove its data from our servers.
+						artist and remove its related data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

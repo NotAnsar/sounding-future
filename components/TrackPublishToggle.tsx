@@ -14,7 +14,7 @@ interface TrackPublishToggleProps {
 export function TrackPublishToggle({
 	defaultChecked = false,
 	onToggle,
-	label = 'Publish Track',
+	label = 'Track',
 	disabled = false,
 	name = 'published',
 }: TrackPublishToggleProps) {
@@ -31,9 +31,9 @@ export function TrackPublishToggle({
 			<div className='flex items-center gap-3'>
 				<Music className='h-5 w-5 text-gray-500' />
 				<div className='space-y-1'>
-					<Label htmlFor={id}>{label}</Label>
+					<Label htmlFor={id}>Publish {label}</Label>
 					<p className='text-sm text-gray-500' id={`${id}-description`}>
-						{isPublished ? 'Track is public' : 'Track is private'}
+						{isPublished ? `${label} is public` : `${label} is private`}
 					</p>
 				</div>
 			</div>

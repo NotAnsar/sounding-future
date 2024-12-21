@@ -101,11 +101,15 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 }>;
 
 export async function getArtistsById(
-	id: string
+	id: string,
+	publishedOnly: boolean = true
 ): Promise<ArtistDetails | undefined> {
 	try {
 		const data = await prisma.artist.findUnique({
-			where: { id, published: true },
+			where: {
+				id,
+				published: publishedOnly ? true : undefined,
+			},
 			include: {
 				genres: { include: { genre: true } },
 				socialLinks: true,
@@ -225,7 +229,6 @@ type ArtistStatRes = { data: ArtistStats[]; error?: boolean; message?: string };
 export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 	try {
 		const data = await prisma.artist.findMany({
-			where: { published: true },
 			include: {
 				genres: { include: { genre: true } },
 				_count: { select: { tracks: true } },

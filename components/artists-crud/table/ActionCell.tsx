@@ -9,11 +9,10 @@ import {
 } from '../../ui/dropdown-menu';
 import { Button } from '../../ui/button';
 import { MoreHorizontalIcon } from 'lucide-react';
-
 import { Dialog } from '@radix-ui/react-dialog';
 import Link from 'next/link';
 import { useState } from 'react';
-import { DeleteTrack } from './DeleteTrack';
+import { DeleteArtist } from './DeleteArtist';
 
 export default function ActionCell({ id }: { id: string }) {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -30,15 +29,15 @@ export default function ActionCell({ id }: { id: string }) {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
 						<DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
-							Copy track ID
+							Copy Artist ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem className='p-0'>
 							<Link
-								href={`/user/tracks/upload/${id}`}
+								href={`/user/artists/edit/${id}`}
 								className='px-2 py-1.5 w-full'
 							>
-								Edit Track
+								Edit Artist
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -47,12 +46,12 @@ export default function ActionCell({ id }: { id: string }) {
 							}}
 							className='cursor-pointer'
 						>
-							Delete Track
+							Delete Artist
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				{isDeleteDialogOpen && (
-					<DeleteTrack
+					<DeleteArtist
 						id={id}
 						open={isDeleteDialogOpen}
 						setOpen={setIsDeleteDialogOpen}
