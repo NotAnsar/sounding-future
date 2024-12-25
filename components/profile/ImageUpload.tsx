@@ -29,7 +29,7 @@ export default function ImageUpload({
 	error,
 	type = 'circle',
 	size = 'default',
-	message = 'Upload your image, max. 1mb',
+	message = 'Upload your image, max. 2mb',
 	label = 'Image Upload',
 	onImageChange,
 }: ImageUploadProps) {
@@ -243,7 +243,7 @@ export default function ImageUpload({
 							width={500}
 							height={500}
 							className={cn(
-								'border border-foreground mt-2 w-full h-full',
+								'border-2 border-foreground mt-2 w-full h-full',
 								type === 'circle' ? 'rounded-full' : 'rounded-md'
 							)}
 							style={{ objectFit: 'cover' }}

@@ -90,7 +90,7 @@ export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
 											'w-10 h-auto aspect-square flex items-center justify-center rounded-full bg-foreground'
 										}
 									>
-										<Icon className='w-6 h-auto aspect-square   fill-black' />
+										<Icon className='w-6 h-auto aspect-squar fill-white dark:fill-black' />
 									</div>
 									<p className='text-xs text-inherit lowercase'>{title}</p>
 								</div>

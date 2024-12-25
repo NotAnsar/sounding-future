@@ -92,9 +92,7 @@ function UploadInput({
 			</div>
 
 			{url && (
-				<p className='text-[13px] text-[#FBFF00]'>
-					{url.split('/').pop() || url}
-				</p>
+				<p className='text-[13px] text-muted'>{url.split('/').pop() || url}</p>
 			)}
 
 			{url && (

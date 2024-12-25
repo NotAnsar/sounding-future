@@ -61,17 +61,15 @@ export default function ArtistBio({ artist }: { artist: ArtistDetails }) {
 							)}
 						</div>
 
-						<div>
+						<div className='max-w-2xl xl:w-1/3'>
 							<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
 								Sounding Future articles
 							</h1>
 							{artist?.articles.length === 0 && (
 								<p className='text-muted'>No articles available</p>
 							)}
-							<ul className='space-y-2'>
+							<ul className='space-y-2 text-sm sm:text-[15px]'>
 								{artist?.articles.map((a) => {
-									console.log(a);
-
 									return (
 										<Link
 											href={a?.article?.url}
