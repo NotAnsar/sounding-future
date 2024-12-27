@@ -39,7 +39,6 @@ export default function ArtistForm({
 		initialData?.id ? updateArtist.bind(null, initialData.id) : createArtist,
 		initialState
 	);
-	console.log(initialData?.genres.map((g) => g.genreId) || undefined);
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>

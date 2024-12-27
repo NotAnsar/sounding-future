@@ -16,8 +16,7 @@ export default function PopularTracks({
 }: {
 	tracks: PublicTrackWithLikeStatus[];
 }) {
-	const { currentTrack, isPlaying, togglePlayPause, playNewTrack, duration } =
-		useAudio();
+	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	const [showMore, setshowMore] = useState(false);
 	const songsShown = showMore ? tracks.length : 5;
 
@@ -29,6 +28,7 @@ export default function PopularTracks({
 			<TableBody>
 				{tracks.slice(0, songsShown).map((track, index) => {
 					const isCurrentTrack = currentTrack?.id === track.id;
+
 					return (
 						<TableRow
 							key={index}
@@ -108,29 +108,12 @@ export default function PopularTracks({
 									{track.artist.name}
 								</Link>
 							</TableCell>
-							<TableCell>
-								{/* <form
-									action={async () => {
-										const result = await likeTrack(track.id);
-										if (!result.success && result.error) {
-											console.error(result.error);
-										}
-									}}
-								>
-									<button type='submit'>
-										<Heart
-											className={cn(
-												'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
-												track.isLiked ? 'text-foreground fill-foreground' : ''
-											)}
-										/>
-									</button>
-								</form> */}
+							<TableCell className='text-right pr-4'>
 								<LikeForm trackId={track.id} liked={track.isLiked} />
 							</TableCell>
 
 							<TableCell className='text-right pr-4'>
-								{formatTime(duration)}
+								{track?.duration && formatTime(track?.duration)}
 							</TableCell>
 						</TableRow>
 					);

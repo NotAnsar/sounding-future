@@ -3,7 +3,7 @@
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Frown } from 'lucide-react';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 export default function Error({
 	error,
@@ -12,14 +12,10 @@ export default function Error({
 	error: Error & { digest?: string };
 	reset: () => void;
 }) {
-	useEffect(() => {
-		console.log('Error occurred');
+	// useEffect(() => {
 
-		console.log(error);
-		console.log(error.digest);
-		console.log(error.cause);
-		console.error(error.message);
-	}, [error]);
+	// 	console.error(error.message);
+	// }, [error]);
 
 	return (
 		<>

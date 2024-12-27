@@ -6,8 +6,6 @@ import { ArtistDetails } from '@/db/artist';
 import Link from 'next/link';
 
 export default function ArtistBio({ artist }: { artist: ArtistDetails }) {
-	console.log(artist?.articles);
-
 	return (
 		<TabsContent value='bio'>
 			<main>

@@ -120,7 +120,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			tracks?: Track[],
 			variant?: 'variant1' | 'variant2' | 'variant3'
 		) => {
-			const loadStartTime = performance.now();
 			const tracksToUse = tracks || playlist;
 			let variantToUse = variant || currentVariant || 'variant1';
 
@@ -155,8 +154,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				volume: isMuted ? 0 : volume,
 				onload: () => {
 					setDuration(newSound.duration());
-					const loadEndTime = performance.now();
-					console.log(`Track loaded in: ${loadEndTime - loadStartTime} ms`);
 				},
 				onend: () => {
 					const currentIndex = tracksToUse.findIndex((t) => t.id === track.id);

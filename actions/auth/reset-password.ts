@@ -21,8 +21,6 @@ export async function resetPasswordRequest(
 	prevState: ResetPasswordState,
 	formData: FormData
 ): Promise<ResetPasswordState> {
-	console.log('hi');
-
 	const validatedFields = ResetPasswordSchema.safeParse({
 		email: formData.get('email'),
 	});

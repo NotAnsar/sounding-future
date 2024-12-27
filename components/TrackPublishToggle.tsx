@@ -43,7 +43,7 @@ export function TrackPublishToggle({
 					// name='published'
 					checked={isPublished}
 					onCheckedChange={handleToggle}
-					onChange={(e) => console.log(e.currentTarget.value)}
+					// onChange={(e) => console.log('')}
 					disabled={disabled}
 					aria-describedby={`${id}-description`}
 				/>

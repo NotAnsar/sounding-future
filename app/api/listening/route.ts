@@ -7,9 +7,6 @@ export async function POST(req: NextRequest) {
 	try {
 		const newHistory = await addListeningHistory(trackId);
 
-		console.log('New listening history Added : ' + trackId);
-		console.log(newHistory);
-
 		return NextResponse.json(newHistory, { status: 200 });
 	} catch (error) {
 		console.error('Error adding listening history:', error);

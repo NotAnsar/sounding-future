@@ -67,10 +67,6 @@ export async function submitTrack(
 	});
 
 	if (!validatedFields.success) {
-		console.log({
-			errors: validatedFields.error.flatten().fieldErrors,
-			message: 'Failed to submit track. Please check the form for errors.',
-		});
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to submit track. Please check the form for errors.',

@@ -110,7 +110,7 @@ export default function UserNav({
 								className='px-2 py-2.5 w-full flex items-center'
 							>
 								<MicVocal className='w-4 h-auto mr-2 ' />
-								Artists
+								Artists Management
 							</Link>
 						</DropdownMenuItem>
 					</>
@@ -121,7 +121,7 @@ export default function UserNav({
 						className='px-2 py-2.5 w-full flex items-center'
 					>
 						<AudioLines className='w-4 h-auto mr-2 ' />
-						{`${isAdmin ? '' : 'My '}Tracks`}
+						{`${isAdmin ? 'Tracks Management' : 'My Tracks'}`}
 					</Link>
 				</DropdownMenuItem>
 

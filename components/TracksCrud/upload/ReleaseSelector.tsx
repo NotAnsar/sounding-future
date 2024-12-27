@@ -14,11 +14,6 @@ export default function ReleaseSelector({
 	errors,
 	initialValue,
 }: ReleaseSelectorProps) {
-	console.log(
-		initialValue,
-		initialValue === undefined || initialValue === 'self-published'
-	);
-
 	const isSelfPublished =
 		initialValue === undefined || initialValue === 'self-published';
 	const [selectedType, setSelectedType] = React.useState<
