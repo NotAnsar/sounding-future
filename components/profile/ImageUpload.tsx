@@ -17,7 +17,7 @@ interface ImageUploadProps {
 	name: string;
 	error?: string[] | undefined;
 	type?: 'circle' | 'square';
-	size?: 'default' | 'lg';
+	size?: 'default' | 'lg' | 'xl';
 	message?: string;
 	label?: string;
 	onImageChange?: (dataUrl: string) => void;
@@ -171,11 +171,16 @@ export default function ImageUpload({
 		}
 	}, [originalImage, croppedAreaPixels, onImageChange, name]);
 
-	const previewSize = size === 'default' ? 'w-28' : 'w-36';
+	const previewSize =
+		size === 'default'
+			? 'w-20 h-20'
+			: size === 'lg'
+			? 'w-36 h-36'
+			: 'w-40 h-40';
 
 	return (
 		<div className='grid gap-2'>
-			<Label className={error ? 'text-destructive' : ''}>{label}</Label>
+			<Label className={error ? 'text-destructive ' : ''}>{label}</Label>
 			<input
 				id={name}
 				name={name}
@@ -232,7 +237,7 @@ export default function ImageUpload({
 			</Dialog>
 
 			<div
-				className='flex gap-4 items-center cursor-pointer'
+				className='flex flex-col sm:flex-row gap-6 sm:gap-4 sm:items-center cursor-pointer'
 				onClick={() => document.getElementById(name)?.click()}
 			>
 				{preview ? (
@@ -243,8 +248,8 @@ export default function ImageUpload({
 							width={500}
 							height={500}
 							className={cn(
-								'border-2 border-foreground mt-2 w-full h-full',
-								type === 'circle' ? 'rounded-full' : 'rounded-md'
+								'border-[1.5px] border-foreground mt-2 w-full h-full',
+								type === 'circle' ? 'rounded-full' : 'rounded-lg'
 							)}
 							style={{ objectFit: 'cover' }}
 						/>

@@ -200,7 +200,7 @@ export default function TrackBasicsForm({
 					initialData={initialData?.cover}
 					type='square'
 					message='Upload a cover photo for your track (jpeg, min. 1000x1000px)'
-					size='lg'
+					size='xl'
 					label='Track Cover *'
 				/>
 

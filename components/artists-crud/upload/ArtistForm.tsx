@@ -74,7 +74,7 @@ export default function ArtistForm({
 					name='image'
 					error={state?.errors?.image}
 					initialData={initialData?.pic || undefined}
-					size='lg'
+					size='xl'
 				/>
 				<div className='grid gap-2'>
 					<Label
