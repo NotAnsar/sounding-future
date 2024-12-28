@@ -13,6 +13,7 @@ import {
 	Handshake,
 	MicVocal,
 	Newspaper,
+	TableOfContents,
 	Tags,
 	UserIcon,
 	UserRoundCog,
@@ -143,6 +144,21 @@ export default function UserNav({
 							>
 								<Tags className='w-4 h-auto mr-2 ' />
 								Tags Management
+							</Link>
+						</DropdownMenuItem>
+					</>
+				) : null}
+
+				{isAdmin ? (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/banners'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<TableOfContents className='w-4 h-auto mr-2 ' />
+								Banners Management
 							</Link>
 						</DropdownMenuItem>
 					</>

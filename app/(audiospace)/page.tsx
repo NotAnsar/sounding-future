@@ -1,9 +1,10 @@
 import HeaderBanner from '@/components/HeaderBanner';
 import ArtistsCarousel from '@/components/home/ArtistCarousel';
+import BannersSection from '@/components/home/BannersSection';
 import PartnersCarousel from '@/components/home/CollectionsCarousel';
 import GenresCarousel from '@/components/home/GenresCarousel';
 import TracksCarousel from '@/components/home/NewTracks';
-import { Button } from '@/components/ui/button';
+
 import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
@@ -41,56 +42,7 @@ export default async function page() {
 
 					{!artists.error && <ArtistsCarousel artists={artists.data} />}
 				</div>
-				<div className='col-span-full xl:col-span-1 text-white flex flex-col gap-6'>
-					<div
-						className='p-6 rounded-3xl space-y-5 bg-[#B95]'
-						style={{
-							backgroundImage: "url('/banner-texture-2 1.png')",
-							backgroundSize: 'cover',
-							backgroundPosition: 'center',
-							backgroundRepeat: 'no-repeat',
-						}}
-					>
-						<h2 className='text-4xl font-bold'>Title</h2>
-						<p>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
-							corporis labore iste voluptates quos in facilis rem dolores,
-							deleniti dolorum, sequi, repellendus et molestias incidunt enim
-							sapiente voluptatibus pariatur asperiores? Lorem ipsum, dolor sit
-							amet consectetur adipisicing elit. Deserunt eum quas voluptatum
-							dignissimos deleniti enim amet aliquid facilis, voluptatem tempora
-							ab dolorum, corrupti unde provident soluta molestiae id explicabo.
-							Similique, cumque. Accusamus officia ducimus fugiat voluptatibus
-							ipsam numquam porro natus voluptates consequuntur, nihil
-							assumenda.
-						</p>
-
-						<Button>Explore</Button>
-					</div>
-					<div className='p-6 bg-[#481B95] rounded-3xl space-y-5'>
-						<h2 className='text-4xl font-bold'>Title</h2>
-						<p>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
-							corporis labore iste voluptates quos in facilis rem dolores,
-							deleniti dolorum, sequi, repellendus et molestias incidunt enim
-							sapiente voluptatibus pariatur asperiores?
-						</p>
-
-						<Button>Explore</Button>
-					</div>
-
-					<div className='p-6 bg-[#485] rounded-3xl space-y-5'>
-						<h2 className='text-4xl font-bold'>Title</h2>
-						<p>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
-							corporis labore iste voluptates quos in facilis rem dolores,
-							deleniti dolorum, sequi, repellendus et molestias incidunt enim
-							sapiente voluptatibus pariatur asperiores?
-						</p>
-
-						<Button>Explore</Button>
-					</div>
-				</div>
+				<BannersSection />
 			</div>
 		</>
 	);

@@ -302,3 +302,17 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+model Banner {
+    id              String   @id @default(cuid())
+    title           String
+    description     String   @db.Text
+    backgroundColor String
+    backgroundImage String?
+    buttonText      String
+    link            String
+    createdAt       DateTime @default(now()) @map("created_at")
+    updatedAt       DateTime @updatedAt
+    published       Boolean  @default(false)
+
+    @@map("banners")
+}

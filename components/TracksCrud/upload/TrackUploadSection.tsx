@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Music2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ErrorMessage from '../../ErrorMessage';
-import { TrackPublishToggle } from '../../TrackPublishToggle';
+import { PublishToggle } from '../../PublishToggle';
 import { TrackWithgenres } from '@/db/tracks';
 
 interface TrackUploadProps {
@@ -55,7 +55,7 @@ export default function TrackUploadSection({
 					</div>
 				</div>
 			</div>
-			<TrackPublishToggle defaultChecked={initialData.published} />
+			<PublishToggle defaultChecked={initialData.published} />
 		</>
 	);
 }

@@ -248,7 +248,7 @@ export default function ImageUpload({
 							width={500}
 							height={500}
 							className={cn(
-								'border-[1.5px] border-foreground mt-2 w-full h-full',
+								'border-[3px] border-foreground mt-2 w-full h-full',
 								type === 'circle' ? 'rounded-full' : 'rounded-lg'
 							)}
 							style={{ objectFit: 'cover' }}
@@ -257,7 +257,7 @@ export default function ImageUpload({
 				) : (
 					<div
 						className={cn(
-							'h-auto aspect-square border border-foreground mt-2 flex items-center justify-center cursor-pointer',
+							'h-auto aspect-square border-[3px] border-foreground mt-2 flex items-center justify-center cursor-pointer',
 							type === 'circle' ? 'rounded-full' : 'rounded-md',
 							previewSize
 						)}

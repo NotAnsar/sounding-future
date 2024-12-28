@@ -16,7 +16,7 @@ import {
 	createArtist,
 	updateArtist,
 } from '@/actions/artists/artist-info';
-import { TrackPublishToggle } from '@/components/TrackPublishToggle';
+import { PublishToggle } from '@/components/PublishToggle';
 
 const MaxChar = 1000;
 
@@ -130,10 +130,7 @@ export default function ArtistForm({
 					</p>
 					<ErrorMessage errors={state?.errors?.genres} />
 				</div>
-				<TrackPublishToggle
-					defaultChecked={initialData?.published}
-					label='Artist'
-				/>
+				<PublishToggle defaultChecked={initialData?.published} label='Artist' />
 			</div>
 		</form>
 	);
