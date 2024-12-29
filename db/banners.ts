@@ -7,7 +7,7 @@ export async function getBanners(publishedOnly = false): Promise<BannersRes> {
 	try {
 		const banners = await prisma.banner.findMany({
 			where: publishedOnly ? { published: true } : undefined,
-			orderBy: { createdAt: 'desc' },
+			orderBy: { displayOrder: 'asc' },
 		});
 
 		return { data: banners, error: false };

@@ -313,6 +313,7 @@ model Banner {
     createdAt       DateTime @default(now()) @map("created_at")
     updatedAt       DateTime @updatedAt
     published       Boolean  @default(false)
+    displayOrder    Int      @default(autoincrement())
 
     @@map("banners")
 }

@@ -1,3 +1,4 @@
+import { reorderBanners } from '@/actions/banner-action';
 import { columns } from '@/components/banners-crud/columns';
 import { DataTable } from '@/components/banners-crud/data-table';
 import Error from '@/components/Error';
@@ -23,7 +24,12 @@ export default async function page() {
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add Banner
 				</Link>
 			</div>
-			<DataTable columns={columns} data={banners.data} />
+			{/* <DataTable columns={columns} data={banners.data} /> */}
+			<DataTable
+				columns={columns}
+				data={banners.data}
+				onReorder={reorderBanners}
+			/>
 		</>
 	);
 }

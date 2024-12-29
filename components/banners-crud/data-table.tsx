@@ -5,14 +5,29 @@ import {
 	SortingState,
 	flexRender,
 	getCoreRowModel,
-	getPaginationRowModel,
 	getSortedRowModel,
 	getFacetedUniqueValues,
 	getFilteredRowModel,
 	useReactTable,
 	ColumnFiltersState,
 } from '@tanstack/react-table';
-
+import {
+	DndContext,
+	closestCenter,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+	DragEndEvent,
+} from '@dnd-kit/core';
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+	useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
 	Table,
 	TableBody,
@@ -22,10 +37,9 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { useState } from 'react';
-import PaginationTable from '@/components/PaginationTable';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { RotateCcw } from 'lucide-react';
+import { GripVertical, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
 	Select,
@@ -38,33 +52,119 @@ import {
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	onReorder?: (
+		updates: { id: string; displayOrder: number }[]
+	) => Promise<
+		| { success: boolean; error?: undefined }
+		| { success: boolean; error: string }
+	>;
 }
 
-export function DataTable<TData, TValue>({
+function DraggableTableRow({
+	children,
+	id,
+	...props
+}: {
+	id: string;
+	children: React.ReactNode;
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	return (
+		<TableRow
+			ref={setNodeRef}
+			style={style}
+			className={cn(
+				'border-transparent hover:bg-player/50',
+				isDragging ? 'cursor-grabbing' : ''
+			)}
+			{...props}
+		>
+			<TableCell className='w-[40px] p-2'>
+				<Button
+					variant='ghost'
+					className='cursor-grab p-1 h-auto'
+					{...attributes}
+					{...listeners}
+				>
+					<GripVertical className='h-4 w-4' />
+				</Button>
+			</TableCell>
+			{children}
+		</TableRow>
+	);
+}
+
+export function DataTable<TData extends { id: string }, TValue>({
 	columns,
 	data,
+	onReorder,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [items, setItems] = useState(data);
+
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
+
 	const table = useReactTable({
-		data,
+		data: items,
 		columns,
 		state: { sorting, columnFilters },
 		onColumnFiltersChange: setColumnFilters,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
+
+	function handleDragEnd(event: DragEndEvent) {
+		const { active, over } = event;
+
+		if (over && active.id !== over.id) {
+			setItems((items) => {
+				const oldIndex = items.findIndex((item) => item.id === active.id);
+				const newIndex = items.findIndex((item) => item.id === over.id);
+
+				const newItems = arrayMove(items, oldIndex, newIndex);
+
+				if (onReorder) {
+					const updates = newItems.map((item, index) => ({
+						id: item.id,
+						displayOrder: index + 1,
+					}));
+					onReorder(updates);
+				}
+
+				return newItems;
+			});
+		}
+	}
 
 	return (
 		<>
 			<div className='flex flex-col lg:flex-row items-center py-4 gap-2 justify-between'>
 				<Input
 					placeholder='Filter by banner title'
-					className='flex gap-1 w-full md:w-80 '
+					className='flex gap-1 w-full md:w-80'
 					value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
 					onChange={(event) =>
 						table.getColumn('title')?.setFilterValue(event.target.value)
@@ -117,62 +217,70 @@ export function DataTable<TData, TValue>({
 
 			<div className='rounded-md border border-transparent'>
 				<Table>
-					<TableHeader className='hover:bg-transparent  '>
+					<TableHeader className='hover:bg-transparent'>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead key={header.id} className='py-3 text-base >'>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-												  )}
-										</TableHead>
-									);
-								})}
+								<TableHead className='w-[40px]'></TableHead>
+								{headerGroup.headers.map((header) => (
+									<TableHead key={header.id} className='py-3 text-base'>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext()
+											  )}
+									</TableHead>
+								))}
 							</TableRow>
 						))}
 					</TableHeader>
 					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
-								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && 'selected'}
-									className='border-transparent hover:bg-player/50'
-								>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell
-											key={cell.id}
-											className={cn(
-												'py-5 ',
-												cell.column.id === 'cover' ? 'w-14' : ''
-											)}
+						<DndContext
+							sensors={sensors}
+							collisionDetection={closestCenter}
+							onDragEnd={handleDragEnd}
+						>
+							<SortableContext
+								items={table.getRowModel().rows.map((row) => row.original.id)}
+								strategy={verticalListSortingStrategy}
+							>
+								{table.getRowModel().rows?.length ? (
+									table.getRowModel().rows.map((row) => (
+										<DraggableTableRow
+											key={row.original.id}
+											id={row.original.id}
 										>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
+											{row.getVisibleCells().map((cell) => (
+												<TableCell
+													key={cell.id}
+													className={cn(
+														'py-5',
+														cell.column.id === 'cover' ? 'w-14' : ''
+													)}
+												>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext()
+													)}
+												</TableCell>
+											))}
+										</DraggableTableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={columns.length + 1}
+											className='h-24 text-center'
+										>
+											No results.
 										</TableCell>
-									))}
-								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className='h-24 text-center'
-								>
-									No results.
-								</TableCell>
-							</TableRow>
-						)}
+									</TableRow>
+								)}
+							</SortableContext>
+						</DndContext>
 					</TableBody>
 				</Table>
 			</div>
-			<PaginationTable table={table} />
 		</>
 	);
 }

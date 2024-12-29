@@ -142,3 +142,24 @@ export async function deleteBanner(id: string): Promise<DeleteBannerState> {
 		return { success: false, message: 'Failed to delete banner' };
 	}
 }
+
+export async function reorderBanners(
+	updates: { id: string; displayOrder: number }[]
+) {
+	try {
+		await prisma.$transaction(
+			updates.map((update) =>
+				prisma.banner.update({
+					where: { id: update.id },
+					data: { displayOrder: update.displayOrder },
+				})
+			)
+		);
+
+		revalidatePath('/user/banners');
+		return { success: true };
+	} catch (error) {
+		console.error('Failed to reorder banners:', error);
+		return { success: false, error: 'Failed to reorder banners' };
+	}
+}
