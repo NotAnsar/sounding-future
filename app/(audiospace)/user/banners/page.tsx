@@ -24,11 +24,12 @@ export default async function page() {
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add Banner
 				</Link>
 			</div>
-			{/* <DataTable columns={columns} data={banners.data} /> */}
+
 			<DataTable
 				columns={columns}
 				data={banners.data}
 				onReorder={reorderBanners}
+				key={banners.data.length}
 			/>
 		</>
 	);

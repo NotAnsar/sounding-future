@@ -206,7 +206,8 @@ export async function deletePartner(id: string): Promise<DeleteState> {
 			await prisma.socialLinks.delete({ where: { id: partner.socialId } });
 		}
 
-		revalidatePath('/', 'layout');
+		revalidatePath('/user/curated', 'layout');
+
 		return { success: true, message: 'Partner deleted successfully' };
 	} catch (error) {
 		console.error('Delete error:', error);

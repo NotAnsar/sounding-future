@@ -36,6 +36,7 @@ export default async function page() {
 				columns={columns}
 				data={data.data}
 				onReorder={reorderPartner}
+				key={data.data.length}
 			/>
 		</>
 	);

@@ -1,5 +1,6 @@
 'use server';
 
+// import { AWS_URL, AWS_S3_BUCKET_NAME } from '@/config/links';
 import { AWS_URL } from '@/config/links';
 import { s3 } from '@/lib/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
@@ -40,8 +41,7 @@ export async function uploadFile(
 
 		await s3.send(command);
 
-		console.log(`Successfully uploaded file: ${fileName}`);
-
+		// return `${AWS_URL}${AWS_S3_BUCKET_NAME}/${fileName}`;
 		return `${AWS_URL}${fileName}`;
 	} catch (error) {
 		console.error('Error uploading file to S3:', error);

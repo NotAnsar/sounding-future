@@ -45,6 +45,7 @@ export default async function page() {
 				columns={columns}
 				data={sourceFormats.data}
 				onReorder={reorderFormat}
+				key={sourceFormats.data.length}
 			/>
 		</>
 	);

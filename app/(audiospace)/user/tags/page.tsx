@@ -41,6 +41,7 @@ export default async function page() {
 				columns={columns}
 				data={genres.data}
 				onReorder={reorderGenre}
+				key={genres.data.length}
 			/>
 		</>
 	);
