@@ -101,6 +101,7 @@ model Partner {
   studioPic   String?      @map("studio_pic")
   bio         String?
   socialId    String?      @map("social_id") 
+  displayOrder    Int      @default(autoincrement())
   createdAt   DateTime     @default(now()) @map("created_at")
   
   // Relations
@@ -117,7 +118,8 @@ model Partner {
 model Genre {
   id        String        @id @default(cuid()) 
   name      String
-  createdAt DateTime      @default(now()) @map("created_at")
+  createdAt DateTime      @default(now()) @map("created_at") 
+  displayOrder    Int      @default(autoincrement())
 
   // Relations
   artists   ArtistGenre[]
@@ -184,6 +186,7 @@ model SourceFormat {
   id        String    @id @default(cuid()) 
   name      String
   createdAt DateTime  @default(now()) @map("created_at")
+  displayOrder    Int      @default(autoincrement())
   tracks    Track[]
 
   @@map("source_format")

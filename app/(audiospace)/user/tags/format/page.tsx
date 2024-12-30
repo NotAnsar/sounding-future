@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { CreateFormatButton } from '@/components/tags/SourceForm/table/format-dialog';
 import { getSourceFormats } from '@/db/source-format';
 import Error from '@/components/Error';
+import { reorderFormat } from '@/actions/format-action';
 
 export default async function page() {
 	const [session, sourceFormats] = await Promise.all([
@@ -40,7 +41,11 @@ export default async function page() {
 			</div>
 			<TagsNav isFormatPage />
 
-			<DataTable columns={columns} data={sourceFormats.data} />
+			<DataTable
+				columns={columns}
+				data={sourceFormats.data}
+				onReorder={reorderFormat}
+			/>
 		</>
 	);
 }

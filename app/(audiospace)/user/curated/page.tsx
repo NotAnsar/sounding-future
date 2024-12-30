@@ -1,3 +1,4 @@
+import { reorderPartner } from '@/actions/curated';
 import { columns } from '@/components/CuratedCrud/table/columns';
 import { DataTable } from '@/components/CuratedCrud/table/data-table';
 import Error from '@/components/Error';
@@ -31,7 +32,11 @@ export default async function page() {
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add Partner
 				</Link>
 			</div>
-			<DataTable columns={columns} data={data.data} />
+			<DataTable
+				columns={columns}
+				data={data.data}
+				onReorder={reorderPartner}
+			/>
 		</>
 	);
 }

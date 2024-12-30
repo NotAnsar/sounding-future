@@ -4,7 +4,7 @@ import { type GenreDetails, GENRES_GRADIENT } from '@/db/genre';
 
 export default function GenreDetails({ genre }: { genre: GenreDetails }) {
 	const currentGradient =
-		GENRES_GRADIENT[Math.floor(Math.random() * GENRES_GRADIENT.length)];
+		GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length];
 
 	return (
 		<div

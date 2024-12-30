@@ -95,3 +95,24 @@ export async function deleteFormat(id: string): Promise<DeleteFormatState> {
 		return { success: false, message: 'Failed to delete source format' };
 	}
 }
+
+export async function reorderFormat(
+	updates: { id: string; displayOrder: number }[]
+) {
+	try {
+		await prisma.$transaction(
+			updates.map((update) =>
+				prisma.sourceFormat.update({
+					where: { id: update.id },
+					data: { displayOrder: update.displayOrder },
+				})
+			)
+		);
+
+		revalidatePath('/', 'layout');
+		return { success: true };
+	} catch (error) {
+		console.error('Failed to reorder source formats:', error);
+		return { success: false, error: 'Failed to reorder source formats' };
+	}
+}

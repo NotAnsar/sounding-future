@@ -1,13 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma, type SourceFormat } from '@prisma/client';
 
-// class SourceFormatError extends Error {
-// 	constructor(message: string, public readonly cause?: unknown) {
-// 		super(message);
-// 		this.name = 'SourceFormatError';
-// 	}
-// }
-
 export async function getSourceFormats(): Promise<{
 	data: SourceFormat[];
 	message?: string;
@@ -15,7 +8,7 @@ export async function getSourceFormats(): Promise<{
 }> {
 	try {
 		const sourceFormats = await prisma.sourceFormat.findMany({
-			orderBy: { createdAt: 'desc' },
+			orderBy: { displayOrder: 'asc' },
 		});
 
 		return { data: sourceFormats, error: false };

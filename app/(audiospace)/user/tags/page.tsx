@@ -1,3 +1,4 @@
+import { reorderGenre } from '@/actions/genre-action';
 import BreadCrumb from '@/components/BreadCrumb';
 import Error from '@/components/Error';
 import { columns } from '@/components/tags/GenreForm/table/columns';
@@ -36,7 +37,11 @@ export default async function page() {
 				<CreateGenreButton />
 			</div>
 			<TagsNav />
-			<DataTable columns={columns} data={genres.data} />
+			<DataTable
+				columns={columns}
+				data={genres.data}
+				onReorder={reorderGenre}
+			/>
 		</>
 	);
 }

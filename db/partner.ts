@@ -1,13 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { Partner, Prisma, SocialLinks } from '@prisma/client';
 
-// class PartnerError extends Error {
-// 	constructor(message: string, public readonly cause?: unknown) {
-// 		super(message);
-// 		this.name = 'PartnerError';
-// 	}
-// }
-
 export async function getPartnersStats(): Promise<{
 	data: PartnerStats[];
 	message?: string;
@@ -21,7 +14,7 @@ export async function getPartnersStats(): Promise<{
 					select: { _count: { select: { likes: true, listeners: true } } },
 				},
 			},
-			orderBy: { createdAt: 'desc' },
+			orderBy: { displayOrder: 'asc' },
 		});
 
 		return {
@@ -68,7 +61,7 @@ export async function getPartners(): Promise<{
 }> {
 	try {
 		const partners = await prisma.partner.findMany({
-			orderBy: { createdAt: 'desc' },
+			orderBy: { displayOrder: 'asc' },
 		});
 
 		return { data: partners, error: false };

@@ -221,3 +221,24 @@ export async function deletePartner(id: string): Promise<DeleteState> {
 		return { success: false, message: 'Failed to delete partner' };
 	}
 }
+
+export async function reorderPartner(
+	updates: { id: string; displayOrder: number }[]
+) {
+	try {
+		await prisma.$transaction(
+			updates.map((update) =>
+				prisma.partner.update({
+					where: { id: update.id },
+					data: { displayOrder: update.displayOrder },
+				})
+			)
+		);
+
+		revalidatePath('/', 'layout');
+		return { success: true };
+	} catch (error) {
+		console.error('Failed to reorder partners:', error);
+		return { success: false, error: 'Failed to reorder partners' };
+	}
+}

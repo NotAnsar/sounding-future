@@ -14,7 +14,7 @@ type GenreRes = { data: Genre[]; error?: boolean; message?: string };
 export async function getGenres(): Promise<GenreRes> {
 	try {
 		const genres = await prisma.genre.findMany({
-			orderBy: { createdAt: 'desc' },
+			orderBy: { displayOrder: 'asc' },
 		});
 
 		return { data: genres, error: false };

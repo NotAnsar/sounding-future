@@ -54,9 +54,11 @@ export default function GenresCarousel({
 								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white cursor-pointer'
 								style={{
 									background: `linear-gradient(180deg, ${
-										GENRES_GRADIENT[i % GENRES_GRADIENT.length].from
+										GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length]
+											.from
 									} 0%, ${
-										GENRES_GRADIENT[i % GENRES_GRADIENT.length].to
+										GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length]
+											.to
 									} 100%)`,
 								}}
 							>

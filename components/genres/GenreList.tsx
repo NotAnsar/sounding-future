@@ -23,8 +23,10 @@ export default function GenreList({
 				<GenreCard
 					genre={genre}
 					key={i}
-					from={GENRES_GRADIENT[i % GENRES_GRADIENT.length].from}
-					to={GENRES_GRADIENT[i % GENRES_GRADIENT.length].to}
+					from={
+						GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length].from
+					}
+					to={GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length].to}
 				/>
 			))}
 		</div>

@@ -95,3 +95,24 @@ export async function deleteGenre(id: string): Promise<DeleteGenreState> {
 		return { success: false, message: 'Failed to delete genre' };
 	}
 }
+
+export async function reorderGenre(
+	updates: { id: string; displayOrder: number }[]
+) {
+	try {
+		await prisma.$transaction(
+			updates.map((update) =>
+				prisma.genre.update({
+					where: { id: update.id },
+					data: { displayOrder: update.displayOrder },
+				})
+			)
+		);
+
+		revalidatePath('/', 'layout');
+		return { success: true };
+	} catch (error) {
+		console.error('Failed to reorder genres:', error);
+		return { success: false, error: 'Failed to reorder genres' };
+	}
+}
