@@ -17,6 +17,7 @@ import {
 	Tags,
 	UserIcon,
 	UserRoundCog,
+	Layout,
 } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
@@ -159,6 +160,15 @@ export default function UserNav({
 							>
 								<TableOfContents className='w-4 h-auto mr-2 ' />
 								Banners Management
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/sections'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<Layout className='w-4 h-auto mr-2 ' />
+								Sections Management
 							</Link>
 						</DropdownMenuItem>
 					</>

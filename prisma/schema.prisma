@@ -200,6 +200,7 @@ model SocialLinks {
   vimeo     String?
   website   String?
   youtube   String?
+  mastodon  String?
   createdAt DateTime  @default(now()) @map("created_at")
   
   // Relations
@@ -319,4 +320,21 @@ model Banner {
     displayOrder    Int      @default(autoincrement())
 
     @@map("banners")
+}
+
+
+model ContentSection {
+    id        String   @id @default(cuid())
+    title     String
+    header    String?  @db.Text
+    content   String?   @db.Text
+    items     String[] 
+    buttonLabel String? 
+    buttonLink  String? 
+    footer    String?  @db.Text
+    published Boolean  @default(false)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt
+
+    @@map("content_sections")
 }
