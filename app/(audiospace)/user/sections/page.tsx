@@ -1,4 +1,6 @@
+import { EditSocialsButton } from '@/components/sections/SocialMediaDialog';
 import { buttonVariants } from '@/components/ui/button';
+import { getSocialLinks } from '@/db/section';
 import { cn } from '@/lib/utils';
 import {
 	FileText,
@@ -23,20 +25,29 @@ const pages = [
 ];
 
 const sections = [
-	{ title: 'Social Media', link: '/user/social-media', icon: Share },
+	// { title: 'Social Links', link: '/user/social-media', icon: Share },
 	{ title: 'Newsletter', link: '/user/newsletter', icon: Mail },
 	{ title: 'Support Us', link: '/user/support', icon: Heart },
 	{ title: 'Become Supporter', link: '/user/supporter', icon: Star },
 	{ title: 'FAQ', link: '/user/faq', icon: HelpCircle },
 ];
 
-export default function SectionsPage() {
+export async function generateMetadata() {
+	return {
+		title: 'Edit Sections',
+		description: 'Manage and customize your website pages and sections.',
+	};
+}
+
+export default async function SectionsPage() {
+	const { data: socialLinks } = await getSocialLinks();
+
 	return (
 		<>
 			<div className='mt-4 mb-4 sm:mb-12 gap-2'>
 				<h2 className='text-3xl md:text-5xl font-semibold'>Edit Sections</h2>
 				<p className='text-muted mt-2'>
-					Manage and customize your website sections
+					Manage and customize your website pages and sections.
 				</p>
 			</div>
 
@@ -75,6 +86,21 @@ export default function SectionsPage() {
 					</h2>
 
 					<div className='grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+						<EditSocialsButton data={socialLinks || undefined}>
+							<div
+								className={cn(
+									buttonVariants({ variant: 'outline' }),
+									'group hover:border-primary hover:bg-primary/5 transition-all duration-200 h-auto py-6 w-full'
+								)}
+							>
+								<div className='flex items-center gap-3 w-full'>
+									<Share className='w-5 h-5 group-hover:text-primary transition-colors' />
+
+									<span className='font-medium'>Social Links</span>
+									<ChevronRight className='w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity' />
+								</div>
+							</div>
+						</EditSocialsButton>
 						{sections.map((section) => (
 							<Link
 								key={section.title}
