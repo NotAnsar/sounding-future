@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { SocialLinks } from '@prisma/client';
+import { FAQ, SocialLinks } from '@prisma/client';
 
 type SocialRes = {
 	data: SocialLinks | null;
@@ -25,6 +25,30 @@ export async function getSocialLinks(): Promise<SocialRes> {
 			data: null,
 			error: true,
 			message: 'Unable to retrieve social links. Please try again later.',
+		};
+	}
+}
+
+type FaqRes = {
+	data: FAQ[];
+	error?: boolean;
+	message?: string;
+};
+
+export async function getFaqs(): Promise<FaqRes> {
+	try {
+		const faqs = await prisma.fAQ.findMany({
+			orderBy: { displayOrder: 'asc' },
+		});
+
+		return { data: faqs, error: false };
+	} catch (error) {
+		console.error('Error fetching faqs:', error);
+
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve faqs. Please try again later.',
 		};
 	}
 }

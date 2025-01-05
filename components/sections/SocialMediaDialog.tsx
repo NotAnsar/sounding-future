@@ -58,7 +58,7 @@ export function SocialsDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setopen}>
-			<DialogContent className='sm:max-w-[700px]'>
+			<DialogContent className='sm:max-w-[620px]'>
 				<DialogHeader>
 					<DialogTitle>Update Social Links</DialogTitle>
 					<DialogDescription>

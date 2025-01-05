@@ -29,7 +29,7 @@ const sections = [
 	{ title: 'Newsletter', link: '/user/newsletter', icon: Mail },
 	{ title: 'Support Us', link: '/user/support', icon: Heart },
 	{ title: 'Become Supporter', link: '/user/supporter', icon: Star },
-	{ title: 'FAQ', link: '/user/faq', icon: HelpCircle },
+	{ title: 'FAQ', link: '/user/sections/faq', icon: HelpCircle },
 ];
 
 export async function generateMetadata() {

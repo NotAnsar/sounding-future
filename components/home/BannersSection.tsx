@@ -2,13 +2,12 @@ import React from 'react';
 import { buttonVariants } from '../ui/button';
 import Link from 'next/link';
 import { getBanners } from '@/db/banners';
-import Error from '../Error';
 
 export default async function BannersSection() {
 	const banners = await getBanners(true);
 
 	if (banners.error) {
-		return <Error message={banners.message} />;
+		return null;
 	}
 
 	return (
