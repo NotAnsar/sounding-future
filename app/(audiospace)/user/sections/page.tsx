@@ -21,7 +21,7 @@ import {
 import Link from 'next/link';
 
 const pages = [
-	{ title: 'Legal', link: '/user/legal', icon: FileText },
+	{ title: 'Legal', link: '/user/sections/legal', icon: FileText },
 	{ title: 'Privacy', link: '/user/privacy', icon: Shield },
 	{ title: 'About', link: '/user/privacy', icon: Info },
 	{ title: 'Support Us', link: '/user/privacy', icon: Heart },
@@ -29,9 +29,7 @@ const pages = [
 
 const sections = [
 	{ title: 'FAQ', link: '/user/sections/faq', icon: HelpCircle },
-	// { title: 'Newsletter', link: '/user/newsletter', icon: Mail },
 	{ title: 'Banners', link: '/user/banners', icon: List },
-	// { title: 'Become Supporter', link: '/user/supporter', icon: Star },
 ];
 
 export async function generateMetadata() {

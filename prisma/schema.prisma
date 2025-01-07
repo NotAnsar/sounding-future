@@ -359,3 +359,34 @@ model NewsLetter {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model TermsPage {
+  id            String         @id @default(cuid())
+  title         String        
+  introduction  String?        @db.Text
+  footer        String?        @db.Text
+  published     Boolean       @default(false)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt
+  sections      TermsSection[]
+
+  @@map("terms_pages")
+}
+
+model TermsSection {
+  id            String    @id @default(cuid())
+  title         String
+  content       String    @db.Text
+  items         String[] 
+  footer        String?        @db.Text
+  order         Int       @default(autoincrement())
+  termsPageId   String    @map("terms_page_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  termsPage     TermsPage @relation(fields: [termsPageId], references: [id], onDelete: Cascade)
+
+  @@index([termsPageId])
+  @@map("terms_sections")
+}
