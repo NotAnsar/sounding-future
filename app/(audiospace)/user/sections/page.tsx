@@ -1,7 +1,8 @@
+import { EditSubscriptionButton } from '@/components/sections/BecameSupporterDialog';
 import { EditNewsLetterButton } from '@/components/sections/NewsLetterDialog';
 import { EditSocialsButton } from '@/components/sections/SocialMediaDialog';
 import { buttonVariants } from '@/components/ui/button';
-import { getNewsLetter, getSocialLinks } from '@/db/section';
+import { getNewsLetter, getSocialLinks, getSubscription } from '@/db/section';
 import { cn } from '@/lib/utils';
 import {
 	FileText,
@@ -30,7 +31,7 @@ const sections = [
 	{ title: 'FAQ', link: '/user/sections/faq', icon: HelpCircle },
 	// { title: 'Newsletter', link: '/user/newsletter', icon: Mail },
 	{ title: 'Banners', link: '/user/banners', icon: List },
-	{ title: 'Become Supporter', link: '/user/supporter', icon: Star },
+	// { title: 'Become Supporter', link: '/user/supporter', icon: Star },
 ];
 
 export async function generateMetadata() {
@@ -41,10 +42,8 @@ export async function generateMetadata() {
 }
 
 export default async function SectionsPage() {
-	const [{ data: socialLinks }, { data: newsletter }] = await Promise.all([
-		getSocialLinks(),
-		getNewsLetter(),
-	]);
+	const [{ data: socialLinks }, { data: newsletter }, { data: subscription }] =
+		await Promise.all([getSocialLinks(), getNewsLetter(), getSubscription()]);
 
 	return (
 		<>
@@ -120,6 +119,21 @@ export default async function SectionsPage() {
 								</div>
 							</div>
 						</EditNewsLetterButton>
+						<EditSubscriptionButton data={subscription || undefined}>
+							<div
+								className={cn(
+									buttonVariants({ variant: 'outline' }),
+									'group hover:border-primary hover:bg-primary/5 transition-all duration-200 h-auto py-6 w-full'
+								)}
+							>
+								<div className='flex items-center gap-3 w-full'>
+									<Star className='w-5 h-5 group-hover:text-primary transition-colors' />
+
+									<span className='font-medium'>Become Supporter</span>
+									<ChevronRight className='w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity' />
+								</div>
+							</div>
+						</EditSubscriptionButton>
 						{sections.map((section) => (
 							<Link
 								key={section.title}

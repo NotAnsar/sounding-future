@@ -20,12 +20,12 @@ import { toast } from '@/hooks/use-toast';
 import { NewsLetter } from '@prisma/client';
 import ErrorMessage from '../ErrorMessage';
 import {
-	NewsLetterState,
-	updateNewsLetter,
-} from '@/actions/sections/newsletter';
+	SubscriptionState,
+	updateSubscription,
+} from '@/actions/sections/subscription';
 import { Textarea } from '../ui/textarea';
 
-export function NewsLetterDialog({
+export function SubscriptionDialog({
 	open,
 	setopen,
 	initialData,
@@ -34,8 +34,8 @@ export function NewsLetterDialog({
 	open: boolean;
 	setopen: Dispatch<SetStateAction<boolean>>;
 }) {
-	const initialState: NewsLetterState = { message: null, errors: {} };
-	const [state, action] = useFormState(updateNewsLetter, initialState);
+	const initialState: SubscriptionState = { message: null, errors: {} };
+	const [state, action] = useFormState(updateSubscription, initialState);
 
 	useEffect(() => {
 		if (!state) return;
@@ -46,8 +46,8 @@ export function NewsLetterDialog({
 				variant: state.success ? 'default' : 'destructive',
 				title: state.success ? 'Success' : 'Error',
 				description: state.success
-					? 'NewsLetter Section updated successfully'
-					: state.message || 'Failed to update NewsLetter Section',
+					? 'Become a Supporter Section updated successfully'
+					: state.message || 'Failed to update Become a Supporter Section',
 			});
 		};
 
@@ -60,39 +60,15 @@ export function NewsLetterDialog({
 		<Dialog open={open} onOpenChange={setopen}>
 			<DialogContent className='sm:max-w-[620px]'>
 				<DialogHeader>
-					<DialogTitle>Update NewsLetter Section</DialogTitle>
+					<DialogTitle>Update Become a Supporter Section</DialogTitle>
 					<DialogDescription>
 						{
-							"Update NewsLetter Section. Enter the NewsLetter details and click save when you're done."
+							"Update Become a Supporter Section. Enter the Become a Supporter details and click save when you're done."
 						}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form className='grid gap-2 ' id='update' action={action}>
-					<div className='grid gap-2 items-center'>
-						<Label
-							htmlFor='title'
-							className={cn(state?.errors?.title ? 'text-destructive' : '')}
-						>
-							Title
-						</Label>
-
-						<Input
-							type='text'
-							name='title'
-							id='title'
-							defaultValue={initialData?.title || undefined}
-							className={cn(
-								'flex-1',
-								state?.errors?.title
-									? 'border-destructive focus-visible:ring-destructive '
-									: ''
-							)}
-							required
-						/>
-
-						<ErrorMessage errors={state?.errors?.title} />
-					</div>
 					<div className='grid gap-2 items-center'>
 						<Label
 							htmlFor='content'
@@ -167,6 +143,30 @@ export function NewsLetterDialog({
 						<ErrorMessage errors={state?.errors?.link} />
 					</div>
 
+					<div className='grid gap-2 items-center'>
+						<Label
+							htmlFor='footer'
+							className={cn(state?.errors?.footer ? 'text-destructive' : '')}
+						>
+							Footer Text
+						</Label>
+
+						<Input
+							type='text'
+							name='footer'
+							id='footer'
+							defaultValue={initialData?.footer || undefined}
+							className={cn(
+								'flex-1',
+								state?.errors?.footer
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
+						/>
+
+						<ErrorMessage errors={state?.errors?.footer} />
+					</div>
+
 					<DialogFooter>
 						{(state?.message || state?.errors) && (
 							<p className='text-sm font-medium text-destructive mr-auto'>
@@ -191,12 +191,12 @@ function PendingButton() {
 			) : (
 				<Plus className='mr-2 h-4 w-4' />
 			)}
-			Update NewsLetter
+			Update Become a Supporter
 		</Button>
 	);
 }
 
-export function EditNewsLetterButton({
+export function EditSubscriptionButton({
 	data,
 	children,
 }: {
@@ -210,7 +210,7 @@ export function EditNewsLetterButton({
 			<span className='cursor-pointer' onClick={() => setOpen(true)}>
 				{children}
 			</span>
-			<NewsLetterDialog
+			<SubscriptionDialog
 				open={open}
 				setopen={setOpen}
 				initialData={data}

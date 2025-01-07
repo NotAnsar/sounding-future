@@ -80,3 +80,36 @@ export async function getNewsLetter(): Promise<NewsLetterRes> {
 		};
 	}
 }
+
+type SubscriptionRes = {
+	data: NewsLetter | null;
+	error?: boolean;
+	message?: string;
+};
+
+export async function getSubscription(): Promise<SubscriptionRes> {
+	try {
+		const newsLetter = await prisma.newsLetter.findFirst({
+			where: { id: 'cm5mkvhvr0000w6jgtu3eow1l' },
+		});
+
+		if (!newsLetter) {
+			return {
+				data: null,
+				error: true,
+				message: 'Subscription Section Data Not Found',
+			};
+		}
+
+		return { data: newsLetter, error: false };
+	} catch (error) {
+		console.error('Error fetching Subscription Section Data:', error);
+
+		return {
+			data: null,
+			error: true,
+			message:
+				'Unable to retrieve Subscription Section Data. Please try again later.',
+		};
+	}
+}

@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
 
 const NewsLetterSchema = z.object({
 	title: z.string().min(2, 'Title must be at least 2 characters').trim(),
-	content: z.string().min(2, 'Description is required').trim(),
+	content: z.string().min(2, 'Content is required').trim(),
 	link: z.string().url('Invalid NewsLetter URL').trim(),
 	label: z.string().min(2, 'Button text is required').trim(),
 });
