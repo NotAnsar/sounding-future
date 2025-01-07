@@ -1,6 +1,7 @@
+import { EditNewsLetterButton } from '@/components/sections/NewsLetterDialog';
 import { EditSocialsButton } from '@/components/sections/SocialMediaDialog';
 import { buttonVariants } from '@/components/ui/button';
-import { getSocialLinks } from '@/db/section';
+import { getNewsLetter, getSocialLinks } from '@/db/section';
 import { cn } from '@/lib/utils';
 import {
 	FileText,
@@ -14,6 +15,7 @@ import {
 	ChevronRight,
 	Layout,
 	Layers,
+	List,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -25,11 +27,10 @@ const pages = [
 ];
 
 const sections = [
-	// { title: 'Social Links', link: '/user/social-media', icon: Share },
-	{ title: 'Newsletter', link: '/user/newsletter', icon: Mail },
-	{ title: 'Support Us', link: '/user/support', icon: Heart },
-	{ title: 'Become Supporter', link: '/user/supporter', icon: Star },
 	{ title: 'FAQ', link: '/user/sections/faq', icon: HelpCircle },
+	// { title: 'Newsletter', link: '/user/newsletter', icon: Mail },
+	{ title: 'Banners', link: '/user/banners', icon: List },
+	{ title: 'Become Supporter', link: '/user/supporter', icon: Star },
 ];
 
 export async function generateMetadata() {
@@ -40,7 +41,10 @@ export async function generateMetadata() {
 }
 
 export default async function SectionsPage() {
-	const { data: socialLinks } = await getSocialLinks();
+	const [{ data: socialLinks }, { data: newsletter }] = await Promise.all([
+		getSocialLinks(),
+		getNewsLetter(),
+	]);
 
 	return (
 		<>
@@ -101,6 +105,21 @@ export default async function SectionsPage() {
 								</div>
 							</div>
 						</EditSocialsButton>
+						<EditNewsLetterButton data={newsletter || undefined}>
+							<div
+								className={cn(
+									buttonVariants({ variant: 'outline' }),
+									'group hover:border-primary hover:bg-primary/5 transition-all duration-200 h-auto py-6 w-full'
+								)}
+							>
+								<div className='flex items-center gap-3 w-full'>
+									<Mail className='w-5 h-5 group-hover:text-primary transition-colors' />
+
+									<span className='font-medium'>Newsletter</span>
+									<ChevronRight className='w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity' />
+								</div>
+							</div>
+						</EditNewsLetterButton>
 						{sections.map((section) => (
 							<Link
 								key={section.title}

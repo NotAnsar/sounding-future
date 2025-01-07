@@ -348,3 +348,13 @@ model FAQ {
   updatedAt DateTime @updatedAt
   displayOrder    Int      @default(autoincrement())
 }
+
+model NewsLetter {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  link      String  
+  label     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

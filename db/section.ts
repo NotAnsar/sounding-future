@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { FAQ, SocialLinks } from '@prisma/client';
+import { FAQ, NewsLetter, SocialLinks } from '@prisma/client';
 
 type SocialRes = {
 	data: SocialLinks | null;
@@ -49,6 +49,34 @@ export async function getFaqs(): Promise<FaqRes> {
 			data: [],
 			error: true,
 			message: 'Unable to retrieve faqs. Please try again later.',
+		};
+	}
+}
+
+type NewsLetterRes = {
+	data: NewsLetter | null;
+	error?: boolean;
+	message?: string;
+};
+
+export async function getNewsLetter(): Promise<NewsLetterRes> {
+	try {
+		const newsLetter = await prisma.newsLetter.findFirst({
+			where: { id: 'cm5mjsckm000013no8aqexof6' },
+		});
+
+		if (!newsLetter) {
+			return { data: null, error: true, message: 'News letter Not Found' };
+		}
+
+		return { data: newsLetter, error: false };
+	} catch (error) {
+		console.error('Error fetching news letter:', error);
+
+		return {
+			data: null,
+			error: true,
+			message: 'Unable to retrieve news letter. Please try again later.',
 		};
 	}
 }
