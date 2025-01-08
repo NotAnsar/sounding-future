@@ -1,4 +1,4 @@
-import { getTermsData } from '@/db/section';
+import { getTermsData } from '@/db/pages';
 import React from 'react';
 
 export default async function TermsOfUse() {

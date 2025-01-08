@@ -22,9 +22,9 @@ import Link from 'next/link';
 
 const pages = [
 	{ title: 'Legal', link: '/user/sections/legal', icon: FileText },
-	{ title: 'Privacy', link: '/user/privacy', icon: Shield },
-	{ title: 'About', link: '/user/privacy', icon: Info },
-	{ title: 'Support Us', link: '/user/privacy', icon: Heart },
+	{ title: 'Privacy', link: '/user/sections/privacy', icon: Shield },
+	{ title: 'About', link: '/user/sections/about', icon: Info },
+	{ title: 'Support Us', link: '/user/sections/support', icon: Heart },
 ];
 
 const sections = [

@@ -16,7 +16,7 @@ type NewsLetterData = z.infer<typeof NewsLetterSchema>;
 
 export type NewsLetterState = State<NewsLetterData> & {
 	success?: boolean;
-};
+} ;
 
 export async function updateNewsLetter(
 	prevState: NewsLetterState,

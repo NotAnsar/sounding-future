@@ -1,10 +1,14 @@
-'use client';
 import BreadCrumb from '@/components/BreadCrumb';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import React from 'react';
+import { CreateTermsSection } from '@/components/sections/LegalSectionDialog';
+import TermsSectionsList, {
+	EditContent,
+} from '@/components/sections/terms/TermsSectionsList';
+import { getTermsData } from '@/db/pages';
 
-export default function page() {
+export default async function page() {
+	const { data } = await getTermsData();
+	console.log(data);
+
 	return (
 		<div className='mt-4'>
 			<div className='flex flex-col sm:flex-row justify-between gap-2'>
@@ -23,10 +27,20 @@ export default function page() {
 					<p className='text-muted mt-2'>Manage your legal page</p>
 				</div>
 
-				<Button>
-					<Plus className='w-4 h-4 mr-2' />
-					Add Section
-				</Button>
+				<CreateTermsSection />
+			</div>
+			<div className='mt-6 space-y-4'>
+				<EditContent
+					content={data?.introduction || undefined}
+					type='terms'
+					field='introduction'
+				/>
+				<TermsSectionsList sections={data?.sections || []} />
+				<EditContent
+					content={data?.footer || undefined}
+					type='terms'
+					field='footer'
+				/>
 			</div>
 		</div>
 	);
