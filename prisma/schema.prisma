@@ -390,3 +390,15 @@ model TermsSection {
   @@index([termsPageId])
   @@map("terms_sections")
 }
+
+model SubscriptionCard {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  priceInfo   String   
+  reasonsTitle String  
+  reasons     String[] 
+  footer    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

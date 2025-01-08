@@ -183,7 +183,7 @@ export async function updatePartner(
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 
 		return { message: 'Failed to update partner' };
 	}

@@ -7,7 +7,6 @@ import { getTermsData } from '@/db/pages';
 
 export default async function page() {
 	const { data } = await getTermsData();
-	console.log(data);
 
 	return (
 		<div className='mt-4'>

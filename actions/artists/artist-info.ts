@@ -139,9 +139,6 @@ export async function updateArtist(
 		const oldGenres = prevState?.prev?.genres || [];
 		const genresToAdd = genres.filter((id) => !oldGenres.includes(id));
 		const genresToRemove = oldGenres.filter((id) => !genres.includes(id));
-		console.log('oldGenres:', oldGenres);
-		console.log('genresToAdd:', genresToAdd);
-		console.log('genresToRemove:', genresToRemove);
 
 		await prisma.$transaction(async (tx) => {
 			if (genresToAdd.length > 0) {

@@ -24,7 +24,7 @@ const pages = [
 	{ title: 'Legal', link: '/user/sections/legal', icon: FileText },
 	{ title: 'Privacy', link: '/user/sections/privacy', icon: Shield },
 	{ title: 'About', link: '/user/sections/about', icon: Info },
-	{ title: 'Support Us', link: '/user/sections/support', icon: Heart },
+	{ title: 'Support Us', link: '/user/sections/support-us', icon: Heart },
 ];
 
 const sections = [
@@ -77,6 +77,21 @@ export default async function SectionsPage() {
 								</div>
 							</Link>
 						))}
+						{/* <EditSupportUsCardButton data={subscriptionCard || undefined}>
+							<div
+								className={cn(
+									buttonVariants({ variant: 'outline' }),
+									'group hover:border-primary hover:bg-primary/5 transition-all duration-200 h-auto py-6 w-full'
+								)}
+							>
+								<div className='flex items-center gap-3 w-full'>
+									<Heart className='w-5 h-5 group-hover:text-primary transition-colors' />
+
+									<span className='font-medium'>Support Us</span>
+									<ChevronRight className='w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity' />
+								</div>
+							</div>
+						</EditSupportUsCardButton> */}
 					</div>
 				</section>
 
