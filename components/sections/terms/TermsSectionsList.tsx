@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Edit, GripVertical, MoreHorizontal, Trash } from 'lucide-react';
+import { GripVertical, MoreHorizontal } from 'lucide-react';
 import {
 	DndContext,
 	DragEndEvent,
@@ -81,7 +81,7 @@ function SortableSection({ section }: { section: TermsSection }) {
 						>
 							<GripVertical className='h-5 w-5 text-muted-foreground' />
 						</div>
-						<span className='font-semibold text-lg'>{section.title} </span>
+						<span className='font-semibold text-xl'>{section.title} </span>
 					</div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -92,16 +92,11 @@ function SortableSection({ section }: { section: TermsSection }) {
 						<DropdownMenuContent align='end'>
 							<EditTermsSection data={section}>
 								<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-									<Edit className='h-4 w-4 mr-2' />
 									Edit Section
 								</DropdownMenuItem>
 							</EditTermsSection>
-							<DropdownMenuItem
-								className='text-destructive focus:text-destructive'
-								onSelect={handleDelete}
-							>
-								<Trash className='h-4 w-4 mr-2' />
-								Delete
+							<DropdownMenuItem onSelect={handleDelete}>
+								Delete Section
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -208,7 +203,7 @@ export function EditContent({
 }) {
 	return (
 		<div className='bg-player rounded-lg p-6 '>
-			<div className='flex items-center justify-between mb-4'>
+			<div className='flex items-center justify-between mb-4 font-semibold text-xl'>
 				{field.charAt(0).toUpperCase() + field.slice(1)} Content
 				<UpdateTermsMetadata defaultValue={content} field={field} type={type} />
 			</div>
