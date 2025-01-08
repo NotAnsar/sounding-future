@@ -64,7 +64,7 @@ export default async function page({
 							<ul className='mt-2 px-10 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
 								<li className='flex gap-3 '>
 									<Icons.tag className='min-w-5 max-w-5 h-auto aspect-auto fill-foreground text-nowrap flex-nowrap' />{' '}
-									<div className='text-sm'>
+									<div className='text-sm text-left'>
 										{track.genres.map((g) => g.genre.name).join(', ')}
 									</div>
 								</li>
