@@ -13,7 +13,6 @@ import {
 	Handshake,
 	MicVocal,
 	Newspaper,
-	TableOfContents,
 	Tags,
 	UserIcon,
 	UserRoundCog,
