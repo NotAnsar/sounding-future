@@ -36,7 +36,7 @@ export default async function page() {
 							isCurrent: true,
 						},
 					]}
-				/>{' '}
+				/>
 				<CreateFormatButton />
 			</div>
 			<TagsNav isFormatPage />

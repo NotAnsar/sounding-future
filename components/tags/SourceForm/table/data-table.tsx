@@ -39,15 +39,8 @@ import {
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { GripVertical, RotateCcw } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -161,17 +154,17 @@ export function DataTable<TData extends { id: string }, TValue>({
 
 	return (
 		<>
-			<div className='flex flex-col lg:flex-row items-center py-4 gap-2 justify-between'>
-				<Input
-					placeholder='Filter by Format Name'
-					className='flex gap-1 w-full md:w-80'
-					value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-					onChange={(event) =>
-						table.getColumn('title')?.setFilterValue(event.target.value)
-					}
-				/>
+			{/* <div className='flex flex-col lg:flex-row items-center py-4 gap-2 justify-between'> */}
+			<Input
+				placeholder='Filter by Format Name'
+				className='flex gap-1 w-full md:w-80 mb-2'
+				value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+				onChange={(event) =>
+					table.getColumn('title')?.setFilterValue(event.target.value)
+				}
+			/>
 
-				<div className='flex items-center gap-2 w-full lg:w-[225px] text-sm'>
+			{/* <div className='flex items-center gap-2 w-full lg:w-[225px] text-sm'>
 					<Select
 						onValueChange={(value) => {
 							if (value === '') {
@@ -212,8 +205,8 @@ export function DataTable<TData extends { id: string }, TValue>({
 							<RotateCcw className='h-[13px] w-[13px] mt-[2px]' />
 						</Button>
 					)}
-				</div>
-			</div>
+				</div> */}
+			{/* </div> */}
 
 			<div className='rounded-md border border-transparent'>
 				<Table>

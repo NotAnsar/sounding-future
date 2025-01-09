@@ -1,23 +1,14 @@
 import ContactUsButton from '@/components/termsAndLegal/ContactUsButton';
+import FAQ from '@/components/termsAndLegal/FAQ';
 import NewsLetter from '@/components/termsAndLegal/NewsLetter';
 import TermsLinks from '@/components/termsAndLegal/TermsLinks';
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '@/components/ui/accordion';
 import { buttonVariants } from '@/components/ui/button';
 import { consumerCards, producerCards } from '@/config/about';
 import { IconProps } from '@/config/sidenav';
-import { getFaqs } from '@/db/section';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import React from 'react';
 
 export default async function page() {
-	const { data: Faq } = await getFaqs();
-
 	return (
 		<div className='grid gap-14 '>
 			<div className='max-w-6xl mt-4'>
@@ -70,41 +61,7 @@ export default async function page() {
 				</div>
 			</div>
 			<div className='max-w-3xl space-y-10'>
-				{Faq.length > 0 && (
-					<div className='space-y-4'>
-						<h1 className='text-3xl font-bold '>{'FAQ'}</h1>
-
-						<Accordion
-							type='single'
-							className='grid gap-4 dark:bg-[#141B29]'
-							collapsible
-						>
-							{Faq.map((f, i) => (
-								<AccordionItem
-									value={f.question}
-									key={i}
-									className='border border-foreground rounded-md '
-								>
-									<AccordionTrigger className='text-[17px] font-bold  px-5 hover:no-underline data-[state=open]:border-foreground border-b border-transparent'>
-										{f.question}
-									</AccordionTrigger>
-									<AccordionContent className='text-base px-5 pt-5'>
-										{f.answer}{' '}
-										{f.link && (
-											<Link
-												href={f.link}
-												target='_blank'
-												className='text-primary-foreground hover:underline'
-											>
-												Click here
-											</Link>
-										)}
-									</AccordionContent>
-								</AccordionItem>
-							))}
-						</Accordion>
-					</div>
-				)}
+				<FAQ />
 
 				<NewsLetter />
 				<TermsLinks className='space-y-10' />
