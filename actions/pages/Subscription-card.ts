@@ -49,9 +49,10 @@ export async function updateSubscriptionCard(
 		validatedFields.data;
 
 	try {
-		await prisma.subscriptionCard.update({
+		await prisma.subscriptionCard.upsert({
 			where: { id: 'cm5of2z7j0000m9p63r1b6qmw' },
-			data: { title, subtitle, priceInfo, reasonsTitle, reasons, footer },
+			create: { title, subtitle, priceInfo, reasonsTitle, reasons, footer },
+			update: { title, subtitle, priceInfo, reasonsTitle, reasons, footer },
 		});
 
 		revalidatePath('/', 'layout');

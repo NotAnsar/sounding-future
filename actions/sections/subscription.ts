@@ -44,9 +44,10 @@ export async function updateSubscription(
 	const { content, label, link, footer } = validatedFields.data;
 
 	try {
-		await prisma.newsLetter.update({
+		await prisma.newsLetter.upsert({
 			where: { id },
-			data: { content, label, link, footer },
+			create: { content, label, link, footer },
+			update: { content, label, link, footer },
 		});
 
 		revalidatePath('/', 'layout');

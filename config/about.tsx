@@ -1,5 +1,21 @@
 import { Icons } from '@/components/icons/legal-icons';
 
+export const ConsumerIcons = {
+	card1: Icons.megaphone,
+	card2: Icons.access,
+	card3: Icons.audiomaster,
+	card4: Icons.infosquared,
+	card5: Icons.musiclibrary,
+};
+
+export const ProducerIcons = {
+	card1: Icons.listening,
+	card2: Icons.access,
+	card3: Icons.infosquared,
+	card4: Icons.infosquared,
+	card5: Icons.usersgroup,
+};
+
 export const producerCards = [
 	{
 		icon: Icons.megaphone,

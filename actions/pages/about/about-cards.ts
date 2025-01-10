@@ -5,68 +5,59 @@ import { z } from 'zod';
 import { State } from '../../utils/utils';
 import { prisma } from '@/lib/prisma';
 
-const SocialLinksSchema = z.object({
-	websiteLink: z.string().url('Invalid website URL').optional().nullable(),
-	facebook: z.string().url('Invalid Facebook URL').optional().nullable(),
-	instagram: z.string().url('Invalid Instagram URL').optional().nullable(),
-	linkedin: z.string().url('Invalid LinkedIn URL').optional().nullable(),
-	youtube: z.string().url('Invalid YouTube URL').optional().nullable(),
-	mastodon: z.string().url('Invalid Mastodon URL').optional().nullable(),
+const AboutCardsSchema = z.object({
+	heading: z.string().min(1, 'Heading is required').trim(),
+	card1: z.string().min(1, 'Card 1 is required').trim(),
+	card2: z.string().min(1, 'Card 2 is required').trim(),
+	card3: z.string().min(1, 'Card 3 is required').trim(),
+	card4: z.string().min(1, 'Card 4 is required').trim(),
+	card5: z.string().min(1, 'Card 5 is required').trim(),
 });
 
-type SocialLinksData = z.infer<typeof SocialLinksSchema>;
+type AboutCardsData = z.infer<typeof AboutCardsSchema>;
 
-export type SocialLinksState = State<SocialLinksData> & {
+export type AboutCardsState = State<AboutCardsData> & {
 	success?: boolean;
 };
 
-export async function updateSocialLinks(
-	prevState: SocialLinksState,
+export async function updateAboutCards(
+	type: 'producers' | 'consumers',
+	prevState: AboutCardsState,
 	formData: FormData
-): Promise<SocialLinksState> {
-	const id = 'cm5jsbxc80000yteee6i2hr45';
+): Promise<AboutCardsState> {
+	const id = type === 'producers' ? '2' : '1';
 
 	const processedData = {
-		websiteLink: formData.get('websiteLink')?.toString() || null,
-		facebook: formData.get('facebook')?.toString() || null,
-		instagram: formData.get('instagram')?.toString() || null,
-		linkedin: formData.get('linkedin')?.toString() || null,
-		youtube: formData.get('youtube')?.toString() || null,
-		mastodon: formData.get('mastodon')?.toString() || null,
+		heading: formData.get('heading')?.toString() || '',
+		card1: formData.get('card1')?.toString() || '',
+		card2: formData.get('card2')?.toString() || '',
+		card3: formData.get('card3')?.toString() || '',
+		card4: formData.get('card4')?.toString() || '',
+		card5: formData.get('card5')?.toString() || '',
 	};
 
-	const validatedFields = SocialLinksSchema.safeParse(processedData);
+	const validatedFields = AboutCardsSchema.safeParse(processedData);
 
 	if (!validatedFields.success) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
-			message:
-				'Failed to update social links section. Please check the form for errors.',
+			message: `Failed to update ${type} about cards section. Please check the form for errors.`,
 		};
 	}
 
-	const { websiteLink, facebook, instagram, linkedin, youtube, mastodon } =
-		validatedFields.data;
-
 	try {
-		await prisma.socialLinks.update({
+		await prisma.aboutCards.upsert({
 			where: { id },
-			data: {
-				website: websiteLink,
-				facebook,
-				instagram,
-				linkedin,
-				youtube,
-				mastodon,
-			},
+			create: validatedFields.data,
+			update: validatedFields.data,
 		});
 
 		revalidatePath('/', 'layout');
 		return { success: true };
 	} catch (error) {
-		console.error('social links section error:', error);
+		console.error(`${type} About cards section error:`, error);
 		return {
-			message: 'Failed to update social links section. Please try again.',
+			message: `Failed to update ${type} about cards section. Please try again.`,
 			success: false,
 		};
 	}

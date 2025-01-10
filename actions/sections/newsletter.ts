@@ -16,7 +16,7 @@ type NewsLetterData = z.infer<typeof NewsLetterSchema>;
 
 export type NewsLetterState = State<NewsLetterData> & {
 	success?: boolean;
-} ;
+};
 
 export async function updateNewsLetter(
 	prevState: NewsLetterState,
@@ -44,9 +44,10 @@ export async function updateNewsLetter(
 	const { content, label, link, title } = validatedFields.data;
 
 	try {
-		await prisma.newsLetter.update({
+		await prisma.newsLetter.upsert({
 			where: { id },
-			data: { content, label, link, title },
+			create: { content, label, link, title },
+			update: { content, label, link, title },
 		});
 
 		revalidatePath('/', 'layout');

@@ -49,9 +49,17 @@ export async function updateSocialLinks(
 		validatedFields.data;
 
 	try {
-		await prisma.socialLinks.update({
+		await prisma.socialLinks.upsert({
 			where: { id },
-			data: {
+			create: {
+				website: websiteLink,
+				facebook,
+				instagram,
+				linkedin,
+				youtube,
+				mastodon,
+			},
+			update: {
 				website: websiteLink,
 				facebook,
 				instagram,

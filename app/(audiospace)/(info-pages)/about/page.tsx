@@ -4,11 +4,11 @@ import FAQ from '@/components/termsAndLegal/FAQ';
 import NewsLetter from '@/components/termsAndLegal/NewsLetter';
 import TermsLinks from '@/components/termsAndLegal/TermsLinks';
 import { buttonVariants } from '@/components/ui/button';
+import { ProducerIcons, ConsumerIcons } from '@/config/about';
 import { IconProps } from '@/config/sidenav';
 import { getAboutCards } from '@/db/about';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { Icons } from '@/components/icons/legal-icons';
 
 export default async function page() {
 	const [{ data: producerCards }, { data: consumerCards }] = await Promise.all([
@@ -31,23 +31,23 @@ export default async function page() {
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
 								<AboutCard
 									description={producerCards?.card1}
-									icon={Icons.megaphone}
+									icon={ProducerIcons.card1}
 								/>
 								<AboutCard
 									description={producerCards?.card2}
-									icon={Icons.access}
+									icon={ProducerIcons.card2}
 								/>
 								<AboutCard
 									description={producerCards?.card3}
-									icon={Icons.audiomaster}
+									icon={ProducerIcons.card3}
 								/>
 								<AboutCard
 									description={producerCards?.card4}
-									icon={Icons.infosquared}
+									icon={ProducerIcons.card4}
 								/>
 								<AboutCard
 									description={producerCards?.card5}
-									icon={Icons.musiclibrary}
+									icon={ProducerIcons.card5}
 								/>
 
 								<SignUpCard />
@@ -63,23 +63,23 @@ export default async function page() {
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
 								<AboutCard
 									description={consumerCards?.card1}
-									icon={Icons.listening}
+									icon={ConsumerIcons.card1}
 								/>
 								<AboutCard
 									description={consumerCards?.card2}
-									icon={Icons.access}
+									icon={ConsumerIcons.card2}
 								/>
 								<AboutCard
 									description={consumerCards?.card3}
-									icon={Icons.infosquared}
+									icon={ConsumerIcons.card3}
 								/>
 								<AboutCard
 									description={consumerCards?.card4}
-									icon={Icons.infosquared}
+									icon={ConsumerIcons.card4}
 								/>
 								<AboutCard
 									description={consumerCards?.card5}
-									icon={Icons.usersgroup}
+									icon={ConsumerIcons.card5}
 								/>
 
 								<SignUpCard />
