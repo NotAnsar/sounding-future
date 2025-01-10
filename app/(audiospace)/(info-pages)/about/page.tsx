@@ -1,68 +1,95 @@
+import AboutHeader from '@/components/termsAndLegal/about/AboutHeader';
 import ContactUsButton from '@/components/termsAndLegal/ContactUsButton';
 import FAQ from '@/components/termsAndLegal/FAQ';
 import NewsLetter from '@/components/termsAndLegal/NewsLetter';
 import TermsLinks from '@/components/termsAndLegal/TermsLinks';
 import { buttonVariants } from '@/components/ui/button';
-import { consumerCards, producerCards } from '@/config/about';
 import { IconProps } from '@/config/sidenav';
+import { getAboutCards } from '@/db/about';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Icons } from '@/components/icons/legal-icons';
 
 export default async function page() {
+	const [{ data: producerCards }, { data: consumerCards }] = await Promise.all([
+		getAboutCards(),
+		getAboutCards('consumers'),
+	]);
+
 	return (
 		<div className='grid gap-14 '>
 			<div className='max-w-6xl mt-4'>
 				<div className='space-y-14'>
-					<header className='space-y-2'>
-						<p className=' max-w-5xl'>
-							<Link
-								href={'https://www.soundingfuture.com/'}
-								target='_blank'
-								className='text-primary-foreground hover:underline'
-							>
-								soundingfuture.com
-							</Link>{' '}
-							is a unique online platform for artistic and technical innovations
-							in music. We have published numerous articles by internationally
-							renowned musicians and audio developers on topics such as 3D
-							audio, music and KI, sound art, electronic music, .... We offer
-							practical tutorials, book recommendations and news about open
-							calls, festival dates, podcasts, ... are available.
-						</p>
-					</header>
+					<AboutHeader />
 
-					<div className='space-y-8'>
-						<h1 className='text-3xl font-bold text-primary-foreground'>
-							{"What's in it for audio producers?"}
-						</h1>
+					{producerCards && (
+						<div className='space-y-8'>
+							<h1 className='text-3xl font-bold text-primary-foreground'>
+								{producerCards?.heading}
+							</h1>
 
-						<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
-							{producerCards.map((p, i) => (
-								<AboutCard description={p.description} icon={p.icon} key={i} />
-							))}
+							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
+								<AboutCard
+									description={producerCards?.card1}
+									icon={Icons.megaphone}
+								/>
+								<AboutCard
+									description={producerCards?.card2}
+									icon={Icons.access}
+								/>
+								<AboutCard
+									description={producerCards?.card3}
+									icon={Icons.audiomaster}
+								/>
+								<AboutCard
+									description={producerCards?.card4}
+									icon={Icons.infosquared}
+								/>
+								<AboutCard
+									description={producerCards?.card5}
+									icon={Icons.musiclibrary}
+								/>
 
-							<SignUpCard />
+								<SignUpCard />
+							</div>
 						</div>
-					</div>
+					)}
+					{consumerCards && (
+						<div className='space-y-8'>
+							<h1 className='text-3xl font-bold text-primary-foreground'>
+								{consumerCards?.heading}
+							</h1>
 
-					<div className='space-y-8'>
-						<h2 className='text-3xl font-bold mt-12 text-primary-foreground'>
-							{"What's in it for audio consumers?"}
-						</h2>
+							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
+								<AboutCard
+									description={consumerCards?.card1}
+									icon={Icons.listening}
+								/>
+								<AboutCard
+									description={consumerCards?.card2}
+									icon={Icons.access}
+								/>
+								<AboutCard
+									description={consumerCards?.card3}
+									icon={Icons.infosquared}
+								/>
+								<AboutCard
+									description={consumerCards?.card4}
+									icon={Icons.infosquared}
+								/>
+								<AboutCard
+									description={consumerCards?.card5}
+									icon={Icons.usersgroup}
+								/>
 
-						<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white'>
-							{consumerCards.map((p, i) => (
-								<AboutCard description={p.description} icon={p.icon} key={i} />
-							))}
-
-							<SignUpCard />
+								<SignUpCard />
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 			<div className='max-w-3xl space-y-10'>
 				<FAQ />
-
 				<NewsLetter />
 				<TermsLinks className='space-y-10' />
 				<div className='space-y-2'>
@@ -92,6 +119,7 @@ function SignUpCard() {
 		</div>
 	);
 }
+
 function AboutCard({
 	description,
 	icon: Icon,

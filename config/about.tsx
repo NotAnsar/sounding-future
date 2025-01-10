@@ -43,7 +43,6 @@ export const consumerCards = [
 		description:
 			'In addition to the audio experience, you will also find information about the tracks and the artists.',
 	},
-
 	{
 		icon: Icons.infosquared,
 		description:

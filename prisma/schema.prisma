@@ -402,3 +402,25 @@ model SubscriptionCard {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model AboutHeader {
+  id          String   @id @default(cuid())
+  websiteUrl  String
+  websiteName String
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model AboutCards {
+  id          String   @id @default(cuid())
+  heading     String
+  card1       String   @db.Text  
+  card2       String   @db.Text  
+  card3       String   @db.Text  
+  card4       String   @db.Text  
+  card5       String   @db.Text  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

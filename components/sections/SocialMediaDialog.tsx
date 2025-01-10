@@ -259,9 +259,6 @@ export function EditSocialsButton({
 
 	return (
 		<>
-			{/* <Button variant={'ghost'} onClick={() => setOpen(true)}>
-				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
-			</Button> */}
 			<span className='cursor-pointer' onClick={() => setOpen(true)}>
 				{children}
 			</span>
