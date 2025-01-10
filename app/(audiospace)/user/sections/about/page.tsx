@@ -4,7 +4,7 @@ import { EditAboutHeader } from '@/components/sections/about/IntroductionSection
 import { Button, buttonVariants } from '@/components/ui/button';
 import { getAboutCards, getAboutHeader } from '@/db/about';
 import { cn } from '@/lib/utils';
-import { ChevronRight, Edit, Users } from 'lucide-react';
+import { ChevronRight, Edit } from 'lucide-react';
 import { Icons } from '@/components/icons/legal-icons';
 import Link from 'next/link';
 
