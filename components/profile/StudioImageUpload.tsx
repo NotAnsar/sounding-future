@@ -64,8 +64,8 @@ export default function StudioImageUpload({
 					<Image
 						src={preview}
 						alt='Avatar'
-						width={size === 'default' ? 112 : 144}
-						height={size === 'default' ? 112 : 144}
+						width={size === 'default' ? 500 : 500}
+						height={size === 'default' ? 500 : 500}
 						className={cn(
 							'border border-foreground mt-2 w-full aspect-video',
 							type === 'circle' ? 'rounded-full' : 'rounded-xl'

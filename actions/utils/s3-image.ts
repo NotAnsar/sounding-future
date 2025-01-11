@@ -1,7 +1,7 @@
 'use server';
 
 // import { AWS_URL, AWS_S3_BUCKET_NAME } from '@/config/links';
-import { AWS_URL } from '@/config/links';
+import { AWS_S3_BUCKET_NAME, AWS_URL } from '@/config/links';
 import { s3 } from '@/lib/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -41,31 +41,55 @@ export async function uploadFile(
 
 		await s3.send(command);
 
-		// return `${AWS_URL}${AWS_S3_BUCKET_NAME}/${fileName}`;
-		return `${AWS_URL}${fileName}`;
+		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
+		// return `${AWS_URL}${fileName}`;
 	} catch (error) {
 		console.error('Error uploading file to S3:', error);
 		throw new Error('Failed to upload the file to S3.');
 	}
 }
 
+// export async function deleteFile(fileUrl: string): Promise<void> {
+// 	if (!fileUrl) throw new Error('File URL is required for deletion.');
+
+// 	const fileKey = fileUrl.replace(AWS_URL, '');
+
+// 	try {
+// 		// Prepare and execute the S3 DeleteObject command
+// 		const command = new DeleteObjectCommand({
+// 			Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 			Key: fileKey,
+// 		});
+
+// 		await s3.send(command);
+// 		console.log(`Successfully deleted file: ${fileKey}`);
+// 	} catch (error) {
+// 		console.error('Error deleting file from S3:', error);
+// 		throw new Error('Failed to delete the file from S3.');
+// 	}
+// }
+
 export async function deleteFile(fileUrl: string): Promise<void> {
 	if (!fileUrl) throw new Error('File URL is required for deletion.');
 
-	const fileKey = fileUrl.replace(AWS_URL, '');
-
 	try {
-		// Prepare and execute the S3 DeleteObject command
+		const urlParts = fileUrl.split(`/${AWS_S3_BUCKET_NAME}/`);
+		if (urlParts.length !== 2) {
+			throw new Error('Invalid file URL format');
+		}
+
+		const fileKey = urlParts[1];
+
 		const command = new DeleteObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET_NAME,
+			Bucket: AWS_S3_BUCKET_NAME,
 			Key: fileKey,
 		});
 
 		await s3.send(command);
-		console.log(`Successfully deleted file: ${fileKey}`);
+		console.log(`Successfully deleted file with key: ${fileKey}`);
 	} catch (error) {
 		console.error('Error deleting file from S3:', error);
-		throw new Error('Failed to delete the file from S3.');
+		throw new Error(`Failed to delete file from S3`);
 	}
 }
 

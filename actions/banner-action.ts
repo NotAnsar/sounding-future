@@ -5,7 +5,12 @@ import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { imageSchema, State } from './utils/utils';
-import { checkFile, updateFile, uploadFile } from './utils/s3-image';
+import {
+	checkFile,
+	deleteFile,
+	updateFile,
+	uploadFile,
+} from './utils/s3-image';
 import { redirect } from 'next/navigation';
 
 const formSchema = z.object({
@@ -126,7 +131,10 @@ export type DeleteBannerState = {
 
 export async function deleteBanner(id: string): Promise<DeleteBannerState> {
 	try {
-		await prisma.banner.delete({ where: { id } });
+		const banner = await prisma.banner.delete({ where: { id } });
+		if (banner.backgroundImage) {
+			await deleteFile(banner.backgroundImage);
+		}
 		revalidatePath('/', 'layout');
 		return { success: true, message: 'Banner deleted successfully' };
 	} catch (error) {
