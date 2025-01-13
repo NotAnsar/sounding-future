@@ -44,6 +44,12 @@ export default async function page({
 
 	return (
 		<>
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(generateTracksListingSchema(tracks.data)),
+				}}
+			/>
 			<HeaderBanner img={'/banners/tracks.jpg'} title='Tracks' />
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<DynamicNav type={type} sort={sort} />
