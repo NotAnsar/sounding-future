@@ -62,11 +62,14 @@ export default async function page({
 
 	const track = trackRes.data;
 
-	
-
 	return (
 		<>
-			
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(generateTrackSchema(track)),
+				}}
+			/>
 			<TrackDetails track={track} />
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 flex flex-col sm:gap-3'>
 				<TrackNav id={id} />
