@@ -15,6 +15,35 @@ import TrackArtistDetails from '@/components/tracks/track/TrackArtist';
 import { Genre } from '@prisma/client';
 import { Suspense } from 'react';
 import Error from '@/components/Error';
+import { Metadata } from 'next';
+import { generateTrackSchema } from '@/lib/schema';
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata> {
+	const trackRes = await getPublicTracksById(params.id);
+	if (!trackRes.data) return { title: 'Track Not Found' };
+
+	const track = trackRes.data;
+
+	return {
+		title: `${track.title} - ${track.artist.name}`,
+		description:
+			track.info || `Listen to ${track.title} by ${track.artist.name}`,
+		openGraph: {
+			title: `${track.title} - ${track.artist.name}`,
+			description:
+				track.info || `Listen to ${track.title} by ${track.artist.name}`,
+			images: [track.cover],
+			type: 'music.song',
+		},
+		other: {
+			'schema:music-recording': JSON.stringify(generateTrackSchema(track)),
+		},
+	};
+}
 
 export default async function page({
 	params: { id },
@@ -33,8 +62,11 @@ export default async function page({
 
 	const track = trackRes.data;
 
+	
+
 	return (
 		<>
+			
 			<TrackDetails track={track} />
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 flex flex-col sm:gap-3'>
 				<TrackNav id={id} />

@@ -4,6 +4,34 @@ import TrackList from '@/components/tracks/TrackList';
 import HeaderBanner from '@/components/HeaderBanner';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getPublicTracks } from '@/db/tracks';
+import { generateTracksListingSchema } from '@/lib/schema';
+
+export async function generateMetadata({
+	searchParams: { sort },
+}: {
+	searchParams: { sort: string };
+}) {
+	const tracks = await getPublicTracks(
+		12,
+		sort === 'popular' ? 'popular' : 'new'
+	);
+
+	const schema = generateTracksListingSchema(tracks.data);
+
+	return {
+		title: 'Sound Tracks - Browse Our Collection',
+		description: 'Explore our curated collection of 3D audio tracks',
+		openGraph: {
+			title: 'Sound Tracks Collection',
+			description: 'Browse our collection of 3D audio tracks',
+			images: ['/banners/tracks.jpg'],
+			type: 'website',
+		},
+		other: {
+			'schema:collection-page': JSON.stringify(schema),
+		},
+	};
+}
 
 export default async function page({
 	searchParams: { type, sort },
