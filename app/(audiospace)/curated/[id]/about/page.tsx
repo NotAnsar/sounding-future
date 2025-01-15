@@ -29,7 +29,9 @@ export default async function page({
 				type='application/ld+json'
 				key='structured-data'
 				dangerouslySetInnerHTML={{
-					__html: generateCuratorSchema(curated, tracks.data || []),
+					__html: JSON.stringify(
+						generateCuratorSchema(curated, tracks.data || [])
+					),
 				}}
 			/>
 			<CuratedDetails curated={curated} isAbout={true} />
