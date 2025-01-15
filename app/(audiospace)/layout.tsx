@@ -17,6 +17,13 @@ export default async function Layout({
 		image:
 			'https://soundingfuture.vercel.app/_next/image?url=https%3A%2F%2Fsfdata01.fsn1.your-objectstorage.com%2Fsfdata01%2Fimages%2F0cb4ed9f-a501-4592-b612-006fe2d73b0f.jpg&w=1920&q=75',
 		description: 'Sleeker than ordinary anvil',
+		offers: {
+			'@type': 'Offer',
+			price: '99.99',
+			priceCurrency: 'USD',
+			availability: 'https://schema.org/InStock',
+			url: 'https://soundingfuture.vercel.app/products/executive-anvil',
+		},
 	};
 	return (
 		<div
