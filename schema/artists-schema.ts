@@ -8,6 +8,7 @@ export function generateArtistsListingSchema(artists: ArtistList[]) {
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'CollectionPage',
+
 		name: 'Artists Collection',
 		description: 'Browse our collection of innovative audio artists',
 		url: `${baseUrl}/artists`,

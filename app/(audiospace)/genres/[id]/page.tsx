@@ -102,10 +102,10 @@ export async function generateMetadata({
 	const schema = generateGenreSchema(genre.data);
 
 	return {
-		title: `Genre: ${genre.data.name}`,
+		title: `${genre.data.name} - Genre`,
 		description: `Explore all tracks of the genre ${genre.data.name}`,
 		openGraph: {
-			title: `Genre: ${genre.data.name}`,
+			title: `${genre.data.name} - Genre`,
 			description: `Explore all tracks of the genre ${genre.data.name}`,
 			type: 'website',
 		},

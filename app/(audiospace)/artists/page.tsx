@@ -18,10 +18,10 @@ export async function generateMetadata() {
 	}
 
 	return {
-		title: 'Artists Collection',
+		title: 'Artists - Explore Our Audio Collection',
 		description: 'Browse our collection of innovative audio artists',
 		openGraph: {
-			title: 'Artists Collection',
+			title: 'Artists - Explore Our Audio Collection',
 			description: 'Browse our collection of innovative audio artists',
 			images: ['/banners/artists.jpg'],
 			type: 'website',

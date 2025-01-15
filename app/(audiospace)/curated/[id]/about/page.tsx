@@ -6,6 +6,7 @@ import { getPartnerDetailsById } from '@/db/partner';
 import Link from 'next/link';
 import { getPublicTracksByPartner } from '@/db/tracks';
 import Error from '@/components/Error';
+import { generateCuratorSchema } from '@/schema/curators-schema';
 
 export default async function page({
 	params: { id },
@@ -24,6 +25,13 @@ export default async function page({
 
 	return (
 		<>
+			<script
+				type='application/ld+json'
+				key='structured-data'
+				dangerouslySetInnerHTML={{
+					__html: generateCuratorSchema(curated, tracks.data || []),
+				}}
+			/>
 			<CuratedDetails curated={curated} isAbout={true} />
 			<main className='mt-8'>
 				<div className='space-y-8 '>
@@ -98,4 +106,40 @@ export default async function page({
 			/>
 		</>
 	);
+}
+
+export async function generateMetadata({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const [partner, tracks] = await Promise.all([
+		getPartnerDetailsById(id),
+		getPublicTracksByPartner(id, 'new'),
+	]);
+
+	if (partner.error || !partner.data) {
+		return {
+			title: 'Curator not found',
+			description: 'The curator you are looking for does not exist',
+		};
+	}
+
+	const schema = generateCuratorSchema(partner.data, tracks.data || []);
+
+	return {
+		title: `${partner.data.name} - Curator About `,
+		description:
+			partner.data.bio ||
+			`${partner.data.name} is a curator on Sounding Future`,
+		openGraph: {
+			title: `${partner.data.name} - Curator About`,
+			description: partner.data.bio,
+			images: [partner.data.studioPic || partner.data.picture],
+			type: 'profile',
+		},
+		other: {
+			'schema:curator': JSON.stringify(schema),
+		},
+	};
 }

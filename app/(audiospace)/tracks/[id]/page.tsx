@@ -29,11 +29,11 @@ export async function generateMetadata({
 	const track = trackRes.data;
 
 	return {
-		title: `${track.title} - ${track.artist.name}`,
+		title: `${track.title} • ${track.artist.name} - Track`,
 		description:
 			track.info || `Listen to ${track.title} by ${track.artist.name}`,
 		openGraph: {
-			title: `${track.title} - ${track.artist.name}`,
+			title: `${track.title} • ${track.artist.name} - Track`,
 			description:
 				track.info || `Listen to ${track.title} by ${track.artist.name}`,
 			images: [track.cover],

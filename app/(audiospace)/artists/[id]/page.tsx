@@ -20,15 +20,14 @@ export async function generateMetadata({
 	if (!artist) return { title: 'Artist Not Found' };
 
 	return {
-		title: artist.name,
+		title: `${artist.name} - Artist Profile`,
 		description:
 			artist.bio ||
 			`Discover ${artist.name}'s music collection on Sounding Future`,
 		openGraph: {
-			title: artist.name,
+			title: `${artist.name} - Artist Profile`,
 			description:
 				artist.bio || `Explore ${artist.name}'s innovative audio creations`,
-
 			siteName: 'Sounding Future',
 			images: artist.pic
 				? [{ url: artist.pic, width: 1200, height: 630, alt: artist.name }]
