@@ -3,29 +3,12 @@ import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
 
 import NextTopLoader from 'nextjs-toploader';
-import { MusicRecording, WithContext } from 'schema-dts';
 
 export default async function Layout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	const jsonLd: WithContext<MusicRecording> = {
-		'@context': 'https://schema.org',
-		'@type': 'MusicRecording',
-		name: 'SOng name',
-		duration: 'PT1M33S',
-		datePublished: '2004',
-		description: 'Song description',
-		url: 'https://example.com/song',
-		image: 'https://example.com/song.jpg',
-		byArtist: {
-			'@type': 'MusicGroup',
-			name: 'Artist name',
-			url: 'https://example.com/artist',
-			image: 'https://example.com/artist.jpg',
-		},
-	};
 	return (
 		<div
 			className='relative flex h-screen'
@@ -36,10 +19,6 @@ export default async function Layout({
 				} as React.CSSProperties
 			}
 		>
-			<script
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-			/>
 			<NextTopLoader
 				color='#AE3795'
 				initialPosition={0.08}
