@@ -3,12 +3,21 @@ import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
 
 import NextTopLoader from 'nextjs-toploader';
+import { Product, WithContext } from 'schema-dts';
 
 export default async function Layout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const jsonLd: WithContext<Product> = {
+		'@context': 'https://schema.org',
+		'@type': 'Product',
+		name: 'Executive Anvil',
+		image:
+			'https://soundingfuture.vercel.app/_next/image?url=https%3A%2F%2Fsfdata01.fsn1.your-objectstorage.com%2Fsfdata01%2Fimages%2F0cb4ed9f-a501-4592-b612-006fe2d73b0f.jpg&w=1920&q=75',
+		description: 'Sleeker than ordinary anvil',
+	};
 	return (
 		<div
 			className='relative flex h-screen'
@@ -19,6 +28,10 @@ export default async function Layout({
 				} as React.CSSProperties
 			}
 		>
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			<NextTopLoader
 				color='#AE3795'
 				initialPosition={0.08}

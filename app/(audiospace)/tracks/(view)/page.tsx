@@ -4,7 +4,7 @@ import TrackList from '@/components/tracks/TrackList';
 import HeaderBanner from '@/components/HeaderBanner';
 import DynamicNav from '@/components/curated/DynamicNav';
 import { getPublicTracks } from '@/db/tracks';
-import { generateTracksListingSchema } from '@/lib/schema';
+import { generateTracksListingSchema } from '@/schema/tracks-schema';
 
 export async function generateMetadata({
 	searchParams: { sort },
@@ -46,11 +46,14 @@ export default async function page({
 		<>
 			<script
 				type='application/ld+json'
+				key='structured-data'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(generateTracksListingSchema(tracks.data)),
 				}}
 			/>
+
 			<HeaderBanner img={'/banners/tracks.jpg'} title='Tracks' />
+
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<DynamicNav type={type} sort={sort} />
 				<TabsContent value='new'>

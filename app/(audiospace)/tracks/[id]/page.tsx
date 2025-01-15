@@ -16,7 +16,7 @@ import { Genre } from '@prisma/client';
 import { Suspense } from 'react';
 import Error from '@/components/Error';
 import { Metadata } from 'next';
-import { generateTrackSchema } from '@/lib/schema';
+import { generateTrackSchema } from '@/schema/tracks-schema';
 
 export async function generateMetadata({
 	params,
@@ -66,10 +66,12 @@ export default async function page({
 		<>
 			<script
 				type='application/ld+json'
+				key='structured-data'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(generateTrackSchema(track)),
 				}}
 			/>
+
 			<TrackDetails track={track} />
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 flex flex-col sm:gap-3'>
 				<TrackNav id={id} />

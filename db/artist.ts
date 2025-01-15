@@ -124,22 +124,15 @@ export async function getArtistsById(
 		return data;
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new ArtistError(`Database error: ${error.message}`);
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			// throw new ArtistError('Invalid data provided');
 		}
 
-		// Generic error handling
 		console.error('Error fetching artists:', error);
-		// throw new ArtistError(
-		// 	'Unable to retrieve artists. Please try again later.',
-		// 	error
-		// );
+
 		return undefined;
 	}
 }
@@ -147,6 +140,7 @@ export async function getArtistsById(
 export type ArtistList = Prisma.ArtistGetPayload<{
 	include: {
 		genres: { include: { genre: true } };
+		socialLinks: true;
 		_count: { select: { tracks: true } };
 	};
 }>;
@@ -161,6 +155,7 @@ export async function getArtistsList(
 			include: {
 				genres: { include: { genre: true } },
 				_count: { select: { tracks: true } },
+				socialLinks: true,
 			},
 			take: limit,
 		});
