@@ -1,9 +1,14 @@
 'use server';
 
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { AWS_S3_BUCKET_NAME, AWS_URL } from '@/config/links';
 import { s3 } from '@/lib/s3';
-import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+	PutObjectCommand,
+	DeleteObjectCommand,
+	CompleteMultipartUploadCommand,
+	UploadPartCommand,
+	CreateMultipartUploadCommand,
+} from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -165,68 +170,174 @@ async function resizeAndCompressImage(
 		.toBuffer();
 }
 
-export async function getPresignedUrl(
-	fileName: string,
-	fileType: string,
-	type: 'image' | 'audio' = 'image'
-) {
-	const extension = fileName.split('.').pop();
-	const key = `${type}s/${uuidv4()}.${extension}`;
+// export async function getPresignedUrl(
+// 	fileName: string,
+// 	fileType: string,
+// 	type: 'image' | 'audio' = 'image'
+// ) {
+// 	const extension = fileName.split('.').pop();
+// 	const key = `${type}s/${uuidv4()}.${extension}`;
 
-	const command = new PutObjectCommand({
-		Bucket: process.env.AWS_S3_BUCKET_NAME,
-		Key: key,
-		ContentType: fileType,
-	});
+// 	const command = new PutObjectCommand({
+// 		Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 		Key: key,
+// 		ContentType: fileType,
+// 	});
 
-	try {
-		const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-		return {
-			url,
-			key,
-			finalUrl: `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${key}`,
-		};
-	} catch (error) {
-		console.error('Error generating presigned URL:', error);
-		throw new Error('Failed to generate upload URL');
-	}
-}
+// 	try {
+// 		const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+// 		return {
+// 			url,
+// 			key,
+// 			finalUrl: `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${key}`,
+// 		};
+// 	} catch (error) {
+// 		console.error('Error generating presigned URL:', error);
+// 		throw new Error('Failed to generate upload URL');
+// 	}
+// }
 
-// Modified upload function that checks file size
+// // Modified upload function that checks file size
+// export async function uploadFile(
+// 	file: File,
+// 	type: 'image' | 'audio' = 'image',
+// 	audioFileName?: string
+// ) {
+// 	console.log(audioFileName);
+
+// 	if (!file) throw new Error('File is required for upload.');
+
+// 	// If file is larger than 2MB, use presigned URL
+// 	if (file.size > 2 * 1024 * 1024) {
+// 		const { url, finalUrl } = await getPresignedUrl(file.name, file.type, type);
+
+// 		// Upload directly to Hetzner
+// 		await fetch(url, {
+// 			method: 'PUT',
+// 			body: file,
+// 			headers: {
+// 				'Content-Type': file.type,
+// 			},
+// 		});
+
+// 		return finalUrl;
+// 	} else {
+// 		// Your existing upload code for small files
+// 		const arrayBuffer = await file.arrayBuffer();
+// 		const command = new PutObjectCommand({
+// 			Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 			Key: `${type}s/${uuidv4()}.${file.name.split('.').pop()}`,
+// 			Body: Buffer.from(arrayBuffer),
+// 			ContentType: file.type,
+// 		});
+
+// 		await s3.send(command);
+// 		return `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${command.input.Key}`;
+// 	}
+// }
+
+const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
+
 export async function uploadFile(
 	file: File,
 	type: 'image' | 'audio' = 'image',
 	audioFileName?: string
 ) {
-	console.log(audioFileName);
-	
 	if (!file) throw new Error('File is required for upload.');
 
-	// If file is larger than 2MB, use presigned URL
-	if (file.size > 2 * 1024 * 1024) {
-		const { url, finalUrl } = await getPresignedUrl(file.name, file.type, type);
+	const extension = file.name.split('.').pop();
+	const key = `${type}s/${
+		audioFileName
+			? `${audioFileName}-${Math.floor(Math.random() * 10000)}`
+			: uuidv4()
+	}.${extension}`;
 
-		// Upload directly to Hetzner
-		await fetch(url, {
-			method: 'PUT',
-			body: file,
-			headers: {
-				'Content-Type': file.type,
-			},
-		});
-
-		return finalUrl;
-	} else {
-		// Your existing upload code for small files
+	try {
 		const arrayBuffer = await file.arrayBuffer();
-		const command = new PutObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET_NAME,
-			Key: `${type}s/${uuidv4()}.${file.name.split('.').pop()}`,
-			Body: Buffer.from(arrayBuffer),
-			ContentType: file.type,
-		});
+		const chunks = Math.ceil(arrayBuffer.byteLength / CHUNK_SIZE);
 
-		await s3.send(command);
-		return `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${command.input.Key}`;
+		if (chunks === 1) {
+			// Small file, use direct upload
+			const command = new PutObjectCommand({
+				Bucket: process.env.AWS_S3_BUCKET_NAME,
+				Key: key,
+				Body: Buffer.from(arrayBuffer),
+				ContentType: file.type,
+			});
+
+			await s3.send(command);
+		} else {
+			// Large file, use multipart upload
+			const uploadId = (await initiateMultipartUpload(key, file.type)) || '';
+			const parts = [];
+
+			for (let i = 0; i < chunks; i++) {
+				const start = i * CHUNK_SIZE;
+				const end = Math.min(start + CHUNK_SIZE, arrayBuffer.byteLength);
+				const chunk = arrayBuffer.slice(start, end);
+
+				const partNumber = i + 1;
+				const uploadedPart = await uploadPart(
+					key,
+					uploadId,
+					partNumber,
+					Buffer.from(chunk)
+				);
+				parts.push({ PartNumber: partNumber, ETag: uploadedPart.ETag });
+			}
+
+			await completeMultipartUpload(key, uploadId, parts);
+		}
+
+		return `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${key}`;
+	} catch (error) {
+		console.error('Error uploading file:', error);
+		throw new Error('Failed to upload file');
 	}
+}
+
+async function initiateMultipartUpload(key: string, contentType: string) {
+	const { UploadId } = await s3.send(
+		new CreateMultipartUploadCommand({
+			Bucket: process.env.AWS_S3_BUCKET_NAME,
+			Key: key,
+			ContentType: contentType,
+		})
+	);
+	return UploadId;
+}
+
+async function uploadPart(
+	key: string,
+	uploadId: string,
+	partNumber: number,
+	body: Buffer
+) {
+	const command = new UploadPartCommand({
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: key,
+		UploadId: uploadId,
+		PartNumber: partNumber,
+		Body: body,
+	});
+
+	return await s3.send(command);
+}
+
+async function completeMultipartUpload(
+	key: string,
+	uploadId: string,
+	parts: {
+		PartNumber: number;
+		ETag: string | undefined;
+	}[]
+) {
+	const command = new CompleteMultipartUploadCommand({
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: key,
+		UploadId: uploadId,
+		MultipartUpload: { Parts: parts },
+	});
+
+	return await s3.send(command);
 }
