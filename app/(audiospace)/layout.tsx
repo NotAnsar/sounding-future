@@ -3,26 +3,27 @@ import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
 
 import NextTopLoader from 'nextjs-toploader';
-import { Product, WithContext } from 'schema-dts';
+import { MusicRecording, WithContext } from 'schema-dts';
 
 export default async function Layout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	const jsonLd: WithContext<Product> = {
+	const jsonLd: WithContext<MusicRecording> = {
 		'@context': 'https://schema.org',
-		'@type': 'Product',
-		name: 'Executive Anvil',
-		image:
-			'https://soundingfuture.vercel.app/_next/image?url=https%3A%2F%2Fsfdata01.fsn1.your-objectstorage.com%2Fsfdata01%2Fimages%2F0cb4ed9f-a501-4592-b612-006fe2d73b0f.jpg&w=1920&q=75',
-		description: 'Sleeker than ordinary anvil',
-		offers: {
-			'@type': 'Offer',
-			price: '99.99',
-			priceCurrency: 'USD',
-			availability: 'https://schema.org/InStock',
-			url: 'https://soundingfuture.vercel.app/products/executive-anvil',
+		'@type': 'MusicRecording',
+		name: 'SOng name',
+		duration: 'PT1M33S',
+		datePublished: '2004',
+		description: 'Song description',
+		url: 'https://example.com/song',
+		image: 'https://example.com/song.jpg',
+		byArtist: {
+			'@type': 'MusicGroup',
+			name: 'Artist name',
+			url: 'https://example.com/artist',
+			image: 'https://example.com/artist.jpg',
 		},
 	};
 	return (
