@@ -48,7 +48,7 @@ export async function updateAboutCards(
 	try {
 		await prisma.aboutCards.upsert({
 			where: { id },
-			create: validatedFields.data,
+			create: { ...validatedFields.data, id },
 			update: validatedFields.data,
 		});
 

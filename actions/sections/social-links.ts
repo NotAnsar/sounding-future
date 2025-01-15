@@ -58,6 +58,7 @@ export async function updateSocialLinks(
 				linkedin,
 				youtube,
 				mastodon,
+				id,
 			},
 			update: {
 				website: websiteLink,

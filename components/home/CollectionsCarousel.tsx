@@ -46,6 +46,8 @@ export default function PartnersCarousel({
 					)}
 				</div>
 
+				{!partners.length && <p className='text-muted'>No partners found</p>}
+
 				<CarouselContent>
 					{partners?.map((partner, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>

@@ -37,10 +37,11 @@ export async function updateAboutHeader(
 		};
 	}
 
+	const id = '1';
 	try {
 		await prisma.aboutHeader.upsert({
-			where: { id: '1' },
-			create: validatedFields.data,
+			where: { id },
+			create: { ...validatedFields.data, id },
 			update: validatedFields.data,
 		});
 

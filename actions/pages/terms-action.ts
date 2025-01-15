@@ -157,16 +157,22 @@ export async function updateTermsMetadata(
 			message: `Invalid data. Unable to update ${type} page ${field}.`,
 		};
 	}
+	const id =
+		type === 'privacy'
+			? 'cm5mz7rox00055l73fjehn81t'
+			: 'cm5mygk0d00005l73t2exhowi';
 
 	try {
-		await prisma.termsPage.update({
+		await prisma.termsPage.upsert({
 			where: {
-				id:
-					type === 'privacy'
-						? 'cm5mz7rox00055l73fjehn81t'
-						: 'cm5mygk0d00005l73t2exhowi',
+				id,
 			},
-			data: validatedFields.data,
+			create: {
+				...validatedFields.data,
+				id,
+				title: type === 'privacy' ? 'Privacy Policy' : 'Terms of Service',
+			},
+			update: validatedFields.data,
 		});
 
 		revalidatePath('/');

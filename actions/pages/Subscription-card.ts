@@ -48,10 +48,11 @@ export async function updateSubscriptionCard(
 	const { title, subtitle, priceInfo, reasonsTitle, reasons, footer } =
 		validatedFields.data;
 
+	const id = 'cm5of2z7j0000m9p63r1b6qmw';
 	try {
 		await prisma.subscriptionCard.upsert({
-			where: { id: 'cm5of2z7j0000m9p63r1b6qmw' },
-			create: { title, subtitle, priceInfo, reasonsTitle, reasons, footer },
+			where: { id },
+			create: { title, subtitle, priceInfo, reasonsTitle, reasons, footer, id },
 			update: { title, subtitle, priceInfo, reasonsTitle, reasons, footer },
 		});
 

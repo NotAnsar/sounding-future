@@ -30,6 +30,7 @@ export default async function page() {
 					{!tracks.error && (
 						<TracksCarousel tracks={tracks.data} title='New Tracks' />
 					)}
+
 					{!genres.error && (
 						<GenresCarousel title='Tracks by genre' genres={genres.data} />
 					)}

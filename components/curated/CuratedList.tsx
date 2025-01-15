@@ -17,6 +17,9 @@ export default function CuratedList({
 				className
 			)}
 		>
+			{partners.length === 0 && (
+				<p className='text-base text-muted'>No partners found</p>
+			)}
 			{partners.map((c, i) => (
 				<Link key={i} href={`/curated/${c?.id}`}>
 					<div className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'>

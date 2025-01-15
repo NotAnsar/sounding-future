@@ -46,6 +46,8 @@ export default function GenresCarousel({
 					)}
 				</div>
 
+				{!genres.length && <p className='text-muted'>No genres found</p>}
+
 				<CarouselContent className='gap-4 h-max'>
 					{genres.map((genre, i) => (
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>

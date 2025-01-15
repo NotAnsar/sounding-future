@@ -24,8 +24,6 @@ export default function TracksCarousel({
 	classNameItem?: string;
 	classNameTitle?: string;
 }) {
-	if (!tracks || !tracks.length) return null;
-
 	return (
 		<div className={cn('', className)}>
 			<Carousel opts={{ align: 'start' }}>
@@ -55,7 +53,7 @@ export default function TracksCarousel({
 						</>
 					)}
 				</div>
-
+				{!tracks.length && <p className='text-muted'>No tracks found</p>}
 				<CarouselContent>
 					{tracks?.map((track, i) => (
 						<CarouselItem

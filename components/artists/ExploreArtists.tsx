@@ -20,6 +20,9 @@ export default function ExploreArtists({
 				className
 			)}
 		>
+			{artists.length === 0 && (
+				<p className='text-base text-muted'>No artists found</p>
+			)}
 			{artists.map((artist, i) => (
 				<div key={i} className=''>
 					<Link

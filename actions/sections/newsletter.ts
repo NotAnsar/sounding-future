@@ -46,7 +46,7 @@ export async function updateNewsLetter(
 	try {
 		await prisma.newsLetter.upsert({
 			where: { id },
-			create: { content, label, link, title },
+			create: { content, label, link, title, id },
 			update: { content, label, link, title },
 		});
 

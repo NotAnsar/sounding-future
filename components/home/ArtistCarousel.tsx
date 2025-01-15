@@ -46,6 +46,7 @@ export default function ArtistsCarousel({
 						</>
 					)}
 				</div>
+				{!artists.length && <p className='text-muted'>No artists found</p>}
 
 				<CarouselContent>
 					{artists.map((artist, i) => (

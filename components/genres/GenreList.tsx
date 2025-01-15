@@ -19,7 +19,11 @@ export default function GenreList({
 				className
 			)}
 		>
-			{[...genres]?.map((genre, i) => (
+			{genres.length === 0 && (
+				<p className='text-base text-muted'>No genres found</p>
+			)}
+
+			{genres?.map((genre, i) => (
 				<GenreCard
 					genre={genre}
 					key={i}
