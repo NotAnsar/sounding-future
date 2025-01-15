@@ -17,7 +17,6 @@ import { Suspense } from 'react';
 import Error from '@/components/Error';
 import { Metadata } from 'next';
 import { generateTrackSchema } from '@/schema/tracks-schema';
-import { MusicRecording, WithContext } from 'schema-dts';
 
 export async function generateMetadata({
 	params,
@@ -63,41 +62,14 @@ export default async function page({
 
 	const track = trackRes.data;
 
-	const jsonLd: WithContext<MusicRecording> = {
-		'@context': 'https://schema.org',
-		'@type': 'MusicRecording',
-		name: 'SOng name',
-		duration: 'PT1M33S',
-		datePublished: '2004',
-		description: 'Song description',
-		url: 'https://example.com/song',
-		mainEntityOfPage: 'https://example.com/song',
-		image: {
-			'@type': 'ImageObject',
-			url: 'https://example.com/song.jpg',
-		},
-		byArtist: {
-			'@type': 'MusicGroup',
-			name: 'Artist name',
-			url: 'https://example.com/artist',
-			image: {
-				'@type': 'ImageObject',
-				url: 'https://example.com/artist.jpg',
-			},
-		},
-	};
 	return (
 		<>
-			{/* <script
+			<script
 				type='application/ld+json'
 				key='structured-data'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(generateTrackSchema(track)),
 				}}
-			/> */}
-			<script
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 			/>
 
 			<TrackDetails track={track} />

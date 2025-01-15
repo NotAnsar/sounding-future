@@ -7,6 +7,36 @@ import ArtistsCarousel from '@/components/home/ArtistCarousel';
 import ArtistTrack from '@/components/artists/ArtistTrack';
 import { getArtistsById, getSimilarArtists } from '@/db/artist';
 import { Suspense } from 'react';
+import { generateArtistSchema } from '@/schema/artists-schema';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata> {
+	const artist = await getArtistsById(params.id);
+
+	if (!artist) return { title: 'Artist Not Found' };
+
+	return {
+		title: artist.name,
+		description:
+			artist.bio ||
+			`Discover ${artist.name}'s music collection on Sounding Future`,
+		openGraph: {
+			title: artist.name,
+			description:
+				artist.bio || `Explore ${artist.name}'s innovative audio creations`,
+
+			siteName: 'Sounding Future',
+			images: artist.pic
+				? [{ url: artist.pic, width: 1200, height: 630, alt: artist.name }]
+				: [],
+			type: 'profile',
+		},
+	};
+}
 
 export default async function page({
 	params: { id },
@@ -24,6 +54,13 @@ export default async function page({
 
 	return (
 		<>
+			<script
+				type='application/ld+json'
+				key='structured-data'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(generateArtistSchema(artist)),
+				}}
+			/>
 			<ArtistDetails artist={artist} />
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 flex flex-col sm:gap-3'>
 				<ArtistNav id={id} />

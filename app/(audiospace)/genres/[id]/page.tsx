@@ -7,6 +7,7 @@ import DynamicNav from '@/components/curated/DynamicNav';
 import { getGenreDetailsById } from '@/db/genre';
 import { getPublicTracksByGenre } from '@/db/tracks';
 import Error from '@/components/Error';
+import { generateGenreSchema } from '@/schema/genres-schema';
 
 export default async function page({
 	params: { id },
@@ -28,6 +29,13 @@ export default async function page({
 
 	return (
 		<>
+			<script
+				type='application/ld+json'
+				key='structured-data'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(generateGenreSchema(genre.data)),
+				}}
+			/>
 			<GenreDetails genre={genre.data} />
 
 			<Tabs value={tabValue} className='mt-4 sm:mt-6 grid gap-2 '>
@@ -69,4 +77,40 @@ export default async function page({
 			</Tabs>
 		</>
 	);
+}
+
+export async function generateMetadata({
+	params: { id },
+}: {
+	params: { id: string };
+}) {
+	const genre = await getGenreDetailsById(id);
+
+	if (genre.error || !genre.data) {
+		return {
+			title: 'Genre not found',
+			description: 'The genre you are looking for does not exist',
+			openGraph: {
+				title: 'Genre not found',
+				description: 'The genre you are looking for does not exist',
+				images: [],
+				type: 'website',
+			},
+		};
+	}
+
+	const schema = generateGenreSchema(genre.data);
+
+	return {
+		title: `Genre: ${genre.data.name}`,
+		description: `Explore all tracks of the genre ${genre.data.name}`,
+		openGraph: {
+			title: `Genre: ${genre.data.name}`,
+			description: `Explore all tracks of the genre ${genre.data.name}`,
+			type: 'website',
+		},
+		other: {
+			'schema:collection-page': JSON.stringify(schema),
+		},
+	};
 }

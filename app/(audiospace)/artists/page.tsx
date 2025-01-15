@@ -8,6 +8,31 @@ import { Icons } from '@/components/icons/audio-player';
 import ArtistList from '@/components/artists/ArtistList';
 import { getArtistsList } from '@/db/artist';
 import Error from '@/components/Error';
+import { generateArtistsListingSchema } from '@/schema/artists-schema';
+
+export async function generateMetadata() {
+	const artists = await getArtistsList();
+
+	if (artists.error) {
+		return { title: 'Artists Not Found' };
+	}
+
+	return {
+		title: 'Artists Collection',
+		description: 'Browse our collection of innovative audio artists',
+		openGraph: {
+			title: 'Artists Collection',
+			description: 'Browse our collection of innovative audio artists',
+			images: ['/banners/artists.jpg'],
+			type: 'website',
+		},
+		other: {
+			'schema:collection-page': JSON.stringify(
+				generateArtistsListingSchema(artists.data)
+			),
+		},
+	};
+}
 
 export default async function page({
 	searchParams: { type },
@@ -23,6 +48,14 @@ export default async function page({
 
 	return (
 		<>
+			<script
+				type='application/ld+json'
+				key='structured-data'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(generateArtistsListingSchema(artists.data)),
+				}}
+			/>
+
 			<HeaderBanner img={'/banners/artists.jpg'} title='Artists' />
 			<div className='flex justify-between gap-1.5 mt-8 mb-6'>
 				<h1 className='text-[22px] font-semibold text-primary-foreground '>

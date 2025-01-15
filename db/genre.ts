@@ -2,13 +2,6 @@ import GenreDetails from '@/components/genres/GenreDetails';
 import { prisma } from '@/lib/prisma';
 import { Prisma, type Genre } from '@prisma/client';
 
-// class GenreError extends Error {
-// 	constructor(message: string, public readonly cause?: unknown) {
-// 		super(message);
-// 		this.name = 'GenreError';
-// 	}
-// }
-
 type GenreRes = { data: Genre[]; error?: boolean; message?: string };
 
 export async function getGenres(): Promise<GenreRes> {
