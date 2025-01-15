@@ -1,6 +1,6 @@
 'use server';
 
-// import { AWS_URL, AWS_S3_BUCKET_NAME } from '@/config/links';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { AWS_S3_BUCKET_NAME, AWS_URL } from '@/config/links';
 import { s3 } from '@/lib/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
@@ -15,39 +15,39 @@ export async function checkFile(image: FormDataEntryValue | null) {
 	return undefined;
 }
 
-export async function uploadFile(
-	file: File,
-	type: 'image' | 'audio' = 'image',
-	audioFileName?: string
-) {
-	if (!file) throw new Error('File is required for upload.');
+// export async function uploadFile(
+// 	file: File,
+// 	type: 'image' | 'audio' = 'image',
+// 	audioFileName?: string
+// ) {
+// 	if (!file) throw new Error('File is required for upload.');
 
-	// Extract file metadata
-	const extension = file.name.split('.').pop();
-	const randomSuffix = Math.floor(Math.random() * 10000);
-	const fileName = `${type}s/${
-		audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
-	}.${extension}`; // Unique file name
-	const arrayBuffer = await file.arrayBuffer();
+// 	// Extract file metadata
+// 	const extension = file.name.split('.').pop();
+// 	const randomSuffix = Math.floor(Math.random() * 10000);
+// 	const fileName = `${type}s/${
+// 		audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
+// 	}.${extension}`; // Unique file name
+// 	const arrayBuffer = await file.arrayBuffer();
 
-	try {
-		// Prepare and execute the S3 PutObject command
-		const command = new PutObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET_NAME,
-			Key: fileName,
-			Body: Buffer.from(arrayBuffer),
-			ContentType: file?.type,
-		});
+// 	try {
+// 		// Prepare and execute the S3 PutObject command
+// 		const command = new PutObjectCommand({
+// 			Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 			Key: fileName,
+// 			Body: Buffer.from(arrayBuffer),
+// 			ContentType: file?.type,
+// 		});
 
-		await s3.send(command);
+// 		await s3.send(command);
 
-		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
-		// return `${AWS_URL}${fileName}`;
-	} catch (error) {
-		console.error('Error uploading file to S3:', error);
-		throw new Error('Failed to upload the file to S3.');
-	}
-}
+// 		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
+// 		// return `${AWS_URL}${fileName}`;
+// 	} catch (error) {
+// 		console.error('Error uploading file to S3:', error);
+// 		throw new Error('Failed to upload the file to S3.');
+// 	}
+// }
 
 // export async function deleteFile(fileUrl: string): Promise<void> {
 // 	if (!fileUrl) throw new Error('File URL is required for deletion.');
@@ -163,4 +163,70 @@ async function resizeAndCompressImage(
 		.resize(width, height)
 		.jpeg({ quality })
 		.toBuffer();
+}
+
+export async function getPresignedUrl(
+	fileName: string,
+	fileType: string,
+	type: 'image' | 'audio' = 'image'
+) {
+	const extension = fileName.split('.').pop();
+	const key = `${type}s/${uuidv4()}.${extension}`;
+
+	const command = new PutObjectCommand({
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: key,
+		ContentType: fileType,
+	});
+
+	try {
+		const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+		return {
+			url,
+			key,
+			finalUrl: `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${key}`,
+		};
+	} catch (error) {
+		console.error('Error generating presigned URL:', error);
+		throw new Error('Failed to generate upload URL');
+	}
+}
+
+// Modified upload function that checks file size
+export async function uploadFile(
+	file: File,
+	type: 'image' | 'audio' = 'image',
+	audioFileName?: string
+) {
+	console.log(audioFileName);
+	
+	if (!file) throw new Error('File is required for upload.');
+
+	// If file is larger than 2MB, use presigned URL
+	if (file.size > 2 * 1024 * 1024) {
+		const { url, finalUrl } = await getPresignedUrl(file.name, file.type, type);
+
+		// Upload directly to Hetzner
+		await fetch(url, {
+			method: 'PUT',
+			body: file,
+			headers: {
+				'Content-Type': file.type,
+			},
+		});
+
+		return finalUrl;
+	} else {
+		// Your existing upload code for small files
+		const arrayBuffer = await file.arrayBuffer();
+		const command = new PutObjectCommand({
+			Bucket: process.env.AWS_S3_BUCKET_NAME,
+			Key: `${type}s/${uuidv4()}.${file.name.split('.').pop()}`,
+			Body: Buffer.from(arrayBuffer),
+			ContentType: file.type,
+		});
+
+		await s3.send(command);
+		return `${process.env.AWS_URL}/${process.env.AWS_S3_BUCKET_NAME}/${command.input.Key}`;
+	}
 }
