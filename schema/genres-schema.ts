@@ -1,22 +1,26 @@
 import { Genre } from '@prisma/client';
+import { Thing, WithContext } from 'schema-dts';
 
 export function generateGenreSchema(genre: Genre) {
 	const baseUrl =
 		process.env.NEXTAUTH_URL || 'http://soundingfuture.vercel.app/';
 
-	return {
+	const jsonLd: WithContext<Thing> = {
 		'@context': 'https://schema.org',
-		'@type': 'MusicGenre',
+		'@type': 'Thing',
 		name: genre.name,
 		url: `${baseUrl}/genres/${genre.id}`,
+		additionalType: 'MusicGenre',
+		description: `Music genre: ${genre.name}`,
 	};
+	return jsonLd;
 }
 
 export function generateGenresListingSchema(genres: Genre[]) {
 	const baseUrl =
 		process.env.NEXTAUTH_URL || 'http://soundingfuture.vercel.app/';
 
-	return {
+	const jsonLd: WithContext<Thing> = {
 		'@context': 'https://schema.org',
 		'@type': 'CollectionPage',
 		name: 'Music Genres Collection',
@@ -29,11 +33,14 @@ export function generateGenresListingSchema(genres: Genre[]) {
 				'@type': 'ListItem',
 				position: index + 1,
 				item: {
-					'@type': 'MusicGenre',
+					'@type': 'Thing', // Changed from MusicGenre to Thing
+					additionalType: 'MusicGenre',
 					name: genre.name,
 					url: `${baseUrl}/genres/${genre.id}`,
+					description: `Music genre: ${genre.name}`,
 				},
 			})),
 		},
 	};
+	return jsonLd;
 }
