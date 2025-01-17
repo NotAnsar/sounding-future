@@ -13,39 +13,39 @@ export async function checkFile(image: FormDataEntryValue | null) {
 	return undefined;
 }
 
-export async function uploadFile(
-	file: File,
-	type: 'image' | 'audio' = 'image',
-	audioFileName?: string
-) {
-	if (!file) throw new Error('File is required for upload.');
+// export async function uploadFile(
+// 	file: File,
+// 	type: 'image' | 'audio' = 'image',
+// 	audioFileName?: string
+// ) {
+// 	if (!file) throw new Error('File is required for upload.');
 
-	// Extract file metadata
-	const extension = file.name.split('.').pop();
-	const randomSuffix = Math.floor(Math.random() * 10000);
-	const fileName = `${type}s/${
-		audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
-	}.${extension}`; // Unique file name
-	const arrayBuffer = await file.arrayBuffer();
+// 	// Extract file metadata
+// 	const extension = file.name.split('.').pop();
+// 	const randomSuffix = Math.floor(Math.random() * 10000);
+// 	const fileName = `${type}s/${
+// 		audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
+// 	}.${extension}`; // Unique file name
+// 	const arrayBuffer = await file.arrayBuffer();
 
-	try {
-		// Prepare and execute the S3 PutObject command
-		const command = new PutObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET_NAME,
-			Key: fileName,
-			Body: Buffer.from(arrayBuffer),
-			ContentType: file?.type,
-		});
+// 	try {
+// 		// Prepare and execute the S3 PutObject command
+// 		const command = new PutObjectCommand({
+// 			Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 			Key: fileName,
+// 			Body: Buffer.from(arrayBuffer),
+// 			ContentType: file?.type,
+// 		});
 
-		await s3.send(command);
+// 		await s3.send(command);
 
-		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
-		// return `${AWS_URL}${fileName}`;
-	} catch (error) {
-		console.error('Error uploading file to S3:', error);
-		throw new Error('Failed to upload the file to S3.');
-	}
-}
+// 		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
+// 		// return `${AWS_URL}${fileName}`;
+// 	} catch (error) {
+// 		console.error('Error uploading file to S3:', error);
+// 		throw new Error('Failed to upload the file to S3.');
+// 	}
+// }
 
 // export async function deleteFile(fileUrl: string): Promise<void> {
 // 	if (!fileUrl) throw new Error('File URL is required for deletion.');
@@ -108,4 +108,74 @@ export async function updateFile(
 		imageUrl = await uploadFile(imageFile, type, audioFileName);
 	}
 	return imageUrl;
+}
+
+export async function uploadFile(
+	file: File,
+	type: 'image' | 'audio' = 'image',
+	audioFileName?: string
+) {
+	if (!file) throw new Error('File is required for upload.');
+
+	try {
+		// Log file details
+		console.log('Uploading file:', {
+			name: file.name,
+			type: file.type,
+			size: file.size,
+			bucket: process.env.AWS_S3_BUCKET_NAME,
+		});
+
+		const extension = file.name.split('.').pop();
+		const randomSuffix = Math.floor(Math.random() * 10000);
+		const fileName = `${type}s/${
+			audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
+		}.${extension}`;
+
+		const arrayBuffer = await file.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+
+		// Log upload attempt
+		console.log('Attempting upload with params:', {
+			fileName,
+			contentType: file.type,
+			bufferSize: buffer.length,
+		});
+
+		const command = new PutObjectCommand({
+			Bucket: process.env.AWS_S3_BUCKET_NAME,
+			Key: fileName,
+			Body: buffer,
+			ContentType: file.type,
+			ContentLength: buffer.length, // Add explicit content length
+		});
+
+		const result = await s3.send(command);
+
+		// Log success
+		console.log('Upload successful:', result);
+
+		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
+	} catch (error) {
+		// Define error type
+		type UploadError = {
+			name: string;
+			message: string;
+			stack?: string;
+		};
+
+		// Enhanced error logging
+		console.error('Detailed upload error:', {
+			error,
+			errorName: (error as UploadError).name,
+			errorMessage: (error as UploadError).message,
+			errorStack: (error as UploadError).stack,
+			fileInfo: {
+				name: file.name,
+				type: file.type,
+				size: file.size,
+			},
+		});
+		throw new Error(`Failed to upload file: ${(error as UploadError).message}`);
+	}
 }

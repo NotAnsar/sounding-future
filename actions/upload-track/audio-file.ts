@@ -68,6 +68,7 @@ export async function uploadTrackInfo(
 			'audio',
 			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin`
 		);
+
 		const variant2Url = await updateFile(
 			formData.get('variant2'),
 			prevState?.prev?.variant2,
