@@ -25,7 +25,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations  
-  artist     Artist?   @relation("UserArtist", fields: [artistId], references: [id]) 
+  artist     Artist?   @relation("UserArtist", fields: [artistId], references: [id], onDelete: SetNull) 
   follows   Follow[]
   likes     Like[]
   listeningHistory ListeningHistory[]
@@ -45,11 +45,7 @@ model Artist {
   // Relations
   user       User?    @relation("UserArtist")
   tracks       Track[]
-  
   followers    Follow[]
-  // genres ArtistGenre[]
-  // socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id])
-  // articles        ArtistArticle[] 
   genres ArtistGenre[] @relation("ArtistToGenre")
   socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id], onDelete: SetNull)
   articles        ArtistArticle[] @relation("ArtistToArticle")
@@ -161,8 +157,8 @@ model Follow {
   createdAt        DateTime @default(now()) @map("created_at")
 
   // Relations
-  user   User   @relation(fields: [followingUserId], references: [id])
-  artist Artist @relation(fields: [followedArtistId], references: [id])
+  user   User   @relation(fields: [followingUserId], references: [id], onDelete: Cascade)
+  artist Artist @relation(fields: [followedArtistId], references: [id], onDelete: Cascade)
 
   @@id([followingUserId, followedArtistId])
   @@map("follows")
@@ -175,8 +171,8 @@ model Like {
   
 
   // Relations
-  user  User  @relation(fields: [userId], references: [id])
-  track Track @relation(fields: [trackId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
 
   @@id([userId, trackId])
   @@map("likes")
@@ -243,7 +239,7 @@ model PartnerArticle {
   createdAt    DateTime    @default(now()) @map("created_at")
 
   // Relations
-  partner      Partner     @relation(fields: [partnerId], references: [id])
+  partner      Partner     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
   article      ArticleLink @relation(fields: [articleId], references: [id])
 
   @@id([partnerId, articleId])
@@ -258,8 +254,8 @@ model ListeningHistory {
   listenedAt DateTime @default(now()) @map("listened_at")
   createdAt  DateTime @default(now()) @map("created_at")
   
-  user       User     @relation(fields: [userId], references: [id])
-  track      Track    @relation(fields: [trackId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
 
   @@map("listening_history")
 }
