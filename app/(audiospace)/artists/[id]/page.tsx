@@ -5,7 +5,7 @@ import ArtistNav from '@/components/artists/ArtistNav';
 import ArtistBio from '@/components/artists/ArtistBio';
 import ArtistsCarousel from '@/components/home/ArtistCarousel';
 import ArtistTrack from '@/components/artists/ArtistTrack';
-import { getArtistsById, getSimilarArtists } from '@/db/artist';
+import { getArtistsBySlug, getSimilarArtists } from '@/db/artist';
 import { Suspense } from 'react';
 import { generateArtistSchema } from '@/schema/artists-schema';
 import { Metadata } from 'next';
@@ -15,7 +15,7 @@ export async function generateMetadata({
 }: {
 	params: { id: string };
 }): Promise<Metadata> {
-	const artist = await getArtistsById(params.id);
+	const artist = await getArtistsBySlug(params.id);
 
 	if (!artist) return { title: 'Artist Not Found' };
 
@@ -44,7 +44,7 @@ export default async function page({
 	params: { id: string };
 	searchParams: { sort: string };
 }) {
-	const artist = await getArtistsById(id);
+	const artist = await getArtistsBySlug(id);
 	const tabValue = sort === 'bio' ? 'bio' : 'tracks';
 
 	if (!artist) {

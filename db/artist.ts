@@ -100,14 +100,51 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 	};
 }>;
 
-export async function getArtistsById(
+export async function getArtistsBySlug(
 	slug: string,
 	publishedOnly: boolean = true
 ): Promise<ArtistDetails | undefined> {
 	try {
 		const data = await prisma.artist.findUnique({
 			where: {
-				slug,
+				slug: slug,
+				published: publishedOnly ? true : undefined,
+			},
+			include: {
+				genres: { include: { genre: true } },
+				socialLinks: true,
+				articles: { include: { article: true } },
+			},
+		});
+
+		if (!data) {
+			return undefined;
+		}
+
+		return data;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+		}
+
+		console.error('Error fetching artists:', error);
+
+		return undefined;
+	}
+}
+
+export async function getArtistsById(
+	id: string,
+	publishedOnly: boolean = true
+): Promise<ArtistDetails | undefined> {
+	try {
+		const data = await prisma.artist.findUnique({
+			where: {
+				id,
 				published: publishedOnly ? true : undefined,
 			},
 			include: {

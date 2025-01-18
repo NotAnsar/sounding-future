@@ -140,6 +140,6 @@ export const columns: ColumnDef<ArtistStats>[] = [
 	},
 	{
 		id: 'actions',
-		cell: ({ row }) => <ActionCell id={row.original.slug} />,
+		cell: ({ row }) => <ActionCell id={row.original.id} />,
 	},
 ];
