@@ -36,7 +36,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { GripVertical } from 'lucide-react';
@@ -109,6 +109,10 @@ export function DataTable<TData extends { id: string }, TValue>({
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [items, setItems] = useState(data);
+
+	useEffect(() => {
+		setItems(data);
+	}, [data]);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),

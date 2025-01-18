@@ -42,7 +42,7 @@ export default function ArtistForm({
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid sm:gap-3'>
-			<ArtistNav id={initialData?.id} />
+			<ArtistNav id={initialData?.slug} />
 			<div className='lg:w-2/3 mt-2 grid gap-6'>
 				<ErrorMessage errors={state?.message ? [state?.message] : undefined} />
 				<div className='grid gap-2'>

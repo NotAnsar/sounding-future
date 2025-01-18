@@ -46,7 +46,7 @@ export default function ArtistList({
 								</TableCell>
 								<TableCell>
 									<Link
-										href={`/artists/${artist.id}?sort=bio`}
+										href={`/artists/${artist.slug}?sort=bio`}
 										className={cn(
 											'text-base font-semibold line-clamp-1 hover:opacity-80'
 										)}
@@ -54,7 +54,7 @@ export default function ArtistList({
 										{artist.name}
 									</Link>
 									<Link
-										href={`/artists/${artist.id}`}
+										href={`/artists/${artist.slug}`}
 										className='text-sm font-medium text-muted line-clamp-1 sm:hidden block'
 									>
 										{artistTracks}
@@ -62,7 +62,7 @@ export default function ArtistList({
 								</TableCell>
 								<TableCell className='hidden sm:table-cell'>
 									<Link
-										href={`/artists/${artist.id}`}
+										href={`/artists/${artist.slug}`}
 										className={cn('text-base font-semibold hover:opacity-80')}
 									>
 										{artistTracks}

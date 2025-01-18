@@ -2,10 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { State } from '../utils/utils';
+import { generateSlug, State } from '../utils/utils';
 import { updateFile } from '../utils/s3-image';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 // Define the schema for profile update
 const ProfileSchema = z.object({
@@ -65,11 +66,11 @@ export async function updateProfile(
 		}
 
 		const imageUrl = await updateFile(image, prevState?.prev?.image);
-
+		const slug = generateSlug(name);
 		const artist = await prisma.artist.upsert({
 			where: { id: session?.user?.artistId || '' },
-			create: { name, bio: biography, pic: imageUrl },
-			update: { name, bio: biography, pic: imageUrl },
+			create: { name, bio: biography, pic: imageUrl, slug },
+			update: { name, bio: biography, pic: imageUrl, slug },
 		});
 
 		const oldGenres = prevState?.prev?.genres || [];
@@ -106,6 +107,16 @@ export async function updateProfile(
 		return { success: true };
 	} catch (error) {
 		console.error('Profile update error:', error);
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			const target = (error.meta as { target?: string[] })?.target || [];
+			if (target.includes('slug')) {
+				return { message: 'An Artist with a similar name already exists' };
+			}
+		}
+
 		return { message: 'Failed to update profile. Please try again.' };
 	}
 }

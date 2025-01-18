@@ -55,7 +55,7 @@ export default function ArtistsCarousel({
 							className={cn('basis-32 sm:basis-40 lg:basis-44', classNameItem)}
 						>
 							<Link
-								href={`/artists/${artist?.id}`}
+								href={`/artists/${artist?.slug}`}
 								className='rounded-full block border overflow-hidden w-full h-auto mb-2'
 							>
 								{artist?.pic ? (
@@ -72,7 +72,7 @@ export default function ArtistsCarousel({
 							</Link>
 
 							<Link
-								href={`/artists/${artist.id}`}
+								href={`/artists/${artist.slug}`}
 								className='text-sm md:text-base font-semibold text-center line-clamp-2'
 							>
 								{artist.name}

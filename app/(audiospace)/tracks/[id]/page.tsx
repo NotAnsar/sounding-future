@@ -92,7 +92,7 @@ export default async function page({
 								<Suspense
 									fallback={<div>Loading tracks by current artist...</div>}
 								>
-									<TracksByCurrentArtist artistId={track.artistId} />
+									<TracksByCurrentArtist artistId={track.artist.slug} />
 								</Suspense>
 							</TabsContent>
 							<TrackArtistDetails artist={track.artist} />

@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { DeleteState, imageSchema, State } from './utils/utils';
+import { DeleteState, generateSlug, imageSchema, State } from './utils/utils';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -70,6 +70,8 @@ export async function addPartner(
 	const { name, info, image, country, studioPic, ...socialLinksData } =
 		validatedFields.data;
 
+	const slug = generateSlug(name);
+
 	try {
 		const imageUrl = await uploadFile(image);
 		const studioPicUrl = studioPic ? await uploadFile(studioPic) : undefined;
@@ -87,6 +89,7 @@ export async function addPartner(
 				studioPic: studioPicUrl,
 				picture: imageUrl,
 				socialId: socialLinks.id,
+				slug,
 			},
 		});
 
@@ -96,6 +99,10 @@ export async function addPartner(
 			error instanceof Prisma.PrismaClientKnownRequestError &&
 			error.code === 'P2002'
 		) {
+			const target = (error.meta as { target?: string[] })?.target || [];
+			if (target.includes('slug')) {
+				return { message: 'A genre with a similar name already exists' };
+			}
 			return { message: 'Partner already exists' };
 		}
 		return { message: 'Failed to create partner' };
@@ -131,6 +138,7 @@ export async function updatePartner(
 	}
 
 	const { name, info, country, ...socialLinksData } = validatedFields.data;
+	const slug = generateSlug(name);
 
 	try {
 		const image = formData.get('image');
@@ -178,13 +186,18 @@ export async function updatePartner(
 				studioPic: studioPicUrl,
 				picture: imageUrl,
 				socialId: socialLink?.id,
+				slug,
 			},
 		});
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
-		console.error(error);
-
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'A partner with this name already exists' };
+		}
 		return { message: 'Failed to update partner' };
 	}
 	redirect('/user/curated');

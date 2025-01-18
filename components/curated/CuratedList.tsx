@@ -21,7 +21,7 @@ export default function CuratedList({
 				<p className='text-base text-muted'>No partners found</p>
 			)}
 			{partners.map((c, i) => (
-				<Link key={i} href={`/curated/${c?.id}`}>
+				<Link key={i} href={`/curated/${c?.slug}`}>
 					<div className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'>
 						<Image
 							src={c?.picture}

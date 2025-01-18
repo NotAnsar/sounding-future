@@ -50,9 +50,9 @@ export function generateCuratorSchema(
 				byArtist: {
 					'@type': 'MusicGroup',
 					name: track.artist.name,
-					url: `${baseUrl}/artists/${track.artist.id}`,
+					url: `${baseUrl}/artists/${track.artist.slug}`,
 				},
-				url: `${baseUrl}/tracks/${track.id}`,
+				url: `${baseUrl}/tracks/${track.slug}`,
 				duration: track.duration
 					? `PT${Math.floor(track.duration / 60)}M${track.duration % 60}S`
 					: undefined,

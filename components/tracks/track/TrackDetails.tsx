@@ -82,11 +82,6 @@ export default function TrackDetails({
 
 					<div className='flex gap-3 items-center ml-auto sm:ml-0'>
 						<div className='cursor-pointer h-full flex justify-center items-center'>
-							{/* {track?.isLiked ? (
-								<Icons.heartFilled className='w-7 h-auto aspect-square fill-white ' />
-							) : (
-								<Icons.heartOutline className='w-7 h-auto aspect-square fill-white' />
-							)} */}
 							<LikeForm
 								trackId={track.id}
 								liked={track.isLiked}
@@ -94,7 +89,7 @@ export default function TrackDetails({
 							/>
 						</div>
 
-						<ShareButton artistId={track.artist.id} />
+						<ShareButton artistId={track.artist.slug} />
 					</div>
 				</div>
 
@@ -112,7 +107,7 @@ export default function TrackDetails({
 					)}
 
 					<Link
-						href={`/artists/${track.artist.id}`}
+						href={`/artists/${track.artist.slug}`}
 						className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer line-clamp-1 '
 					>
 						{track.artist.name}

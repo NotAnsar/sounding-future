@@ -11,7 +11,7 @@ export function generateTrackSchema(track: TrackDetails) {
 		byArtist: {
 			'@type': 'MusicGroup',
 			name: track.artist.name,
-			url: `${baseUrl}/artists/${track.artistId}`,
+			url: `${baseUrl}/artists/${track.slug}`,
 			image: track.artist.pic,
 			sameAs: track.artist.socialLinks
 				? [
@@ -30,13 +30,13 @@ export function generateTrackSchema(track: TrackDetails) {
 		genre: track.genres.map((g) => g.genre.name),
 		datePublished: track.releaseYear?.toString(),
 		description: track.info,
-		url: `${baseUrl}/tracks/${track.id}`,
+		url: `${baseUrl}/tracks/${track.slug}`,
 		image: track.cover,
 		...(track.curator && {
 			producer: {
 				'@type': 'Organization',
 				name: track.curator.name,
-				url: `${baseUrl}/curated/${track.curator.id}`,
+				url: `${baseUrl}/curated/${track.curator.slug}`,
 			},
 		}),
 	};
@@ -63,14 +63,14 @@ export function generateTracksListingSchema(
 				item: {
 					'@type': 'MusicRecording',
 					name: track.title,
-					url: `${baseUrl}/tracks/${track.id}`,
+					url: `${baseUrl}/tracks/${track.slug}`,
 					duration: track.duration
 						? `PT${Math.floor(track.duration / 60)}M${track.duration % 60}S`
 						: undefined,
 					byArtist: {
 						'@type': 'MusicGroup',
 						name: track.artist.name,
-						url: `${baseUrl}/artists/${track.artist.id}`,
+						url: `${baseUrl}/artists/${track.artist.slug}`,
 					},
 					genre: track.genres.map((g) => g.genre.name),
 					image: track.cover,

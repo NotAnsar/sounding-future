@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { generateSlug } from './utils/utils';
 
 const formSchema = z.object({
 	name: z
@@ -32,14 +33,20 @@ export async function createGenre(prevState: GenreState, formData: FormData) {
 
 	try {
 		const { name } = validatedFields.data;
-		await prisma.genre.create({ data: { name } });
+		const slug = generateSlug(name);
 
+		await prisma.genre.create({ data: { name, slug } });
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		if (
 			error instanceof Prisma.PrismaClientKnownRequestError &&
 			error.code === 'P2002'
 		) {
+			// Check if the error is due to name or slug uniqueness
+			const target = (error.meta as { target?: string[] })?.target || [];
+			if (target.includes('slug')) {
+				return { message: 'A genre with a similar name already exists' };
+			}
 			return { message: 'Genre already exists' };
 		}
 		return { message: 'Failed to create genre' };
@@ -64,9 +71,17 @@ export async function updateGenre(
 
 	try {
 		const { name } = validatedFields.data;
-		await prisma.genre.update({ where: { id }, data: { name } });
+		const slug = generateSlug(name);
+
+		await prisma.genre.update({ where: { id }, data: { name, slug } });
 		revalidatePath('/', 'layout');
 	} catch (error) {
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'A genre with this name already exists' };
+		}
 		return { message: 'Failed to update genre' };
 	}
 }

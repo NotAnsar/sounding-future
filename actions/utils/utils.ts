@@ -58,3 +58,11 @@ const checkFileType = (file: File) => {
 	const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 	return allowedTypes.includes(file?.type);
 };
+
+// Utility function for slug generation
+export function generateSlug(name: string): string {
+	return name
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
+}

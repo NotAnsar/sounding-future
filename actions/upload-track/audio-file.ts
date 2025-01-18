@@ -66,20 +66,20 @@ export async function uploadTrackInfo(
 			formData.get('variant1'),
 			prevState?.prev?.variant1,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin`
+			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin`
 		);
 
 		const variant2Url = await updateFile(
 			formData.get('variant2'),
 			prevState?.prev?.variant2,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-bin-plus`
+			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin-plus`
 		);
 		const variant3Url = await updateFile(
 			formData.get('variant3'),
 			prevState?.prev?.variant3,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.name}-${track.title}-stereo`
+			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-stereo`
 		);
 
 		await prisma.track.update({

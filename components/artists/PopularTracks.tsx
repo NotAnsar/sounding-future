@@ -82,7 +82,7 @@ export default function PopularTracks({
 							</TableCell>
 							<TableCell className=''>
 								<Link
-									href={`/tracks/${track.id}`}
+									href={`/tracks/${track.slug}`}
 									className={cn(
 										' text-base font-semibold line-clamp-1 hover:opacity-80',
 										isCurrentTrack ? 'text-primary-foreground' : ''
@@ -94,7 +94,7 @@ export default function PopularTracks({
 									{track?.genres?.map((genre) => genre.genre.name).join(', ')}
 								</h6>
 								<Link
-									href={`/artists/${track.artist.id}`}
+									href={`/artists/${track.artist.slug}`}
 									className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
 								>
 									{track.artist.name}
@@ -102,7 +102,7 @@ export default function PopularTracks({
 							</TableCell>
 							<TableCell className='hidden sm:block'>
 								<Link
-									href={`/artists/${track.artist.id}`}
+									href={`/artists/${track.artist.slug}`}
 									className='text-muted text-base font-semibold text-nowrap hover:text-primary'
 								>
 									{track.artist.name}

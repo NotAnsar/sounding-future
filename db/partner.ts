@@ -123,12 +123,12 @@ export type PartnerDetails = Prisma.PartnerGetPayload<{
 }>;
 
 export async function getPartnerDetailsById(
-	partnerId: string
+	slug: string
 ): Promise<{ data: PartnerDetails | null; error?: boolean; message?: string }> {
 	try {
 		// Fetch partner data by ID
 		const partner = await prisma.partner.findUnique({
-			where: { id: partnerId },
+			where: { slug },
 			include: { socialLinks: true },
 		});
 
@@ -136,13 +136,13 @@ export async function getPartnerDetailsById(
 			return {
 				data: null,
 				error: true,
-				message: `Partner with ID ${partnerId} not found.`,
+				message: `Partner with slug ${slug} not found.`,
 			};
 		}
 
 		return { data: partner, error: false };
 	} catch (error) {
-		let message = `Unable to retrieve partner data for ID ${partnerId}. Please try again later.`;
+		let message = `Unable to retrieve partner data for slug ${slug}. Please try again later.`;
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error: ${error.message}`;
@@ -153,7 +153,7 @@ export async function getPartnerDetailsById(
 			message = 'Invalid data provided';
 		}
 
-		console.error(`Error fetching partner with ID ${partnerId}:`, error);
+		console.error(`Error fetching partner with ID ${slug}:`, error);
 		return { data: null, error: true, message };
 	}
 }

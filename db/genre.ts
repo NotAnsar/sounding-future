@@ -52,11 +52,11 @@ type GenreDetailsRes = {
 };
 
 export async function getGenreDetailsById(
-	id?: string
+	slug?: string
 ): Promise<GenreDetailsRes> {
 	try {
 		const genre = await prisma.genre.findUnique({
-			where: { id },
+			where: { slug: slug },
 		});
 
 		if (!genre) {

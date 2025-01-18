@@ -2,11 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { imageSchema, State } from '../utils/utils';
+import { generateSlug, imageSchema, State } from '../utils/utils';
 import { checkFile, updateFile, uploadFile } from '../utils/s3-image';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { Prisma } from '@prisma/client';
 
 const ArtistSchema = z.object({
 	name: z
@@ -64,17 +65,20 @@ export async function createArtist(
 		}
 
 		const { name, biography, genres, published, image } = validatedFields.data;
+		const slug = generateSlug(name);
+
 		if (image instanceof File && image.size > 2 * 1024 * 1024) {
 			return {
 				message: 'Artist Profile image must be less than 2MB',
 				errors: { image: ['Artist Profile image must be less than 2MB'] },
 			};
 		}
+
 		const imageUrl = await uploadFile(image);
 
 		const artist = await prisma.$transaction(async (tx) => {
 			const artist = await tx.artist.create({
-				data: { name, bio: biography, pic: imageUrl, published },
+				data: { name, bio: biography, pic: imageUrl, published, slug },
 			});
 
 			await tx.artistGenre.createMany({
@@ -88,6 +92,18 @@ export async function createArtist(
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		console.error('Artist creation error:', error);
+
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			// Check if the error is due to name or slug uniqueness
+			const target = (error.meta as { target?: string[] })?.target || [];
+			if (target.includes('slug')) {
+				return { message: 'An artist with a similar name already exists' };
+			}
+			return { message: 'Artist already exists' };
+		}
 		return { message: 'Failed to create artist. Please try again.' };
 	}
 	redirect(`/user/artists/links/${artistId}`);
@@ -125,6 +141,8 @@ export async function updateArtist(
 
 	try {
 		const { name, biography, genres, published } = validatedFields.data;
+		const slug = generateSlug(name);
+
 		const imageUrl = await updateFile(image, prevState?.prev?.image);
 		const artist = await prisma.artist.update({
 			where: { id },
@@ -133,6 +151,7 @@ export async function updateArtist(
 				bio: biography,
 				pic: imageUrl,
 				published,
+				slug,
 			},
 		});
 
@@ -160,6 +179,12 @@ export async function updateArtist(
 		revalidatePath('/');
 	} catch (error) {
 		console.error('Artist update error:', error);
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'An artist with a similar name already exists' };
+		}
 		return { message: 'Failed to update artist. Please try again.' };
 	}
 	redirect(`/user/artists/links/${id}`);

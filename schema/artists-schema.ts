@@ -21,7 +21,7 @@ export function generateArtistsListingSchema(artists: ArtistList[]) {
 				item: {
 					'@type': 'MusicGroup',
 					name: artist.name,
-					url: `${baseUrl}/artists/${artist.id}`,
+					url: `${baseUrl}/artists/${artist.slug}`,
 					description: artist.bio || undefined,
 					image: artist.pic || undefined,
 					genre: artist.genres.map((g) => g.genre.name),
@@ -57,7 +57,7 @@ export function generateArtistSchema(artist: ArtistDetails) {
 		name: artist.name,
 		description: artist.bio || '',
 		image: artist.pic || undefined,
-		url: `${baseUrl}/artists/${artist.id}`,
+		url: `${baseUrl}/artists/${artist.slug}`,
 		genre: artist.genres.map((g) => g.genre.name),
 		sameAs: artist.socialLinks
 			? [
@@ -80,7 +80,7 @@ export function generateArtistSchema(artist: ArtistDetails) {
 		}),
 		mainEntityOfPage: {
 			'@type': 'ProfilePage',
-			'@id': `${baseUrl}/artists/${artist.id}`,
+			'@id': `${baseUrl}/artists/${artist.slug}`,
 		},
 	};
 	return schema;

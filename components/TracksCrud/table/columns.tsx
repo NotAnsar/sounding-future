@@ -42,7 +42,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 			return (
 				<>
 					<Link
-						href={`/tracks/${track.id}`}
+						href={`/tracks/${track.slug}`}
 						className={
 							'text-base font-semibold line-clamp-1 hover:opacity-80 max-w-40 text-nowrap'
 						}

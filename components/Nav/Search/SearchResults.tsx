@@ -51,7 +51,7 @@ export default function SearchResults({
 					{searchResults.artists.map((artist) => (
 						<Link
 							key={artist.id}
-							href={`/artists/${artist.id}`}
+							href={`/artists/${artist.slug}`}
 							className='flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer'
 							onClick={() => onClose()}
 						>
@@ -78,7 +78,7 @@ export default function SearchResults({
 					{searchResults.tracks.map((track) => (
 						<Link
 							key={track.id}
-							href={`/tracks/${track.id}`}
+							href={`/tracks/${track.slug}`}
 							className='flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg cursor-pointer'
 							onClick={() => onClose()}
 						>

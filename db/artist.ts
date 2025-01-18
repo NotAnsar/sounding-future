@@ -101,13 +101,13 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 }>;
 
 export async function getArtistsById(
-	id: string,
+	slug: string,
 	publishedOnly: boolean = true
 ): Promise<ArtistDetails | undefined> {
 	try {
 		const data = await prisma.artist.findUnique({
 			where: {
-				id,
+				slug,
 				published: publishedOnly ? true : undefined,
 			},
 			include: {

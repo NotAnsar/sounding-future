@@ -2,12 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { imageSchema, State } from '../utils/utils';
+import { generateSlug, imageSchema, State } from '../utils/utils';
 import { auth } from '@/lib/auth';
 
 import { checkFile, updateFile, uploadFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { Prisma } from '@prisma/client';
 
 const TrackSchema = z.object({
 	trackName: z
@@ -85,6 +86,7 @@ export async function submitTrack(
 			sourceFormat,
 			release,
 		} = validatedFields.data;
+		const slug = generateSlug(trackName);
 
 		const imageUrl = await uploadFile(imageFile);
 
@@ -97,6 +99,7 @@ export async function submitTrack(
 				formatId: sourceFormat,
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy,
+				slug,
 			},
 		});
 
@@ -109,7 +112,20 @@ export async function submitTrack(
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		console.error('Track submission error:', error);
-		return { message: 'Failed to upload track basic info. Please try again.' };
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			// Check if the error is due to name or slug uniqueness
+			const target = (error.meta as { target?: string[] })?.target || [];
+			if (target.includes('slug')) {
+				return { message: 'A track with a similar name already exists' };
+			}
+			return {
+				message: 'Failed to upload track basic info. Please try again.',
+			};
+		}
+		return { message: 'Failed to create genre' };
 	}
 
 	redirect(`/user/tracks/upload/${trackId}/info`);
@@ -161,6 +177,7 @@ export async function updateTrack(
 		sourceFormat,
 		release,
 	} = validatedFields.data;
+	const slug = generateSlug(trackName);
 
 	try {
 		const imageFile = formData.get('imageFile');
@@ -187,6 +204,7 @@ export async function updateTrack(
 				formatId: sourceFormat,
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy,
+				slug,
 			},
 		});
 
@@ -215,6 +233,13 @@ export async function updateTrack(
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		console.error('Track update error:', error);
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			return { message: 'A Track with this name already exists' };
+		}
+
 		return { message: 'Failed to update track info. Please try again.' };
 	}
 

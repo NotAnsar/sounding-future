@@ -53,7 +53,9 @@ export default function CuratedDetails({
 						isAbout && 'bg-primary border-primary-foreground'
 					)}
 					href={
-						isAbout ? `/curated/${curated.id}` : `/curated/${curated.id}/about`
+						isAbout
+							? `/curated/${curated.slug}`
+							: `/curated/${curated.slug}/about`
 					}
 				>
 					About {curated?.name}

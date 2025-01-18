@@ -52,7 +52,7 @@ export default function PartnersCarousel({
 					{partners?.map((partner, i) => (
 						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
 							<Link
-								href={`/curated/${partner?.id}`}
+								href={`/curated/${partner?.slug}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image

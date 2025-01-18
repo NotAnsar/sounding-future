@@ -62,7 +62,7 @@ export async function getPublicTracks(
 }
 
 export async function getPublicTracksByArtist(
-	artistId: string,
+	artistSlug: string,
 	limit?: number
 ): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
@@ -80,7 +80,7 @@ export async function getPublicTracksByArtist(
 				_count: { select: { likes: true } },
 			},
 			take: limit,
-			where: { artistId, published: true },
+			where: { artist: { slug: artistSlug }, published: true },
 			orderBy: { releaseYear: 'desc' },
 		});
 
@@ -159,7 +159,7 @@ export async function getArtistSimilarTracks(
 }
 
 export async function getPublicTracksById(
-	id: string
+	slug: string
 ): Promise<{ data: TrackDetails | null; error?: boolean; message?: string }> {
 	const session = await auth();
 
@@ -180,7 +180,7 @@ export async function getPublicTracksById(
 					  }
 					: false,
 			},
-			where: { id, published: true },
+			where: { slug, published: true },
 		});
 
 		if (!data) {
@@ -309,7 +309,7 @@ export async function getTracksStats(): Promise<{
 }
 
 export async function getPublicTracksByPartner(
-	partnerId: string,
+	partnerSlug: string,
 	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
 ): Promise<PublicTrackWithLikeStatusRes> {
@@ -326,9 +326,13 @@ export async function getPublicTracksByPartner(
 					  }
 					: false,
 				_count: { select: { likes: true } },
+				curator: true,
 			},
 			take: limit,
-			where: { curatedBy: partnerId, published: true },
+			where: {
+				curator: { slug: partnerSlug },
+				published: true,
+			},
 			orderBy:
 				type === 'popular'
 					? { listeners: { _count: 'desc' } }
@@ -364,7 +368,7 @@ export async function getPublicTracksByPartner(
 }
 
 export async function getPublicTracksByGenre(
-	genreId: string,
+	genreSlug: string,
 	type: 'new' | 'popular' | 'default' = 'default',
 	limit?: number
 ): Promise<PublicTrackWithLikeStatusRes> {
@@ -383,7 +387,10 @@ export async function getPublicTracksByGenre(
 				_count: { select: { likes: true } },
 			},
 			take: limit,
-			where: { genres: { some: { genreId } }, published: true },
+			where: {
+				genres: { some: { genre: { slug: genreSlug } } },
+				published: true,
+			},
 			orderBy:
 				type === 'popular'
 					? { listeners: { _count: 'desc' } }

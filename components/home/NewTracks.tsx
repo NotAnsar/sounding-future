@@ -61,7 +61,7 @@ export default function TracksCarousel({
 							className={cn('basis-40 md:basis-52 lg:basis-56', classNameItem)}
 						>
 							<Link
-								href={`/tracks/${track?.id}`}
+								href={`/tracks/${track?.slug}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
 							>
 								<Image
@@ -74,13 +74,13 @@ export default function TracksCarousel({
 							</Link>
 
 							<Link
-								href={`/artists/${track?.artist?.id}`}
+								href={`/artists/${track?.artist?.slug}`}
 								className='text-muted text-sm md:text-base font-semibold text-nowrap'
 							>
 								{track?.artist?.name}
 							</Link>
 							<Link
-								href={`/tracks/${track.id}`}
+								href={`/tracks/${track.slug}`}
 								className={cn(
 									'text-sm sm:text-[17px] font-semibold line-clamp-1'
 									// isCurrentTrack ? 'text-primary' : ''

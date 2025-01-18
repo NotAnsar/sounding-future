@@ -9,7 +9,7 @@ export function generateGenreSchema(genre: Genre) {
 		'@context': 'https://schema.org',
 		'@type': 'Thing',
 		name: genre.name,
-		url: `${baseUrl}/genres/${genre.id}`,
+		url: `${baseUrl}/genres/${genre.slug}`,
 		additionalType: 'MusicGenre',
 		description: `Music genre: ${genre.name}`,
 	};
