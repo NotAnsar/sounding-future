@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AudioProvider } from '@/context/AudioContext';
 import { Toaster } from '@/components/ui/toaster';
+import MatomoAnalytics from '@/components/MatomoAnalytics';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -17,7 +18,8 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
 	title: 'Sounding Future',
-	description: '',
+	description:
+		'Sounding Future is a platform for experimental music and sound art.',
 };
 
 export default async function RootLayout({
@@ -27,6 +29,9 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
+			<head>
+				<MatomoAnalytics />
+			</head>
 			<body
 				className={cn(
 					`${fontSans.variable} font-sans antialiased bg-background`
