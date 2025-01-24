@@ -64,7 +64,7 @@ function UploadInput({
 	name,
 	errors,
 	message,
-	accept = '.mp3,audio/mpeg,.wav,audio/wav',
+	accept = '.mp3,audio/mpeg,.wav,audio/wav,.webm,audio/webm',
 	url,
 }: {
 	name: string;
