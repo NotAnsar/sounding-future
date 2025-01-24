@@ -3,7 +3,6 @@ export default function MatomoAnalytics() {
 		<>
 			<script
 				type='text/javascript'
-				id='matomo-script'
 				dangerouslySetInnerHTML={{
 					__html: `
               var _paq = window._paq = window._paq || [];

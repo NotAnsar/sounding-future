@@ -16,7 +16,7 @@ const ArtistSchema = z.object({
 		.max(100, 'Artist name must be 100 characters or less'),
 	biography: z
 		.string()
-		.max(1000, 'Biography must be 1000 characters or less')
+		.max(1500, 'Biography must be 1000 characters or less')
 		.optional(),
 	genres: z
 		.array(z.string())

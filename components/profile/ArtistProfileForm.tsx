@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
-const MaxChar = 1000;
+const MaxChar = 1500;
 
 export default function ArtistProfileForm({
 	initialData,

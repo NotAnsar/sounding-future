@@ -6,7 +6,7 @@ import { useFormState } from 'react-dom';
 import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
-import SignWithGoogle from './SignWithGoogle';
+// import SignWithGoogle from './SignWithGoogle';
 import { resetPasswordRequest } from '@/actions/auth/reset-password';
 import { useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
@@ -50,7 +50,7 @@ export default function ResetForm() {
 					<SubmitButton className='mt-2.5 w-full'>Send Reset Link</SubmitButton>
 				</div>
 			</form>
-			<div className='relative'>
+			{/* <div className='relative'>
 				<div className='absolute inset-0 flex items-center'>
 					<span className='w-full border-t' />
 				</div>
@@ -62,7 +62,7 @@ export default function ResetForm() {
 			</div>
 			<div className='grid gap-3 w-full'>
 				<SignWithGoogle />
-			</div>
+			</div> */}
 		</div>
 	);
 }

@@ -33,17 +33,17 @@ export default async function SocialLinks() {
 				)}
 				{socialLinks.data.mastodon && (
 					<Link href={socialLinks.data.mastodon} target='_blank'>
-						<Icons.mastodon className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+						<Icons.mastodon className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out hover:fill-primary-foreground' />
 					</Link>
 				)}
 				{socialLinks.data.youtube && (
 					<Link href={socialLinks.data.youtube} target='_blank'>
-						<Icons.youtube className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+						<Icons.youtube className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out hover:fill-primary-foreground' />
 					</Link>
 				)}
 				{socialLinks.data.website && (
 					<Link href={socialLinks.data.website} target='_blank'>
-						<Icons.world className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
+						<Icons.world className='w-8 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground hover:fill-primary-foreground transition-colors duration-200 ease-out' />
 					</Link>
 				)}
 			</div>

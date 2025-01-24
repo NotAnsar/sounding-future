@@ -8,7 +8,6 @@ import { login } from '@/actions/auth/login';
 import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
-import SignWithGoogle from './SignWithGoogle';
 import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
 import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
 import { toast } from '@/hooks/use-toast';
@@ -100,7 +99,7 @@ export default function LoginForm() {
 					</div>
 				</div>
 			</form>
-			<div className='relative'>
+			{/* <div className='relative'>
 				<div className='absolute inset-0 flex items-center'>
 					<span className='w-full border-t' />
 				</div>
@@ -112,7 +111,7 @@ export default function LoginForm() {
 			</div>
 			<div className='grid gap-3 w-full'>
 				<SignWithGoogle />
-			</div>
+			</div> */}
 		</div>
 	);
 }

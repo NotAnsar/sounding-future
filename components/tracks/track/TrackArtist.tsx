@@ -1,4 +1,4 @@
-import { Icons } from '@/components/icons/socials';
+import ArtistLink from '@/components/artists/ArtistLink';
 import { TabsContent } from '@/components/ui/tabs';
 import { ArtistDetails as ArtistDetailsType } from '@/db/tracks';
 import { cn } from '@/lib/utils';
@@ -32,40 +32,7 @@ export default function TrackArtistDetails({
 			>
 				{artist?.bio || 'No bio available'}
 			</p>
-			{artist?.socialLinks && (
-				<div>
-					<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
-						Artist Links
-					</h1>
-					<div className='flex gap-4 items-center'>
-						{artist?.socialLinks?.facebook && (
-							<Link href={artist?.socialLinks?.facebook} target='_blank'>
-								<Icons.facebook className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
-							</Link>
-						)}
-						{artist?.socialLinks?.instagram && (
-							<Link href={artist?.socialLinks?.instagram} target='_blank'>
-								<Icons.instagram className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
-							</Link>
-						)}
-						{artist?.socialLinks?.linkedin && (
-							<Link href={artist?.socialLinks?.linkedin} target='_blank'>
-								<Icons.linkedin className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
-							</Link>
-						)}
-						{artist?.socialLinks?.vimeo && (
-							<Link href={artist?.socialLinks?.vimeo} target='_blank'>
-								<Icons.linkedin className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
-							</Link>
-						)}
-						{artist?.socialLinks?.youtube && (
-							<Link href={artist?.socialLinks?.youtube} target='_blank'>
-								<Icons.youtube className='w-9 h-auto aspect-square text-foreground cursor-pointer' />
-							</Link>
-						)}
-					</div>
-				</div>
-			)}
+			{artist?.socialLinks && <ArtistLink socialLinks={artist.socialLinks} />}
 
 			{artist?.articles.length > 0 && (
 				<div>

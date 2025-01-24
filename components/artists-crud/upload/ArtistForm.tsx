@@ -18,7 +18,7 @@ import {
 } from '@/actions/artists/artist-info';
 import { PublishToggle } from '@/components/PublishToggle';
 
-const MaxChar = 1000;
+const MaxChar = 1500;
 
 export default function ArtistForm({
 	initialData,

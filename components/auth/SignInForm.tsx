@@ -7,7 +7,7 @@ import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import { register } from '@/actions/auth/signup';
-import SignWithGoogle from './SignWithGoogle';
+// import SignWithGoogle from './SignWithGoogle';
 import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
 import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
 import { toast } from '@/hooks/use-toast';
@@ -103,7 +103,7 @@ export default function SignInForm() {
 					</div>
 				</div>
 			</form>
-			<div className='relative'>
+			{/* <div className='relative'>
 				<div className='absolute inset-0 flex items-center'>
 					<span className='w-full border-t' />
 				</div>
@@ -114,7 +114,7 @@ export default function SignInForm() {
 				</div>
 			</div>
 
-			<SignWithGoogle />
+			<SignWithGoogle /> */}
 		</div>
 	);
 }
