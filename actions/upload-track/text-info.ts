@@ -12,7 +12,7 @@ const UploadTrackTextInfoSchema = z.object({
 		.string()
 		.min(3, 'Track Info must be 3 characters or more')
 		.max(3000, 'Track Info must be 3000 characters or less'),
-	more: z.string().max(3000, 'More must be 1000 characters or less'),
+	more: z.string().max(3000, 'More must be 3000 characters or less'),
 });
 
 type UploadTrackTextInfoData = z.infer<typeof UploadTrackTextInfoSchema>;
