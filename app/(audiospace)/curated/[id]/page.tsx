@@ -48,7 +48,7 @@ export default async function page({
 						'text-xl md:text-[22px] font-semibold text-primary-foreground mt-4 '
 					}
 				>
-					These tracks have been compiled by Audiomatch
+					These tracks have been compiled by {curated.data.name}
 				</h1>
 				<TabsContent value='new'>
 					{tracks.error ? (

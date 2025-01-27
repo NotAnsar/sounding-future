@@ -102,6 +102,7 @@ model Partner {
   socialId    String?      @map("social_id") 
   displayOrder    Int      @default(autoincrement())
   createdAt   DateTime     @default(now()) @map("created_at")
+
   
   // Relations
   

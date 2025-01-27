@@ -86,9 +86,15 @@ export async function submitTrack(
 			sourceFormat,
 			release,
 		} = validatedFields.data;
-		const slug = generateSlug(trackName);
 
+		const slug = generateSlug(trackName);
 		const imageUrl = await uploadFile(imageFile);
+
+		const sourceFormatData = await prisma.sourceFormat.upsert({
+			where: { id: sourceFormat },
+			update: {},
+			create: { name: sourceFormat },
+		});
 
 		const track = await prisma.track.create({
 			data: {
@@ -96,7 +102,7 @@ export async function submitTrack(
 				releaseYear: +releaseYear,
 				artistId: artist,
 				cover: imageUrl,
-				formatId: sourceFormat,
+				formatId: sourceFormatData.id,
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy,
 				slug,
@@ -177,6 +183,7 @@ export async function updateTrack(
 		sourceFormat,
 		release,
 	} = validatedFields.data;
+
 	const slug = generateSlug(trackName);
 
 	try {
@@ -194,6 +201,12 @@ export async function updateTrack(
 			prevState?.prev?.image
 		);
 
+		const sourceFormatData = await prisma.sourceFormat.upsert({
+			where: { id: sourceFormat },
+			update: {},
+			create: { name: sourceFormat },
+		});
+
 		await prisma.track.update({
 			where: { id },
 			data: {
@@ -201,7 +214,7 @@ export async function updateTrack(
 				releaseYear: +releaseYear,
 				artistId: artist,
 				cover: imageUrl,
-				formatId: sourceFormat,
+				formatId: sourceFormatData.id,
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy,
 				slug,

@@ -165,9 +165,9 @@ export function DataTable<TData extends { id: string }, TValue>({
 				<Input
 					placeholder='Filter by Partner Name'
 					className='flex gap-1 w-full md:w-80'
-					value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+					value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
 					onChange={(event) =>
-						table.getColumn('title')?.setFilterValue(event.target.value)
+						table.getColumn('name')?.setFilterValue(event.target.value)
 					}
 				/>
 

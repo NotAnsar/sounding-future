@@ -8,6 +8,12 @@ const nextConfig = {
 				port: '',
 				pathname: '/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'sfdata01.fsn1.your-objectstorage.com',
+				port: '',
+				pathname: '/sfdata01/images/**',
+			},
 		],
 	},
 	experimental: {
