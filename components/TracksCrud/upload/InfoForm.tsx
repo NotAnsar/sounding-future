@@ -70,7 +70,7 @@ export default function TrackInfoForm({
 					</Label>
 					<Textarea
 						className={cn(
-							'max-w-lg min-h-48',
+							'max-w-lg min-h-64',
 							state?.errors?.more
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
