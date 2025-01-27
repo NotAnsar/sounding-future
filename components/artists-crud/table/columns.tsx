@@ -44,6 +44,28 @@ export const columns: ColumnDef<ArtistStats>[] = [
 			);
 		},
 	},
+	{
+		accessorKey: 'bio',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Bio
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			return (
+				<div className={'text-base font-semibold max-w-60 line-clamp-1'}>
+					{row.getValue('bio')}
+				</div>
+			);
+		},
+	},
 
 	{
 		accessorKey: '_count.tracks',

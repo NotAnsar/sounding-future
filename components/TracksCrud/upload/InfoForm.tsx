@@ -11,6 +11,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertUploadTrack } from './BasicsForm';
 import { TrackWithgenres } from '@/db/tracks';
 
+const CREDITS = 3000;
+
 export default function TrackInfoForm({
 	id,
 	initialData,
@@ -73,7 +75,7 @@ export default function TrackInfoForm({
 								? 'border-destructive focus-visible:ring-destructive '
 								: ''
 						)}
-						maxLength={1000}
+						maxLength={CREDITS}
 						name='more'
 						defaultValue={initialData.credits || undefined}
 						id='more'
@@ -82,7 +84,7 @@ export default function TrackInfoForm({
 
 					<p className='text-muted text-sm max-w-lg'>
 						Add additional information such as credits or mentions <br />
-						(Max. 1000 characters)
+						(Max. {CREDITS} characters)
 					</p>
 
 					<ErrorMessage errors={state?.errors?.more} />

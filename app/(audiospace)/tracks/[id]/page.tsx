@@ -83,6 +83,14 @@ export default async function page({
 								{track?.info && (
 									<CollapsibleText text={track?.info} className='max-w-2xl' />
 								)}
+								{track?.credits && (
+									<div className='mt-6'>
+										<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
+											Credits
+										</h1>
+										<p className='text-pretty leading-7'>{track?.credits}</p>
+									</div>
+								)}
 							</TabsContent>
 							<TabsContent value='others'>
 								<p className='font-semibold text-muted text-lg mb-4 px-2'>

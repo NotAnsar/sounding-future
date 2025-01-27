@@ -25,7 +25,7 @@ const TrackSchema = z.object({
 		.string()
 		.min(1, { message: 'Track Source Format is required' }),
 	imageFile: imageSchema.shape.file,
-	// admin
+
 	artist: z.string().min(1, { message: 'You must select an artist' }),
 	curatedBy: z
 		.string()
@@ -125,7 +125,7 @@ export async function submitTrack(
 				message: 'Failed to upload track basic info. Please try again.',
 			};
 		}
-		return { message: 'Failed to create genre' };
+		return { message: 'Failed to upload track basic info. Please try again.' };
 	}
 
 	redirect(`/user/tracks/upload/${trackId}/info`);

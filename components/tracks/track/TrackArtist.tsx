@@ -32,6 +32,7 @@ export default function TrackArtistDetails({
 			>
 				{artist?.bio || 'No bio available'}
 			</p>
+			<div></div>
 			{artist?.socialLinks && <ArtistLink socialLinks={artist.socialLinks} />}
 
 			{artist?.articles.length > 0 && (
