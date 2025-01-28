@@ -174,6 +174,7 @@ export async function getPublicTracksById(
 				},
 				genres: { include: { genre: true } },
 				curator: true,
+				sourceFormat: true,
 				likes: session?.user.id
 					? {
 							where: { userId: session.user.id },
@@ -436,6 +437,7 @@ export type TrackDetails = Prisma.TrackGetPayload<{
 		};
 		genres: { include: { genre: true } };
 		curator: true;
+		sourceFormat: true;
 	};
 }> & { isLiked: boolean };
 

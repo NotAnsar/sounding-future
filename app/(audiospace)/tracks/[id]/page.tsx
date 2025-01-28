@@ -1,7 +1,7 @@
 import { TabsContent } from '@/components/ui/tabs';
 import TrackDetails from '@/components/tracks/track/TrackDetails';
 import { Tabs } from '@/components/ui/tabs';
-import { Icons } from '@/components/icons/track-icons';
+// import { Icons } from '@/components/icons/track-icons';
 import TrackList from '@/components/tracks/TrackList';
 import TrackNav from '@/components/tracks/track/TrackNav';
 import TracksCarousel from '@/components/home/NewTracks';
@@ -17,6 +17,8 @@ import { Suspense } from 'react';
 import Error from '@/components/Error';
 import { Metadata } from 'next';
 import { generateTrackSchema } from '@/schema/tracks-schema';
+import { CalendarFold, Disc3 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export async function generateMetadata({
 	params,
@@ -106,15 +108,22 @@ export default async function page({
 							<TrackArtistDetails artist={track.artist} />
 						</div>
 						<div>
-							<ul className='mt-2 px-10 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
-								<li className='flex gap-3 '>
-									<Icons.tag className='min-w-5 max-w-5 h-auto aspect-auto fill-foreground text-nowrap flex-nowrap' />{' '}
-									<div className='text-sm text-left'>
-										{track.genres.map((g) => g.genre.name).join(', ')}
-									</div>
+							<ul className='mt-2 border px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
+								<li className='flex gap-3 h-full'>
+									{/* <Icons.tag className='min-w-5 max-w-5 h-auto aspect-auto fill-foreground text-nowrap flex-nowrap' />{' '} */}
+									{/* <Tag className='w-5 h-auto aspect-auto text-foreground rotate-180 flex-nowrap text-nowrap' />{' '} */}
+									{/* <div className='text-left text-sm'> */}
+									{/* {track.genres.map((g) => g.genre.name).join(', ')} */}
+									{track.genres.map((g) => (
+										<Badge key={g.genreId} className='text-white font-normal'>
+											{g.genre.name}
+										</Badge>
+									))}
+									{/* </div> */}
 								</li>
 								<li className='flex gap-3'>
-									<Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '}
+									{/* <Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '} */}
+									<CalendarFold className='w-5 h-auto aspect-auto text-foreground' />{' '}
 									{track?.releaseYear}
 								</li>
 								{/* <li className='flex gap-3'>
@@ -125,6 +134,13 @@ export default async function page({
 									<Icons.datails className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									3D AmbiX
 								</li> */}
+
+								{track?.sourceFormat?.name && (
+									<li className='flex gap-3'>
+										<Disc3 className='w-5 h-auto aspect-auto text-foreground' />{' '}
+										{track?.sourceFormat?.name}
+									</li>
+								)}
 								{track?.curator?.name && (
 									<li className='w-fit flex flex-col gap-1 text-left'>
 										<h4>Track curated by:</h4>
