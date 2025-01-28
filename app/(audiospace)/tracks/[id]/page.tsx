@@ -108,7 +108,7 @@ export default async function page({
 							<TrackArtistDetails artist={track.artist} />
 						</div>
 						<div>
-							<ul className='mt-2 border px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
+							<ul className='mt-2 px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
 								<li className='flex gap-3 h-full'>
 									{/* <Icons.tag className='min-w-5 max-w-5 h-auto aspect-auto fill-foreground text-nowrap flex-nowrap' />{' '} */}
 									{/* <Tag className='w-5 h-auto aspect-auto text-foreground rotate-180 flex-nowrap text-nowrap' />{' '} */}
