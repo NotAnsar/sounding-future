@@ -40,7 +40,7 @@ export default async function page({
 }) {
 	const isTable = type === 'table';
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
-	const tracks = await getPublicTracks(12, tabValue);
+	const tracks = await getPublicTracks(undefined, tabValue);
 
 	return (
 		<>

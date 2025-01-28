@@ -117,18 +117,20 @@ export default async function page({
 									<Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									{track?.releaseYear}
 								</li>
-								<li className='flex gap-3'>
+								{/* <li className='flex gap-3'>
 									<Icons.prize className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									3D Audio competition
-								</li>
-								<li className='flex gap-3'>
+								</li> */}
+								{/* <li className='flex gap-3'>
 									<Icons.datails className='w-5 h-auto aspect-auto fill-foreground' />{' '}
 									3D AmbiX
-								</li>
-								<li className='w-fit flex flex-col gap-1 text-left'>
-									<h4>Track curated by:</h4>
-									<p>{track?.curator?.name}</p>
-								</li>
+								</li> */}
+								{track?.curator?.name && (
+									<li className='w-fit flex flex-col gap-1 text-left'>
+										<h4>Track curated by:</h4>
+										<p>{track?.curator?.name}</p>
+									</li>
+								)}
 							</ul>
 						</div>
 					</div>
