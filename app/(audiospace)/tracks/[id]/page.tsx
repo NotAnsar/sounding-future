@@ -109,31 +109,21 @@ export default async function page({
 						</div>
 						<div>
 							<ul className='mt-2 px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
-								<li className='flex gap-3 h-full'>
-									{/* <Icons.tag className='min-w-5 max-w-5 h-auto aspect-auto fill-foreground text-nowrap flex-nowrap' />{' '} */}
-									{/* <Tag className='w-5 h-auto aspect-auto text-foreground rotate-180 flex-nowrap text-nowrap' />{' '} */}
-									{/* <div className='text-left text-sm'> */}
-									{/* {track.genres.map((g) => g.genre.name).join(', ')} */}
+								<li className='flex gap-3'>
 									{track.genres.map((g) => (
-										<Badge key={g.genreId} className='text-white font-normal'>
+										<Badge
+											key={g.genreId}
+											className='text-white font-normal bg-transparent border-foreground text-foreground '
+											variant={'secondary'}
+										>
 											{g.genre.name}
 										</Badge>
 									))}
-									{/* </div> */}
 								</li>
 								<li className='flex gap-3'>
-									{/* <Icons.calendar className='w-5 h-auto aspect-auto fill-foreground' />{' '} */}
 									<CalendarFold className='w-5 h-auto aspect-auto text-foreground' />{' '}
 									{track?.releaseYear}
 								</li>
-								{/* <li className='flex gap-3'>
-									<Icons.prize className='w-5 h-auto aspect-auto fill-foreground' />{' '}
-									3D Audio competition
-								</li> */}
-								{/* <li className='flex gap-3'>
-									<Icons.datails className='w-5 h-auto aspect-auto fill-foreground' />{' '}
-									3D AmbiX
-								</li> */}
 
 								{track?.sourceFormat?.name && (
 									<li className='flex gap-3'>
