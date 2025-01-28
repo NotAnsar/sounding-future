@@ -38,7 +38,7 @@ export default function ArtistProfileForm({
 
 	useEffect(() => {
 		if (state?.success) {
-			router.push('/');
+			router.push('/user/profile/links');
 			toast({
 				description: 'Artist Profile updated successfully',
 				title: 'Success',
