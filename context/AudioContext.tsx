@@ -145,8 +145,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			// Check guest play count using the ref
 			if (!isAuth && guestPlayCountRef.current >= 3) {
 				toast({
-					title: 'Login to continue',
-					description: 'You have reached the maximum play count as a guest.',
+					title: 'Sign up for free to continue listening',
+					description:
+						'You have reached the maximum play count as a guest. Sign up for free to continue listening.',
 					variant: 'default',
 					action: (
 						<Link href={'/login'}>
@@ -191,17 +192,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				onend: () => {
 					// Use the ref value to check guest play count
 					if (!isAuth && guestPlayCountRef.current >= 3) {
-						toast({
-							title: 'Login to continue',
-							description:
-								'You have reached the maximum play count as a guest.',
-							variant: 'default',
-							action: (
-								<Link href={'/login'}>
-									<ToastAction altText='Login'>Login</ToastAction>
-								</Link>
-							),
-						});
+						// toast({
+						// 	title: 'Login to continue',
+						// 	description:
+						// 		'You have reached the maximum play count as a guest.',
+						// 	variant: 'default',
+						// 	action: (
+						// 		<Link href={'/login'}>
+						// 			<ToastAction altText='Login'>Login</ToastAction>
+						// 		</Link>
+						// 	),
+						// });
 						setIsPlaying(false);
 						return;
 					}

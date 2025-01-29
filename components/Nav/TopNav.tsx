@@ -63,7 +63,7 @@ export default async function TopNav({ className }: { className?: string }) {
 							</Button>
 						</SheetTrigger>
 
-						<ModeToggle />
+						<ModeToggle className='hidden sm:flex' />
 						{session?.user ? (
 							<UserNav user={session?.user} />
 						) : (
