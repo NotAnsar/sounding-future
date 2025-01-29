@@ -11,6 +11,10 @@ import {
 } from 'react';
 import { Howl } from 'howler';
 import { PublicTrack as Track } from '@/db/tracks';
+import { toast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
+import Link from 'next/link';
+import { useGuestPlayCount } from '@/hooks/useGuestPlayCount';
 
 interface AudioContextType {
 	currentTrack: Track | null;
@@ -54,9 +58,13 @@ export const useAudio = () => {
 
 interface AudioProviderProps {
 	children: ReactNode;
+	isAuth?: boolean;
 }
 
-export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
+export const AudioProvider: React.FC<AudioProviderProps> = ({
+	children,
+	isAuth = false,
+}) => {
 	const [playlist, setPlaylist] = useState<Track[]>([]);
 	const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -70,6 +78,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 	const [currentVariant, setCurrentVariant] = useState<
 		'variant1' | 'variant2' | 'variant3' | undefined
 	>('variant1');
+	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
 
 	const toggleLoop = useCallback(() => {
 		setIsLoop((prev) => !prev);
@@ -129,6 +138,20 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 				return;
 			}
 
+			if (!isAuth && guestPlayCount >= 3) {
+				toast({
+					title: 'Login to continue',
+					description: 'You have reached the maximum play count as a guest.',
+					variant: 'default',
+					action: (
+						<Link href={'/login'}>
+							<ToastAction altText='Login'>Login</ToastAction>
+						</Link>
+					),
+				});
+				return;
+			}
+
 			if (!track[variantToUse]) {
 				if (track.variant1) variantToUse = 'variant1';
 				else if (track.variant2) variantToUse = 'variant2';
@@ -138,6 +161,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 					return;
 				}
 				setCurrentVariant(variantToUse);
+			}
+
+			// Increment guest play count
+			if (!isAuth) {
+				incrementPlayCount();
 			}
 
 			// Log listening history
@@ -184,7 +212,16 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 			soundRef.current = newSound;
 			newSound.play();
 		},
-		[playlist, isLoop, currentVariant, isMuted, volume]
+		[
+			playlist,
+			isLoop,
+			currentVariant,
+			isMuted,
+			volume,
+			guestPlayCount,
+			incrementPlayCount,
+			isAuth,
+		]
 	);
 
 	const switchVariant = useCallback(

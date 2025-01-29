@@ -1,7 +1,6 @@
 import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
 import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
-
 import NextTopLoader from 'nextjs-toploader';
 
 export default async function Layout({

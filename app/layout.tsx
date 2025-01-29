@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AudioProvider } from '@/context/AudioContext';
 import { Toaster } from '@/components/ui/toaster';
 import MatomoAnalytics from '@/components/MatomoAnalytics';
+import { isAuthenticated } from '@/db/user';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -27,6 +28,7 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const isAuth = await isAuthenticated();
 	return (
 		<html lang='en'>
 			<head>
@@ -44,7 +46,7 @@ export default async function RootLayout({
 					disableTransitionOnChange
 				>
 					<SessionProvider>
-						<AudioProvider>
+						<AudioProvider isAuth={isAuth}>
 							{children}
 							<Toaster />
 						</AudioProvider>
