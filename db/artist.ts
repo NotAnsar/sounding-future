@@ -3,13 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { Prisma, type Artist } from '@prisma/client';
 import { AuthenticationError, UserNotFoundError } from './user';
 
-// class ArtistError extends Error {
-// 	constructor(message: string, public readonly cause?: unknown) {
-// 		super(message);
-// 		this.name = 'ArtistError';
-// 	}
-// }
-
 type ArtistRes = { data: Artist[]; error?: boolean; message?: string };
 
 export async function getArtists(limit?: number): Promise<ArtistRes> {
@@ -84,10 +77,7 @@ export async function getSimilarArtists(
 
 		// Generic error handling
 		console.error('Error fetching artists:', error);
-		// throw new ArtistError(
-		// 	'Unable to retrieve artists. Please try again later.',
-		// 	error
-		// );
+
 		return { data: [], error: true, message: 'Unable to retrieve artists' };
 	}
 }

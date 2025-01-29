@@ -17,6 +17,7 @@ import {
 	UserIcon,
 	UserRoundCog,
 	Layout,
+	UsersRound,
 } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
@@ -50,7 +51,6 @@ export default function UserNav({
 
 			<DropdownMenuContent
 				align='end'
-				// className='max-w-[250px] min-w-[200px] bg-background backdrop-blur-md border-border '
 				className='max-w-[250px] min-w-[200px] bg-background backdrop-blur-md border-border '
 			>
 				<div className='flex items-center p-1.5'>
@@ -162,6 +162,18 @@ export default function UserNav({
 								Sections Management
 							</Link>
 						</DropdownMenuItem>
+
+						{false && (
+							<DropdownMenuItem className='cursor-pointer p-0' asChild>
+								<Link
+									href={'/user/users'}
+									className='px-2 py-2.5 w-full flex items-center'
+								>
+									<UsersRound className='w-4 h-auto mr-2 ' />
+									Users Management
+								</Link>
+							</DropdownMenuItem>
+						)}
 					</>
 				) : null}
 

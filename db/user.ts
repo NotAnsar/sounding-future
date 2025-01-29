@@ -1,6 +1,44 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/middleware';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+
+export type UserStats = Prisma.UserGetPayload<{
+	include: { artist: true };
+}>;
+
+export async function getUsers(): Promise<{
+	data: UserStats[];
+	message?: string;
+	error?: boolean;
+}> {
+	try {
+		const data = await prisma.user.findMany({
+			orderBy: { createdAt: 'asc' },
+			include: { artist: true },
+		});
+
+		return { data, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+
+			return { data: [], error: true, message: error.message };
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			return { data: [], error: true, message: 'Invalid data provided' };
+		}
+
+		console.error('Error fetching users:', error);
+
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve users. Please try again later.',
+		};
+	}
+}
 
 export class AuthenticationError extends Error {
 	constructor(message: string = 'User not authenticated') {
