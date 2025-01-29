@@ -74,15 +74,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	const soundRef = useRef<Howl | null>(null);
 	const [isMuted, setIsMuted] = useState(false);
 	const previousVolume = useRef(volume);
-	const [isLoop, setIsLoop] = useState(false); // Initialize isLoop state
+	const [isLoop, setIsLoop] = useState(false);
 	const [currentVariant, setCurrentVariant] = useState<
 		'variant1' | 'variant2' | 'variant3' | undefined
 	>('variant1');
 	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
 
-	const toggleLoop = useCallback(() => {
-		setIsLoop((prev) => !prev);
-	}, []);
+	// Ref to track the latest guest play count
+	const guestPlayCountRef = useRef(guestPlayCount);
+	useEffect(() => {
+		guestPlayCountRef.current = guestPlayCount;
+	}, [guestPlayCount]);
+
+	const toggleLoop = useCallback(() => setIsLoop((prev) => !prev), []);
 
 	const toggleMute = useCallback(() => {
 		if (soundRef.current) {
@@ -138,7 +142,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				return;
 			}
 
-			if (!isAuth && guestPlayCount >= 3) {
+			// Check guest play count using the ref
+			if (!isAuth && guestPlayCountRef.current >= 3) {
 				toast({
 					title: 'Login to continue',
 					description: 'You have reached the maximum play count as a guest.',
@@ -184,6 +189,23 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 					setDuration(newSound.duration());
 				},
 				onend: () => {
+					// Use the ref value to check guest play count
+					if (!isAuth && guestPlayCountRef.current >= 3) {
+						toast({
+							title: 'Login to continue',
+							description:
+								'You have reached the maximum play count as a guest.',
+							variant: 'default',
+							action: (
+								<Link href={'/login'}>
+									<ToastAction altText='Login'>Login</ToastAction>
+								</Link>
+							),
+						});
+						setIsPlaying(false);
+						return;
+					}
+
 					const currentIndex = tracksToUse.findIndex((t) => t.id === track.id);
 					if (currentIndex === tracksToUse.length - 1) {
 						if (isLoop) {
@@ -218,7 +240,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			currentVariant,
 			isMuted,
 			volume,
-			guestPlayCount,
 			incrementPlayCount,
 			isAuth,
 		]
@@ -239,7 +260,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			let variant: 'variant1' | 'variant2' | 'variant3' | undefined =
 				'variant1';
 			if (track.variant2) {
-				variant = 'variant2'; // Set to variant2 if it exists
+				variant = 'variant2';
 			} else if (track.variant1) {
 				variant = 'variant1';
 			} else if (track.variant3) {
