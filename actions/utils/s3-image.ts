@@ -73,7 +73,6 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 	try {
 		const urlParts = fileUrl.split(`/${AWS_S3_BUCKET_NAME}/`);
 		if (urlParts.length !== 2) {
-			// throw new Error();
 			console.log('Invalid file URL format');
 			return;
 		}

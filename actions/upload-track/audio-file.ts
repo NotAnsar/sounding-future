@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { State } from '../utils/utils';
-import { checkFile, updateFile } from '../utils/s3-image';
+import { checkFile, deleteFile, updateFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
@@ -101,4 +101,56 @@ export async function uploadTrackInfo(
 		return { message: 'Failed to upload files. Please try again.' };
 	}
 	redirect('/user/tracks');
+}
+
+export async function deleteTrackVariant(formData: FormData) {
+	const trackId = formData.get('trackId') as string;
+	const variant = formData.get('variant') as
+		| 'variant1'
+		| 'variant2'
+		| 'variant3';
+
+	try {
+		const track = await prisma.track.findUnique({ where: { id: trackId } });
+		if (!track) return { error: 'Track not found' };
+
+		const url = track[variant];
+		if (url) await deleteFile(url);
+
+		await prisma.track.update({
+			where: { id: trackId },
+			data: { [variant]: null },
+		});
+
+		// Check if all variants are now empty
+		const updatedTrack = await prisma.track.findUnique({
+			where: { id: trackId },
+			select: {
+				variant1: true,
+				variant2: true,
+				variant3: true,
+				published: true,
+			},
+		});
+
+		if (!updatedTrack) return { error: 'Track not found after update' };
+
+		// Unpublish if no variants left
+		if (
+			!updatedTrack.variant1 &&
+			!updatedTrack.variant2 &&
+			!updatedTrack.variant3
+		) {
+			await prisma.track.update({
+				where: { id: trackId },
+				data: { published: false },
+			});
+		}
+
+		revalidatePath('/user/tracks');
+		return { success: true };
+	} catch (error) {
+		console.error('Delete error:', error);
+		return { success: false, message: 'Failed to delete track variant' };
+	}
 }

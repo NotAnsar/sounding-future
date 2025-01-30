@@ -91,6 +91,8 @@ export default function AudioFileForm({
 						<TrackUploadSection
 							errors={state?.errors}
 							initialData={initialData}
+							trackId={id}
+							
 						/>
 					) : (
 						<div className='space-y-4'>
