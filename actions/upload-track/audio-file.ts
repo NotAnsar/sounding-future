@@ -47,13 +47,7 @@ export async function uploadTrackInfo(
 		};
 	}
 
-	const { variant1, published } = validatedFields.data;
-
-	if (!variant1 && !prevState.prev?.variant1) {
-		return {
-			errors: { variant1: ['Variant 1 file is required'] },
-		};
-	}
+	const { published, variant1, variant2, variant3 } = validatedFields.data;
 
 	try {
 		const track = await prisma.track.findUnique({
@@ -63,6 +57,17 @@ export async function uploadTrackInfo(
 
 		if (!track) {
 			return { message: 'Track not found' };
+		}
+
+		if (
+			!track.variant1 &&
+			!track.variant2 &&
+			!track.variant3 &&
+			!variant1 &&
+			!variant2 &&
+			!variant3
+		) {
+			return { message: 'At least one audio variant is required.' };
 		}
 
 		const variant1Url = await updateFile(
@@ -100,6 +105,7 @@ export async function uploadTrackInfo(
 		console.error('Upload error:', error);
 		return { message: 'Failed to upload files. Please try again.' };
 	}
+
 	redirect('/user/tracks');
 }
 
