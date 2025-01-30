@@ -13,7 +13,7 @@ export async function getUsers(): Promise<{
 }> {
 	try {
 		const data = await prisma.user.findMany({
-			orderBy: { createdAt: 'asc' },
+			orderBy: { createdAt: 'desc' },
 			include: { artist: true },
 		});
 
@@ -37,6 +37,42 @@ export async function getUsers(): Promise<{
 			error: true,
 			message: 'Unable to retrieve users. Please try again later.',
 		};
+	}
+}
+
+export async function getUserbyId(id?: string): Promise<{
+	data: User | null;
+	message?: string;
+	error?: boolean;
+}> {
+	try {
+		const data = await prisma.user.findFirst({
+			where: { id },
+		});
+
+		if (!data) {
+			return {
+				data: null,
+				error: true,
+				message: `User with ID ${id} not found.`,
+			};
+		}
+
+		return { data, error: false };
+	} catch (error) {
+		let message = `Unable to retrieve user data for ID ${id}. Please try again later.`;
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			message = `Database error: ${error.message}`;
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			message = 'Invalid data provided';
+		}
+
+		console.error(`Error fetching user with ID ${id}:`, error);
+		return { data: null, error: true, message };
 	}
 }
 

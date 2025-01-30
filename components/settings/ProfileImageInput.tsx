@@ -19,7 +19,7 @@ interface ProfileImageInputProps {
 	initialData?: string;
 	error?: string[] | undefined;
 	name: string;
-	userFullName: string;
+	userFullName?: string;
 }
 
 export default function ProfileImageInput({

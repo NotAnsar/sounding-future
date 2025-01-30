@@ -1,21 +1,21 @@
 import BreadCrumb from '@/components/BreadCrumb';
-import CuratedForm from '@/components/CuratedCrud/form/CuratedForm';
+import UserForm from '@/components/UsersCrud/UserForm';
 
 export default function Page() {
 	return (
 		<div className='mt-4'>
 			<BreadCrumb
 				items={[
-					{ link: '/user/curated', text: 'Curating Partner' },
+					{ link: '/user/users', text: 'Users' },
 
 					{
-						link: '/user/curated/new',
-						text: 'Add Partner',
+						link: '/user/users/new',
+						text: 'Add User',
 						isCurrent: true,
 					},
 				]}
 			/>
-			<CuratedForm />
+			<UserForm />
 		</div>
 	);
 }

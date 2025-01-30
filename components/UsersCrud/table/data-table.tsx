@@ -34,6 +34,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { roles } from '@/config/roles';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -80,9 +81,9 @@ export function DataTable<TData, TValue>({
 							<SelectValue placeholder='Filter by Role' />
 						</SelectTrigger>
 						<SelectContent className='w-full text-sm'>
-							{['admin', 'user'].map((c) => (
-								<SelectItem key={c} value={c}>
-									{c}
+							{roles.map((c) => (
+								<SelectItem key={c.value} value={c.value}>
+									{c.label}
 								</SelectItem>
 							))}
 						</SelectContent>

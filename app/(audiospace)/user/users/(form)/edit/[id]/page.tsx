@@ -1,33 +1,34 @@
 import BreadCrumb from '@/components/BreadCrumb';
-import { getPartnerById } from '@/db/partner';
-import CuratedForm from '@/components/CuratedCrud/form/CuratedForm';
+
 import Error from '@/components/Error';
+import { getUserbyId } from '@/db/user';
+import UserForm from '@/components/UsersCrud/UserForm';
 
 export default async function Page({
 	params: { id },
 }: {
 	params: { id: string };
 }) {
-	const partner = await getPartnerById(id);
+	const user = await getUserbyId(id);
 
-	if (partner.error) {
-		return <Error message={partner.message} />;
+	if (user.error) {
+		return <Error message={user.message} />;
 	}
 
 	return (
 		<div className='mt-4'>
 			<BreadCrumb
 				items={[
-					{ link: '/user/curated', text: 'Curating Partner' },
+					{ link: '/user/users', text: 'Users' },
 
 					{
-						link: '/user/curated/new',
-						text: 'Edit Partner',
+						link: '/user/users/new',
+						text: 'Edit User',
 						isCurrent: true,
 					},
 				]}
 			/>{' '}
-			<CuratedForm initialData={partner.data || undefined} />
+			<UserForm initialData={user.data || undefined} />
 		</div>
 	);
 }

@@ -7,17 +7,16 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-// import { toast } from '../../ui/use-toast';
-// import { DeleteProductState, deleteProduct } from '@/actions/product-action';
+
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
-// import { useFormState, useFormStatus } from 'react-dom';
+
 import { Button } from '../../ui/button';
 import { Loader, Trash2 } from 'lucide-react';
-import { deletePartner } from '@/actions/curated';
+import { deleteUser } from '@/actions/users';
 import { toast } from '@/hooks/use-toast';
 
-export const DeletePartner = ({
+export const DeleteUser = ({
 	id,
 	open,
 	setOpen,
@@ -26,7 +25,7 @@ export const DeletePartner = ({
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const [state, action] = useFormState(deletePartner.bind(null, id), {});
+	const [state, action] = useFormState(deleteUser.bind(null, id), {});
 
 	useEffect(() => {
 		if (state?.message) {
@@ -44,8 +43,8 @@ export const DeletePartner = ({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete your
-						Partner and remove its data from our servers.
+						This action cannot be undone. This will permanently delete your User
+						and remove its data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
@@ -75,7 +74,7 @@ function PendingButton() {
 	);
 }
 
-export function DeletePartnerButton({ id }: { id: string }) {
+export function DeleteUserButton({ id }: { id: string }) {
 	const [open, setOpen] = useState<boolean>(false);
 
 	return (
@@ -84,7 +83,7 @@ export function DeletePartnerButton({ id }: { id: string }) {
 				<Trash2 className='w-5 h-auto aspect-square text-muted' />
 			</Button>
 			{open && (
-				<DeletePartner
+				<DeleteUser
 					id={id}
 					open={open}
 					setOpen={setOpen}

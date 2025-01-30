@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Icons } from '@/components/icons/track-icons';
 import Link from 'next/link';
 import { cn, formatTimestamp } from '@/lib/utils';
-import { DeletePartnerButton } from './DeletePartner';
+import { DeleteUserButton } from './DeleteUser';
 import { UserStats } from '@/db/user';
 import Badge from '@/components/Badge';
 
@@ -175,80 +175,11 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 	},
-	// {
-	// 	accessorKey: 'tracks',
-	// 	cell: ({ row }) => {
-	// 		return (
-	// 			<div className='text-sm text-nowrap flex gap-1 items-center '>
-	// 				<MainNavIcons.tracks className='w-4 h-auto aspect-square fill-muted text-muted' />
-	// 				<p>{row.getValue('tracks')}</p>
-	// 			</div>
-	// 		);
-	// 	},
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Tracks
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// },
-	// {
-	// 	accessorKey: 'played',
-	// 	cell: ({ row }) => {
-	// 		return (
-	// 			<div className='text-sm text-nowrap flex gap-1 items-center'>
-	// 				<Icons.played className='w-4 h-auto aspect-square fill-muted text-muted' />
-	// 				<p>{row.getValue('played')}</p>
-	// 			</div>
-	// 		);
-	// 	},
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Played
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// },
-	// {
-	// 	accessorKey: 'liked',
-	// 	cell: ({ row }) => {
-	// 		return (
-	// 			<div className='text-sm text-nowrap flex gap-1 items-center '>
-	// 				<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
-	// 				<p>{row.getValue('liked')}</p>
-	// 			</div>
-	// 		);
-	// 	},
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Liked
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// },
 	{
 		id: 'edit',
 		cell: ({ row }) => (
 			<Link
-				href={`/user/curated/edit/${row.original.id}`}
+				href={`/user/users/edit/${row.original.id}`}
 				className={cn(buttonVariants({ variant: 'ghost' }))}
 			>
 				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
@@ -257,6 +188,6 @@ export const columns: ColumnDef<UserStats>[] = [
 	},
 	{
 		id: 'delete',
-		cell: ({ row }) => <DeletePartnerButton id={row.original.id} />,
+		cell: ({ row }) => <DeleteUserButton id={row.original.id} />,
 	},
 ];
