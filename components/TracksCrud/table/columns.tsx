@@ -74,11 +74,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		cell: ({ row }) => {
 			const name = row?.original?.artist?.name;
 
-			return (
-				<h1 className='text-muted text-base font-semibold text-nowrap'>
-					{name}
-				</h1>
-			);
+			return <h1 className='text-muted text-base font-semibold'>{name}</h1>;
 		},
 	},
 	{
@@ -100,11 +96,9 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 			const partner = row?.original?.curator;
 
 			return (
-				<div>
-					<h1 className='text-muted text-base font-semibold text-nowrap'>
-						{partner?.name || null}
-					</h1>
-				</div>
+				<h1 className='text-muted text-base font-semibold'>
+					{partner?.name || null}
+				</h1>
 			);
 		},
 	},

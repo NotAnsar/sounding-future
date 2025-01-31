@@ -163,7 +163,7 @@ export default function UserNav({
 							</Link>
 						</DropdownMenuItem>
 
-						{false && (
+						{isAdmin && (
 							<DropdownMenuItem className='cursor-pointer p-0' asChild>
 								<Link
 									href={'/user/users'}

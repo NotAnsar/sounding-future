@@ -63,6 +63,8 @@ export async function addUser(
 	const { f_name, l_name, email, password, name, role, artistId, image } =
 		validatedFields.data;
 
+	console.log(validatedFields.data);
+
 	try {
 		const hashedPassword = await hash(password, 10);
 		const imageUrl = image ? await uploadFile(image) : undefined;
@@ -82,6 +84,8 @@ export async function addUser(
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
+		console.log(error);
+
 		if (
 			error instanceof Prisma.PrismaClientKnownRequestError &&
 			error.code === 'P2002'

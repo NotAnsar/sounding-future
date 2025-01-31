@@ -1,7 +1,15 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import UserForm from '@/components/UsersCrud/UserForm';
+import { getUnlinkedArtists } from '@/db/artist';
+import Error from '@/components/Error';
 
-export default function Page() {
+export default async function Page() {
+	const { data, error, message } = await getUnlinkedArtists();
+
+	if (error || !data) {
+		return <Error message={message} />;
+	}
+
 	return (
 		<div className='mt-4'>
 			<BreadCrumb
@@ -15,7 +23,7 @@ export default function Page() {
 					},
 				]}
 			/>
-			<UserForm />
+			<UserForm artistsData={data} />
 		</div>
 	);
 }

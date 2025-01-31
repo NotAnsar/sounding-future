@@ -8,12 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { updateUser, UserFormState, addUser } from '@/actions/users';
-import { User } from '@prisma/client';
+import { Artist, User } from '@prisma/client';
 import SelectInput from '../ui/select-input';
 import { roles } from '@/config/roles';
 import ProfileImageInput from '../settings/ProfileImageInput';
 
-export default function UserForm({ initialData }: { initialData?: User }) {
+export default function UserForm({
+	initialData,
+	artistsData,
+}: {
+	initialData?: User;
+	artistsData: Artist[];
+}) {
 	const isEdit = !!initialData?.id;
 	console.log(isEdit);
 
@@ -202,6 +208,37 @@ export default function UserForm({ initialData }: { initialData?: User }) {
 						<ErrorMessage errors={state?.errors?.password} />
 					</div>
 				)}
+
+				<div className='grid gap-2 max-w-lg'>
+					<Label
+						htmlFor='artistId'
+						className={cn(state?.errors?.artistId ? 'text-destructive' : '')}
+					>
+						Associate with an Artist (Optional)
+					</Label>
+
+					<SelectInput
+						name='artistId'
+						options={artistsData.map((a) => ({ label: a.name, value: a.id }))}
+						initialValue={initialData?.artistId || undefined}
+						placeholder='Select Artist'
+						searchPlaceholder='Search Artist...'
+						emptyMessage='No Artist found.'
+						className={cn(
+							'max-w-lg',
+							state?.errors?.artistId
+								? 'border-destructive focus-visible:ring-destructive '
+								: ''
+						)}
+					/>
+
+					<p className='text-sm text-muted'>
+						Select an artist to associate with this user. Only artists not
+						linked to any user or linked to the current user are available.
+					</p>
+
+					<ErrorMessage errors={state?.errors?.artistId} />
+				</div>
 			</div>
 		</form>
 	);

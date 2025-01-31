@@ -37,6 +37,37 @@ export async function getArtists(limit?: number): Promise<ArtistRes> {
 	}
 }
 
+export async function getUnlinkedArtists(id?: string): Promise<ArtistRes> {
+	try {
+		const data = await prisma.artist.findMany({
+			where: {
+				OR: [{ user: null }, { user: { id } }],
+			},
+		});
+
+		return { data, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+
+			return { data: [], error: true, message: error.message };
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			return { data: [], error: true, message: 'Invalid data provided' };
+		}
+
+		console.error('Error fetching artists:', error);
+
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve artists. Please try again later.',
+		};
+	}
+}
+
 export async function getSimilarArtists(
 	genres: string[],
 	limit?: number,
