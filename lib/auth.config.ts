@@ -25,6 +25,12 @@ export const authConfig: NextAuthConfig = {
 					return null;
 				}
 
+				// Update last login time on successful credential authentication
+				await prisma.user.update({
+					where: { id: user.id },
+					data: { lastLoginAt: new Date() },
+				});
+
 				return {
 					id: user.id,
 					email: user.email,

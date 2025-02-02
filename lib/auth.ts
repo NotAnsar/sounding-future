@@ -19,6 +19,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				return token;
 			}
 
+			// Update last login time when generating JWT
+			await prisma.user.update({
+				where: { id: dbUser.id },
+				data: { lastLoginAt: new Date() },
+			});
+
 			return {
 				...token,
 				id: dbUser.id,

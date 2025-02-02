@@ -67,37 +67,16 @@ export const columns: ColumnDef<UserStats>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					First Name
+					Full Name
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
 		cell: ({ row }) => {
+			const { f_name, l_name } = row.original;
 			return (
 				<div className={'text-sm font-semibold line-clamp-1'}>
-					{row.getValue('f_name')}
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: 'l_name',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Last Name
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => {
-			return (
-				<div className={'text-sm font-medium line-clamp-1'}>
-					{row.getValue('l_name')}
+					{f_name} {l_name}
 				</div>
 			);
 		},
@@ -153,6 +132,7 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 	},
+
 	{
 		accessorKey: 'createdAt',
 		header: ({ column }) => {
@@ -175,6 +155,29 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 	},
+	// {
+	// 	accessorKey: 'lastLoginAt',
+	// 	header: ({ column }) => {
+	// 		return (
+	// 			<Button
+	// 				variant='ghost'
+	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+	// 				className='hover:bg-transparent hover:text-foreground px-0'
+	// 			>
+	// 				Last Login
+	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
+	// 			</Button>
+	// 		);
+	// 	},
+	// 	cell: ({ row }) => {
+	// 		const lastLogin = row.getValue('lastLoginAt') as string | null;
+	// 		return (
+	// 			<div className='text-sm text-nowrap'>
+	// 				{lastLogin ? formatTimestamp(lastLogin) : null}
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 	{
 		id: 'edit',
 		cell: ({ row }) => (

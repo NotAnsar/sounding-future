@@ -23,6 +23,8 @@ model User {
   accounts      Account[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
+  lastLoginAt DateTime? @map("last_login_at")  
+
 
   // Relations  
   artist     Artist?   @relation("UserArtist", fields: [artistId], references: [id], onDelete: SetNull) 
