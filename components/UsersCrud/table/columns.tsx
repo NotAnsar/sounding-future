@@ -155,29 +155,29 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 	},
-	// {
-	// 	accessorKey: 'lastLoginAt',
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Last Login
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		const lastLogin = row.getValue('lastLoginAt') as string | null;
-	// 		return (
-	// 			<div className='text-sm text-nowrap'>
-	// 				{lastLogin ? formatTimestamp(lastLogin) : null}
-	// 			</div>
-	// 		);
-	// 	},
-	// },
+	{
+		accessorKey: 'lastLoginAt',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Last Login
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const lastLogin = row.getValue('lastLoginAt') as string | null;
+			return (
+				<div className='text-sm text-nowrap'>
+					{lastLogin ? formatTimestamp(lastLogin, true) : null}
+				</div>
+			);
+		},
+	},
 	{
 		id: 'edit',
 		cell: ({ row }) => (
