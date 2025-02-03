@@ -27,7 +27,7 @@ export default function AudioType() {
 						className={cn(
 							'flex flex-col items-center cursor-pointer ',
 							currentVariant === 'variant2'
-								? 'text-white'
+								? 'text-foreground'
 								: 'dark:text-muted text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
@@ -37,13 +37,13 @@ export default function AudioType() {
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant2'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-black' />
+							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
 						</div>
-						<p className='text-[10px] text-inherit lowercase'>Binaural+</p>
+						<p className='text-[10px] text-inherit lowercase '>Binaural+</p>
 					</div>
 				)}
 				{currentTrack?.variant1 && (
@@ -51,7 +51,7 @@ export default function AudioType() {
 						className={cn(
 							'flex flex-col items-center cursor-pointer ',
 							currentVariant === 'variant1'
-								? 'text-white'
+								? 'text-foreground'
 								: 'dark:text-muted text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
@@ -61,11 +61,11 @@ export default function AudioType() {
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant1'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-black' />
+							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
 						</div>
 						<p className='text-[10px] text-inherit lowercase'>Binaural</p>
 					</div>
@@ -75,7 +75,7 @@ export default function AudioType() {
 						className={cn(
 							'flex flex-col items-center cursor-pointer ',
 							currentVariant === 'variant3'
-								? 'text-white'
+								? 'text-foreground'
 								: 'dark:text-muted text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
@@ -85,11 +85,11 @@ export default function AudioType() {
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant3'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
+							<Icons.sterio className='w-5 h-auto aspect-square fill-background' />
 						</div>
 						<p className='text-[10px] text-inherit lowercase'>Stereo</p>
 					</div>
@@ -122,8 +122,8 @@ function MobileAudioType({
 						className={cn(
 							'flex flex-col items-center cursor-pointer ',
 							currentVariant === 'variant2'
-								? 'text-white'
-								: 'dark:text-muted text-muted/50',
+								? 'focus:text-foreground text-foreground'
+								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
 						onClick={() => !isSingleVariant && switchVariant('variant2')}
@@ -132,11 +132,11 @@ function MobileAudioType({
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant2'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-black' />
+							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
 						</div>
 						<p className='text-[10px] text-inherit lowercase'>Binaural+</p>
 					</DropdownMenuItem>
@@ -146,8 +146,8 @@ function MobileAudioType({
 						className={cn(
 							'flex flex-col items-center cursor-pointer ',
 							currentVariant === 'variant1'
-								? 'text-white'
-								: 'dark:text-muted text-muted/50',
+								? 'focus:text-foreground text-foreground'
+								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
 						onClick={() => !isSingleVariant && switchVariant('variant1')}
@@ -156,11 +156,11 @@ function MobileAudioType({
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant1'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-black' />
+							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
 						</div>
 						<p className='text-[10px] text-inherit lowercase'>Binaural</p>
 					</DropdownMenuItem>
@@ -168,10 +168,10 @@ function MobileAudioType({
 				{currentTrack?.variant3 && (
 					<DropdownMenuItem
 						className={cn(
-							'flex flex-col items-center cursor-pointer ',
+							'flex flex-col items-center cursor-pointer',
 							currentVariant === 'variant3'
-								? 'text-white'
-								: 'dark:text-muted text-muted/50',
+								? 'focus:text-foreground text-foreground'
+								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
 							isSingleVariant && 'pointer-events-none'
 						)}
 						onClick={() => !isSingleVariant && switchVariant('variant3')}
@@ -180,11 +180,11 @@ function MobileAudioType({
 							className={cn(
 								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
 								currentVariant === 'variant3'
-									? 'bg-white'
+									? 'bg-foreground'
 									: 'dark:bg-muted bg-muted/50'
 							)}
 						>
-							<Icons.sterio className='w-5 h-auto aspect-square fill-black' />
+							<Icons.sterio className='w-5 h-auto aspect-square fill-background' />
 						</div>
 						<p className='text-[10px] text-inherit lowercase'>Stereo</p>
 					</DropdownMenuItem>
