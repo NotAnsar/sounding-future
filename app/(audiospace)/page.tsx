@@ -15,7 +15,7 @@ export default async function page() {
 		getPublicTracks(8, 'new'),
 		getGenres(),
 		getPartners(),
-		getArtists(8),
+		getArtists(8, true),
 	]);
 
 	return (

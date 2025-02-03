@@ -29,10 +29,7 @@ export default async function ArtistTrack({ id }: { id: string }) {
 						{tracks.error ? (
 							<p>{tracks.message}</p>
 						) : (
-							<TracksCards
-								tracks={tracks.data}
-								className='lg:grid-cols-3 2xl:grid-cols-2'
-							/>
+							<TracksCards tracks={tracks.data} className='lg:grid-cols-3 ' />
 						)}
 					</div>
 				</div>

@@ -5,13 +5,28 @@ import { AuthenticationError, UserNotFoundError } from './user';
 
 type ArtistRes = { data: Artist[]; error?: boolean; message?: string };
 
-export async function getArtists(limit?: number): Promise<ArtistRes> {
+export async function getArtists(
+	limit?: number,
+	random: boolean = false
+): Promise<ArtistRes> {
 	try {
-		const data = await prisma.artist.findMany({
+		let data = await prisma.artist.findMany({
 			where: { published: true },
 			orderBy: { tracks: { _count: 'desc' } },
-			take: limit,
 		});
+
+		if (random) {
+			// Fisher-Yates shuffle algorithm
+			for (let i = data.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[data[i], data[j]] = [data[j], data[i]];
+			}
+		}
+
+		// Apply limit after shuffle if needed
+		if (limit) {
+			data = data.slice(0, limit);
+		}
 
 		return { data, error: false };
 	} catch (error) {
