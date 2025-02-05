@@ -59,10 +59,23 @@ const checkFileType = (file: File) => {
 	return allowedTypes.includes(file?.type);
 };
 
-// Utility function for slug generation
+// // Utility function for slug generation
+// export function generateSlug(name: string): string {
+// 	return name
+// 		.toLowerCase()
+// 		.replace(/[^a-z0-9]+/g, '-')
+// 		.replace(/(^-|-$)/g, '');
+// }
+
 export function generateSlug(name: string): string {
 	return name
+		.normalize('NFD') // Decompose accented characters into base + diacritic
+		.replace(/[\u0300-\u036f]/g, '') // Remove all diacritical marks
+		.replace(/ł/g, 'l') // Replace ł with l
+		.replace(/ø/g, 'o') // Replace ø with o
+		.replace(/ç/g, 'c') // Replace ç with c
+		.replace(/ñ/g, 'n') // Replace ñ with n
 		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/(^-|-$)/g, '');
+		.replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric sequences with hyphens
+		.replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
 }

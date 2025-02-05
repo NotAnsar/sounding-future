@@ -55,7 +55,15 @@ export async function searchArtist(
 	try {
 		const data = await prisma.artist.findMany({
 			where: {
-				name: { contains: query.trim(), mode: 'insensitive' },
+				OR: [
+					{ name: { contains: query.trim(), mode: 'insensitive' } },
+					{
+						slug: {
+							contains: query.trim().replace(/ /g, '-'),
+							mode: 'insensitive',
+						},
+					},
+				],
 				published: true,
 			},
 			orderBy: { createdAt: 'desc' },
