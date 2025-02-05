@@ -21,6 +21,7 @@ export default function AudioPlayer() {
 		previousTrack,
 		isLoop,
 		toggleLoop,
+		isLoading,
 	} = useAudio();
 
 	useAudioKeyboardControls();
@@ -66,7 +67,7 @@ export default function AudioPlayer() {
 				</div>
 				<div className='flex gap-2 md:gap-3 items-center w-full xl:w-auto'>
 					<span className='text-xs font-semibold w-8'>
-						{formatTime(currentTime)}
+						{isLoading ? '--:--' : formatTime(currentTime)}
 					</span>
 
 					<CustomSlider

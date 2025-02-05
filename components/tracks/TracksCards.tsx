@@ -72,7 +72,7 @@ export default function TracksCards({
 						</div>
 
 						<Link href={`/tracks/${track.slug}`} className='cursor-pointer'>
-							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap'>
+							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap truncate'>
 								{track?.artist?.name}
 							</h5>
 							<h4

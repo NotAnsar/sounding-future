@@ -25,6 +25,7 @@ interface AudioContextType {
 	volume: number;
 	isMuted: boolean;
 	isLoop: boolean;
+	isLoading: boolean;
 	toggleLoop: () => void;
 	toggleMute: () => void;
 	togglePlayPause: () => void;
@@ -78,6 +79,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	const [currentVariant, setCurrentVariant] = useState<
 		'variant1' | 'variant2' | 'variant3' | undefined
 	>('variant1');
+	const [isLoading, setIsLoading] = useState(false); // Add loading state
 	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
 
 	// Ref to track the latest guest play count
@@ -85,6 +87,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	useEffect(() => {
 		guestPlayCountRef.current = guestPlayCount;
 	}, [guestPlayCount]);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (soundRef.current && isPlaying && !isLoading) {
+				setCurrentTime(soundRef.current.seek());
+			}
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, [isPlaying, isLoading]); // Add isLoading to dependencies
 
 	const toggleLoop = useCallback(() => setIsLoop((prev) => !prev), []);
 
@@ -126,7 +137,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			soundRef.current.seek(seekTime);
 		}
 	};
-
 	const playTrack = useCallback(
 		(
 			track: Track,
@@ -142,7 +152,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				return;
 			}
 
-			// Check guest play count using the ref
+			// Check if it's the same track (variant switch)
+			const isSameTrack = currentTrack?.id === track.id;
+
+			// Capture current time and playing state if same track
+			const seekTime =
+				isSameTrack && soundRef.current
+					? (soundRef.current.seek() as number)
+					: 0;
+			const wasPlaying = isSameTrack ? isPlaying : true;
+
+			// Immediately update UI with previous time for variant switches
+			if (isSameTrack) {
+				setCurrentTime(seekTime);
+			}
+
+			// Check guest play count
 			if (!isAuth && guestPlayCountRef.current >= 3) {
 				toast({
 					title: 'Sign up for free to continue listening',
@@ -158,6 +183,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				return;
 			}
 
+			// Handle variant fallback
 			if (!track[variantToUse]) {
 				if (track.variant1) variantToUse = 'variant1';
 				else if (track.variant2) variantToUse = 'variant2';
@@ -169,40 +195,38 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				setCurrentVariant(variantToUse);
 			}
 
-			// Increment guest play count
-			if (!isAuth) {
+			if (!isAuth && !isSameTrack) {
 				incrementPlayCount();
 			}
 
-			// Log listening history
-			fetch('/api/listening', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ trackId: track.id }),
-			}).catch(() => console.error('Error logging listening history:'));
+			setIsLoading(true);
 
+			// Create new Howl instance
 			const newSound = new Howl({
 				src: [track[variantToUse]].filter(Boolean) as string[],
 				html5: true,
 				preload: true,
 				volume: isMuted ? 0 : volume,
-				onload: () => {
-					setDuration(newSound.duration());
+				onload: function (this: Howl) {
+					setIsLoading(false);
+					setDuration(this.duration());
+
+					// Handle seek and playback continuation
+					if (isSameTrack) {
+						this.seek(seekTime);
+						if (wasPlaying) {
+							this.play();
+							setIsPlaying(true);
+						}
+					}
+				},
+				onloaderror: (_, error) => {
+					setIsLoading(false);
+					console.error('Error loading audio:', error);
 				},
 				onend: () => {
-					// Use the ref value to check guest play count
+					// Handle track ending
 					if (!isAuth && guestPlayCountRef.current >= 3) {
-						// toast({
-						// 	title: 'Login to continue',
-						// 	description:
-						// 		'You have reached the maximum play count as a guest.',
-						// 	variant: 'default',
-						// 	action: (
-						// 		<Link href={'/login'}>
-						// 			<ToastAction altText='Login'>Login</ToastAction>
-						// 		</Link>
-						// 	),
-						// });
 						setIsPlaying(false);
 						return;
 					}
@@ -221,19 +245,34 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				},
 			});
 
+			// Update current variant state
 			if (variant) {
 				setCurrentVariant(variant);
 			}
 
+			// Update track state
 			setCurrentTrack(track);
-			setCurrentTime(0);
-			setIsPlaying(true);
 
+			// Cleanup previous sound
 			if (soundRef.current) {
 				soundRef.current.unload();
 			}
 			soundRef.current = newSound;
-			newSound.play();
+
+			// Start playback for new tracks
+			if (!isSameTrack) {
+				newSound.play();
+				setIsPlaying(true);
+			}
+
+			// Log listening history (only for new track plays)
+			if (!isSameTrack) {
+				fetch('/api/listening', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ trackId: track.id }),
+				}).catch(() => console.error('Error logging listening history'));
+			}
 		},
 		[
 			playlist,
@@ -241,8 +280,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			currentVariant,
 			isMuted,
 			volume,
-			incrementPlayCount,
+			incrementPlayCount, // Added back to dependencies
 			isAuth,
+			currentTrack?.id,
+			isPlaying,
 		]
 	);
 
@@ -337,6 +378,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 		volume,
 		isMuted,
 		isLoop,
+		isLoading,
 		togglePlayPause,
 		setVolume: handleVolumeChange,
 		seek: handleSeek,
