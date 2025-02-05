@@ -1,14 +1,12 @@
 import ExploreArtists from '@/components/artists/ExploreArtists';
 import HeaderBanner from '@/components/HeaderBanner';
 import React from 'react';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
-import { Icons } from '@/components/icons/audio-player';
 import ArtistList from '@/components/artists/ArtistList';
 import { getArtistsList } from '@/db/artist';
 import Error from '@/components/Error';
 import { generateArtistsListingSchema } from '@/schema/artists-schema';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import DynamicNav from '@/components/curated/DynamicNav';
 
 export async function generateMetadata() {
 	const artists = await getArtistsList();
@@ -35,12 +33,13 @@ export async function generateMetadata() {
 }
 
 export default async function page({
-	searchParams: { type },
+	searchParams: { type, sort },
 }: {
-	searchParams: { type: string };
+	searchParams: { type: string; sort: string };
 }) {
 	const isTable = type === 'table';
-	const artists = await getArtistsList();
+	const tabValue = sort === 'popular' ? 'popular' : 'new';
+	const artists = await getArtistsList(undefined, tabValue);
 
 	if (artists.error) {
 		return <Error message={artists.message} />;
@@ -57,50 +56,24 @@ export default async function page({
 			/>
 
 			<HeaderBanner img={'/banners/artists.jpg'} title='Artists' />
-			<div className='flex justify-between gap-1.5 mt-8 mb-6'>
-				<h1 className='text-[22px] font-semibold text-primary-foreground '>
-					Explore our artists
-				</h1>
-				<div className='flex gap-1 ml-auto sm:ml-0  '>
-					<Link
-						href={`?type=table`}
-						className={cn(
-							buttonVariants(),
-							'bg-transparent p-1.5 sm:p-2 hover:bg-button group h-fit duration-200 transition-all shadow-none',
-							isTable ? 'bg-button' : ''
-						)}
-					>
-						<Icons.table
-							className={cn(
-								'w-5 sm:w-6 h-auto aspect-square text-foreground group-hover:text-white',
-								isTable ? 'text-white' : ''
-							)}
-						/>
-					</Link>
-					<Link
-						href={`?type=grid`}
-						className={cn(
-							buttonVariants(),
-							'bg-transparent p-1.5 sm:p-2 hover:bg-button h-fit group shadow-none duration-200 transition-all',
-							!isTable ? 'bg-button' : ''
-						)}
-					>
-						<Icons.grid
-							className={cn(
-								'w-5 sm:w-6 h-auto aspect-square text-foreground group-hover:text-white shadow-none',
-								!isTable ? 'text-white' : ''
-							)}
-						/>
-					</Link>
-				</div>
-			</div>
-			<div className='xl:w-2/3'>
-				{isTable ? (
-					<ArtistList artists={artists.data} />
-				) : (
-					<ExploreArtists artists={artists.data} />
-				)}
-			</div>
+
+			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
+				<DynamicNav type={type} sort={sort} label='Artists' />
+				<TabsContent value='new' className='xl:w-2/3'>
+					{isTable ? (
+						<ArtistList artists={artists.data} />
+					) : (
+						<ExploreArtists artists={artists.data} />
+					)}
+				</TabsContent>
+				<TabsContent value='popular' className='xl:w-2/3'>
+					{isTable ? (
+						<ArtistList artists={artists.data} />
+					) : (
+						<ExploreArtists artists={artists.data} />
+					)}
+				</TabsContent>
+			</Tabs>
 		</>
 	);
 }

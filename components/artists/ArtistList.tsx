@@ -63,7 +63,9 @@ export default function ArtistList({
 								<TableCell className='hidden sm:table-cell'>
 									<Link
 										href={`/artists/${artist.slug}`}
-										className={cn('text-base font-semibold hover:opacity-80')}
+										className={cn(
+											'text-base font-semibold hover:opacity-80 text-nowrap'
+										)}
 									>
 										{artistTracks}
 									</Link>

@@ -215,29 +215,91 @@ export type ArtistList = Prisma.ArtistGetPayload<{
 		genres: { include: { genre: true } };
 		socialLinks: true;
 		_count: { select: { tracks: true } };
+		tracks: {
+			include: {
+				listeners: {
+					select: {
+						id: true;
+						createdAt: true;
+						trackId: true;
+						userId: true;
+						listenedAt: true;
+					};
+				};
+			};
+		};
 	};
 }>;
 
 export async function getArtistsList(
-	limit?: number
+	limit?: number,
+	type: 'new' | 'popular' | 'default' = 'default'
 ): Promise<{ data: ArtistList[]; error?: boolean; message?: string }> {
 	try {
-		const data = await prisma.artist.findMany({
-			where: { published: true },
-			orderBy: { tracks: { _count: 'desc' } },
-			include: {
-				genres: { include: { genre: true } },
-				_count: { select: { tracks: true } },
-				socialLinks: true,
+		const artists = await prisma.artist.findMany({
+			where: {
+				published: true,
 			},
+			include: {
+				genres: {
+					include: {
+						genre: true,
+					},
+				},
+				socialLinks: true,
+				_count: {
+					select: {
+						tracks: true,
+					},
+				},
+				tracks: {
+					include: {
+						listeners: {
+							select: {
+								id: true,
+								createdAt: true,
+								trackId: true,
+								userId: true,
+								listenedAt: true,
+							},
+						},
+					},
+				},
+			},
+			orderBy:
+				type === 'new'
+					? { createdAt: 'desc' }
+					: type === 'default'
+					? { name: 'asc' }
+					: undefined,
 			take: limit,
 		});
 
-		return { data, error: false };
+		if (type === 'popular') {
+			// Sort by total listeners while maintaining the original structure
+			return {
+				data: [...artists].sort((a, b) => {
+					const aListeners = a.tracks.reduce(
+						(sum, track) => sum + track.listeners.length,
+						0
+					);
+					const bListeners = b.tracks.reduce(
+						(sum, track) => sum + track.listeners.length,
+						0
+					);
+					return bListeners - aListeners;
+				}),
+				error: false,
+			};
+		}
+
+		return {
+			data: artists,
+			error: false,
+		};
 	} catch (error) {
 		let message = 'Unable to retrieve artists. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error: ${error.code}`;
 		}
@@ -247,7 +309,6 @@ export async function getArtistsList(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching artists:', error);
 		return { data: [], error: true, message };
 	}

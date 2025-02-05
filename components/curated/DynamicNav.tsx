@@ -8,9 +8,11 @@ import { Icons } from '../icons/audio-player';
 export default function DynamicNav({
 	type,
 	sort,
+	label = 'Tracks',
 }: {
 	type: string;
 	sort: string;
+	label?: string;
 }) {
 	const isTable = type === 'table';
 	return (
@@ -18,7 +20,7 @@ export default function DynamicNav({
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				<TabsTrigger value='new' className='!p-0'>
 					<Link href={`?sort=new`} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
-						New Tracks
+						New {label}
 					</Link>
 				</TabsTrigger>
 				<TabsTrigger value='popular' className='!p-0'>
@@ -26,7 +28,7 @@ export default function DynamicNav({
 						href={`?sort=popular`}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
 					>
-						Popular Tracks
+						Popular {label}
 					</Link>
 				</TabsTrigger>
 			</TabsList>
