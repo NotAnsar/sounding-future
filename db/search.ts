@@ -12,7 +12,15 @@ export async function searchTrack(
 	try {
 		const data = await prisma.track.findMany({
 			where: {
-				title: { contains: query.trim(), mode: 'insensitive' },
+				OR: [
+					{ title: { contains: query.trim(), mode: 'insensitive' } },
+					{
+						slug: {
+							contains: query.trim().replace(/ /g, '-'),
+							mode: 'insensitive',
+						},
+					},
+				],
 				published: true,
 			},
 			include: { artist: true },
