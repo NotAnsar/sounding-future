@@ -21,7 +21,7 @@ export default function CollapsibleText({
 
 	return (
 		<div className={cn('space-y-2', className)}>
-			<p className='text-pretty leading-7'>{displayText}</p>
+			<p className='text-pretty leading-7 whitespace-pre-line'>{displayText}</p>
 			{shouldCollapse && (
 				<button
 					onClick={() => setIsExpanded(!isExpanded)}

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getPublicTracksByPartner } from '@/db/tracks';
 import Error from '@/components/Error';
 import { generateCuratorSchema } from '@/schema/curators-schema';
+import CollapsibleText from '@/components/CollapsibleText';
 
 export default async function page({
 	params: { id },
@@ -49,9 +50,13 @@ export default async function page({
 						</div>
 					)}
 					<div className='flex flex-col gap-y-6 xl:flex-row gap-x-12'>
-						<p className='text-pretty leading-7 max-w-2xl xl:w-2/3'>
-							{curated?.bio}
-						</p>
+						{curated?.bio && (
+							<CollapsibleText
+								text={curated?.bio}
+								className='max-w-2xl xl:w-2/3'
+								maxLength={800}
+							/>
+						)}
 						{curated?.socialLinks && (
 							<div>
 								<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
