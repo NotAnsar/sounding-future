@@ -56,23 +56,21 @@ export default function AudioFileForm({
 							<div>
 								<p className='font-medium'>
 									{
-										'1) [preferred] HOA5 (Higher Order Ambisionics) file in AmbiX (SN3D).'
+										'1) [preferred] HOA (Higher Order Ambisonics) file in AmbiX (SN3D, ACN).'
 									}
 								</p>
 								<p className='text-sm text-muted ml-4'>
-									This gives us the most flexibility for further development.
-									(Dynamic Streaming) We will convert your file to binaural
-									audio.
+									This gives us the most flexibility for further development. We
+									will convert your file to binaural audio.
 								</p>
 							</div>
 
 							<div>
 								<p className='font-medium'>
-									2) Channel-based audio file (5.1, 7.2, ...).
+									{'2) Channel-based audio file (5.1, 7.2, ...).'}
 								</p>
 								<p className='text-sm text-muted ml-4'>
-									We will convert your file to binaural audio. (Dynamic
-									Streaming)
+									We will convert your file to binaural audio.
 								</p>
 							</div>
 
@@ -83,6 +81,10 @@ export default function AudioFileForm({
 									with headphones.
 								</p>
 							</div>
+
+							<p className='font-medium'>
+								Please also send us a stereo file of your track as a reference.
+							</p>
 						</div>
 					</div>
 
@@ -92,7 +94,6 @@ export default function AudioFileForm({
 							errors={state?.errors}
 							initialData={initialData}
 							trackId={id}
-							
 						/>
 					) : (
 						<div className='space-y-4'>
