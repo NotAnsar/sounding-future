@@ -12,6 +12,7 @@ interface SearchInputProps {
 	placeholder?: string;
 	iconColor?: string;
 	inputStyles?: string;
+	closeMobile?: (reset?: boolean) => void;
 }
 
 export default function SearchInput({
@@ -19,6 +20,7 @@ export default function SearchInput({
 	placeholder = 'Search artists, tracks...',
 	iconColor = 'text-foreground',
 	inputStyles,
+	closeMobile,
 }: SearchInputProps) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +56,7 @@ export default function SearchInput({
 
 	const handleClose = (reset: boolean = true) => {
 		setIsOpen(false);
+		closeMobile?.();
 		if (reset) setSearchTerm('');
 	};
 
@@ -84,5 +87,25 @@ export default function SearchInput({
 				/>
 			)}
 		</div>
+	);
+}
+
+export function SearchMobile() {
+	const [show, setShow] = useState(false);
+	return (
+		<>
+			<Search
+				className={`h-5 w-5 sm:hidden`}
+				onClick={() => setShow((show) => !show)}
+			/>
+			<div
+				className={cn(
+					'top-[var(--top-nav-height)] w-full bg-background fixed flex z-10 gap-4 md:gap-0 items-center border-y border-border sm:hidden left-0',
+					show ? 'block' : 'hidden'
+				)}
+			>
+				<SearchInput className='mx-4 my-4' closeMobile={() => setShow(false)} />
+			</div>
+		</>
 	);
 }

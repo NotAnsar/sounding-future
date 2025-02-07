@@ -4,12 +4,13 @@ import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { LogIn, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import SearchInput from './Search/SearchInput';
+// import SearchInput from './Search/SearchInput';
 import Link from 'next/link';
 import { Sheet, SheetTrigger } from '../ui/sheet';
 import SideBarNavMobile from './SideBarNavMobile';
 import { auth } from '@/lib/auth';
 import { ModeToggle } from '../ModeToggle';
+import SearchInput, { SearchMobile } from './Search/SearchInput';
 
 export default async function TopNav({ className }: { className?: string }) {
 	const session = await auth();
@@ -42,16 +43,19 @@ export default async function TopNav({ className }: { className?: string }) {
 				</div>
 				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 '>
 					<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden sm:block ' />
+					{/* <SearchInput className='sm:w-full md:w-2/3 lg:w-1/2  ' /> */}
+
 					<div className='ml-auto flex items-center gap-2'>
 						<Link
 							href={'/support-us'}
 							className={cn(
 								buttonVariants({ variant: 'secondary' }),
-								'text-[13px] sm:text-sm px-3 h-8 sm:px-4 border-foreground/80'
+								'text-[12px] sm:text-sm px-1.5 h-8 sm:px-4 border-foreground/80'
 							)}
 						>
 							Support Us
 						</Link>
+						<SearchMobile />
 						<SheetTrigger asChild>
 							<Button
 								variant='ghost'
@@ -62,7 +66,7 @@ export default async function TopNav({ className }: { className?: string }) {
 								<span className='sr-only'>Toggle navigation menu</span>
 							</Button>
 						</SheetTrigger>
-
+						{/* <SearchMobile /> */}
 						<ModeToggle className='hidden sm:flex' />
 						{session?.user ? (
 							<UserNav user={session?.user} />
@@ -82,6 +86,7 @@ export default async function TopNav({ className }: { className?: string }) {
 					</div>
 				</div>
 			</div>
+
 			<SideBarNavMobile />
 		</Sheet>
 	);

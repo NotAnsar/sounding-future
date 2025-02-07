@@ -17,6 +17,7 @@ export default async function Layout({
 	children: React.ReactNode;
 }) {
 	const auth = await isAuthenticated();
+
 	return (
 		<div
 			className='relative flex h-screen'
