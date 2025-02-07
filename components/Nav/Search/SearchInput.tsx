@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import SearchResults from './SearchResults';
@@ -94,10 +94,18 @@ export function SearchMobile() {
 	const [show, setShow] = useState(false);
 	return (
 		<>
-			<Search
-				className={`h-5 w-5 sm:hidden`}
-				onClick={() => setShow((show) => !show)}
-			/>
+			{show ? (
+				<X
+					className={`h-5 w-5 sm:hidden`}
+					onClick={() => setShow((show) => !show)}
+				/>
+			) : (
+				<Search
+					className={`h-5 w-5 sm:hidden`}
+					onClick={() => setShow((show) => !show)}
+				/>
+			)}
+
 			<div
 				className={cn(
 					'top-[var(--top-nav-height)] w-full bg-background fixed flex z-10 gap-4 md:gap-0 items-center border-y border-border sm:hidden left-0',
