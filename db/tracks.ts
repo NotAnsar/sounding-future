@@ -2,6 +2,70 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Genre, Prisma, type Track } from '@prisma/client';
 
+export async function getNewTracks(): Promise<PublicTrackWithLikeStatusRes> {
+	const session = await auth();
+
+	try {
+		// Step 1: Get IDs of the latest track per artist (using raw SQL)
+		const trackIds = await prisma.$queryRaw<{ id: string }[]>`
+      WITH latest_tracks AS (
+        SELECT DISTINCT ON (artist_id) id, created_at
+        FROM tracks
+        WHERE published = true
+        ORDER BY artist_id, created_at DESC
+      )
+      SELECT id FROM latest_tracks
+      ORDER BY created_at DESC
+      LIMIT 8
+    `;
+
+		// Extract IDs in correct order
+		const orderedIds = trackIds.map((t) => t.id);
+
+		// Step 2: Fetch full track data for these IDs
+		const data = await prisma.track.findMany({
+			where: { id: { in: orderedIds } },
+			include: {
+				artist: true,
+				genres: { include: { genre: true } },
+				likes: session?.user?.id
+					? { where: { userId: session.user.id } }
+					: false,
+				_count: {
+					select: {
+						likes: true,
+						listeners: true,
+					},
+				},
+			},
+		});
+
+		// Re-order tracks to match original ID order
+		const orderedData = orderedIds
+			.map((id) => data.find((track) => track.id === id))
+			.filter((track): track is (typeof data)[0] => track !== undefined);
+
+		return {
+			data: orderedData.map((track) => ({
+				...track,
+				isLiked: session?.user ? track.likes.length > 0 : false,
+			})),
+			error: false,
+		};
+	} catch (error) {
+		let message = 'Unable to retrieve tracks. Please try again later.';
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			message = `Database error: ${error.message}`;
+		} else if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			message = 'Invalid data provided';
+		}
+		console.error('Error fetching tracks:', error);
+		return { data: [], error: true, message };
+	}
+}
+
 export async function getPublicTracks(
 	limit?: number,
 	type: 'new' | 'popular' | 'default' = 'default'

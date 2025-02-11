@@ -8,11 +8,11 @@ import TracksCarousel from '@/components/home/NewTracks';
 import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
-import { getPublicTracks } from '@/db/tracks';
+import { getNewTracks } from '@/db/tracks';
 
 export default async function page() {
 	const [tracks, genres, partners, artists] = await Promise.all([
-		getPublicTracks(8, 'new'),
+		getNewTracks(),
 		getGenres(),
 		getPartners(),
 		getArtists(8, true),
