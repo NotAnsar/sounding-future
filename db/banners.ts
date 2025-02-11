@@ -18,7 +18,7 @@ export async function getBanners(publishedOnly = false): Promise<BannersRes> {
 			return {
 				data: [],
 				error: true,
-				message: `Database error: ${error.message}`,
+				message: `Database error`,
 			};
 		}
 
@@ -62,7 +62,7 @@ export async function getBannerByid(id: string): Promise<BannerDetailsRes> {
 			return {
 				data: null,
 				error: true,
-				message: `Database error: ${error.message}`,
+				message: `Database error`,
 			};
 		}
 

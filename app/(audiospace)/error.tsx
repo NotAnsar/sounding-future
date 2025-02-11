@@ -13,7 +13,6 @@ export default function Error({
 	reset: () => void;
 }) {
 	// useEffect(() => {
-
 	// 	console.error(error.message);
 	// }, [error]);
 
@@ -22,12 +21,13 @@ export default function Error({
 			<main className='flex flex-col items-center justify-center gap-0.5 h-full'>
 				<Frown className='w-8 h-auto aspect-square text-muted-foreground' />
 				<h2 className='text-xl font-semibold'>Something went wrong!</h2>
-				{error.message && <p className='text-muted'>{error.message}</p>}
+				{error.message && (
+					<p className='text-muted'>
+						{"We're sorry, but an error occurred while loading this content."}
+					</p>
+				)}
 				<button
-					onClick={
-						// Attempt to recover by trying to re-render the segment
-						() => reset()
-					}
+					onClick={() => reset()}
 					className={cn(buttonVariants(), 'mt-2')}
 				>
 					Try again

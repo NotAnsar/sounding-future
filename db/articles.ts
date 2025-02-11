@@ -34,7 +34,6 @@ export async function getMyArticle(): Promise<{
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new ArticleError(`Database error: ${error.message}`);
 			return { error: true, data: [], message: 'Database error' };
 		}
 
@@ -70,7 +69,7 @@ export async function getArticlesByArtistId(artistId: string): Promise<{
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new ArticleError(`Database error: ${error.message}`);
+
 			return { error: true, data: [], message: 'Database error' };
 		}
 

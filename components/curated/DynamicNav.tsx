@@ -9,26 +9,48 @@ export default function DynamicNav({
 	type,
 	sort,
 	label = 'Tracks',
+	hasRandom = false,
 }: {
 	type: string;
 	sort: string;
 	label?: string;
+	hasRandom?: boolean;
 }) {
 	const isTable = type === 'table';
 	return (
-		<div className='flex justify-between gap-1.5'>
+		<div className='flex gap-1.5 justify-between '>
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
+				{hasRandom && (
+					<TabsTrigger value='default' className='!p-0'>
+						<Link
+							href={`?sort=default`}
+							className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+						>
+							Random{' '}
+							<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>
+								{label}
+							</span>
+						</Link>
+					</TabsTrigger>
+				)}
 				<TabsTrigger value='new' className='!p-0'>
 					<Link href={`?sort=new`} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
-						New {label}
+						New{' '}
+						<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>
+							{label}
+						</span>
 					</Link>
 				</TabsTrigger>
+
 				<TabsTrigger value='popular' className='!p-0'>
 					<Link
 						href={`?sort=popular`}
 						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
 					>
-						Popular {label}
+						Popular{' '}
+						<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>
+							{label}
+						</span>
 					</Link>
 				</TabsTrigger>
 			</TabsList>

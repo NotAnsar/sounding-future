@@ -51,7 +51,7 @@ export async function getLikedTracks(): Promise<PublicTrackWithLikeStatusRes> {
 		let message = 'Unable to retrieve liked tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		} else if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
 			message = 'Invalid data provided';

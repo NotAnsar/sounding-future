@@ -22,7 +22,7 @@ export async function getUsers(): Promise<{
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
 
-			return { data: [], error: true, message: error.message };
+			return { data: [], error: true, message: 'Database error' };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -63,7 +63,7 @@ export async function getUserbyId(id?: string): Promise<{
 		let message = `Unable to retrieve user data for ID ${id}. Please try again later.`;
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -121,7 +121,7 @@ export async function getCurrentUserSafe(): Promise<{
 			return { user: null, message: 'User not authenticated', error: true };
 		}
 		if (error instanceof UserNotFoundError) {
-			return { user: null, message: error.message, error: true };
+			return { user: null, error: true, message: 'User not found' };
 		}
 		return { user: null, message: 'Unknown error occurred', error: true };
 	}

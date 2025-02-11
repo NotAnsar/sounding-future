@@ -33,8 +33,8 @@ export async function getArtists(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new ArtistError(`Database error: ${error.message}`);
-			return { data: [], error: true, message: error.message };
+
+			return { data: [], error: true, message: 'Database error' };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -65,7 +65,7 @@ export async function getUnlinkedArtists(id?: string): Promise<ArtistRes> {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
 
-			return { data: [], error: true, message: error.message };
+			return { data: [], error: true, message: 'Database error' };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -107,12 +107,7 @@ export async function getSimilarArtists(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			return {
-				data: [],
-				error: true,
-				message: `Database error: ${error.message}`,
-			};
-			// throw new ArtistError(`Database error: ${error.message}`);
+			return { data: [], error: true, message: `Database error` };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -382,7 +377,7 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			return { data: [], error: true, message: error.message };
+			return { data: [], error: true, message: 'Database error' };
 		}
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);

@@ -15,11 +15,11 @@ export async function getGenres(): Promise<GenreRes> {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new GenreError(`Database error: ${error.message}`);
+
 			return {
 				data: [],
 				error: true,
-				message: `Database error: ${error.message}`,
+				message: `Database error`,
 			};
 		}
 
@@ -68,12 +68,8 @@ export async function getGenreDetailsById(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			// throw new GenreError(`Database error: ${error.message}`);
-			return {
-				data: null,
-				error: true,
-				message: `Database error: ${error.message}`,
-			};
+
+			return { data: null, error: true, message: `Database error` };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {

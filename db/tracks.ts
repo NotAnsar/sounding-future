@@ -56,7 +56,7 @@ export async function getNewTracks(): Promise<PublicTrackWithLikeStatusRes> {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		} else if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
 			message = 'Invalid data provided';
@@ -111,7 +111,7 @@ export async function getPublicTracks(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -160,7 +160,7 @@ export async function getPublicTracksByArtist(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -208,7 +208,7 @@ export async function getArtistSimilarTracks(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -264,7 +264,7 @@ export async function getPublicTracksById(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -310,7 +310,7 @@ export async function getTrackById(id: string): Promise<{
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -359,7 +359,7 @@ export async function getTracksStats(): Promise<{
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -418,7 +418,7 @@ export async function getPublicTracksByPartner(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -476,7 +476,7 @@ export async function getPublicTracksByGenre(
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {

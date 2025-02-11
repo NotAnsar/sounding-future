@@ -39,7 +39,8 @@ export default async function page({
 	searchParams: { type: string; sort: string };
 }) {
 	const isTable = type === 'table';
-	const tabValue = sort === 'popular' ? 'popular' : 'new';
+	const tabValue =
+		sort === 'popular' ? 'popular' : sort === 'new' ? 'new' : 'default';
 	const tracks = await getPublicTracks(undefined, tabValue);
 
 	return (
@@ -55,7 +56,14 @@ export default async function page({
 			<HeaderBanner img={'/banners/tracks.jpg'} title='Tracks' />
 
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
-				<DynamicNav type={type} sort={sort} />
+				<DynamicNav type={type} sort={sort} hasRandom />
+				<TabsContent value='default'>
+					{isTable ? (
+						<TrackList tracks={tracks.data} className='p-0' />
+					) : (
+						<TracksCards tracks={tracks.data} />
+					)}
+				</TabsContent>
 				<TabsContent value='new'>
 					{isTable ? (
 						<TrackList tracks={tracks.data} className='p-0' />

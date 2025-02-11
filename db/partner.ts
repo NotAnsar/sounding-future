@@ -35,8 +35,8 @@ export async function getPartnersStats(): Promise<{
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			// throw new PartnerError(`Database error: ${error.message}`);
-			return { data: [], message: error.message, error: true };
+
+			return { data: [], message: 'Database error', error: true };
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -105,7 +105,7 @@ export async function getPartnerById(
 		let message = `Unable to retrieve partner data for ID ${partnerId}. Please try again later.`;
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
@@ -145,7 +145,7 @@ export async function getPartnerDetailsById(
 		let message = `Unable to retrieve partner data for slug ${slug}. Please try again later.`;
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
-			message = `Database error: ${error.message}`;
+			message = `Database error`;
 		}
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
