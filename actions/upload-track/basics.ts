@@ -216,7 +216,7 @@ export async function updateTrack(
 				cover: imageUrl,
 				formatId: sourceFormatData.id,
 				releasedBy: release,
-				curatedBy: isUser ? undefined : curatedBy,
+				curatedBy: isUser ? undefined : curatedBy ? curatedBy : null,
 				slug,
 			},
 		});

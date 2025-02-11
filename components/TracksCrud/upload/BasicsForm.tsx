@@ -156,6 +156,7 @@ export default function TrackBasicsForm({
 									? 'border-destructive focus-visible:ring-destructive '
 									: ''
 							)}
+							allowClear
 						/>
 
 						<p className='text-muted text-sm '>
