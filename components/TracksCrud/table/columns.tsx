@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
 import Badge from '@/components/Badge';
 import { TrackWithCounts } from '@/db/tracks';
+import { formatTimestamp } from '@/lib/utils';
 
 export const columns: ColumnDef<TrackWithCounts>[] = [
 	{
@@ -107,10 +108,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 		accessorKey: 'releaseYear',
 		cell: ({ row }) => {
 			return (
-				<div className='text-sm text-nowrap'>
-					{/* {convertDateFormat(new Date(row.getValue('createdAt')))} */}
-					{row.getValue('releaseYear')}
-				</div>
+				<div className='text-sm text-nowrap'>{row.getValue('releaseYear')}</div>
 			);
 		},
 		header: ({ column }) => {
@@ -121,6 +119,28 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
 					Release Year
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+	},
+	{
+		accessorKey: 'createdAt',
+		cell: ({ row }) => {
+			return (
+				<div className='text-sm text-nowrap'>
+					{formatTimestamp(row.getValue('createdAt'))}
+				</div>
+			);
+		},
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Added At
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
