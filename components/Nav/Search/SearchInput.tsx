@@ -50,7 +50,7 @@ export default function SearchInput({
 			}
 		};
 
-		const debounce = setTimeout(fetchSearchResults, 300); // Add debounce to reduce API calls
+		const debounce = setTimeout(fetchSearchResults, 300);
 		return () => clearTimeout(debounce);
 	}, [searchTerm]);
 
@@ -96,12 +96,12 @@ export function SearchMobile() {
 		<>
 			{show ? (
 				<X
-					className={`h-5 w-5 sm:hidden`}
+					className={`h-5 w-5 sm:hidden cursor-pointer`}
 					onClick={() => setShow((show) => !show)}
 				/>
 			) : (
 				<Search
-					className={`h-5 w-5 sm:hidden`}
+					className={`h-5 w-5 sm:hidden cursor-pointer`}
 					onClick={() => setShow((show) => !show)}
 				/>
 			)}

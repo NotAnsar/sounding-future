@@ -31,7 +31,7 @@ export async function getPublicTracks(
 				type === 'popular'
 					? { listeners: { _count: 'desc' } }
 					: type === 'new'
-					? { releaseYear: 'desc' }
+					? { createdAt: 'desc' }
 					: undefined,
 		});
 
