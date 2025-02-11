@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { mainNav } from '@/config/sidenav';
+import { collection, mainNav } from '@/config/sidenav';
 
 import {
 	SheetClose,
@@ -17,9 +17,10 @@ import { Fragment } from 'react';
 import { LEGAL_NAV } from '@/config/legal';
 
 export default function SideBarNavMobile({
+	isAuth,
 	className,
 	...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement> & { isAuth?: boolean }) {
 	const path = usePathname();
 
 	return (
@@ -64,7 +65,7 @@ export default function SideBarNavMobile({
 						))}
 					</div>
 				</div>
-				{/* {session ? (
+				{isAuth ? (
 					<div className='px-3 py-2'>
 						<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 							MY COLLECTION
@@ -83,7 +84,7 @@ export default function SideBarNavMobile({
 							))}
 						</div>
 					</div>
-				) : null} */}
+				) : null}
 
 				<div className='flex mt-auto pl-4 text-muted'>
 					{LEGAL_NAV.filter((l) => l.show).map((l, index, t) => (

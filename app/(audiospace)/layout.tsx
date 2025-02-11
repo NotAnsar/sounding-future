@@ -45,6 +45,7 @@ export default async function Layout({
 			/>
 			<SideBarNav
 				className={`hidden md:flex top-[var(--top-nav-height-md)] h-[calc(100vh-var(--top-nav-height-md))] fixed`}
+				isAuth={auth}
 			/>
 
 			<main

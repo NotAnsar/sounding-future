@@ -97,19 +97,13 @@ export default function TrackList({
 								<TableCell className='hidden sm:block'>
 									<Link
 										href={`/artists/${track?.artist?.slug}`}
-										className='text-muted text-base font-semibold text-nowrap hover:text-primary'
+										className='text-muted text-base font-semibold hover:text-primary'
 									>
 										{track?.artist?.name}
 									</Link>
 								</TableCell>
 
 								<TableCell>
-									{/* <Heart
-										className={cn(
-											'w-5 h-5 text-muted hover:text-foreground cursor-pointer',
-											track.isLiked ? 'text-foreground fill-foreground' : ''
-										)}
-									/> */}
 									<LikeForm trackId={track.id} liked={track.isLiked} />
 								</TableCell>
 

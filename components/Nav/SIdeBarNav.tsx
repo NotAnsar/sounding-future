@@ -3,16 +3,17 @@
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { mainNav } from '@/config/sidenav';
+import { collection, mainNav } from '@/config/sidenav';
 import NavItem from './NavItem';
 import { LEGAL_NAV } from '@/config/legal';
 import { Fragment } from 'react';
 import { useAudio } from '@/context/AudioContext';
 
 export default function SideBarNav({
+	isAuth,
 	className,
 	...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement> & { isAuth?: boolean }) {
 	const path = usePathname();
 	const { currentTrack } = useAudio();
 
@@ -38,7 +39,7 @@ export default function SideBarNav({
 						))}
 					</div>
 				</div>
-				{/* {session ? (
+				{isAuth && false ? (
 					<div className='px-3 py-2'>
 						<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 							MY COLLECTION
@@ -56,7 +57,7 @@ export default function SideBarNav({
 							))}
 						</div>
 					</div>
-				) : null} */}
+				) : null}
 
 				<div
 					className={cn(

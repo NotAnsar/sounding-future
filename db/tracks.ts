@@ -453,7 +453,7 @@ export type PublicTrackWithLikeStatus = PublicTrack & {
 	_count?: { likes: number };
 };
 
-type PublicTrackWithLikeStatusRes = {
+export type PublicTrackWithLikeStatusRes = {
 	data: PublicTrackWithLikeStatus[];
 	error?: boolean;
 	message?: string;

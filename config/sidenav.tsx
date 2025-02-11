@@ -140,24 +140,25 @@ export const mainNav = [
 ];
 
 export const collection = [
-	{
-		title: 'Artists',
-		icon: CollectionIcons.artist,
-		path: '/collection/artists',
-	},
+	// {
+	// 	title: 'Artists',
+	// 	icon: CollectionIcons.artist,
+	// 	path: '/collection/artists',
+	// },
 	{
 		title: 'Tracks',
 		icon: CollectionIcons.tracks,
 		path: '/collection/tracks',
 	},
-	{
-		title: 'Playlists',
-		icon: CollectionIcons.playlists,
-		path: '/collection/playlists',
-	},
-	{
-		title: 'Add Playlist',
-		icon: CollectionIcons.addPlaylists,
-		path: '/collection/playlists/new',
-	},
+
+	// {
+	// 	title: 'Playlists',
+	// 	icon: CollectionIcons.playlists,
+	// 	path: '/collection/playlists',
+	// },
+	// {
+	// 	title: 'Add Playlist',
+	// 	icon: CollectionIcons.addPlaylists,
+	// 	path: '/collection/playlists/new',
+	// },
 ];

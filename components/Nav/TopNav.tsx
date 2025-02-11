@@ -87,7 +87,7 @@ export default async function TopNav({ className }: { className?: string }) {
 				</div>
 			</div>
 
-			<SideBarNavMobile />
+			<SideBarNavMobile isAuth={!!session?.user} />
 		</Sheet>
 	);
 }
