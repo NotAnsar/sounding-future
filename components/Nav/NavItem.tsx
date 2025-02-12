@@ -22,7 +22,8 @@ export default function NavItem({
 	const isCollection = type === 'collection';
 	const isCurrentPath =
 		currentPath.split('/')[isCollection ? 2 : 1] ===
-		path.split('/')[isCollection ? 2 : 1];
+			path.split('/')[isCollection ? 2 : 1] &&
+		currentPath.split('/')[1] === 'collection';
 	const CommonLink = (
 		<Link
 			className={cn(
