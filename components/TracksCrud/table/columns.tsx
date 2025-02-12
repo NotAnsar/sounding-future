@@ -11,6 +11,7 @@ import { Icons } from '@/components/icons/track-icons';
 import Badge from '@/components/Badge';
 import { TrackWithCounts } from '@/db/tracks';
 import { formatTimestamp } from '@/lib/utils';
+import LikesPopUp from './LikesPopUp';
 
 export const columns: ColumnDef<TrackWithCounts>[] = [
 	{
@@ -173,13 +174,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 	{
 		accessorKey: '_count.likes',
 		cell: ({ row }) => {
-			const likes = row.original._count?.likes ?? 0;
-			return (
-				<div className='text-sm text-nowrap flex gap-1 items-center'>
-					<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
-					<p>{likes}</p>
-				</div>
-			);
+			return <LikesPopUp track={row.original} />;
 		},
 		header: ({ column }) => {
 			return (
