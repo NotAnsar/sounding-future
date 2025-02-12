@@ -65,7 +65,7 @@ export default function SideBarNavMobile({
 						))}
 					</div>
 				</div>
-				{isAuth && false ? (
+				{isAuth ? (
 					<div className='px-3 py-2'>
 						<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 							MY COLLECTION
