@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { generateSlug, State } from '../utils/utils';
-import { updateFile } from '../utils/s3-image';
+import { generateSlug, imageSchema, State } from '../utils/utils';
+import { checkFile, updateFile } from '../utils/s3-image';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
@@ -19,7 +19,7 @@ const ProfileSchema = z.object({
 		.max(1500, 'Biography must be 1000 characters or less')
 		.optional(),
 	genres: z.array(z.string()).max(3, 'You can only select up to 3 genre tags'),
-	image: z.instanceof(File).optional(),
+	image: imageSchema.shape.file.optional(),
 });
 
 type ProfileData = z.infer<typeof ProfileSchema>;
@@ -33,6 +33,8 @@ export async function updateProfile(
 	prevState: ProfileFormState,
 	formData: FormData
 ): Promise<ProfileFormState> {
+	console.log('hi');
+
 	const genresData = formData
 		.getAll('genres')
 		.filter((genre) => genre !== '') as string[];
@@ -49,7 +51,17 @@ export async function updateProfile(
 		};
 	}
 
-	const image = formData.get('image');
+	const image = await checkFile(formData.get('image'));
+
+	console.log(image, prevState.prev?.image);
+
+	if (!image && !prevState.prev?.image) {
+		return {
+			message: 'Artist Profile image is required',
+			errors: { image: ['Artist Profile image is required'] },
+		};
+	}
+
 	if (image instanceof File && image.size > 2 * 1024 * 1024) {
 		return {
 			message: 'Artist Profile image must be less than 2MB',
@@ -65,7 +77,7 @@ export async function updateProfile(
 			throw new Error('User not authenticated');
 		}
 
-		const imageUrl = await updateFile(image, prevState?.prev?.image);
+		const imageUrl = await updateFile(image || null, prevState?.prev?.image);
 		const slug = generateSlug(name);
 		const artist = await prisma.artist.upsert({
 			where: { id: session?.user?.artistId || '' },
