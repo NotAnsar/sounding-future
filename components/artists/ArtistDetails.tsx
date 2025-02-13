@@ -1,7 +1,3 @@
-// 'use client';
-// import { useState } from 'react';
-// const [followed, setFollowed] = useState(false);
-
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Icons } from '@/components/icons/track-icons';

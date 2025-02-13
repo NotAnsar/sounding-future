@@ -19,7 +19,7 @@ const ProfileSchema = z.object({
 		.max(1500, 'Biography must be 1000 characters or less')
 		.optional(),
 	genres: z.array(z.string()).max(3, 'You can only select up to 3 genre tags'),
-	image: z.instanceof(File),
+	image: z.instanceof(File).optional(),
 });
 
 type ProfileData = z.infer<typeof ProfileSchema>;
@@ -50,14 +50,6 @@ export async function updateProfile(
 	}
 
 	const image = formData.get('image');
-
-	if (!image || !prevState.prev?.image) {
-		return {
-			message:
-				'Failed to update or create artist profile. Please check the form for errors.',
-			errors: { image: ['Artist Profile image is required'] },
-		};
-	}
 	if (image instanceof File && image.size > 2 * 1024 * 1024) {
 		return {
 			message: 'Artist Profile image must be less than 2MB',
