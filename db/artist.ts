@@ -123,18 +123,11 @@ export async function getSimilarArtists(
 	}
 }
 
-export type ArtistDetails = Prisma.ArtistGetPayload<{
-	include: {
-		genres: { include: { genre: true } };
-		socialLinks: true;
-		articles: { include: { article: true } };
-	};
-}>;
-
 export async function getArtistsBySlug(
 	slug: string,
 	publishedOnly: boolean = true
 ): Promise<ArtistDetails | undefined> {
+	const session = await auth();
 	try {
 		const data = await prisma.artist.findUnique({
 			where: {
@@ -145,6 +138,9 @@ export async function getArtistsBySlug(
 				genres: { include: { genre: true } },
 				socialLinks: true,
 				articles: { include: { article: true } },
+				followers: session?.user.id
+					? { where: { followingUserId: session.user.id } }
+					: undefined,
 			},
 		});
 
@@ -152,7 +148,10 @@ export async function getArtistsBySlug(
 			return undefined;
 		}
 
-		return data;
+		return {
+			...data,
+			followed: session?.user ? data.followers.length > 0 : false,
+		};
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
@@ -168,10 +167,20 @@ export async function getArtistsBySlug(
 	}
 }
 
+export type ArtistDetails = Prisma.ArtistGetPayload<{
+	include: {
+		genres: { include: { genre: true } };
+		socialLinks: true;
+		articles: { include: { article: true } };
+	};
+}> & { followed: boolean };
+
 export async function getArtistsById(
 	id: string,
 	publishedOnly: boolean = true
 ): Promise<ArtistDetails | undefined> {
+	const session = await auth();
+
 	try {
 		const data = await prisma.artist.findUnique({
 			where: {
@@ -182,6 +191,9 @@ export async function getArtistsById(
 				genres: { include: { genre: true } },
 				socialLinks: true,
 				articles: { include: { article: true } },
+				followers: session?.user.id
+					? { where: { followingUserId: session.user.id } }
+					: undefined,
 			},
 		});
 
@@ -189,7 +201,10 @@ export async function getArtistsById(
 			return undefined;
 		}
 
-		return data;
+		return {
+			...data,
+			followed: session?.user ? data.followers.length > 0 : false,
+		};
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
@@ -339,7 +354,7 @@ export type myArtistData = Prisma.ArtistGetPayload<{
 export type ArtistStats = Prisma.ArtistGetPayload<{
 	include: {
 		genres: { include: { genre: true } };
-		_count: { select: { tracks: true } };
+		_count: { select: { tracks: true; followers: true } };
 		tracks: {
 			select: {
 				_count: { select: { listeners: true; likes: true } };
@@ -355,7 +370,8 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 		const data = await prisma.artist.findMany({
 			include: {
 				genres: { include: { genre: true } },
-				_count: { select: { tracks: true } },
+				_count: { select: { tracks: true, followers: true } },
+
 				tracks: {
 					select: {
 						_count: { select: { listeners: true, likes: true } },

@@ -1,14 +1,14 @@
-'use client';
+// 'use client';
+// import { useState } from 'react';
+// const [followed, setFollowed] = useState(false);
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Icons } from '@/components/icons/track-icons';
-// import { useState } from 'react';
 import { type ArtistDetails } from '@/db/artist';
+import FollowForm from '../FollowForm';
 
 export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
-	// const [followed, setFollowed] = useState(false);
-
 	return (
 		<div
 			className='w-full flex flex-col sm:flex-row gap-4 p-4 rounded-3xl text-white'
@@ -40,16 +40,8 @@ export default function ArtistDetails({ artist }: { artist: ArtistDetails }) {
 					<h2 className='text-3xl sm:text-5xl xl:text-6xl font-bold'>
 						{artist.name}
 					</h2>
-					{/* <div
-						onClick={() => setFollowed((l) => !l)}
-						className='cursor-pointer h-full flex justify-center items-center'
-					>
-						{followed ? (
-							<Icons.follow className='min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
-						) : (
-							<Icons.unfollow className='min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
-						)}
-					</div> */}
+
+					<FollowForm artistId={artist.id} followed={artist.followed} />
 				</div>
 
 				{artist.genres.length > 0 && (

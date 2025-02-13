@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { TrackWithCounts } from '@/db/tracks';
 import { Icons } from '@/components/icons/track-icons';
-import { Loader, User } from 'lucide-react';
+import { Eye, Loader, User } from 'lucide-react';
 import { getLikes, LikeWithUser } from '@/actions/upload-track/text-info';
 import {
 	Dialog,
@@ -12,9 +12,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -76,29 +78,40 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 								likesList.map(({ user }) => (
 									<div
 										key={user.id}
-										className='flex items-center gap-4 p-2 hover:bg-accent rounded-lg'
+										className='flex items-center gap-4 p-2 hover:bg-accent rounded-lg justify-between'
 									>
-										{user.image ? (
-											<Image
-												src={user.image}
-												alt={getUserName(user)}
-												width={40}
-												height={40}
-												className='w-10 h-10 rounded-full object-cover'
-											/>
-										) : (
-											<div className='w-10 h-10 rounded-full bg-muted flex items-center justify-center'>
-												<User className='w-5 h-5 text-white' />
-											</div>
-										)}
-										<div>
-											<p className='font-medium'>{getUserName(user)}</p>
-											{user.name && (
-												<p className='text-sm text-muted-foreground'>
-													@{user.name}
-												</p>
+										<div className='flex gap-2 items-center'>
+											{user.image ? (
+												<Image
+													src={user.image}
+													alt={getUserName(user)}
+													width={40}
+													height={40}
+													className='w-10 h-10 rounded-full object-cover'
+												/>
+											) : (
+												<div className='w-10 h-10 rounded-full bg-muted flex items-center justify-center'>
+													<User className='w-5 h-5 text-white' />
+												</div>
 											)}
+											<div>
+												<p className='font-medium'>{getUserName(user)}</p>
+												{user.name && (
+													<p className='text-sm text-muted-foreground'>
+														@{user.name}
+													</p>
+												)}
+											</div>
 										</div>
+										{user.artist?.slug && (
+											<Link
+												href={`/artists/${user.artist?.slug}`}
+												target='_blank'
+												className={cn(buttonVariants({ size: 'sm' }))}
+											>
+												<Eye className='w-4 h-auto aspect-square flex-nowrap text-nowrap cursor-pointer' />
+											</Link>
+										)}
 									</div>
 								))
 							)}

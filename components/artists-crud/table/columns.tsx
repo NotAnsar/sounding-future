@@ -38,9 +38,9 @@ export const columns: ColumnDef<ArtistStats>[] = [
 		header: '',
 		cell: ({ row }) => {
 			return (
-				<div className={'text-base font-semibold line-clamp-1'}>
+				<p className={'text-base font-semibold line-clamp-1'}>
 					{row.getValue('name')}
-				</div>
+				</p>
 			);
 		},
 	},
@@ -86,6 +86,29 @@ export const columns: ColumnDef<ArtistStats>[] = [
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
 					Tracks
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+	},
+	{
+		accessorKey: '_count.followers',
+		cell: ({ row }) => {
+			const followers = row.original._count?.followers ?? 0;
+			return (
+				<div className='text-sm text-nowrap flex gap-1 items-center'>
+					<p>{followers}</p>
+				</div>
+			);
+		},
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Followers
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
@@ -139,6 +162,7 @@ export const columns: ColumnDef<ArtistStats>[] = [
 			);
 		},
 	},
+
 	{
 		accessorKey: 'published',
 		header: () => <div className='text-nowrap text-sm'>Status</div>,

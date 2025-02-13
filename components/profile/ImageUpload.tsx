@@ -270,7 +270,7 @@ export default function ImageUpload({
 					<p className='text-muted text-sm max-w-lg'>{message}</p>
 				</div>
 			</div>
-			<ErrorMessage errors={error} />
+			<ErrorMessage errors={error} className='mt-2' />
 		</div>
 	);
 }

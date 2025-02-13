@@ -61,11 +61,12 @@ export type LikeWithUser = {
 		l_name: string | null;
 		image: string | null;
 		name: string;
+		artist: { slug: string } | null;
 	};
 };
 
 export const getLikes = async (trackId: string): Promise<LikeWithUser[]> => {
-	return await prisma.like.findMany({
+	const users = await prisma.like.findMany({
 		where: { trackId },
 		include: {
 			user: {
@@ -75,9 +76,11 @@ export const getLikes = async (trackId: string): Promise<LikeWithUser[]> => {
 					l_name: true,
 					image: true,
 					name: true,
+					artist: { select: { slug: true } },
 				},
 			},
 		},
 		orderBy: { createdAt: 'desc' },
 	});
+	return users;
 };
