@@ -106,7 +106,6 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 										{user.artist?.slug && (
 											<Link
 												href={`/artists/${user.artist?.slug}`}
-												target='_blank'
 												className={cn(buttonVariants({ size: 'sm' }))}
 											>
 												<Eye className='w-4 h-auto aspect-square flex-nowrap text-nowrap cursor-pointer' />
