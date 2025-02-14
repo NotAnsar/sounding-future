@@ -96,11 +96,6 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 											)}
 											<div>
 												<p className='font-medium'>{getUserName(user)}</p>
-												{user.name && (
-													<p className='text-sm text-muted-foreground'>
-														@{user.name}
-													</p>
-												)}
 											</div>
 										</div>
 										{user.artist?.slug && (
