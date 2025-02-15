@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Textarea } from '@/components/ui/textarea';
-import { myArtistData } from '@/db/artist';
+import { ArtistDetails } from '@/db/artist';
 import { cn } from '@/lib/utils';
 import { Genre } from '@prisma/client';
 import { useFormState } from 'react-dom';
@@ -24,7 +24,7 @@ export default function ArtistForm({
 	initialData,
 	genres,
 }: {
-	initialData?: myArtistData;
+	initialData?: ArtistDetails;
 	genres: Genre[];
 }) {
 	const initialState: ArtistFormState = {

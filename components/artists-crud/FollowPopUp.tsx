@@ -74,7 +74,7 @@ export default function FollowPopUp({
 			<DialogContent className='max-w-md h-[70vh] flex flex-col p-0 '>
 				<DialogHeader className='pb-4 border-b p-4'>
 					<DialogTitle className='text-left'>
-						{isLoading ? followersCount : followerList.length} Followers
+						{!isLoading && followerList.length} Followers
 					</DialogTitle>
 				</DialogHeader>
 
