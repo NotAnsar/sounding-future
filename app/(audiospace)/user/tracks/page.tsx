@@ -27,7 +27,11 @@ export default async function page() {
 					<Upload className='w-4 h-auto aspect-square mr-2' /> Upload Track
 				</Link>
 			</div>
-			<DataTable columns={columns} data={tracks.data} />
+			<DataTable
+				columns={columns}
+				data={tracks.data}
+				isAdmin={session?.user?.role === 'admin'}
+			/>
 		</>
 	);
 }

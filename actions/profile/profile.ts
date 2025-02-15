@@ -33,8 +33,6 @@ export async function updateProfile(
 	prevState: ProfileFormState,
 	formData: FormData
 ): Promise<ProfileFormState> {
-	console.log('hi');
-
 	const genresData = formData
 		.getAll('genres')
 		.filter((genre) => genre !== '') as string[];
@@ -52,8 +50,6 @@ export async function updateProfile(
 	}
 
 	const image = await checkFile(formData.get('image'));
-
-	console.log(image, prevState.prev?.image);
 
 	if (!image && !prevState.prev?.image) {
 		return {

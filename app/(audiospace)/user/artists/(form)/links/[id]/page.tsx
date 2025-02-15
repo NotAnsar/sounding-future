@@ -9,8 +9,6 @@ export default async function Page({
 }: {
 	params: { id: string };
 }) {
-	console.log('id', id);
-
 	const [artist, articles] = await Promise.all([
 		getArtistsById(id, false),
 		getArticlesByArtistId(id),

@@ -21,7 +21,6 @@ export default function UserForm({
 	artistsData: Artist[];
 }) {
 	const isEdit = !!initialData?.id;
-	console.log(isEdit);
 
 	const initialState: UserFormState = {
 		message: null,
@@ -32,8 +31,6 @@ export default function UserForm({
 		initialData?.id ? updateUser.bind(null, initialData?.id) : addUser,
 		initialState
 	);
-
-	console.log(state);
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid '>

@@ -333,7 +333,15 @@ export async function getMyArtist(): Promise<myArtistData | undefined> {
 
 		const data = await prisma.user.findUnique({
 			where: { email: session.user.email },
-			include: { artist: { include: { genres: true, socialLinks: true } } },
+			include: {
+				artist: {
+					include: {
+						genres: true,
+						socialLinks: true,
+						_count: { select: { followers: true } },
+					},
+				},
+			},
 		});
 
 		if (!data) {
@@ -347,7 +355,11 @@ export async function getMyArtist(): Promise<myArtistData | undefined> {
 }
 
 export type myArtistData = Prisma.ArtistGetPayload<{
-	include: { genres: true; socialLinks: true };
+	include: {
+		genres: true;
+		socialLinks: true;
+		_count: { select: { followers: true } };
+	};
 }>;
 
 export type ArtistStats = Prisma.ArtistGetPayload<{
@@ -406,3 +418,36 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 		};
 	}
 }
+
+export type FollowWithUser = {
+	user: {
+		id: string;
+		f_name: string | null;
+		l_name: string | null;
+		image: string | null;
+		name: string;
+		artist: { slug: string; published: boolean } | null;
+	};
+};
+
+export const getFollowers = async (
+	artistId: string
+): Promise<FollowWithUser[]> => {
+	const users = await prisma.follow.findMany({
+		where: { followedArtistId: artistId },
+		include: {
+			user: {
+				select: {
+					id: true,
+					f_name: true,
+					l_name: true,
+					image: true,
+					name: true,
+					artist: { select: { slug: true, published: true } },
+				},
+			},
+		},
+		orderBy: { createdAt: 'desc' },
+	});
+	return users;
+};

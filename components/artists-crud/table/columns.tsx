@@ -10,6 +10,7 @@ import { ArtistStats } from '@/db/artist';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons/track-icons';
 import ArtistLikesPopUp from '../ArtistLikePopUp';
+import FollowPopUp from '../FollowPopUp';
 
 export const columns: ColumnDef<ArtistStats>[] = [
 	{
@@ -92,29 +93,7 @@ export const columns: ColumnDef<ArtistStats>[] = [
 			);
 		},
 	},
-	{
-		accessorKey: '_count.followers',
-		cell: ({ row }) => {
-			const followers = row.original._count?.followers ?? 0;
-			return (
-				<div className='text-sm text-nowrap flex gap-1 items-center'>
-					<p>{followers}</p>
-				</div>
-			);
-		},
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Followers
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-	},
+
 	{
 		accessorKey: 'played',
 		cell: ({ row }) => {
@@ -134,6 +113,28 @@ export const columns: ColumnDef<ArtistStats>[] = [
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
 					Played
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+	},
+	{
+		accessorKey: '_count.followers',
+		cell: ({ row }) => (
+			<FollowPopUp
+				id={row.original.id}
+				followers={row.original._count?.followers ?? 0}
+			/>
+		),
+
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Followers
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);

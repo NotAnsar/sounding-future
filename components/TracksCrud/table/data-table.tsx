@@ -38,11 +38,13 @@ import {
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	isAdmin?: boolean;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	isAdmin = false,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -72,16 +74,18 @@ export function DataTable<TData, TValue>({
 						}
 					/>
 
-					<Input
-						placeholder='Filter by artist name'
-						className='flex gap-1 w-full md:w-80'
-						value={
-							(table.getColumn('artist')?.getFilterValue() as string) ?? ''
-						}
-						onChange={(event) =>
-							table.getColumn('artist')?.setFilterValue(event.target.value)
-						}
-					/>
+					{isAdmin && (
+						<Input
+							placeholder='Filter by artist name'
+							className='flex gap-1 w-full md:w-80'
+							value={
+								(table.getColumn('artist')?.getFilterValue() as string) ?? ''
+							}
+							onChange={(event) =>
+								table.getColumn('artist')?.setFilterValue(event.target.value)
+							}
+						/>
+					)}
 				</div>
 
 				<div className='flex items-center gap-2 w-full lg:w-[225px] text-sm'>

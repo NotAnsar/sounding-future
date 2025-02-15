@@ -46,7 +46,7 @@ export type LikeWithUser = {
 		l_name: string | null;
 		image: string | null;
 		name: string;
-		artist: { slug: string } | null;
+		artist: { slug: string; published: boolean } | null;
 	};
 };
 
@@ -61,7 +61,7 @@ export const getLikes = async (trackId: string): Promise<LikeWithUser[]> => {
 					l_name: true,
 					image: true,
 					name: true,
-					artist: { select: { slug: true } },
+					artist: { select: { slug: true, published: true } },
 				},
 			},
 		},
@@ -77,7 +77,7 @@ export type ArtistLikeWithUser = {
 		l_name: string | null;
 		image: string | null;
 		name: string;
-		artist: { slug: string } | null;
+		artist: { slug: string; published: boolean } | null;
 	};
 	tracks: { title: string; slug: string }[];
 };
@@ -95,7 +95,7 @@ export const getArtistLikes = async (
 					l_name: true,
 					image: true,
 					name: true,
-					artist: { select: { slug: true } },
+					artist: { select: { slug: true, published: true } },
 				},
 			},
 			track: { select: { title: true, slug: true } },
@@ -120,4 +120,37 @@ export const getArtistLikes = async (
 	}, [] as ArtistLikeWithUser[]);
 
 	return groupedLikes;
+};
+
+export type FollowWithUser = {
+	user: {
+		id: string;
+		f_name: string | null;
+		l_name: string | null;
+		image: string | null;
+		name: string;
+		artist: { slug: string; published: boolean } | null;
+	};
+};
+
+export const getFollowers = async (
+	artistId: string
+): Promise<FollowWithUser[]> => {
+	const users = await prisma.follow.findMany({
+		where: { followedArtistId: artistId },
+		include: {
+			user: {
+				select: {
+					id: true,
+					f_name: true,
+					l_name: true,
+					image: true,
+					name: true,
+					artist: { select: { slug: true, published: true } },
+				},
+			},
+		},
+		orderBy: { createdAt: 'desc' },
+	});
+	return users;
 };

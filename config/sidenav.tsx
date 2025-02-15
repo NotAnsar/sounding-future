@@ -140,11 +140,11 @@ export const mainNav = [
 ];
 
 export const collection = [
-	// {
-	// 	title: 'Artists',
-	// 	icon: CollectionIcons.artist,
-	// 	path: '/collection/artists',
-	// },
+	{
+		title: 'Artists',
+		icon: CollectionIcons.artist,
+		path: '/collection/artists',
+	},
 	{
 		title: 'Tracks',
 		icon: CollectionIcons.tracks,

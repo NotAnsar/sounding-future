@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { TrackWithCounts } from '@/db/tracks';
-import { Icons } from '@/components/icons/track-icons';
-import { Eye, Loader, User } from 'lucide-react';
-import { getLikes, LikeWithUser } from '@/actions/like-track';
+import { CircleUser, Eye, Loader, User } from 'lucide-react';
+import { FollowWithUser, getFollowers } from '@/actions/like-track';
 import {
 	Dialog,
 	DialogContent,
@@ -18,20 +16,27 @@ import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
+export default function FollowPopUp({
+	isAdmin = true,
+	followers: followersCount,
+	id,
+}: {
+	id: string;
+	followers: number;
+	isAdmin?: boolean;
+}) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [likesList, setLikesList] = useState<LikeWithUser[]>([]);
-	const likesCount = track._count?.likes ?? 0;
+	const [followerList, setFollowerList] = useState<FollowWithUser[]>([]);
 
 	const handleOpenChange = async (open: boolean) => {
-		if (open && likesCount > 0) {
+		if (open && followersCount > 0) {
 			try {
 				setIsLoading(true);
-				const data = await getLikes(track.id);
-				setLikesList(data);
+				const data = await getFollowers(id);
+				setFollowerList(data);
 			} catch (error) {
 				toast({
-					title: 'Failed to fetch likes',
+					title: 'Failed to fetch followers',
 					description: 'Please try again later',
 				});
 			} finally {
@@ -40,41 +45,52 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 		}
 	};
 
-	const getUserName = (user: LikeWithUser['user']) => {
+	const getUserName = (user: FollowWithUser['user']) => {
 		return [user.f_name, user.l_name].filter(Boolean).join(' ') || user.name;
 	};
 
 	return (
 		<Dialog onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
-				<Button
-					size='sm'
-					className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 text-white hover:text-white'
-					disabled={likesCount === 0}
-				>
-					<Icons.liked className='w-4 h-auto aspect-square fill-white' />
-					<span>{likesCount}</span>
-				</Button>
+				{isAdmin ? (
+					<Button
+						size='sm'
+						className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 text-white hover:text-white'
+						disabled={followersCount === 0}
+					>
+						<CircleUser className='w-4 h-4 ' />
+						<span>{followersCount}</span>
+					</Button>
+				) : (
+					<Button
+						className='text-sm text-nowrap flex gap-1 items-center h-auto px-3 text-white hover:text-white'
+						disabled={followersCount === 0}
+					>
+						View Followers
+					</Button>
+				)}
 			</DialogTrigger>
 
-			<DialogContent className='max-w-md h-[70vh] flex flex-col'>
-				<DialogHeader className='pb-4'>
-					<DialogTitle className='text-left'>Liked by</DialogTitle>
+			<DialogContent className='max-w-md h-[70vh] flex flex-col p-0 '>
+				<DialogHeader className='pb-4 border-b p-4'>
+					<DialogTitle className='text-left'>
+						{isLoading ? followersCount : followerList.length} Followers
+					</DialogTitle>
 				</DialogHeader>
 
-				<div className='flex-1 overflow-y-auto'>
+				<div className='flex-1 overflow-y-auto px-3'>
 					{isLoading ? (
 						<div className='min-h-full flex items-center justify-center'>
 							<Loader className='h-5 w-5 animate-spin' />
 						</div>
 					) : (
-						<div className='space-y-4 pr-4'>
-							{likesList?.length === 0 ? (
+						<div className='space-y-4 '>
+							{followerList?.length === 0 ? (
 								<p className='text-muted-foreground text-center'>
-									No likes yet
+									No followers yet
 								</p>
 							) : (
-								likesList.map(({ user }) => (
+								followerList.map(({ user }) => (
 									<div
 										key={user.id}
 										className='flex items-center gap-4 p-2 hover:bg-accent rounded-lg justify-between'
@@ -97,7 +113,7 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 												<p className='font-medium'>{getUserName(user)}</p>
 											</div>
 										</div>
-										{user.artist?.slug && user.artist?.published && (
+										{user.artist?.slug && user.artist.published && (
 											<Link
 												href={`/artists/${user.artist?.slug}`}
 												className={cn(buttonVariants({ size: 'sm' }))}

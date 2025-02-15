@@ -73,7 +73,7 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 	try {
 		const urlParts = fileUrl.split(`/${AWS_S3_BUCKET_NAME}/`);
 		if (urlParts.length !== 2) {
-			console.log('Invalid file URL format');
+			console.error('Invalid file URL format');
 			return;
 		}
 
@@ -118,12 +118,7 @@ export async function uploadFile(
 
 	try {
 		// Log file details
-		console.log('Uploading file:', {
-			name: file.name,
-			type: file.type,
-			size: file.size,
-			bucket: process.env.AWS_S3_BUCKET_NAME,
-		});
+		console.log('Uploading file:', { name: file.name });
 
 		const extension = file.name.split('.').pop();
 		const randomSuffix = Math.floor(Math.random() * 10000);
@@ -135,11 +130,7 @@ export async function uploadFile(
 		const buffer = Buffer.from(arrayBuffer);
 
 		// Log upload attempt
-		console.log('Attempting upload with params:', {
-			fileName,
-			contentType: file.type,
-			bufferSize: buffer.length,
-		});
+		console.log('Attempting upload with params:', { fileName });
 
 		const command = new PutObjectCommand({
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
