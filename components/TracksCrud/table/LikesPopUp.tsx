@@ -48,12 +48,11 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 		<Dialog onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
 				<Button
-					variant='ghost'
 					size='sm'
-					className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 bg-link hover:bg-link/80 text-black hover:text-black'
+					className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 text-white hover:text-white'
 					disabled={likesCount === 0}
 				>
-					<Icons.liked className='w-4 h-auto aspect-square fill-black' />
+					<Icons.liked className='w-4 h-auto aspect-square fill-white' />
 					<span>{likesCount}</span>
 				</Button>
 			</DialogTrigger>
@@ -70,7 +69,7 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 						</div>
 					) : (
 						<div className='space-y-4 pr-4'>
-							{likesList.length === 0 ? (
+							{likesList?.length === 0 ? (
 								<p className='text-muted-foreground text-center'>
 									No likes yet
 								</p>

@@ -141,31 +141,6 @@ export const columns: ColumnDef<ArtistStats>[] = [
 	},
 	{
 		accessorKey: 'liked',
-		cell: ({ row }) => {
-			const liked = row.original.liked ?? 0;
-			return (
-				<div className='text-sm text-nowrap flex gap-1 items-center'>
-					<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
-					<p>{liked}</p>
-				</div>
-			);
-		},
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Liked
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-	},
-
-	{
-		accessorKey: 'liked',
 		cell: ({ row }) => <ArtistLikesPopUp artist={row.original} />,
 		header: ({ column }) => {
 			return (
