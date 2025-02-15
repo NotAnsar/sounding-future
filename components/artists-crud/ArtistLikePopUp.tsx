@@ -211,7 +211,7 @@ function UserLikeCard({ user, tracks }: ArtistLikeWithUser) {
 							<Music className='w-4 h-4 text-muted-foreground' />
 							<Link
 								href={`/tracks/${track.slug}`}
-								className='text-sm hover:underline'
+								className='text-sm hover:underline truncate'
 							>
 								{track.title}
 							</Link>

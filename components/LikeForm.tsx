@@ -8,8 +8,10 @@ export default function LikeForm({
 	trackId,
 	liked,
 	className,
+	likedClassname,
 }: {
 	className?: string;
+	likedClassname?: string;
 	trackId: string;
 	liked: boolean;
 }) {
@@ -35,8 +37,10 @@ export default function LikeForm({
 				<Heart
 					className={cn(
 						'w-5 h-auto text-muted hover:text-foreground cursor-pointer',
-						className,
-						optimisticLiked ? 'text-foreground fill-foreground' : ''
+						optimisticLiked
+							? cn('text-foreground fill-foreground', likedClassname)
+							: '',
+						className
 					)}
 				/>
 			</button>

@@ -85,7 +85,8 @@ export default function TrackDetails({
 							<LikeForm
 								trackId={track.id}
 								liked={track.isLiked}
-								className='w-7 h-auto text-white'
+								className='w-7 h-auto text-white hover:text-white'
+								likedClassname='text-white fill-white'
 							/>
 						</div>
 
