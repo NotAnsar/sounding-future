@@ -173,9 +173,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 	},
 	{
 		accessorKey: '_count.likes',
-		cell: ({ row }) => {
-			return <LikesPopUp track={row.original} />;
-		},
+		cell: ({ row }) => <LikesPopUp track={row.original} />,
 		header: ({ column }) => {
 			return (
 				<Button

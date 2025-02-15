@@ -16,6 +16,7 @@ const config: Config = {
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				link: '#b0cbff',
 				player: {
 					DEFAULT: 'hsl(var(--player))',
 					foreground: 'hsl(var(--player-foreground))',

@@ -9,6 +9,7 @@ import Badge from '@/components/Badge';
 import { ArtistStats } from '@/db/artist';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons/track-icons';
+import ArtistLikesPopUp from '../ArtistLikePopUp';
 
 export const columns: ColumnDef<ArtistStats>[] = [
 	{
@@ -149,6 +150,23 @@ export const columns: ColumnDef<ArtistStats>[] = [
 				</div>
 			);
 		},
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Liked
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+	},
+
+	{
+		accessorKey: 'liked',
+		cell: ({ row }) => <ArtistLikesPopUp artist={row.original} />,
 		header: ({ column }) => {
 			return (
 				<Button

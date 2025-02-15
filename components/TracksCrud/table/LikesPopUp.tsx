@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { TrackWithCounts } from '@/db/tracks';
 import { Icons } from '@/components/icons/track-icons';
 import { Eye, Loader, User } from 'lucide-react';
-import { getLikes, LikeWithUser } from '@/actions/upload-track/text-info';
+import { getLikes, LikeWithUser } from '@/actions/like-track';
 import {
 	Dialog,
 	DialogContent,
@@ -50,10 +50,10 @@ export default function LikesPopUp({ track }: { track: TrackWithCounts }) {
 				<Button
 					variant='ghost'
 					size='sm'
-					className='text-sm text-nowrap flex gap-1 items-center h-auto px-2'
+					className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 bg-link hover:bg-link/80 text-black hover:text-black'
 					disabled={likesCount === 0}
 				>
-					<Icons.liked className='w-4 h-auto aspect-square fill-muted' />
+					<Icons.liked className='w-4 h-auto aspect-square fill-black' />
 					<span>{likesCount}</span>
 				</Button>
 			</DialogTrigger>

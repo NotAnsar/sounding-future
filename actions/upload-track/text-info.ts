@@ -53,34 +53,3 @@ export async function addTrackTextInfo(
 
 	redirect(`/user/tracks/upload/${id}/audio`);
 }
-
-export type LikeWithUser = {
-	user: {
-		id: string;
-		f_name: string | null;
-		l_name: string | null;
-		image: string | null;
-		name: string;
-		artist: { slug: string } | null;
-	};
-};
-
-export const getLikes = async (trackId: string): Promise<LikeWithUser[]> => {
-	const users = await prisma.like.findMany({
-		where: { trackId },
-		include: {
-			user: {
-				select: {
-					id: true,
-					f_name: true,
-					l_name: true,
-					image: true,
-					name: true,
-					artist: { select: { slug: true } },
-				},
-			},
-		},
-		orderBy: { createdAt: 'desc' },
-	});
-	return users;
-};

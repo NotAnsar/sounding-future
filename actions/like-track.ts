@@ -15,8 +15,6 @@ export async function likeTrack(trackId: string): Promise<LikeState> {
 		return { success: false, message: 'You must be logged in to like a track' };
 	}
 
-	
-
 	try {
 		const existingLike = await prisma.like.findUnique({
 			where: { userId_trackId: { userId: session.user.id, trackId: trackId } },
@@ -40,3 +38,86 @@ export async function likeTrack(trackId: string): Promise<LikeState> {
 		return { success: false, message: 'Failed to update track like status' };
 	}
 }
+
+export type LikeWithUser = {
+	user: {
+		id: string;
+		f_name: string | null;
+		l_name: string | null;
+		image: string | null;
+		name: string;
+		artist: { slug: string } | null;
+	};
+};
+
+export const getLikes = async (trackId: string): Promise<LikeWithUser[]> => {
+	const users = await prisma.like.findMany({
+		where: { trackId },
+		include: {
+			user: {
+				select: {
+					id: true,
+					f_name: true,
+					l_name: true,
+					image: true,
+					name: true,
+					artist: { select: { slug: true } },
+				},
+			},
+		},
+		orderBy: { createdAt: 'desc' },
+	});
+	return users;
+};
+
+export type ArtistLikeWithUser = {
+	user: {
+		id: string;
+		f_name: string | null;
+		l_name: string | null;
+		image: string | null;
+		name: string;
+		artist: { slug: string } | null;
+	};
+	tracks: { title: string; slug: string }[];
+};
+
+export const getArtistLikes = async (
+	artistId: string
+): Promise<ArtistLikeWithUser[]> => {
+	const likes = await prisma.like.findMany({
+		where: { track: { artistId } },
+		include: {
+			user: {
+				select: {
+					id: true,
+					f_name: true,
+					l_name: true,
+					image: true,
+					name: true,
+					artist: { select: { slug: true } },
+				},
+			},
+			track: { select: { title: true, slug: true } },
+		},
+		orderBy: { createdAt: 'desc' },
+	});
+
+	const groupedLikes = likes.reduce((acc, like) => {
+		const userId = like.user.id;
+		const existingUser = acc.find((item) => item.user.id === userId);
+
+		if (existingUser) {
+			existingUser.tracks.push(like.track);
+		} else {
+			acc.push({
+				user: like.user,
+				tracks: [like.track],
+			});
+		}
+
+		return acc;
+	}, [] as ArtistLikeWithUser[]);
+
+	return groupedLikes;
+};
