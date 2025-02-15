@@ -54,17 +54,24 @@ export async function getPartnersStats(): Promise<{
 	}
 }
 
-export async function getPartners(): Promise<{
+export async function getPartners(random: boolean = false): Promise<{
 	data: Partner[];
 	message?: string;
 	error?: boolean;
 }> {
 	try {
-		const partners = await prisma.partner.findMany({
+		const data = await prisma.partner.findMany({
 			orderBy: { displayOrder: 'asc' },
 		});
 
-		return { data: partners, error: false };
+		if (random) {
+			for (let i = data.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[data[i], data[j]] = [data[j], data[i]];
+			}
+		}
+
+		return { data, error: false };
 	} catch (error) {
 		let message = 'Unable to retrieve partner data. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {

@@ -14,7 +14,7 @@ export default async function page() {
 	const [tracks, genres, partners, artists] = await Promise.all([
 		getNewTracks(),
 		getGenres(),
-		getPartners(),
+		getPartners(true),
 		getArtists(8, true),
 	]);
 
