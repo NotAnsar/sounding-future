@@ -30,9 +30,9 @@ export default function NavItem({
 				buttonVariants({
 					variant: isCurrentPath ? 'sideNav' : 'sideNavForeground',
 				}),
-				'justify-start py-2 pr-3 hover:text-white duration-200 transition-none',
-
-				isCurrentPath ? 'text-white' : ''
+				'justify-start py-2 pr-3 hover:text-white duration-200 transition-none tracks-nav',
+				isCurrentPath ? 'text-white tracks-nav' : '',
+				isCurrentPath && 'current-path'
 			)}
 			href={path}
 		>

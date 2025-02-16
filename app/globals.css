@@ -131,3 +131,10 @@
 .frc-text {
 	@apply !text-sm;
 }
+
+.tracks-nav:hover .item {
+	@apply !fill-primary dark:fill-background;
+}
+.current-path .item {
+	@apply !fill-primary;
+}
