@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { CircleUser, Eye, Loader, User } from 'lucide-react';
+import { Eye, Loader, User } from 'lucide-react';
 import { FollowWithUser, getFollowers } from '@/actions/like-track';
+import { Icons } from '@/components/icons/track-icons';
 import {
 	Dialog,
 	DialogContent,
@@ -58,7 +59,8 @@ export default function FollowPopUp({
 						className='text-sm text-nowrap flex gap-1 items-center h-auto px-2 text-white hover:text-white'
 						disabled={followersCount === 0}
 					>
-						<CircleUser className='w-4 h-4 ' />
+						<Icons.profile className='w-4 h-auto aspect-square fill-white' />
+
 						<span>{followersCount}</span>
 					</Button>
 				) : (
