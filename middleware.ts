@@ -45,5 +45,5 @@ export default auth((req) => {
 });
 
 export const config = {
-	matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+	matcher: ['/((?!sitemap|robots|_next/static|_next/image|favicon.ico).*)'],
 };
