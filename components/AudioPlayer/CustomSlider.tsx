@@ -7,6 +7,7 @@ type CustomSliderProps = {
 	step: number;
 	value: number;
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+
 	className?: string;
 	trackClassName?: string;
 	progressClassName?: string;
@@ -22,7 +23,6 @@ export default function CustomSlider({
 	className = '',
 	trackClassName = 'h-[5px] rounded-full ring-red-950 accent-[#141B29] dark:accent-[#B3B3B3]',
 	progressClassName = 'bg-[#141B29] dark:bg-[#B3B3B3]',
-
 	backgroundClassName = 'bg-[#847F7F] dark:bg-[#525151]',
 	...props
 }: CustomSliderProps) {

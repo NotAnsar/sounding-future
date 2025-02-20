@@ -2,6 +2,7 @@ import React from 'react';
 import { buttonVariants } from '../ui/button';
 import Link from 'next/link';
 import { getBanners } from '@/db/banners';
+import { LOCAL_URL } from '@/config/links';
 
 export default async function BannersSection() {
 	const banners = await getBanners(true);
@@ -27,11 +28,11 @@ export default async function BannersSection() {
 					}}
 				>
 					<h2 className='text-4xl font-bold'>{banner.title}</h2>
-					<p>{banner.description}</p>
+					<p className='whitespace-pre-line'>{banner.description}</p>
 					<Link
 						href={banner.link}
 						className={`${buttonVariants()} shadow-lg`}
-						target='_blank'
+						target={banner.link.includes(LOCAL_URL) ? '_self' : '_blank'}
 					>
 						{banner.buttonText}
 					</Link>

@@ -8,3 +8,5 @@ export const FRIENDLY_CAPTCHA_SITEKEY =
 
 export const AWS_URL = process.env.AWS_URL!;
 export const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME!;
+
+export const LOCAL_URL = process.env.NEXTAUTH_URL!;
