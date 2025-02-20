@@ -8,6 +8,7 @@ import { cn, formatTime } from '@/lib/utils';
 
 import AudioType from './AudioType';
 import AudioVolume from './AudioVolume';
+import { LoaderCircle } from 'lucide-react';
 
 export default function AudioPlayer() {
 	const {
@@ -53,7 +54,11 @@ export default function AudioPlayer() {
 						onClick={previousTrack}
 					/>
 					<button onClick={togglePlayPause} className='text-nowrap'>
-						{isPlaying ? (
+						{isLoading ? (
+							<div className='w-12 h-auto aspect-square bg-foreground rounded-full flex justify-center items-center'>
+								<LoaderCircle className='w-6 h-auto aspect-square text-background animate-spin stroke-2' />
+							</div>
+						) : isPlaying ? (
 							<Icons.pause className='w-12 h-auto aspect-square text-foreground fill-foreground cursor-pointer' />
 						) : (
 							<Icons.play className='w-12 h-auto aspect-square cursor-pointer text-foreground fill-foreground ' />
@@ -67,7 +72,8 @@ export default function AudioPlayer() {
 				</div>
 				<div className='flex gap-2 md:gap-3 items-center w-full xl:w-auto'>
 					<span className='text-xs font-semibold w-8'>
-						{isLoading ? '--:--' : formatTime(currentTime)}
+						{/* {isLoading ? '--:--' : formatTime(currentTime)} */}
+						{formatTime(currentTime) || '--:--'}
 					</span>
 
 					<CustomSlider

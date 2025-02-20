@@ -121,12 +121,13 @@ export async function deleteTrackVariant(formData: FormData) {
 		if (!track) return { error: 'Track not found' };
 
 		const url = track[variant];
-		if (url) await deleteFile(url);
 
 		await prisma.track.update({
 			where: { id: trackId },
 			data: { [variant]: null },
 		});
+
+		if (url) await deleteFile(url);
 
 		// Check if all variants are now empty
 		const updatedTrack = await prisma.track.findUnique({
