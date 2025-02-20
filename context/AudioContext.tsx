@@ -409,6 +409,7 @@ import {
 	useRef,
 	ReactNode,
 	useCallback,
+	useMemo,
 } from 'react';
 import { PublicTrack as Track } from '@/db/tracks';
 import { toast } from '@/hooks/use-toast';
@@ -479,10 +480,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	>('variant1');
 	const [isLoading, setIsLoading] = useState(false);
 	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
-
 	const soundRef = useRef<HTMLAudioElement | null>(null);
 	const previousVolume = useRef(volume);
 	const guestPlayCountRef = useRef(guestPlayCount);
+
+	const isPlayingRef = useRef(isPlaying);
+
+	const isSeekingRef = useRef(false);
+	const seekingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	useEffect(() => {
+		isPlayingRef.current = isPlaying;
+	}, [isPlaying]);
 
 	useEffect(() => {
 		guestPlayCountRef.current = guestPlayCount;
@@ -526,20 +535,208 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 		}
 	}, [isPlaying]);
 
-	const handleVolumeChange = (newVolume: number) => {
+	const handleVolumeChange = useCallback((newVolume: number) => {
 		setVolume(newVolume);
 		if (soundRef.current) {
 			soundRef.current.volume = newVolume;
 			setIsMuted(newVolume === 0);
 		}
-	};
+	}, []);
 
-	const handleSeek = (seekTime: number) => {
+	const handleSeek = useCallback((seekTime: number) => {
 		if (soundRef.current) {
+			isSeekingRef.current = true;
 			soundRef.current.currentTime = seekTime;
 			setCurrentTime(seekTime);
+
+			// Clear any existing timeout
+			if (seekingTimeoutRef.current) {
+				clearTimeout(seekingTimeoutRef.current);
+			}
+
+			// Set timeout to reset seeking state
+			seekingTimeoutRef.current = setTimeout(() => {
+				isSeekingRef.current = false;
+			}, 100);
 		}
-	};
+	}, []);
+	// const handleSeek = useCallback((seekTime: number) => {
+	// 	if (soundRef.current) {
+	// 		isSeekingRef.current = true;
+	// 		setIsSeeking(true);
+	// 		soundRef.current.currentTime = seekTime;
+	// 		setCurrentTime(seekTime);
+
+	// 		if (seekingTimeoutRef.current) {
+	// 			clearTimeout(seekingTimeoutRef.current);
+	// 		}
+
+	// 		seekingTimeoutRef.current = setTimeout(() => {
+	// 			isSeekingRef.current = false;
+	// 			setIsSeeking(false);
+	// 		}, 500);
+	// 	}
+	// }, []);
+
+	// const playTrack = useCallback(
+	// 	(
+	// 		track: Track,
+	// 		tracks?: Track[],
+	// 		variant?: 'variant1' | 'variant2' | 'variant3'
+	// 	) => {
+	// 		const tracksToUse = tracks || playlist;
+	// 		let variantToUse = variant || currentVariant || 'variant1';
+
+	// 		if (!track) {
+	// 			setIsPlaying(false);
+	// 			setCurrentTrack(null);
+	// 			return;
+	// 		}
+
+	// 		const isSameTrack = currentTrack?.id === track.id;
+	// 		const seekTime =
+	// 			isSameTrack && soundRef.current ? soundRef.current.currentTime : 0;
+
+	// 		const wasPlaying = isSameTrack ? isPlayingRef.current : true;
+
+	// 		if (!isAuth && guestPlayCountRef.current >= 3) {
+	// 			toast({
+	// 				title: 'Sign up for free to continue listening',
+	// 				description:
+	// 					'You have reached the maximum play count as a guest. Sign up for free to continue listening.',
+	// 				variant: 'default',
+	// 				action: (
+	// 					<Link href={'/login'}>
+	// 						<ToastAction altText='Login'>Login</ToastAction>
+	// 					</Link>
+	// 				),
+	// 			});
+	// 			return;
+	// 		}
+
+	// 		if (!track[variantToUse]) {
+	// 			if (track.variant1) variantToUse = 'variant1';
+	// 			else if (track.variant2) variantToUse = 'variant2';
+	// 			else if (track.variant3) variantToUse = 'variant3';
+	// 			else {
+	// 				console.error('No valid variant found for track:', track);
+	// 				return;
+	// 			}
+	// 			setCurrentVariant(variantToUse);
+	// 		}
+
+	// 		if (!isAuth && !isSameTrack) {
+	// 			incrementPlayCount();
+	// 		}
+
+	// 		setIsLoading(true);
+	// 		cleanupAudio();
+
+	// 		if (!soundRef.current) {
+	// 			soundRef.current = new Audio();
+	// 		}
+
+	// 		const audio = soundRef.current;
+	// 		audio.src = track[variantToUse]!;
+
+	// 		audio.volume = isMuted ? 0 : volume;
+	// 		audio.preload = 'auto';
+
+	// 		const handleLoadedMetadata = () => {
+	// 			setDuration(audio.duration);
+	// 			setIsLoading(false);
+	// 			if (isSameTrack) {
+	// 				audio.currentTime = seekTime;
+	// 				if (wasPlaying) {
+	// 					// Only resume playback if it was playing
+	// 					audio.play().catch(console.error);
+	// 					setIsPlaying(true);
+	// 				} else {
+	// 					// Explicitly pause if it wasn't playing
+	// 					audio.pause();
+	// 					setIsPlaying(false);
+	// 				}
+	// 			}
+	// 		};
+
+	// 		// Add play/pause event listeners
+	// 		const handlePlay = () => setIsPlaying(true);
+	// 		const handlePause = () => setIsPlaying(false);
+
+	// 		const handleEnded = () => {
+	// 			if (!isAuth && guestPlayCountRef.current >= 3) {
+	// 				setIsPlaying(false);
+	// 				return;
+	// 			}
+
+	// 			const currentIndex = tracksToUse.findIndex((t) => t.id === track.id);
+	// 			if (currentIndex === tracksToUse.length - 1) {
+	// 				if (isLoop) {
+	// 					playTrack(tracksToUse[0], tracksToUse, variantToUse);
+	// 				} else {
+	// 					setIsPlaying(false);
+	// 				}
+	// 			} else {
+	// 				const nextIndex = (currentIndex + 1) % tracksToUse.length;
+	// 				playTrack(tracksToUse[nextIndex], tracksToUse, variantToUse);
+	// 			}
+	// 		};
+
+	// 		audio.addEventListener('play', handlePlay);
+	// 		audio.addEventListener('pause', handlePause);
+
+	// 		audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+	// 		audio.addEventListener('timeupdate', () =>
+	// 			setCurrentTime(audio.currentTime)
+	// 		);
+	// 		audio.addEventListener('ended', handleEnded);
+	// 		audio.addEventListener('error', () => setIsLoading(false));
+	// 		audio.addEventListener('waiting', () => setIsLoading(true));
+	// 		audio.addEventListener('canplay', () => setIsLoading(false));
+
+	// 		setCurrentVariant(variantToUse);
+	// 		setCurrentTrack(track);
+
+	// 		if (!isSameTrack) {
+	// 			audio
+	// 				.play()
+	// 				.then(() => setIsPlaying(true))
+	// 				.catch((error) => {
+	// 					console.error('Play error:', error);
+	// 					setIsPlaying(false);
+	// 				});
+
+	// 			fetch('/api/listening', {
+	// 				method: 'POST',
+	// 				headers: { 'Content-Type': 'application/json' },
+	// 				body: JSON.stringify({ trackId: track.id }),
+	// 			}).catch(() => console.error('Error logging listening history'));
+	// 		}
+
+	// 		return () => {
+	// 			audio.removeEventListener('play', handlePlay);
+	// 			audio.removeEventListener('pause', handlePause);
+	// 			audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+	// 			audio.removeEventListener('ended', handleEnded);
+	// 			audio.removeEventListener('timeupdate', () =>
+	// 				setCurrentTime(audio.currentTime)
+	// 			);
+	// 			audio.removeEventListener('error', () => setIsLoading(false));
+	// 			audio.removeEventListener('waiting', () => setIsLoading(true));
+	// 			audio.removeEventListener('canplay', () => setIsLoading(false));
+	// 		};
+	// 	},
+	// 	[
+	// 		playlist,
+	// 		isLoop,
+	// 		currentVariant,
+	// 		isMuted,
+	// 		volume,
+	// 		incrementPlayCount,
+	// 		isAuth,
+	// 		currentTrack?.id,
+	// 	]
+	// );
 
 	const playTrack = useCallback(
 		(
@@ -559,7 +756,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			const isSameTrack = currentTrack?.id === track.id;
 			const seekTime =
 				isSameTrack && soundRef.current ? soundRef.current.currentTime : 0;
-			const wasPlaying = isSameTrack ? isPlaying : true;
+			const wasPlaying = isSameTrack ? isPlayingRef.current : true;
 
 			if (!isAuth && guestPlayCountRef.current >= 3) {
 				toast({
@@ -594,26 +791,36 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			setIsLoading(true);
 			cleanupAudio();
 
-			if (!soundRef.current) {
-				soundRef.current = new Audio();
-			}
-
-			const audio = soundRef.current;
+			const audio = new Audio();
+			soundRef.current = audio;
 			audio.src = track[variantToUse]!;
-
 			audio.volume = isMuted ? 0 : volume;
 			audio.preload = 'auto';
 
 			const handleLoadedMetadata = () => {
 				setDuration(audio.duration);
 				setIsLoading(false);
+
 				if (isSameTrack) {
 					audio.currentTime = seekTime;
 					if (wasPlaying) {
 						audio.play().catch(console.error);
+					} else {
+						audio.pause();
 					}
 				}
 			};
+
+			const handlePlay = () => setIsPlaying(true);
+			const handlePause = () => setIsPlaying(false);
+			const handleTimeUpdate = () => {
+				if (!isSeekingRef.current && soundRef.current) {
+					setCurrentTime(soundRef.current.currentTime);
+				}
+			};
+			const handleError = () => setIsLoading(false);
+			const handleWaiting = () => setIsLoading(true);
+			const handleCanPlay = () => setIsLoading(false);
 
 			const handleEnded = () => {
 				if (!isAuth && guestPlayCountRef.current >= 3) {
@@ -634,14 +841,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				}
 			};
 
+			// Add event listeners
 			audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-			audio.addEventListener('timeupdate', () =>
-				setCurrentTime(audio.currentTime)
-			);
+
+			audio.addEventListener('timeupdate', handleTimeUpdate);
+
 			audio.addEventListener('ended', handleEnded);
-			audio.addEventListener('error', () => setIsLoading(false));
-			audio.addEventListener('waiting', () => setIsLoading(true));
-			audio.addEventListener('canplay', () => setIsLoading(false));
+			audio.addEventListener('error', handleError);
+			audio.addEventListener('waiting', handleWaiting);
+			audio.addEventListener('canplay', handleCanPlay);
+			audio.addEventListener('play', handlePlay);
+			audio.addEventListener('pause', handlePause);
 
 			setCurrentVariant(variantToUse);
 			setCurrentTrack(track);
@@ -649,7 +859,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			if (!isSameTrack) {
 				audio
 					.play()
-					.then(() => setIsPlaying(true))
+					.then(() => {
+						setIsPlaying(true);
+					})
 					.catch((error) => {
 						console.error('Play error:', error);
 						setIsPlaying(false);
@@ -662,15 +874,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				}).catch(() => console.error('Error logging listening history'));
 			}
 
+			// Cleanup function
 			return () => {
+				audio.pause();
 				audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+				audio.removeEventListener('timeupdate', handleTimeUpdate);
 				audio.removeEventListener('ended', handleEnded);
-				audio.removeEventListener('timeupdate', () =>
-					setCurrentTime(audio.currentTime)
-				);
-				audio.removeEventListener('error', () => setIsLoading(false));
-				audio.removeEventListener('waiting', () => setIsLoading(true));
-				audio.removeEventListener('canplay', () => setIsLoading(false));
+				audio.removeEventListener('error', handleError);
+				audio.removeEventListener('waiting', handleWaiting);
+				audio.removeEventListener('canplay', handleCanPlay);
+				audio.removeEventListener('play', handlePlay);
+				audio.removeEventListener('pause', handlePause);
 			};
 		},
 		[
@@ -682,7 +896,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			incrementPlayCount,
 			isAuth,
 			currentTrack?.id,
-			isPlaying,
+			isPlayingRef,
 		]
 	);
 
@@ -710,8 +924,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 
 			setCurrentVariant(variant);
 			setPlaylist(tracks);
-			playTrack(track, tracks, variant);
 			setCurrentTime(0);
+			playTrack(track, tracks, variant);
+
 			if (tracks.length > 1) {
 				const nextIndex = (index + 1) % tracks.length;
 				const nextTrack = tracks[nextIndex];
@@ -766,30 +981,56 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 		setDuration(0);
 	}, []);
 
-	const value = {
-		currentTrack,
-		playlist,
-		isPlaying,
-		currentTime,
-		duration,
-		volume,
-		isMuted,
-		isLoop,
-		isLoading,
-		toggleLoop,
-		toggleMute,
-		togglePlayPause,
-		setVolume: handleVolumeChange,
-		seek: handleSeek,
-		playTrack,
-		nextTrack,
-		previousTrack,
-		setPlaylist,
-		playNewTrack,
-		resetAudio,
-		currentVariant,
-		switchVariant,
-	};
+	const value = useMemo(
+		() => ({
+			currentTrack,
+			playlist,
+			isPlaying,
+			currentTime,
+			duration,
+			volume,
+			isMuted,
+			isLoop,
+			isLoading,
+			toggleLoop,
+			toggleMute,
+			togglePlayPause,
+			setVolume: handleVolumeChange,
+			seek: handleSeek,
+			playTrack,
+			nextTrack,
+			previousTrack,
+			setPlaylist,
+			playNewTrack,
+			resetAudio,
+			currentVariant,
+			switchVariant,
+		}),
+		[
+			currentTrack,
+			playlist,
+			isPlaying,
+			currentTime,
+			duration,
+			volume,
+			isMuted,
+			isLoop,
+			isLoading,
+			toggleLoop,
+			toggleMute,
+			togglePlayPause,
+			handleVolumeChange,
+			handleSeek,
+			playTrack,
+			nextTrack,
+			previousTrack,
+			setPlaylist,
+			playNewTrack,
+			resetAudio,
+			currentVariant,
+			switchVariant,
+		]
+	);
 
 	return (
 		<AudioContext.Provider value={value}>{children}</AudioContext.Provider>
