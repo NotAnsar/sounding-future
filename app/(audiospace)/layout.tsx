@@ -20,7 +20,7 @@ export default async function Layout({
 
 	return (
 		<div
-			className='relative flex h-screen'
+			className='relative flex h-[100dvh]'
 			style={
 				{
 					'--top-nav-height': '72px',
@@ -44,7 +44,7 @@ export default async function Layout({
 				className={`top-0 h-[var(--top-nav-height)] md:h-[var(--top-nav-height-md)]`}
 			/>
 			<SideBarNav
-				className={`hidden md:flex top-[var(--top-nav-height-md)] h-[calc(100vh-var(--top-nav-height-md))] fixed`}
+				className={`hidden md:flex top-[var(--top-nav-height-md)] h-[calc(100dvh-var(--top-nav-height-md))] fixed`}
 				isAuth={auth}
 			/>
 
