@@ -70,6 +70,10 @@ export async function uploadTrackInfo(
 			return { message: 'At least one audio variant is required.' };
 		}
 
+		const variant1Name = variant1?.name;
+		const variant2Name = variant2?.name;
+		const variant3Name = variant3?.name;
+
 		const variant1Url = await updateFile(
 			formData.get('variant1'),
 			prevState?.prev?.variant1,
@@ -95,8 +99,11 @@ export async function uploadTrackInfo(
 			data: {
 				published,
 				variant1: variant1Url,
+				variant1Name: variant1 ? variant1Name : undefined,
 				variant2: variant2Url,
+				variant2Name: variant2 ? variant2Name : undefined,
 				variant3: variant3Url,
+				variant3Name: variant3 ? variant3Name : undefined,
 			},
 		});
 
@@ -124,7 +131,7 @@ export async function deleteTrackVariant(formData: FormData) {
 
 		await prisma.track.update({
 			where: { id: trackId },
-			data: { [variant]: null },
+			data: { [variant]: null, [`${variant}Name`]: null },
 		});
 
 		if (url) await deleteFile(url);

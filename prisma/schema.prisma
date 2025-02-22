@@ -64,8 +64,11 @@ model Track {
   cover        String
   info         String?  @db.Text
   variant1     String?  
+  variant1Name String?  
   variant2     String?  
+  variant2Name String?  
   variant3     String?  
+  variant3Name String?  
   releaseYear  Int?     @map("release_year") 
   credits      String?
   releasedBy   String   @default("self-published")
