@@ -115,6 +115,7 @@ export async function getCurrentUserSafe(): Promise<{
 }> {
 	try {
 		const user = await getCurrentUser();
+
 		return { user, error: false };
 	} catch (error) {
 		if (error instanceof AuthenticationError) {

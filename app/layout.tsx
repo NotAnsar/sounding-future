@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AudioProvider } from '@/context/AudioContext';
 import { Toaster } from '@/components/ui/toaster';
 import MatomoAnalytics from '@/components/MatomoAnalytics';
-import { isAuthenticated } from '@/db/user';
+import { getCurrentUserSafe } from '@/db/user';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -28,7 +28,8 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const isAuth = await isAuthenticated();
+	const { user } = await getCurrentUserSafe();
+	const isAuth = !!user;
 	return (
 		<html lang='en'>
 			<head>

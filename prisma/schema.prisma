@@ -18,6 +18,7 @@ model User {
   name  String   @unique
   role      String   @default("user") 
   artistId   String?   @unique @map("artist_id")   
+  preferredVariant String? 
 
 
   accounts      Account[]

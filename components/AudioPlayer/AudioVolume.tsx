@@ -58,6 +58,12 @@ export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
 			description:
 				'Stereo audio playback. Listen to the audio track in stereo mode. Suitable for standard stereo sound systems.',
 		},
+		{
+			icon: Icons.binaural,
+			title: '',
+			description:
+				'By double-clicking on one of the 3 buttons a variant can be set as default. This variant will then always be preferred.',
+		},
 	];
 
 	return (
@@ -86,9 +92,10 @@ export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
 							<div key={index} className='flex items-start space-x-4'>
 								<div className='flex flex-col items-center cursor-pointer min-w-14 max-w-14 gap-1'>
 									<div
-										className={
-											'w-10 h-auto aspect-square flex items-center justify-center rounded-full bg-foreground'
-										}
+										className={cn(
+											'w-10 h-auto aspect-square flex items-center justify-center rounded-full bg-foreground',
+											title === '' ? 'border-2 border-[#B03795]' : null
+										)}
 									>
 										<Icon className='w-6 h-auto aspect-squar fill-white dark:fill-black' />
 									</div>

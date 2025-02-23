@@ -9,105 +9,122 @@ import {
 import { InfoPopUp } from './AudioVolume';
 import { useAudio } from '@/context/AudioContext';
 
+type VariantType = 'variant1' | 'variant2' | 'variant3';
+
+interface VariantConfig {
+	key: VariantType;
+	label: string;
+	icon: keyof typeof Icons;
+}
+
+const VARIANTS: VariantConfig[] = [
+	{ key: 'variant2', label: 'Binaural+', icon: 'binaural' },
+	{ key: 'variant1', label: 'Binaural', icon: 'binaural' },
+	{ key: 'variant3', label: 'Stereo', icon: 'sterio' },
+];
+
+function VariantButton({
+	variant,
+	isActive,
+	isDefault,
+	isSingleVariant,
+	onClick,
+}: {
+	variant: VariantConfig;
+	isActive: boolean;
+	isDefault: boolean;
+	isSingleVariant: boolean;
+	onClick: () => void;
+}) {
+	const Icon = Icons[variant.icon];
+
+	return (
+		<button
+			className={cn(
+				'flex flex-col items-center cursor-pointer',
+				isActive ? 'text-foreground' : 'dark:text-muted text-muted/50',
+				isSingleVariant && 'pointer-events-none'
+			)}
+			onClick={onClick}
+			type='submit'
+		>
+			<div
+				className={cn(
+					'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
+					isActive ? 'bg-foreground' : 'dark:bg-muted bg-muted/50',
+					isDefault && 'border-2 border-[#B03795]'
+				)}
+			>
+				<Icon className='w-5 h-auto aspect-square fill-background' />
+			</div>
+			<p className='text-[10px] text-inherit lowercase'>{variant.label}</p>
+		</button>
+	);
+}
+
 export default function AudioType() {
-	const { currentTrack, currentVariant, switchVariant } = useAudio();
-	const variants = [
-		currentTrack?.variant1,
-		currentTrack?.variant2,
-		currentTrack?.variant3,
-	].filter(Boolean);
-	const isSingleVariant = variants.length === 1;
+	const {
+		currentTrack,
+		currentVariant,
+		switchVariant,
+		defaultVariant,
+		setDefaultVariant,
+	} = useAudio();
+
+	const availableVariants = VARIANTS.filter(
+		(variant) => currentTrack?.[variant.key]
+	);
+	const isSingleVariant = availableVariants.length === 1;
+
+	const handleVariantClick = (variantKey: VariantType) => {
+		if (currentVariant === variantKey) {
+			setDefaultVariant(variantKey);
+		}
+		if (!isSingleVariant) {
+			switchVariant(variantKey);
+		}
+	};
 
 	return (
 		<>
-			<MobileAudioType isSingleVariant={isSingleVariant} />
+			<MobileAudioType
+				variants={availableVariants}
+				currentVariant={currentVariant}
+				defaultVariant={defaultVariant}
+				isSingleVariant={isSingleVariant}
+				onVariantClick={handleVariantClick}
+			/>
 			<div className='hidden lg:flex gap-3 px-2 mt-2'>
-				{currentTrack?.variant2 && (
-					<div
-						className={cn(
-							'flex flex-col items-center cursor-pointer ',
-							currentVariant === 'variant2'
-								? 'text-foreground'
-								: 'dark:text-muted text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant2')}
-					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant2'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase '>Binaural+</p>
-					</div>
-				)}
-				{currentTrack?.variant1 && (
-					<div
-						className={cn(
-							'flex flex-col items-center cursor-pointer ',
-							currentVariant === 'variant1'
-								? 'text-foreground'
-								: 'dark:text-muted text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant1')}
-					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant1'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase'>Binaural</p>
-					</div>
-				)}
-				{currentTrack?.variant3 && (
-					<div
-						className={cn(
-							'flex flex-col items-center cursor-pointer ',
-							currentVariant === 'variant3'
-								? 'text-foreground'
-								: 'dark:text-muted text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant3')}
-					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant3'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.sterio className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase'>Stereo</p>
-					</div>
-				)}
+				{availableVariants.map((variant) => (
+					<VariantButton
+						key={variant.key}
+						variant={variant}
+						isActive={currentVariant === variant.key}
+						isDefault={defaultVariant === variant.key}
+						isSingleVariant={isSingleVariant}
+						onClick={() => handleVariantClick(variant.key)}
+					/>
+				))}
 			</div>
 		</>
 	);
 }
 
 function MobileAudioType({
-	className,
+	variants,
+	currentVariant,
+	defaultVariant,
 	isSingleVariant,
+	onVariantClick,
+	className,
 }: {
-	className?: string;
+	variants: VariantConfig[];
+	currentVariant?: string;
+	defaultVariant?: string;
 	isSingleVariant: boolean;
+	onVariantClick: (variant: VariantType) => void;
+	className?: string;
 }) {
-	const { currentTrack, currentVariant, switchVariant } = useAudio();
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className={cn('relative', className)}>
@@ -117,80 +134,23 @@ function MobileAudioType({
 				align='start'
 				className='bg-player backdrop-blur-md border-border mr-3 mb-2 grid grid-cols-2 p-2'
 			>
-				{currentTrack?.variant2 && (
+				{variants.map((variant) => (
 					<DropdownMenuItem
-						className={cn(
-							'flex flex-col items-center cursor-pointer ',
-							currentVariant === 'variant2'
-								? 'focus:text-foreground text-foreground'
-								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant2')}
+						key={variant.key}
+						onSelect={(e) => e.preventDefault()}
+						onClick={() => onVariantClick(variant.key)}
 					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant2'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase'>Binaural+</p>
+						<VariantButton
+							variant={variant}
+							isActive={currentVariant === variant.key}
+							isDefault={defaultVariant === variant.key}
+							isSingleVariant={isSingleVariant}
+							onClick={() => {}}
+						/>
 					</DropdownMenuItem>
-				)}
-				{currentTrack?.variant1 && (
-					<DropdownMenuItem
-						className={cn(
-							'flex flex-col items-center cursor-pointer ',
-							currentVariant === 'variant1'
-								? 'focus:text-foreground text-foreground'
-								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant1')}
-					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant1'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.binaural className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase'>Binaural</p>
-					</DropdownMenuItem>
-				)}
-				{currentTrack?.variant3 && (
-					<DropdownMenuItem
-						className={cn(
-							'flex flex-col items-center cursor-pointer',
-							currentVariant === 'variant3'
-								? 'focus:text-foreground text-foreground'
-								: 'dark:text-muted text-muted/50 dark:focus:text-muted focus:text-muted/50',
-							isSingleVariant && 'pointer-events-none'
-						)}
-						onClick={() => !isSingleVariant && switchVariant('variant3')}
-					>
-						<div
-							className={cn(
-								'w-8 h-auto aspect-square flex items-center justify-center rounded-full',
-								currentVariant === 'variant3'
-									? 'bg-foreground'
-									: 'dark:bg-muted bg-muted/50'
-							)}
-						>
-							<Icons.sterio className='w-5 h-auto aspect-square fill-background' />
-						</div>
-						<p className='text-[10px] text-inherit lowercase'>Stereo</p>
-					</DropdownMenuItem>
-				)}
+				))}
 				<DropdownMenuItem
-					className={'flex justify-center items-center cursor-pointer '}
+					className='flex justify-center items-center cursor-pointer'
 					asChild
 				>
 					<InfoPopUp mobile />

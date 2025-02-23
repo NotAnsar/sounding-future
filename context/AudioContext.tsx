@@ -15,6 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import Link from 'next/link';
 import { useGuestPlayCount } from '@/hooks/useGuestPlayCount';
+import { useDefaultVariant, VariantType } from '@/hooks/useDefaultVariant';
 
 interface AudioContextType {
 	currentTrack: Track | null;
@@ -45,6 +46,8 @@ interface AudioContextType {
 	switchVariant: (
 		variant: 'variant1' | 'variant2' | 'variant3' | undefined
 	) => void;
+	defaultVariant: VariantType;
+	setDefaultVariant: (newVariant: VariantType) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -79,6 +82,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	>('variant1');
 	const [isLoading, setIsLoading] = useState(false);
 	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
+	const { defaultVariant, setDefaultVariant } = useDefaultVariant(isAuth);
 	const soundRef = useRef<HTMLAudioElement | null>(null);
 	const previousVolume = useRef(volume);
 	const guestPlayCountRef = useRef(guestPlayCount);
@@ -343,6 +347,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			} else if (track.variant3) {
 				variant = 'variant3';
 			}
+			if (defaultVariant) {
+				variant = defaultVariant;
+			}
 
 			setCurrentVariant(variant);
 			setPlaylist(tracks);
@@ -371,7 +378,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 				preloadAudio.preload = 'auto';
 			}
 		},
-		[playTrack]
+		[playTrack, defaultVariant]
 	);
 
 	const previousTrack = useCallback(() => {
@@ -427,6 +434,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			resetAudio,
 			currentVariant,
 			switchVariant,
+			defaultVariant,
+			setDefaultVariant,
 		}),
 		[
 			currentTrack,
@@ -451,6 +460,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 			resetAudio,
 			currentVariant,
 			switchVariant,
+			defaultVariant,
+			setDefaultVariant,
 		]
 	);
 
