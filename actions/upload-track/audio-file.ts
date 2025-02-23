@@ -24,9 +24,10 @@ const UploadAudioSchema = z.object({
 
 type UploadAudioData = z.infer<typeof UploadAudioSchema>;
 
-export type AudioUploadState = State<UploadAudioData> & {
-	prev?: { variant1?: string; variant2?: string; variant3?: string };
-};
+export type AudioUploadState = State<UploadAudioData>;
+// & {
+// 	prev?: { variant1?: string; variant2?: string; variant3?: string };
+// };
 
 export async function uploadTrackInfo(
 	id: string,
@@ -76,20 +77,20 @@ export async function uploadTrackInfo(
 
 		const variant1Url = await updateFile(
 			formData.get('variant1'),
-			prevState?.prev?.variant1,
+			track?.variant1 || undefined,
 			'audio',
 			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin`
 		);
 
 		const variant2Url = await updateFile(
 			formData.get('variant2'),
-			prevState?.prev?.variant2,
+			track?.variant2 || undefined,
 			'audio',
 			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin-plus`
 		);
 		const variant3Url = await updateFile(
 			formData.get('variant3'),
-			prevState?.prev?.variant3,
+			track?.variant3 || undefined,
 			'audio',
 			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-stereo`
 		);
@@ -161,7 +162,7 @@ export async function deleteTrackVariant(formData: FormData) {
 			});
 		}
 
-		revalidatePath('/user/tracks');
+		revalidatePath('/');
 		return { success: true };
 	} catch (error) {
 		console.error('Delete error:', error);

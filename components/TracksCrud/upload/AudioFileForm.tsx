@@ -27,11 +27,11 @@ export default function AudioFileForm({
 	const initialState: AudioUploadState = {
 		message: null,
 		errors: {},
-		prev: {
-			variant1: initialData?.variant1 || undefined,
-			variant2: initialData?.variant2 || undefined,
-			variant3: initialData?.variant3 || undefined,
-		},
+		// prev: {
+		// 	variant1: initialData?.variant1 || undefined,
+		// 	variant2: initialData?.variant2 || undefined,
+		// 	variant3: initialData?.variant3 || undefined,
+		// },
 	};
 
 	const [state, action] = useFormState(
