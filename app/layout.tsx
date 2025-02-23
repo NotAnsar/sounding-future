@@ -9,6 +9,8 @@ import { AudioProvider } from '@/context/AudioContext';
 import { Toaster } from '@/components/ui/toaster';
 import MatomoAnalytics from '@/components/MatomoAnalytics';
 import { getCurrentUserSafe } from '@/db/user';
+import { VariantType } from '@/hooks/useDefaultVariant';
+import { isValidVariant } from '@/actions/utils/utils';
 
 const fontSans = FontSans({
 	subsets: ['latin'],
@@ -29,6 +31,8 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	const { user } = await getCurrentUserSafe();
+	console.log(user?.preferredVariant);
+
 	const isAuth = !!user;
 	return (
 		<html lang='en'>
@@ -47,7 +51,14 @@ export default async function RootLayout({
 					disableTransitionOnChange
 				>
 					<SessionProvider>
-						<AudioProvider isAuth={isAuth}>
+						<AudioProvider
+							isAuth={isAuth}
+							intialVariant={
+								isValidVariant(user?.preferredVariant || null)
+									? (user?.preferredVariant as VariantType)
+									: undefined
+							}
+						>
 							{children}
 							<Toaster />
 						</AudioProvider>

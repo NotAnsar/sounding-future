@@ -79,3 +79,6 @@ export function generateSlug(name: string): string {
 		.replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric sequences with hyphens
 		.replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
 }
+
+export const isValidVariant = (variant: string | null): boolean =>
+	variant === 'variant1' || variant === 'variant2' || variant === 'variant3';

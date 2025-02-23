@@ -63,11 +63,13 @@ export const useAudio = () => {
 interface AudioProviderProps {
 	children: ReactNode;
 	isAuth?: boolean;
+	intialVariant: VariantType;
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({
 	children,
 	isAuth = false,
+	intialVariant = undefined,
 }) => {
 	const [playlist, setPlaylist] = useState<Track[]>([]);
 	const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
@@ -82,7 +84,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 	>('variant1');
 	const [isLoading, setIsLoading] = useState(false);
 	const { guestPlayCount, incrementPlayCount } = useGuestPlayCount(isAuth);
-	const { defaultVariant, setDefaultVariant } = useDefaultVariant(isAuth);
+	const { defaultVariant, setDefaultVariant } = useDefaultVariant(
+		isAuth,
+		intialVariant
+	);
 	const soundRef = useRef<HTMLAudioElement | null>(null);
 	const previousVolume = useRef(volume);
 	const guestPlayCountRef = useRef(guestPlayCount);
