@@ -21,14 +21,20 @@ export default function NavItem({
 }) {
 	const isCollection = type === 'collection';
 	const isCurrentPath =
-		currentPath.split('/')[isCollection ? 2 : 1] ===
-			path.split('/')[isCollection ? 2 : 1] &&
-		currentPath.split('/')[1] === 'collection';
+		currentPath.split('/')[1] === path.split('/')[1] &&
+		path.split('/')[1] !== 'collection';
+
+	const isCollectionCurrentPath =
+		currentPath.split('/')[1] === 'collection' &&
+		currentPath.split('/')[2] === path.split('/')[2];
 	const CommonLink = (
 		<Link
 			className={cn(
 				buttonVariants({
-					variant: isCurrentPath ? 'sideNav' : 'sideNavForeground',
+					variant:
+						isCurrentPath || (isCollection && isCollectionCurrentPath)
+							? 'sideNav'
+							: 'sideNavForeground',
 				}),
 				'justify-start py-2 pr-3 hover:text-white duration-200 transition-none tracks-nav',
 				isCurrentPath ? 'text-white tracks-nav' : '',
