@@ -46,7 +46,6 @@ function VariantButton({
 				isSingleVariant && 'pointer-events-none'
 			)}
 			onClick={onClick}
-			type='submit'
 		>
 			<div
 				className={cn(
