@@ -8,11 +8,11 @@ import TracksCarousel from '@/components/home/NewTracks';
 import { getArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
-import { getNewTracks } from '@/db/tracks';
+import { getRandomTracks } from '@/db/tracks';
 
 export default async function page() {
 	const [tracks, genres, partners, artists] = await Promise.all([
-		getNewTracks(),
+		getRandomTracks(),
 		getGenres(),
 		getPartners(true),
 		getArtists(8, true),
@@ -28,7 +28,7 @@ export default async function page() {
 			<div className='grid grid-cols-3 gap-6'>
 				<div className='flex flex-col gap-12 col-span-full xl:col-span-2'>
 					{!tracks.error && (
-						<TracksCarousel tracks={tracks.data} title='New Tracks' />
+						<TracksCarousel tracks={tracks.data} title='Random Track Picks' />
 					)}
 
 					{!genres.error && (

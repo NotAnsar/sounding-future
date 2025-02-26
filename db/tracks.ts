@@ -2,27 +2,36 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Genre, Prisma, type Track } from '@prisma/client';
 
-export async function getNewTracks(): Promise<PublicTrackWithLikeStatusRes> {
+export async function getRandomTracks(
+	limit: number = 8
+): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
-		// Step 1: Get IDs of the latest track per artist (using raw SQL)
+		// Get random track IDs - one per artist
 		const trackIds = await prisma.$queryRaw<{ id: string }[]>`
-      WITH latest_tracks AS (
-        SELECT DISTINCT ON (artist_id) id, created_at
-        FROM tracks
-        WHERE published = true
-        ORDER BY artist_id, created_at DESC
-      )
-      SELECT id FROM latest_tracks
-      ORDER BY created_at DESC
-      LIMIT 8
-    `;
+			WITH artists_with_tracks AS (
+				SELECT DISTINCT artist_id 
+				FROM tracks 
+				WHERE published = true
+			),
+			random_tracks AS (
+				SELECT t.id, t.artist_id, 
+					ROW_NUMBER() OVER (PARTITION BY t.artist_id ORDER BY RANDOM()) as rn
+				FROM tracks t
+				WHERE t.published = true
+			)
+			SELECT rt.id 
+			FROM random_tracks rt
+			WHERE rt.rn = 1
+			ORDER BY RANDOM()
+			LIMIT ${limit}
+		`;
 
-		// Extract IDs in correct order
+		// Extract IDs
 		const orderedIds = trackIds.map((t) => t.id);
 
-		// Step 2: Fetch full track data for these IDs
+		// Fetch full track data
 		const data = await prisma.track.findMany({
 			where: { id: { in: orderedIds } },
 			include: {
@@ -40,7 +49,7 @@ export async function getNewTracks(): Promise<PublicTrackWithLikeStatusRes> {
 			},
 		});
 
-		// Re-order tracks to match original ID order
+		// Preserve the random order from the query
 		const orderedData = orderedIds
 			.map((id) => data.find((track) => track.id === id))
 			.filter((track): track is (typeof data)[0] => track !== undefined);
