@@ -13,7 +13,7 @@ const audioFile = z
 		(file) => file?.type.startsWith('audio/') || file?.type === 'video/webm',
 		'Must be in audio or .webm format'
 	)
-	.refine((file) => file?.size <= 50 * 1024 * 1024, 'Must be less than 50MB');
+	.refine((file) => file?.size <= 200 * 1024 * 1024, 'Must be less than 200MB');
 
 const UploadAudioSchema = z.object({
 	variant1: audioFile.optional(),
