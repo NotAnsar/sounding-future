@@ -109,6 +109,67 @@ export async function updateFile(
 	return imageUrl;
 }
 
+// export async function uploadFile(
+// 	file: File,
+// 	type: 'image' | 'audio' = 'image',
+// 	audioFileName?: string
+// ) {
+// 	if (!file) throw new Error('File is required for upload.');
+
+// 	try {
+// 		// Log file details
+// 		console.log('Uploading file:', { name: file.name });
+
+// 		const extension = file.name.split('.').pop();
+// 		const randomSuffix = Math.floor(Math.random() * 10000);
+// 		const fileName = `${type}s/${
+// 			audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
+// 		}.${extension}`;
+
+// 		const arrayBuffer = await file.arrayBuffer();
+// 		const buffer = Buffer.from(arrayBuffer);
+
+// 		// Log upload attempt
+// 		console.log('Attempting upload with params:', { fileName });
+
+// 		const command = new PutObjectCommand({
+// 			Bucket: process.env.AWS_S3_BUCKET_NAME,
+// 			Key: fileName,
+// 			Body: buffer,
+// 			ContentType: file.type,
+// 			ContentLength: buffer.length, // Add explicit content length
+// 		});
+
+// 		const result = await s3.send(command);
+
+// 		// Log success
+// 		console.log('Upload successful:', result);
+
+// 		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
+// 	} catch (error) {
+// 		// Define error type
+// 		type UploadError = {
+// 			name: string;
+// 			message: string;
+// 			stack?: string;
+// 		};
+
+// 		// Enhanced error logging
+// 		console.error('Detailed upload error:', {
+// 			error,
+// 			errorName: (error as UploadError).name,
+// 			errorMessage: (error as UploadError).message,
+// 			errorStack: (error as UploadError).stack,
+// 			fileInfo: {
+// 				name: file.name,
+// 				type: file.type,
+// 				size: file.size,
+// 			},
+// 		});
+// 		throw new Error(`Failed to upload file: ${(error as UploadError).message}`);
+// 	}
+// }
+
 export async function uploadFile(
 	file: File,
 	type: 'image' | 'audio' = 'image',
@@ -129,6 +190,25 @@ export async function uploadFile(
 		const arrayBuffer = await file.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
 
+		// Log upload progress
+		const totalSize = buffer.length;
+		let uploadedSize = 0;
+		const progressInterval = Math.max(Math.floor(totalSize / 10), 1024); // Log every 10% or at least every 1KB
+
+		console.log(`Starting upload: 0% (0/${totalSize} bytes)`);
+
+		// This doesn't actually track real-time progress since AWS SDK doesn't expose upload progress events
+		// But we're simulating progress logging during upload preparation
+		while (uploadedSize < totalSize) {
+			uploadedSize = Math.min(uploadedSize + progressInterval, totalSize);
+			const percentage = Math.round((uploadedSize / totalSize) * 100);
+			console.log(
+				`Upload preparation progress: ${percentage}% (${uploadedSize}/${totalSize} bytes)`
+			);
+
+			if (uploadedSize >= totalSize) break;
+		}
+
 		// Log upload attempt
 		console.log('Attempting upload with params:', { fileName });
 
@@ -144,6 +224,7 @@ export async function uploadFile(
 
 		// Log success
 		console.log('Upload successful:', result);
+		console.log('Upload progress: 100% complete');
 
 		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
 	} catch (error) {

@@ -42,6 +42,8 @@ export async function uploadTrackInfo(
 	});
 
 	if (!validatedFields.success) {
+		console.log(validatedFields.error);
+
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to upload files. Please check the form for errors.',
