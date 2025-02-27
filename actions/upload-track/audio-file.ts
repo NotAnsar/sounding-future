@@ -7,13 +7,18 @@ import { checkFile, deleteFile, updateFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
+const fileSize = 200;
+
 const audioFile = z
 	.instanceof(File, { message: 'Audio file is required' })
 	.refine(
 		(file) => file?.type.startsWith('audio/') || file?.type === 'video/webm',
 		'Must be in audio or .webm format'
 	)
-	.refine((file) => file?.size <= 200 * 1024 * 1024, 'Must be less than 200MB');
+	.refine(
+		(file) => file?.size <= fileSize * 1024 * 1024,
+		`Must be less than ${fileSize}MB`
+	);
 
 const UploadAudioSchema = z.object({
 	variant1: audioFile.optional(),
@@ -42,8 +47,6 @@ export async function uploadTrackInfo(
 	});
 
 	if (!validatedFields.success) {
-		console.log(validatedFields.error);
-
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to upload files. Please check the form for errors.',
