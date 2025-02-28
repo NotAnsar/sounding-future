@@ -62,7 +62,7 @@ export default function TracksCarousel({
 						>
 							<Link
 								href={`/tracks/${track?.slug}`}
-								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'
+								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2 '
 							>
 								<Image
 									src={track?.cover}
@@ -75,7 +75,7 @@ export default function TracksCarousel({
 
 							<Link
 								href={`/artists/${track?.artist?.slug}`}
-								className='text-muted text-sm md:text-base font-semibold text-nowrap'
+								className='text-muted text-sm md:text-base font-semibold line-clamp-1 w-full'
 							>
 								{track?.artist?.name}
 							</Link>
@@ -83,7 +83,6 @@ export default function TracksCarousel({
 								href={`/tracks/${track.slug}`}
 								className={cn(
 									'text-sm sm:text-[17px] font-semibold line-clamp-1'
-									// isCurrentTrack ? 'text-primary' : ''
 								)}
 							>
 								{track?.title}
