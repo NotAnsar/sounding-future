@@ -2,13 +2,10 @@ import AudioPlayer from '@/components/AudioPlayer/AudioPlayer';
 import SideBarNav from '@/components/Nav/SIdeBarNav';
 import TopNav from '@/components/Nav/TopNav';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-
+import { buttonVariants } from '@/components/ui/button';
 import { isAuthenticated } from '@/db/user';
 import { cn } from '@/lib/utils';
-
-import { Terminal } from 'lucide-react';
 import Link from 'next/link';
-
 import NextTopLoader from 'nextjs-toploader';
 
 export default async function Layout({
@@ -52,22 +49,24 @@ export default async function Layout({
 				className={`md:ml-64 pb-32 p-4 md:px-8 md:pt-0 overflow-y-auto w-full mt-[var(--top-nav-height)] md:mt-[var(--top-nav-height-md)] mx-auto max-w-screen-2xl relative`}
 			>
 				{!auth && (
-					<Alert className='mb-4 '>
-						<Terminal className='h-4 w-4' />
-						<AlertTitle>Welcome to Sounding Future AudioSpace!</AlertTitle>
-						<AlertDescription className='mb-1'>
-							Sign up for free to unlock the full potential of our features and
-							enjoy an enhanced experience.
+					<Alert className='mb-4'>
+						<AlertTitle className='text-[27px] leading-tight font-bold'>
+							Listen to all audio tracks for free!
+						</AlertTitle>
+						<AlertDescription className='mb-2 mt-1 '>
+							Sign up for free access to all audio tracks and explore our
+							community features.
 						</AlertDescription>
 
 						<span>
 							<Link
 								href={'/signup'}
 								className={cn(
-									'inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium transition-colors hover:bg-secondary focus:outline-none focus:ring-1 focus:ring-ring disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive'
+									buttonVariants(),
+									'bg-button hover:bg-button/80 px-3.5'
 								)}
 							>
-								Sign Up
+								Sign Up Now
 							</Link>
 						</span>
 					</Alert>
