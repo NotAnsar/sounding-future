@@ -16,13 +16,12 @@ const fontSans = FontSans({
 	subsets: ['latin'],
 	variable: '--font-sans',
 	weight: ['200', '300', '400', '500', '600', '700'],
-	// display: 'swap',
 });
 
 export const metadata: Metadata = {
-	title: 'Sounding Future',
+	title: '3D AudioSpace',
 	description:
-		'Sounding Future is a platform for experimental music and sound art.',
+		'Innovative streaming with the 3D AudioSpace from Sounding Future.',
 };
 
 export default async function RootLayout({
