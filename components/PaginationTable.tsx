@@ -17,8 +17,10 @@ import {
 
 export default function PaginationTable<TData>({
 	table,
+	totalCount,
 }: {
 	table: Table<TData>;
+	totalCount?: number;
 }) {
 	return (
 		<div className='flex  items-center justify-between mt-4'>
@@ -42,10 +44,26 @@ export default function PaginationTable<TData>({
 					</SelectContent>
 				</Select>
 			</div>
-			<div className='text-sm font-medium'>
-				Page {table.getState().pagination.pageIndex + 1} of{' '}
-				{table.getPageCount()}
-			</div>
+			{totalCount ? (
+				<div className='text-sm font-medium'>
+					{table.getState().pagination.pageIndex *
+						table.getState().pagination.pageSize +
+						1}
+					-
+					{Math.min(
+						(table.getState().pagination.pageIndex + 1) *
+							table.getState().pagination.pageSize,
+						totalCount
+					)}{' '}
+					of {totalCount}
+				</div>
+			) : (
+				<div className='text-sm font-medium'>
+					Page {table.getState().pagination.pageIndex + 1} of{' '}
+					{table.getPageCount()}
+				</div>
+			)}
+
 			<div className='flex items-center space-x-2'>
 				<Button
 					variant='outline'

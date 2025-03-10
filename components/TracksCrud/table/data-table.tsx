@@ -189,7 +189,7 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			<PaginationTable table={table} />
+			<PaginationTable table={table} totalCount={data.length} />
 		</>
 	);
 }
