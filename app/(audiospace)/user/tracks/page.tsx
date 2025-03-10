@@ -21,7 +21,12 @@ export default async function page() {
 	return (
 		<>
 			<div className='flex items-center justify-between mt-4 mb-12'>
-				<h2 className='text-3xl md:text-5xl font-semibold'>Tracks</h2>
+				<div>
+					<h2 className='text-3xl md:text-5xl font-semibold'>Tracks</h2>
+					<p className='text-muted-foreground mt-1 font-medium text-[15px]'>
+						Total tracks: {tracks.data.length}
+					</p>
+				</div>
 
 				<Link href={'/user/tracks/upload'} className={cn(buttonVariants())}>
 					<Upload className='w-4 h-auto aspect-square mr-2' /> Upload Track

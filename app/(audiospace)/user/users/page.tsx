@@ -23,7 +23,12 @@ export default async function page() {
 	return (
 		<>
 			<div className='flex flex-col sm:flex-row sm:items-center justify-between mt-4 mb-4 sm:mb-12 gap-2'>
-				<h2 className='text-3xl md:text-5xl font-semibold'>Users</h2>
+				<div>
+					<h2 className='text-3xl md:text-5xl font-semibold'>Users</h2>
+					<p className='text-muted-foreground mt-1 font-medium text-[15px]'>
+						Total users: {data.data.length}
+					</p>
+				</div>
 
 				<Link href={'/user/users/new'} className={cn(buttonVariants())}>
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add User
