@@ -39,7 +39,6 @@ export async function followArtist(artistId: string): Promise<FollowState> {
 				},
 			});
 		} else {
-			// Follow Artist
 			await prisma.follow.create({
 				data: { followedArtistId: artistId, followingUserId: session.user.id },
 			});

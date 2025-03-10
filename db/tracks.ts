@@ -243,6 +243,9 @@ export async function getPublicTracksById(
 					include: {
 						articles: { include: { article: true } },
 						socialLinks: true,
+						followers: session?.user.id
+							? { where: { followingUserId: session.user.id } }
+							: undefined,
 					},
 				},
 				genres: { include: { genre: true } },
@@ -265,6 +268,7 @@ export async function getPublicTracksById(
 			data: {
 				...data,
 				isLiked: session?.user ? data.likes.length > 0 : false,
+				followed: session?.user ? data.artist.followers.length > 0 : false,
 			},
 			error: false,
 		};
@@ -512,7 +516,7 @@ export type TrackDetails = Prisma.TrackGetPayload<{
 		curator: true;
 		sourceFormat: true;
 	};
-}> & { isLiked: boolean };
+}> & { isLiked: boolean; followed: boolean };
 
 export type PublicTrack = Prisma.TrackGetPayload<{
 	include: {

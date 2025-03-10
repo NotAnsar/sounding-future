@@ -32,16 +32,23 @@ export default function FollowForm({
 					duration: 3000,
 				});
 			}}
-			className={cn(
-				'cursor-pointer h-full flex justify-center items-center',
-				className
-			)}
+			className={cn('cursor-pointer h-full flex justify-center items-center')}
 		>
 			<button type='submit'>
 				{optimisticFollow ? (
-					<Icons.unfollow className='min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
+					<Icons.unfollow
+						className={cn(
+							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer',
+							className
+						)}
+					/>
 				) : (
-					<Icons.follow className='min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
+					<Icons.follow
+						className={cn(
+							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer',
+							className
+						)}
+					/>
 				)}
 			</button>
 		</form>

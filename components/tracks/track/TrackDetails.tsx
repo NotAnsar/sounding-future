@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { useAudio } from '@/context/AudioContext';
 import Link from 'next/link';
 import { Icons } from '@/components/icons/track-icons';
-import { PublicTrackWithLikeStatus } from '@/db/tracks';
+import { type TrackDetails } from '@/db/tracks';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,12 +16,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
 import LikeForm from '@/components/LikeForm';
+import FollowForm from '@/components/FollowForm';
 
-export default function TrackDetails({
-	track,
-}: {
-	track: PublicTrackWithLikeStatus;
-}) {
+export default function TrackDetails({ track }: { track: TrackDetails }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	const isCurrentTrack = currentTrack?.id === track.id;
 
@@ -113,16 +110,11 @@ export default function TrackDetails({
 					>
 						{track.artist.name}
 					</Link>
-					{/* <div
-						onClick={() => setFollowed((l) => !l)}
-						className='cursor-pointer h-full flex justify-center items-center'
-					>
-						{followed ? (
-							<Icons.follow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
-						) : (
-							<Icons.unfollow className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer' />
-						)}
-					</div> */}
+					<FollowForm
+						artistId={track.artist.id}
+						followed={track.followed}
+						className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto '
+					/>
 				</div>
 			</div>
 		</div>
