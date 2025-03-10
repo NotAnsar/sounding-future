@@ -7,6 +7,7 @@ import Error from '@/components/Error';
 import { generateArtistsListingSchema } from '@/schema/artists-schema';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import DynamicNav from '@/components/curated/DynamicNav';
+import { getFollowingArtists } from '@/db/collections';
 
 export async function generateMetadata() {
 	const artists = await getArtistsList();
@@ -39,7 +40,10 @@ export default async function page({
 }) {
 	const isTable = type === 'table';
 	const tabValue = sort === 'popular' ? 'popular' : 'new';
-	const artists = await getArtistsList(undefined, tabValue);
+	const [artists, { data: followedArtists }] = await Promise.all([
+		getArtistsList(undefined, tabValue),
+		getFollowingArtists(),
+	]);
 
 	if (artists.error) {
 		return <Error message={artists.message} />;
@@ -61,14 +65,20 @@ export default async function page({
 				<DynamicNav type={type} sort={sort} label='Artists' />
 				<TabsContent value='new' className='xl:w-2/3'>
 					{isTable ? (
-						<ArtistList artists={artists.data} />
+						<ArtistList
+							artists={artists.data}
+							followedArtists={followedArtists}
+						/>
 					) : (
 						<ExploreArtists artists={artists.data} />
 					)}
 				</TabsContent>
 				<TabsContent value='popular' className='xl:w-2/3'>
 					{isTable ? (
-						<ArtistList artists={artists.data} />
+						<ArtistList
+							artists={artists.data}
+							followedArtists={followedArtists}
+						/>
 					) : (
 						<ExploreArtists artists={artists.data} />
 					)}

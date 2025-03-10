@@ -2,13 +2,15 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-// import { Icons } from '../icons/track-icons';
 import { type ArtistList } from '@/db/artist';
+import FollowForm from '../FollowForm';
 
 export default function ArtistList({
+	followedArtists,
 	artists,
 	className,
 }: {
+	followedArtists?: ArtistList[];
 	artists: ArtistList[];
 	className?: string;
 }) {
@@ -84,21 +86,17 @@ export default function ArtistList({
 									</ul>
 								</TableCell>
 
-								{/* <TableCell>
-									{+artist.id % 2 == 0 ? (
-										<Icons.follow
-											className={cn(
-												'w-6 h-6 fill-muted hover:fill-foreground duration-200 transition-all ease-out cursor-pointer'
+								{followedArtists && (
+									<TableCell>
+										<FollowForm
+											artistId={artist.id}
+											followed={followedArtists.some(
+												(followed) => followed.id === artist.id
 											)}
+											className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto '
 										/>
-									) : (
-										<Icons.unfollow
-											className={cn(
-												'w-6 h-6 fill-muted hover:fill-foreground duration-200 transition-all ease-out cursor-pointer'
-											)}
-										/>
-									)}
-								</TableCell> */}
+									</TableCell>
+								)}
 							</TableRow>
 						);
 					})}

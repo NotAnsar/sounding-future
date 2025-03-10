@@ -65,7 +65,7 @@ export default async function page({
 			) : (
 				<div className='xl:w-2/3'>
 					{isTable ? (
-						<ArtistList artists={data} />
+						<ArtistList artists={data} followedArtists={data} />
 					) : (
 						<ExploreArtists artists={data} />
 					)}
