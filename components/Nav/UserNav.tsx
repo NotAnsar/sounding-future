@@ -18,6 +18,7 @@ import {
 	UserRoundCog,
 	Layout,
 	UsersRound,
+	BadgeInfo,
 } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
@@ -125,6 +126,22 @@ export default function UserNav({
 						{`${isAdmin ? 'Tracks Management' : 'My Tracks'}`}
 					</Link>
 				</DropdownMenuItem>
+
+				{!isAdmin && (
+					<>
+						<DropdownMenuSeparator />
+
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/help-center'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<BadgeInfo className='w-4 h-auto mr-2 ' />
+								Help Center
+							</Link>
+						</DropdownMenuItem>
+					</>
+				)}
 
 				{isAdmin ? (
 					<>

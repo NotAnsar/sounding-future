@@ -430,3 +430,19 @@ model AboutCards {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model HelpCenterVideo {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  videoUrl    String
+  thumbnailUrl String?
+  displayOrder Int     @default(autoincrement())
+  published   Boolean  @default(false)
+  isNewUserVideo     Boolean  @default(false)  
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
+
+  @@map("help_center_videos")
+}
