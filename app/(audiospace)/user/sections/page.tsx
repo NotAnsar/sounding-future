@@ -4,6 +4,7 @@ import { EditSocialsButton } from '@/components/sections/SocialMediaDialog';
 import { buttonVariants } from '@/components/ui/button';
 import { getNewsLetter, getSocialLinks, getSubscription } from '@/db/section';
 import { cn } from '@/lib/utils';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
 import {
 	FileText,
 	Heart,
@@ -25,6 +26,11 @@ const pages = [
 	{ title: 'Privacy', link: '/user/sections/privacy', icon: Shield },
 	{ title: 'About', link: '/user/sections/about', icon: Info },
 	{ title: 'Support Us', link: '/user/sections/support-us', icon: Heart },
+	{
+		title: 'Help Center',
+		link: '/user/sections/help-center',
+		icon: InfoCircledIcon,
+	},
 ];
 
 const sections = [

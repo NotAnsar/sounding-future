@@ -95,15 +95,14 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 export async function updateFile(
 	imageFormdata: FormDataEntryValue | null,
 	prevImageUrl: string | undefined,
-	type: 'image' | 'audio' = 'image',
+	type: 'image' | 'audio' | 'video' = 'image',
 	audioFileName?: string
 ) {
 	const imageFile = await checkFile(imageFormdata);
 	let imageUrl = prevImageUrl;
 	if (imageFile) {
-		if (imageUrl) {
-			await deleteFile(imageUrl);
-		}
+		if (imageUrl) await deleteFile(imageUrl);
+
 		imageUrl = await uploadFile(imageFile, type, audioFileName);
 	}
 	return imageUrl;
@@ -111,7 +110,7 @@ export async function updateFile(
 
 export async function uploadFile(
 	file: File,
-	type: 'image' | 'audio' = 'image',
+	type: 'image' | 'audio' | 'video' = 'image',
 	audioFileName?: string
 ) {
 	if (!file) throw new Error('File is required for upload.');

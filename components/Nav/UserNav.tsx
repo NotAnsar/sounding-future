@@ -127,22 +127,6 @@ export default function UserNav({
 					</Link>
 				</DropdownMenuItem>
 
-				{!isAdmin && (
-					<>
-						<DropdownMenuSeparator />
-
-						<DropdownMenuItem className='cursor-pointer p-0' asChild>
-							<Link
-								href={'/user/help-center'}
-								className='px-2 py-2.5 w-full flex items-center'
-							>
-								<BadgeInfo className='w-4 h-auto mr-2 ' />
-								Help Center
-							</Link>
-						</DropdownMenuItem>
-					</>
-				)}
-
 				{isAdmin ? (
 					<>
 						<DropdownMenuItem className='cursor-pointer p-0' asChild>
@@ -194,6 +178,17 @@ export default function UserNav({
 					</>
 				) : null}
 
+				<DropdownMenuSeparator />
+
+				<DropdownMenuItem className='cursor-pointer p-0' asChild>
+					<Link
+						href={'/user/help-center'}
+						className='px-2 py-2.5 w-full flex items-center'
+					>
+						<BadgeInfo className='w-4 h-auto mr-2 ' />
+						Help Center
+					</Link>
+				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 
 				<DropdownMenuItem className='cursor-pointer p-0' asChild>

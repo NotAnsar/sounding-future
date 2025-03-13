@@ -1,13 +1,7 @@
-import Error from '@/components/Error';
-import { auth } from '@/lib/auth';
+import { getHelpCenter } from '@/db/help-center';
 
 export default async function Page() {
-	const [session] = await Promise.all([auth()]);
-
-	if (session?.user.role === 'admin') {
-		return <Error message='You are not authorized to view this page' />;
-	}
-
+	const { data } = await getHelpCenter(true);
 	return (
 		<>
 			<div
@@ -21,47 +15,35 @@ export default async function Page() {
 					Help Center
 				</h2>
 			</div>
-			<div className='max-w-screen-sm space-y-8'>
+			<div className='lg:max-w-screen-sm space-y-8'>
 				<p className='mt-4'>
 					From the first steps to advanced functions, you will find everything
 					you need to know about the 3D AudioSpace.
 				</p>
+				{data.length === 0 && (
+					<div className='flex items-center justify-center h-96'>
+						<p className='text-2xl text-muted'>No videos found</p>
+					</div>
+				)}
+				{data.map((d) => (
+					<section className='space-y-3' key={d.id}>
+						<h2 className='text-3xl font-semibold'>{d.title}</h2>
 
-				<section className='space-y-3'>
-					<h2 className='text-3xl font-semibold'>Getting started</h2>
+						<p className='pb-2'>{d.description}</p>
 
-					<p className='pb-2'>
-						Discover all the 3D AudioSpace key features in 3 minutes!
-					</p>
-
-					<video
-						src='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
-						controls
-						className='w-full rounded-lg mt-2'
-						preload='metadata'
-					>
-						Your browser does not support the video tag.
-					</video>
-				</section>
-				<section className='space-y-3'>
-					<h2 className='text-3xl font-semibold'>
-						For Creators: Upload & Manage your tracks
-					</h2>
-
-					<p className='pb-2'>
-						Learn which formats and genres are supported on our platform. This
-						video will guide you through the upload process and help you
-						optimize your tracks for the best streaming experience.
-					</p>
-					<video
-						src='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
-						controls
-						className='w-full rounded-lg '
-						preload='metadata'
-					>
-						Your browser does not support the video tag.
-					</video>
-				</section>
+						<div className='aspect-video relative w-full mt-2 rounded-lg overflow-hidden'>
+							<video
+								src={d.videoUrl}
+								controls
+								className='absolute inset-0 w-full h-full object-cover'
+								preload='metadata'
+								poster={d.thumbnailUrl || `${d.videoUrl}?poster=1`}
+							>
+								Your browser does not support the video tag.
+							</video>
+						</div>
+					</section>
+				))}
 			</div>
 		</>
 	);

@@ -434,7 +434,7 @@ model AboutCards {
 model HelpCenterVideo {
   id          String   @id @default(cuid())
   title       String
-  description String   @db.Text
+  description String?   @db.Text
   videoUrl    String
   thumbnailUrl String?
   displayOrder Int     @default(autoincrement())

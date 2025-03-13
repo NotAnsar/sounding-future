@@ -26,6 +26,34 @@ export const imageSchema = z.object({
 		),
 });
 
+const MAX_VIDEO_FILE_SIZE = 200 * 1024 * 1024; // 200MB
+
+export const videoallowedTypes = [
+	'video/mp4',
+	'video/webm',
+	'video/quicktime',
+	'video/x-msvideo',
+];
+
+export const videoSchema = z.object({
+	file: z
+		.any()
+		.refine((file: File) => file?.size !== 0, 'File is required')
+		.refine(
+			(file: File) => file?.size < MAX_VIDEO_FILE_SIZE,
+			`Max size is ${MAX_VIDEO_FILE_SIZE / (1024 * 1024)}MB.`
+		)
+		.refine((file: File) => {
+			const allowedTypes = [
+				'video/mp4',
+				'video/webm',
+				'video/quicktime',
+				'video/x-msvideo',
+			];
+			return allowedTypes.includes(file?.type);
+		}, 'Only .mp4, .webm, .mov, and .avi formats are supported.'),
+});
+
 export const squareImageSchema = z.object({
 	file: z
 		.any()
