@@ -19,9 +19,9 @@ export default function AudioVolume() {
 			<InfoPopUp className='w-7 ' />
 			<button onClick={toggleMute}>
 				{isMuted ? (
-					<Icons.muted className='w-7 h-auto aspect-square cursor-pointer hover:fill-foreground dark:fill-muted fill-muted/50 duration-300 transition-all' />
+					<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-muted/50 hover:fill-foreground dark:fill-muted dark:hover:fill-foreground duration-200 transition-all' />
 				) : (
-					<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer hover:fill-foreground dark:fill-muted fill-muted/50 duration-300 transition-all' />
+					<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-muted/50 hover:fill-foreground dark:fill-muted dark:hover:fill-foreground duration-200 transition-all' />
 				)}
 			</button>
 

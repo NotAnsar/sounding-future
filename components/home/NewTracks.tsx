@@ -58,7 +58,10 @@ export default function TracksCarousel({
 					{tracks?.map((track, i) => (
 						<CarouselItem
 							key={i}
-							className={cn('basis-40 md:basis-52 lg:basis-56', classNameItem)}
+							className={cn(
+								'basis-40 md:basis-52 lg:basis-56 group',
+								classNameItem
+							)}
 						>
 							<Link
 								href={`/tracks/${track?.slug}`}
@@ -82,7 +85,7 @@ export default function TracksCarousel({
 							<Link
 								href={`/tracks/${track.slug}`}
 								className={cn(
-									'text-sm sm:text-[17px] font-semibold line-clamp-1'
+									'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
 								)}
 							>
 								{track?.title}
