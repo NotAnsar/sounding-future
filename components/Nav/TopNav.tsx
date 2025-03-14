@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { LogIn, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
-// import SearchInput from './Search/SearchInput';
 import Link from 'next/link';
 import { Sheet, SheetTrigger } from '../ui/sheet';
 import SideBarNavMobile from './SideBarNavMobile';
@@ -66,7 +65,6 @@ export default async function TopNav({ className }: { className?: string }) {
 								<span className='sr-only'>Toggle navigation menu</span>
 							</Button>
 						</SheetTrigger>
-						{/* <SearchMobile /> */}
 						<ModeToggle className='hidden sm:flex' />
 						{session?.user ? (
 							<UserNav user={session?.user} />

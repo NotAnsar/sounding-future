@@ -57,3 +57,34 @@ export async function getHelpCenterById(id: string): Promise<{
 		};
 	}
 }
+
+export async function getStarterVideo(): Promise<{
+	data: HelpCenterVideo | null;
+	error?: boolean;
+	message?: string;
+}> {
+	try {
+		const data = await prisma.helpCenterVideo.findFirst({
+			where: { published: true },
+			orderBy: { displayOrder: 'asc' },
+		});
+
+		if (!data) {
+			return {
+				data: null,
+				error: true,
+				message: 'Subscription Section Data Not Found',
+			};
+		}
+
+		return { data, error: false };
+	} catch (error) {
+		console.error('Error fetching help center videos:', error);
+
+		return {
+			data: null,
+			error: true,
+			message: 'Unable to retrieve help center videos. Please try again later.',
+		};
+	}
+}

@@ -92,5 +92,5 @@ export async function register(
 		};
 	}
 
-	redirect('/');
+	redirect('/?welcome=true');
 }

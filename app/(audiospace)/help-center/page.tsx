@@ -37,7 +37,6 @@ export default async function Page() {
 								controls
 								className='absolute inset-0 w-full h-full object-cover'
 								preload='metadata'
-								poster={d.thumbnailUrl || `${d.videoUrl}?poster=1`}
 							>
 								Your browser does not support the video tag.
 							</video>
