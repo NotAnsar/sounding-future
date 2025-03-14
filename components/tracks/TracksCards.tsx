@@ -29,7 +29,7 @@ export default function TracksCards({
 			{tracks?.map((track, i) => {
 				const isCurrentTrack = currentTrack?.id === track?.id;
 				return (
-					<div key={i} className='group'>
+					<div key={i}>
 						<div
 							className='rounded-lg block border overflow-hidden w-full h-auto mb-2 relative group cursor-pointer'
 							onClick={() => {
@@ -71,7 +71,10 @@ export default function TracksCards({
 							/>
 						</div>
 
-						<Link href={`/tracks/${track.slug}`} className='cursor-pointer'>
+						<Link
+							href={`/tracks/${track.slug}`}
+							className='cursor-pointer group'
+						>
 							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap truncate '>
 								{track?.artist?.name}
 							</h5>

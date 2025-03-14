@@ -55,7 +55,7 @@ export default function ArtistsCarousel({
 							className={cn('basis-32 sm:basis-40 lg:basis-44', classNameItem)}
 						>
 							<Link
-								href={`/artists/${artist?.slug}`}
+								href={`/artists/${artist?.slug}?sort=bio`}
 								className='rounded-full block border overflow-hidden w-full h-auto mb-2'
 							>
 								{artist?.pic ? (

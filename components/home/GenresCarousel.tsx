@@ -53,7 +53,7 @@ export default function GenresCarousel({
 						<CarouselItem key={i} className='basis-52 lg:basis-56 '>
 							<Link
 								href={`/genres/${genre?.slug}`}
-								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white cursor-pointer'
+								className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-32 text-white duration-300 hover:brightness-110 hover:shadow-md'
 								style={{
 									background: `linear-gradient(180deg, ${
 										GENRES_GRADIENT[genre.displayOrder % GENRES_GRADIENT.length]

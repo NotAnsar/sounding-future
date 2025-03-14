@@ -16,7 +16,7 @@ export default function AudioVolume() {
 
 	return (
 		<div className='gap-3 items-center hidden md:flex'>
-			<InfoPopUp className='w-7 ' />
+			<InfoPopUp className='w-8' />
 			<button onClick={toggleMute}>
 				{isMuted ? (
 					<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-muted/50 hover:fill-foreground dark:fill-muted dark:hover:fill-foreground duration-200 transition-all' />

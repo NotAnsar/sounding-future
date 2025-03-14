@@ -58,10 +58,7 @@ export default function TracksCarousel({
 					{tracks?.map((track, i) => (
 						<CarouselItem
 							key={i}
-							className={cn(
-								'basis-40 md:basis-52 lg:basis-56 group',
-								classNameItem
-							)}
+							className={cn('basis-40 md:basis-52 lg:basis-56 ', classNameItem)}
 						>
 							<Link
 								href={`/tracks/${track?.slug}`}
@@ -76,23 +73,21 @@ export default function TracksCarousel({
 								/>
 							</Link>
 
-							<Link
-								href={`/artists/${track?.artist?.slug}`}
-								className='text-muted text-sm md:text-base font-semibold line-clamp-1 w-full'
-							>
-								{track?.artist?.name}
+							<Link className='group' href={`/tracks/${track.slug}`}>
+								<p className='text-muted text-sm md:text-base font-semibold line-clamp-1 w-full'>
+									{track?.artist?.name}
+								</p>
+								<p
+									className={cn(
+										'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
+									)}
+								>
+									{track?.title}
+								</p>
+								<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
+									{track?.genres?.map((g) => g.genre.name).join(', ')}
+								</h6>
 							</Link>
-							<Link
-								href={`/tracks/${track.slug}`}
-								className={cn(
-									'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
-								)}
-							>
-								{track?.title}
-							</Link>
-							<h6 className='text-xs hidden md:block md:text-sm font-light text-muted line-clamp-1'>
-								{track?.genres?.map((g) => g.genre.name).join(', ')}
-							</h6>
 						</CarouselItem>
 					))}
 				</CarouselContent>
