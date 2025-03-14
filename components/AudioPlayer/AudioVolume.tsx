@@ -71,14 +71,15 @@ export function InfoPopUp({
 
 	return (
 		<Dialog>
-			<DialogTrigger className='flex items-center justify-center flex-col'>
+			<DialogTrigger className='flex items-center justify-center flex-col '>
 				<Icons.info
 					className={cn(
 						'w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground',
-						mobile ? 'w-7' : '',
+						mobile ? 'w-7' : 'mt-2 mb-[15px]',
 						className
 					)}
 				/>
+
 				{mobile && <p className='text-[10px] text-inherit lowercase'>info</p>}
 			</DialogTrigger>
 			<DialogContent className='max-w-xl bg-player'>
