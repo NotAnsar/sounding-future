@@ -38,14 +38,14 @@ export default function FollowForm({
 				{optimisticFollow ? (
 					<Icons.unfollow
 						className={cn(
-							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer',
+							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-grey flex-nowrap text-nowrap cursor-pointer transition-all duration-300',
 							className
 						)}
 					/>
 				) : (
 					<Icons.follow
 						className={cn(
-							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-white flex-nowrap text-nowrap cursor-pointer',
+							'min-w-7 w-7 sm:min-w-9 sm:w-9 h-auto aspect-square fill-grey flex-nowrap text-nowrap cursor-pointer transition-all duration-300',
 							className
 						)}
 					/>

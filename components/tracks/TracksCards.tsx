@@ -29,7 +29,7 @@ export default function TracksCards({
 			{tracks?.map((track, i) => {
 				const isCurrentTrack = currentTrack?.id === track?.id;
 				return (
-					<div key={i}>
+					<div key={i} className='group'>
 						<div
 							className='rounded-lg block border overflow-hidden w-full h-auto mb-2 relative group cursor-pointer'
 							onClick={() => {
@@ -72,12 +72,13 @@ export default function TracksCards({
 						</div>
 
 						<Link href={`/tracks/${track.slug}`} className='cursor-pointer'>
-							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap truncate'>
+							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap truncate '>
 								{track?.artist?.name}
 							</h5>
 							<h4
 								className={cn(
-									'text-sm sm:text-[17px] font-semibold line-clamp-1 '
+									'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground duration-300 transition-all',
+									isCurrentTrack && isPlaying ? 'text-primary-foreground' : ''
 								)}
 							>
 								{track?.title}

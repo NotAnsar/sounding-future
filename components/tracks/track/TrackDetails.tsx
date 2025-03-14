@@ -82,8 +82,9 @@ export default function TrackDetails({ track }: { track: TrackDetails }) {
 							<LikeForm
 								trackId={track.id}
 								liked={track.isLiked}
-								className='w-7 h-auto text-white hover:text-white'
-								likedClassname='text-white fill-white'
+								// className='w-7 h-auto text-white hover:text-white'
+								className='w-7 h-auto text-grey hover:text-white '
+								likedClassname='text-grey fill-grey hover:text-white hover:fill-white'
 							/>
 						</div>
 
@@ -131,7 +132,7 @@ function ShareButton({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className={cn('relative', className)}>
-				<Icons.share className='w-6 h-auto aspect-square fill-white cursor-pointer' />
+				<Icons.share className='w-6 h-auto aspect-square fill-grey hover:fill-white cursor-pointer transition-all duration-300' />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='start'>
 				<DropdownMenuItem

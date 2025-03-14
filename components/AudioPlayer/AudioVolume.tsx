@@ -16,11 +16,12 @@ export default function AudioVolume() {
 
 	return (
 		<div className='gap-3 items-center hidden md:flex'>
+			<InfoPopUp className='w-7 ' />
 			<button onClick={toggleMute}>
 				{isMuted ? (
-					<Icons.muted className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
+					<Icons.muted className='w-7 h-auto aspect-square cursor-pointer hover:fill-foreground dark:fill-muted fill-muted/50 duration-300 transition-all' />
 				) : (
-					<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer fill-foreground' />
+					<Icons.speaker className='w-7 h-auto aspect-square cursor-pointer hover:fill-foreground dark:fill-muted fill-muted/50 duration-300 transition-all' />
 				)}
 			</button>
 
@@ -31,15 +32,17 @@ export default function AudioVolume() {
 				onChange={(e) => setVolume(parseFloat(e.target.value))}
 				className='w-[100px]'
 			/>
-			{/* <Link href={'/about'} target='_blank'>
-				<Icons.info className='w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground' />
-			</Link> */}
-			<InfoPopUp />
 		</div>
 	);
 }
 
-export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
+export function InfoPopUp({
+	mobile = false,
+	className,
+}: {
+	mobile?: boolean;
+	className?: string;
+}) {
 	const audioTypes = [
 		{
 			icon: Icons.binaural,
@@ -72,7 +75,8 @@ export function InfoPopUp({ mobile = false }: { mobile?: boolean }) {
 				<Icons.info
 					className={cn(
 						'w-[22px] h-auto aspect-square cursor-pointer text-foreground fill-foreground',
-						mobile ? 'w-7' : ''
+						mobile ? 'w-7' : '',
+						className
 					)}
 				/>
 				{mobile && <p className='text-[10px] text-inherit lowercase'>info</p>}

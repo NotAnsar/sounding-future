@@ -26,7 +26,7 @@ export default function ExploreArtists({
 			{artists.map((artist, i) => (
 				<div key={i} className=''>
 					<Link
-						href={`/artists/${artist.slug}`}
+						href={`/artists/${artist.slug}?sort=bio`}
 						className='rounded-full block border overflow-hidden w-full h-auto mb-2'
 					>
 						{artist?.pic ? (

@@ -15,7 +15,7 @@ export default function GenreCard({
 	return (
 		<Link
 			href={`/genres/${genre.slug}`}
-			className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-40  md:h-52 text-white'
+			className='px-6 py-4 bg-gradient-to-b from-primary to-primary-foreground rounded-3xl flex flex-col h-40 md:h-52 text-white duration-300 hover:brightness-110 hover:shadow-md'
 			style={{
 				background: `linear-gradient(180deg, ${from} 0%, ${to} 100%)`,
 			}}
