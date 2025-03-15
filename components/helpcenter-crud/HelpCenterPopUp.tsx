@@ -378,7 +378,7 @@ export default function WelcomeHelpDialog({
 							Close
 						</Button>
 						<Button>
-							<Link href='/user/help-center'>Go to Help Center</Link>
+							<Link href='/help-center'>Go to Help Center</Link>
 						</Button>
 					</div>
 				</div>
