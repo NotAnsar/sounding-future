@@ -1,3 +1,4 @@
+import ContactUsButton from '@/components/termsAndLegal/ContactUsButton';
 import { getHelpCenter } from '@/db/help-center';
 
 export default async function Page() {
@@ -43,6 +44,14 @@ export default async function Page() {
 						</div>
 					</section>
 				))}
+
+				<div className='space-y-2'>
+					<p>
+						If you have any questions or suggestions for us, please contact us
+						via our contact form.
+					</p>
+					<ContactUsButton />
+				</div>
 			</div>
 		</>
 	);
