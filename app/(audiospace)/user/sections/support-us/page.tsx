@@ -1,12 +1,14 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import { EditSupportUsPage } from '@/components/sections/support-us/EditSupportUs';
 import { PricingList } from '@/components/sections/support-us/PricingList';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
 	getSupportUsPageData,
 	getSupportUsSubscriptions,
 } from '@/db/support-us';
-import { Edit } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Edit, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function page() {
 	const [{ data: subscriptionCard }, { data: supportUsData }] =
@@ -37,6 +39,10 @@ export default async function page() {
 					</Button>
 				</EditSupportUsPage>
 			</div>
+			<Link href='/user/sections/pricing/new' className={cn(buttonVariants())}>
+				<Plus className='w-4 h-4 mr-2' />
+				Add new subscription card
+			</Link>
 			<PricingList initialPlans={subscriptionCard} />
 		</div>
 	);

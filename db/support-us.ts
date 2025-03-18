@@ -39,7 +39,7 @@ export type SubscriptionCardData = Prisma.PricingPlanGetPayload<{
 }>;
 
 type PricingPlanRes = {
-	data: Prisma.PricingPlanGetPayload<{ include: { sections: true } }>[];
+	data: SubscriptionCardData[];
 	error?: boolean;
 	message?: string;
 };
@@ -68,6 +68,38 @@ export async function getSupportUsSubscriptions(): Promise<PricingPlanRes> {
 			error: true,
 			message:
 				'Unable to retrieve Support Us Subscriptions. Please try again later.',
+		};
+	}
+}
+
+export async function getSubscriptionById(id?: string): Promise<{
+	data: SubscriptionCardData | null;
+	error?: boolean;
+	message?: string;
+}> {
+	try {
+		const data = await prisma.pricingPlan.findFirst({
+			where: { id },
+			include: { sections: true },
+		});
+
+		if (!data) {
+			return {
+				data: null,
+				error: true,
+				message: 'Subscription card data Not Found',
+			};
+		}
+
+		return { data, error: false };
+	} catch (error) {
+		console.error('Error fetching Subscription card data:', error);
+
+		return {
+			data: null,
+			error: true,
+			message:
+				'Unable to retrieve Subscription card data. Please try again later.',
 		};
 	}
 }

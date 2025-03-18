@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Edit2, GripVertical, Shield, ShieldCheck, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import {
 	deletePricingPlan,
 	updatePricingPlanOrder,
@@ -40,16 +39,15 @@ import { cn } from '@/lib/utils';
 
 import { SubscriptionCardData } from '@/db/support-us';
 import Badge from '@/components/Badge';
+import Link from 'next/link';
 
 interface SortablePricingPlanProps {
 	plan: SubscriptionCardData;
-	onUpdateClick: (plan: SubscriptionCardData) => void;
 	onDeleteClick: (id: string) => void;
 }
 
 function SortablePricingPlan({
 	plan,
-	onUpdateClick,
 	onDeleteClick,
 }: SortablePricingPlanProps) {
 	const {
@@ -107,14 +105,15 @@ function SortablePricingPlan({
 			</div>
 
 			<div className='flex items-center gap-2'>
-				<Button
-					variant='ghost'
-					size='icon'
-					onClick={() => onUpdateClick(plan)}
-					className='hover:bg-muted'
+				<Link
+					href={`/user/sections/pricing/${plan.id}`}
+					className={cn(
+						buttonVariants({ variant: 'ghost', size: 'icon' }),
+						'hover:bg-muted'
+					)}
 				>
 					<Edit2 className='w-4 h-4' />
-				</Button>
+				</Link>
 				<Button
 					variant='ghost'
 					size='icon'
@@ -133,7 +132,6 @@ export function PricingList({
 }: {
 	initialPlans: SubscriptionCardData[];
 }) {
-	const router = useRouter();
 	const [plans, setPlans] = useState(initialPlans);
 	const [deletingId, setDeletingId] = useState<string | null>(null); // Fixed type here
 
@@ -203,10 +201,6 @@ export function PricingList({
 		setDeletingId(null);
 	};
 
-	const handleUpdate = (plan: SubscriptionCardData) => {
-		router.push(`/user/sections/pricing/${plan.id}`);
-	};
-
 	if (plans.length === 0) {
 		return (
 			<div className='text-center py-12'>
@@ -229,8 +223,7 @@ export function PricingList({
 							<SortablePricingPlan
 								key={plan.id}
 								plan={plan}
-								onUpdateClick={handleUpdate}
-								onDeleteClick={(id: string) => setDeletingId(id)} // Fixed here
+								onDeleteClick={(id: string) => setDeletingId(id)}
 							/>
 						))}
 					</SortableContext>
