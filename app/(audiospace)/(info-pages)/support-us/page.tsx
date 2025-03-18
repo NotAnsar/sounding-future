@@ -31,7 +31,7 @@ export default async function page() {
 						key={index}
 						className={cn(
 							'bg-card text-white p-8 rounded-3xl border border-white flex flex-col space-y-4',
-							index === 0 && 'bg-secondary '
+							index === 0 && 'dark:bg-secondary bg-secondary-foreground'
 						)}
 					>
 						<h2 className='text-3xl font-semibold'>{plan.name}</h2>
