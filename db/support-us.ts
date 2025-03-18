@@ -34,6 +34,10 @@ export async function getSupportUsPageData(): Promise<PricingPageRes> {
 	}
 }
 
+export type SubscriptionCardData = Prisma.PricingPlanGetPayload<{
+	include: { sections: true };
+}>;
+
 type PricingPlanRes = {
 	data: Prisma.PricingPlanGetPayload<{ include: { sections: true } }>[];
 	error?: boolean;

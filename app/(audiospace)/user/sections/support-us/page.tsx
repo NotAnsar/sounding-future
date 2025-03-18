@@ -1,19 +1,20 @@
 import BreadCrumb from '@/components/BreadCrumb';
-import { EditSubscriptionButton } from '@/components/sections/BecameSupporterDialog';
-import { SubscriptionForm } from '@/components/sections/SubscriptionCard';
-
+import { EditSupportUsPage } from '@/components/sections/support-us/EditSupportUs';
+import { PricingList } from '@/components/sections/support-us/PricingList';
 import { Button } from '@/components/ui/button';
-import { getSubscriptionCard } from '@/db/pages';
-import { getSubscription } from '@/db/section';
+import {
+	getSupportUsPageData,
+	getSupportUsSubscriptions,
+} from '@/db/support-us';
 import { Edit } from 'lucide-react';
 
 export default async function page() {
-	const [{ data: subscription }, { data: subscriptionCard }] =
-		await Promise.all([getSubscription(), getSubscriptionCard()]);
+	const [{ data: subscriptionCard }, { data: supportUsData }] =
+		await Promise.all([getSupportUsSubscriptions(), getSupportUsPageData()]);
 
 	return (
 		<div className='mt-4 '>
-			<div className='flex flex-col sm:flex-row justify-between gap-2'>
+			<div className='flex flex-col sm:flex-row justify-between gap-2 mb-4'>
 				<div>
 					<BreadCrumb
 						items={[
@@ -29,14 +30,14 @@ export default async function page() {
 					<p className='text-muted mt-2'>Manage your support us page</p>
 				</div>
 
-				<EditSubscriptionButton data={subscription || undefined}>
+				<EditSupportUsPage data={supportUsData || undefined}>
 					<Button className='cursor-pointer'>
 						<Edit className='w-4 h-4 mr-2' />
-						Edit Become a Supporter
+						Edit Support Us Text
 					</Button>
-				</EditSubscriptionButton>
+				</EditSupportUsPage>
 			</div>
-			<SubscriptionForm initialData={subscriptionCard || undefined} />
+			<PricingList initialPlans={subscriptionCard} />
 		</div>
 	);
 }
