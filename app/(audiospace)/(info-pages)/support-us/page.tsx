@@ -13,7 +13,7 @@ import React from 'react';
 export default async function page() {
 	const [{ data }, { data: pricingPlans }] = await Promise.all([
 		getSupportUsPageData(),
-		getSupportUsSubscriptions(),
+		getSupportUsSubscriptions(true),
 	]);
 
 	if (!data) return null;

@@ -15,34 +15,37 @@ export default async function page() {
 		await Promise.all([getSupportUsSubscriptions(), getSupportUsPageData()]);
 
 	return (
-		<div className='mt-4 '>
-			<div className='flex flex-col sm:flex-row justify-between gap-2 mb-4'>
-				<div>
-					<BreadCrumb
-						items={[
-							{ link: '/user/sections', text: 'Edit Sections' },
+		<div className='mt-4'>
+			<div className='mb-6'>
+				<BreadCrumb
+					items={[
+						{ link: '/user/sections', text: 'Edit Sections' },
+						{
+							link: '/user/sections/support-us',
+							text: 'Support Us',
+							isCurrent: true,
+						},
+					]}
+				/>
+				<p className='text-muted mt-2'>Manage your support us page</p>
+			</div>
 
-							{
-								link: '/user/sections/support-us',
-								text: 'Support Us',
-								isCurrent: true,
-							},
-						]}
-					/>
-					<p className='text-muted mt-2'>Manage your support us page</p>
-				</div>
-
+			<div className='flex flex-wrap gap-3 mb-6'>
 				<EditSupportUsPage data={supportUsData || undefined}>
 					<Button className='cursor-pointer'>
 						<Edit className='w-4 h-4 mr-2' />
 						Edit Support Us Text
 					</Button>
 				</EditSupportUsPage>
+
+				<Link
+					href='/user/sections/pricing/new'
+					className={cn(buttonVariants())}
+				>
+					<Plus className='w-4 h-4 mr-2' />
+					Add new subscription card
+				</Link>
 			</div>
-			<Link href='/user/sections/pricing/new' className={cn(buttonVariants())}>
-				<Plus className='w-4 h-4 mr-2' />
-				Add new subscription card
-			</Link>
 			<PricingList initialPlans={subscriptionCard} />
 		</div>
 	);

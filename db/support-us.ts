@@ -44,9 +44,14 @@ type PricingPlanRes = {
 	message?: string;
 };
 
-export async function getSupportUsSubscriptions(): Promise<PricingPlanRes> {
+export async function getSupportUsSubscriptions(
+	published?: boolean
+): Promise<PricingPlanRes> {
 	try {
+		const where = published !== undefined ? { published } : {};
+
 		const data = await prisma.pricingPlan.findMany({
+			where,
 			include: { sections: true },
 			orderBy: { displayOrder: 'asc' },
 		});
