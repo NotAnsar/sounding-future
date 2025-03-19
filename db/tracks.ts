@@ -343,9 +343,10 @@ export async function getTracksStats(): Promise<{
 	message?: string;
 }> {
 	const session = await auth();
-	const isUser = session?.user.role === 'user';
+	const isAdmin = session?.user.role === 'admin';
 	const artistId = session?.user?.artistId;
-	if (isUser && !artistId) {
+
+	if (!isAdmin && !artistId) {
 		return {
 			data: [],
 			error: true,
@@ -355,7 +356,7 @@ export async function getTracksStats(): Promise<{
 
 	try {
 		const data = await prisma.track.findMany({
-			where: { artistId: isUser ? artistId! : undefined },
+			where: { artistId: isAdmin ? undefined : artistId! },
 			include: {
 				artist: true,
 				genres: true,

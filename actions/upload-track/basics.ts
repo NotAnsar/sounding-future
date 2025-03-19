@@ -47,13 +47,30 @@ export async function submitTrack(
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
 
-	const { isUser, artistId, needsArtistProfile } = await checkAuth();
+	const { isUser, artistId, needsArtistProfile, user } = await checkAuth();
 
 	if (needsArtistProfile) {
 		return {
 			message:
 				'You need to set up an artist profile first. Please visit your artist profile settings to create one before uploading your tracks.',
 		};
+	}
+
+	if (artistId) {
+		const trackCount = await prisma.track.count({
+			where: { artistId },
+		});
+
+		if (user?.role === 'user' && trackCount >= 3) {
+			return {
+				message:
+					'Free users can upload a maximum of 3 tracks. Please upgrade to a Pro account for more uploads.',
+			};
+		} else if (user?.role === 'pro' && trackCount >= 20) {
+			return {
+				message: 'Pro users can upload a maximum of 20 tracks.',
+			};
+		}
 	}
 
 	const validatedFields = TrackSchema.safeParse({
@@ -68,6 +85,8 @@ export async function submitTrack(
 	});
 
 	if (!validatedFields.success) {
+		console.log(validatedFields.error.flatten().fieldErrors);
+
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to submit track. Please check the form for errors.',
@@ -261,12 +280,13 @@ export async function updateTrack(
 
 export async function checkAuth() {
 	const session = await auth();
-	const isUser = session?.user?.role === 'user';
+	const isUser = session?.user?.role !== 'admin';
 	const artistId = session?.user?.artistId;
 
 	return {
 		isUser,
 		artistId,
 		needsArtistProfile: isUser && !artistId,
+		user: session?.user,
 	};
 }

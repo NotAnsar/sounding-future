@@ -25,7 +25,8 @@ export default async function Page() {
 							To update your billing information, change your plan, or cancel
 							your subscription, please visit our{' '}
 							<Link
-								href='#'
+								href='https://billing.stripe.com/p/login/bIYbLjcO1cna0wg144'
+								target='_blank'
 								className='underline text-primary-foreground cursor-pointer hover:text-primary-foreground/90'
 							>
 								Customer Portal

@@ -118,10 +118,18 @@ export const columns: ColumnDef<UserStats>[] = [
 		cell: ({ row }) => {
 			const role = row.getValue('role');
 			return (
-				<Badge variant={role === 'admin' ? 'admin' : 'archive'}>
+				<Badge
+					variant={
+						role === 'admin' ? 'admin' : role === 'pro' ? 'success' : 'archive'
+					}
+				>
 					{role === 'admin' ? (
 						<>
 							<ShieldCheck className='w-3 h-auto' /> Admin
+						</>
+					) : role === 'pro' ? (
+						<>
+							<Shield className='w-3 h-auto' /> Pro User
 						</>
 					) : (
 						<>
