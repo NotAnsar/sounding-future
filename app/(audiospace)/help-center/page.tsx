@@ -16,8 +16,8 @@ export default async function Page() {
 					Help Center
 				</h2>
 			</div>
-			<div className='lg:max-w-screen-sm space-y-8'>
-				<p className='mt-4'>
+			<div className='space-y-8'>
+				<p className='mt-4 lg:max-w-screen-sm '>
 					From the first steps to advanced functions, you will find everything
 					you need to know about the 3D AudioSpace.
 				</p>
@@ -26,26 +26,30 @@ export default async function Page() {
 						<p className='text-2xl text-muted'>No videos found</p>
 					</div>
 				)}
-				{data.map((d) => (
-					<section className='space-y-3' key={d.id}>
-						<h2 className='text-3xl font-semibold'>{d.title}</h2>
+				<div className='grid gap-8 xl:grid-cols-2'>
+					{data.map((d) => (
+						<section className='flex flex-col gap-2 h-full' key={d.id}>
+							<h2 className='text-[28px] leading-tight font-semibold'>
+								{d.title}
+							</h2>
 
-						<p className='pb-2'>{d.description}</p>
+							<p className='pb-2 '>{d.description}</p>
 
-						<div className='aspect-video relative w-full mt-2 rounded-lg overflow-hidden'>
-							<video
-								src={d.videoUrl}
-								controls
-								className='absolute inset-0 w-full h-full object-cover'
-								preload='metadata'
-							>
-								Your browser does not support the video tag.
-							</video>
-						</div>
-					</section>
-				))}
+							<div className='aspect-video relative w-full mt-auto rounded-lg overflow-hidden '>
+								<video
+									src={d.videoUrl}
+									controls
+									className='absolute inset-0 w-full h-full object-cover'
+									preload='metadata'
+								>
+									Your browser does not support the video tag.
+								</video>
+							</div>
+						</section>
+					))}
+				</div>
 
-				<div className='space-y-2'>
+				<div className='space-y-2 lg:max-w-screen-sm '>
 					<p>
 						If you have any questions or suggestions for us, please contact us
 						via our contact form.
