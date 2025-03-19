@@ -6,8 +6,8 @@ import { State } from '../utils/utils';
 import { prisma } from '@/lib/prisma';
 
 const SupportUsSchema = z.object({
-	heading: z.string().min(2, 'Heading is required').trim(),
-	subheading: z.string().min(2, 'Subheading is required').trim(),
+	heading: z.string().trim().optional(),
+	subheading: z.string().trim().optional(),
 	footer: z.string().trim().optional(),
 });
 
@@ -22,8 +22,8 @@ export async function updateSupportUs(
 	formData: FormData
 ): Promise<SupportUsState> {
 	const processedData = {
-		heading: formData.get('heading')?.toString() || null,
-		subheading: formData.get('subheading')?.toString() || null,
+		heading: formData.get('heading')?.toString(),
+		subheading: formData.get('subheading')?.toString(),
 		footer: formData.get('footer')?.toString(),
 	};
 
