@@ -1,77 +1,45 @@
 import SettingsNav from '@/components/settings/SettingsNav';
 import { ContactUsLink } from '@/components/termsAndLegal/ContactUsButton';
-import { buttonVariants } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+
 import Link from 'next/link';
+import MembershipPlan from './MembershipPlan';
+import { auth } from '@/lib/auth';
 
-export default function Page() {
+export default async function Page() {
+	const session = await auth();
+
 	return (
-		<main>
-			<Tabs value='membership' className='mt-4 sm:mt-8 grid sm:gap-3'>
-				<SettingsNav />
-				<TabsContent
-					value='membership'
-					className='mt-6 grid gap-6 max-w-screen-md'
-				>
-					<RadioGroup
-						defaultValue='free'
-						className='flex items-center space-x-4'
-					>
-						<div className='inline-flex items-center'>
-							<RadioGroupItem
-								value='free'
-								id='free'
-								className='text-white'
-								disabled
-							/>
-							<Label htmlFor='free' className='ml-2 text-white'>
-								Free
-							</Label>
-						</div>
-
-						<div className='inline-flex items-center'>
-							<RadioGroupItem
-								value='pro'
-								id='pro'
-								className='text-white'
-								disabled
-							/>
-							<Label htmlFor='pro' className='ml-2 text-white'>
-								Pro
-							</Label>
-						</div>
-					</RadioGroup>
-
-					<div className='space-y-2  '>
-						<p>
-							Learn more how you can support us as Pro user and get advanced
-							platform features.
-						</p>
-						<Link
-							className={cn(buttonVariants(), 'font-semibold')}
-							href={'https://buy.stripe.com/9AQ4id4eB05P8OkcMM'}
-							target='_blank'
-						>
-							Support Us
-						</Link>
-					</div>
-					<div className='space-y-2 text-[15px]'>
-						<h3 className='font-semibold text-xl'>Manage your subscription:</h3>
+		<Tabs value='membership' className='mt-6 sm:mt-8'>
+			<SettingsNav />
+			<TabsContent
+				value='membership'
+				className='mt-8 space-y-8 max-w-screen-md'
+			>
+				<MembershipPlan isPro={session?.user.role === 'pro'} />
+				<div>
+					<h3 className='text-xl font-semibold mb-4'>Manage Subscription</h3>
+					<div className='space-y-4'>
 						<p>
 							To update your billing information, change your plan, or cancel
-							your subscription, please visit our [Customer Portal].
+							your subscription, please visit our{' '}
+							<Link
+								href='#'
+								className='underline text-primary-foreground cursor-pointer hover:text-primary-foreground/90'
+							>
+								Customer Portal
+							</Link>
+							.
 						</p>
 
 						<p>
 							If you have any questions, please contact us using the{' '}
-							<ContactUsLink className='no-underline hover:underline' /> form.
+							<ContactUsLink /> form.
 						</p>
 					</div>
-				</TabsContent>
-			</Tabs>
-		</main>
+				</div>
+			</TabsContent>
+		</Tabs>
 	);
 }
