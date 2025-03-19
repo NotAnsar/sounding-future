@@ -53,6 +53,12 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))',
 				},
+				trackTitle: {
+					hover: {
+						light: 'hsl(268.9, 100%, 50%)',
+						dark: 'hsl(268.8, 100%, 79.6%)',
+					},
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

@@ -79,7 +79,8 @@ export default function TracksCarousel({
 								</p>
 								<p
 									className={cn(
-										'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
+										// 'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
+										'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-trackTitle-hover-light dark:group-hover:text-trackTitle-hover-dark'
 									)}
 								>
 									{track?.title}

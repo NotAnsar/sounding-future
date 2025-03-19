@@ -80,7 +80,7 @@ export default function TracksCards({
 							</h5>
 							<h4
 								className={cn(
-									'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground duration-200 transition-all',
+									'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-trackTitle-hover-light dark:group-hover:text-trackTitle-hover-dark duration-200 transition-all',
 									isCurrentTrack && isPlaying ? 'text-primary-foreground' : ''
 								)}
 							>
