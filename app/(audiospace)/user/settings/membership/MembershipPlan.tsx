@@ -3,7 +3,29 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import React from 'react';
 
-export default function MembershipPlan({ isPro }: { isPro: boolean }) {
+export default function MembershipPlan({
+	isPro,
+	isAdmin,
+}: {
+	isPro: boolean;
+	isAdmin: boolean;
+}) {
+	if (isAdmin) {
+		return (
+			<div>
+				<h2 className='text-xl font-semibold mb-4'>Membership Plan</h2>
+				<div className='p-4 border rounded-lg '>
+					<div className='flex items-center gap-3'>
+						<h3 className='font-medium'>Administrator</h3>
+						<span className='px-2 py-0.5 text-xs font-medium bg-background border border-primary text-primary rounded-sm'>
+							Full Access
+						</span>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div>
 			<h2 className='text-xl font-semibold mb-4'>Membership Plan</h2>
