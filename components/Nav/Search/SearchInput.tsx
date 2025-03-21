@@ -96,19 +96,19 @@ export function SearchMobile() {
 		<>
 			{show ? (
 				<X
-					className={`h-5 w-5 sm:hidden cursor-pointer`}
+					className={`h-5 w-5 md:hidden cursor-pointer`}
 					onClick={() => setShow((show) => !show)}
 				/>
 			) : (
 				<Search
-					className={`h-5 w-5 sm:hidden cursor-pointer`}
+					className={`h-5 w-5 md:hidden cursor-pointer`}
 					onClick={() => setShow((show) => !show)}
 				/>
 			)}
 
 			<div
 				className={cn(
-					'top-[var(--top-nav-height)] w-full bg-background fixed flex z-10 gap-4 md:gap-0 items-center border-y border-border sm:hidden left-0',
+					'top-[var(--top-nav-height)] w-full bg-background fixed flex z-10 gap-4 md:gap-0 items-center border-y border-border md:hidden left-0',
 					show ? 'block' : 'hidden'
 				)}
 			>
