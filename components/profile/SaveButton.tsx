@@ -6,10 +6,10 @@ import { Loader } from 'lucide-react';
 
 export default function SaveButton({
 	className,
-	children,
+	children = 'Save',
 }: {
 	className?: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 }) {
 	const { pending } = useFormStatus();
 	return (
