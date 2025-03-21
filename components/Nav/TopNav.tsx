@@ -42,7 +42,6 @@ export default async function TopNav({ className }: { className?: string }) {
 				</div>
 				<div className='w-full h-full flex items-center justify-between px-4 md:p-8 gap-2 '>
 					<SearchInput className='sm:w-full md:w-2/3 lg:w-1/2 hidden md:block ' />
-					{/* <SearchInput className='sm:w-full md:w-2/3 lg:w-1/2  ' /> */}
 
 					<div className='ml-auto flex items-center gap-2'>
 						<Link
@@ -50,7 +49,7 @@ export default async function TopNav({ className }: { className?: string }) {
 							target='_blank'
 							className={cn(
 								buttonVariants({ variant: 'secondary' }),
-								'text-[12px] sm:text-sm px-1.5 h-8 sm:px-4 border-foreground/80 hidden sm:inline-flex'
+								'text-[12px] sm:text-sm px-1.5 h-8 sm:px-4 border-foreground/80 hidden sm:inline-flex hover:bg-button hover:text-white transition-all duration-300 ease-out'
 							)}
 						>
 							Discover Articles
@@ -59,7 +58,7 @@ export default async function TopNav({ className }: { className?: string }) {
 							href={'/support-us'}
 							className={cn(
 								buttonVariants({ variant: 'secondary' }),
-								'text-[12px] sm:text-sm px-1.5 h-8 sm:px-4 border-foreground/80'
+								'text-[12px] sm:text-sm px-1.5 h-8 sm:px-4 border-foreground/80 hover:bg-button hover:text-white transition-all duration-300 ease-out'
 							)}
 						>
 							Support Us

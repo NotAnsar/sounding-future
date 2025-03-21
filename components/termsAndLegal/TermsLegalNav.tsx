@@ -14,6 +14,7 @@ export default function TermsLegalNav() {
 					href={l.href}
 					className={cn(
 						'inline-flex text-sm ring-0 sm:text-base px-2 py-1.5 sm:px-3 sm:py-1.5 items-center justify-center whitespace-nowrap rounded-md font-medium transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border border-foreground/60 text-foreground',
+						'hover:bg-button hover:text-white duration-300 ease-out hover:border-foreground/20',
 						l.href === path &&
 							'border-foreground/20 bg-button text-white shadow'
 					)}
@@ -25,5 +26,3 @@ export default function TermsLegalNav() {
 		</div>
 	);
 }
-
-
