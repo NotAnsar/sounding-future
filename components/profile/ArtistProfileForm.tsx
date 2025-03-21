@@ -49,7 +49,7 @@ export default function ArtistProfileForm({
 	return (
 		<form action={action}>
 			<Tabs value={'profile'} className='mt-4 sm:mt-8 grid sm:gap-3'>
-				<ProfileNav />
+				<ProfileNav isArtist={!!initialData?.id} profile />
 				<TabsContent value='profile' className='lg:w-2/3 mt-2 grid gap-6'>
 					<ErrorMessage
 						errors={state?.message ? [state?.message] : undefined}
