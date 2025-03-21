@@ -46,7 +46,7 @@ export default async function TopNav({ className }: { className?: string }) {
 
 					<div className='ml-auto flex items-center gap-2'>
 						<Link
-							href={'http://soundingfuture.com/'}
+							href={'https://www.soundingfuture.com/en'}
 							target='_blank'
 							className={cn(
 								buttonVariants({ variant: 'secondary' }),
