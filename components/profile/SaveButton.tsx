@@ -13,7 +13,8 @@ export default function SaveButton({ className }: { className?: string }) {
 			disabled={pending}
 			className={className}
 		>
-			{pending ? <Loader className='mr-2 h-4 w-4 animate-spin' /> : null} save
+			{pending ? <Loader className='mr-2 h-4 w-4 animate-spin' /> : null} Save &
+			Go Next
 		</Button>
 	);
 }
