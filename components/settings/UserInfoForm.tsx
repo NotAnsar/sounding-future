@@ -48,7 +48,33 @@ export default function UserInfoForm({ initialData }: { initialData: User }) {
 						/>
 						<ErrorMessage errors={state?.errors?.image} />
 					</div>
-					<div className='grid gap-x-4 gap-y-2 sm:grid-cols-2 max-w-lg'>
+					<div className='grid gap-2'>
+						<Label
+							htmlFor='username'
+							className={cn(state?.errors?.username ? 'text-destructive' : '')}
+						>
+							Username
+						</Label>
+						<Input
+							className={cn(
+								'max-w-lg',
+								state?.errors?.username
+									? 'border-destructive focus-visible:ring-destructive '
+									: ''
+							)}
+							type='text'
+							defaultValue={initialData?.name || undefined}
+							name='username'
+							id='username'
+						/>
+
+						<p className='text-sm text-muted'>
+							The username will be used for login only{' '}
+						</p>
+						<ErrorMessage errors={state?.errors?.username} />
+					</div>
+
+					{/* <div className='grid gap-x-4 gap-y-2 sm:grid-cols-2 max-w-lg'>
 						<div className='grid gap-2'>
 							<Label
 								htmlFor='firstName'
@@ -98,105 +124,19 @@ export default function UserInfoForm({ initialData }: { initialData: User }) {
 						<p className='text-muted text-sm max-w-lg col-span-full'>
 							Your first and last name (will not be displayed publicly)
 						</p>
-					</div>
+					</div> */}
 
 					<div className='grid gap-2'>
-						<Label
-							htmlFor='email'
-							// className={cn(state?.errors?.email ? 'text-destructive' : '')}
-						>
-							Email
-						</Label>
+						<Label htmlFor='email'>Email</Label>
 						<Input
 							type='email'
 							name='email'
 							id='email'
 							defaultValue={initialData?.email || undefined}
-							className={cn(
-								'max-w-lg '
-								// state?.errors?.email
-								// 	? 'border-destructive focus-visible:ring-destructive '
-								// 	: ''
-							)}
+							className={cn('max-w-lg ')}
 							disabled
 						/>
-
-						{/* <ErrorMessage errors={state?.errors?.email} /> */}
 					</div>
-
-					<div className='grid gap-2'>
-						<Label
-							htmlFor='username'
-							className={cn(state?.errors?.username ? 'text-destructive' : '')}
-						>
-							Username
-						</Label>
-						<Input
-							className={cn(
-								'max-w-lg',
-								state?.errors?.username
-									? 'border-destructive focus-visible:ring-destructive '
-									: ''
-							)}
-							type='text'
-							defaultValue={initialData?.name || undefined}
-							name='username'
-							id='username'
-						/>
-
-						<p className='text-sm text-muted'>
-							The username will be used for login only{' '}
-						</p>
-						<ErrorMessage errors={state?.errors?.username} />
-					</div>
-					{/* <div className='grid gap-2'>
-						<Label
-							htmlFor='password'
-							className={cn(state?.errors?.password ? 'text-destructive' : '')}
-						>
-							Password
-						</Label>
-						<Input
-							className={cn(
-								'max-w-lg',
-								state?.errors?.password
-									? 'border-destructive focus-visible:ring-destructive '
-									: ''
-							)}
-							name='password'
-							type='password'
-							id='password'
-						/>
-
-						<p className='text-sm text-muted'>
-							min. 10 characters or numbers, and special char. #, !, $
-						</p>
-						<ErrorMessage errors={state?.errors?.password} />
-					</div>
-					<div className='grid gap-2'>
-						<Label
-							htmlFor='confirmPassword'
-							className={cn(
-								state?.errors?.confirmPassword ? 'text-destructive' : ''
-							)}
-						>
-							Confirm Password
-						</Label>
-						<Input
-							className={cn(
-								'max-w-lg',
-								state?.errors?.confirmPassword
-									? 'border-destructive focus-visible:ring-destructive '
-									: ''
-							)}
-							name='confirmPassword'
-							type='password'
-							id='confirmPassword'
-						/>
-
-						<p className='text-sm text-muted'>Repeat Password</p>
-						<ErrorMessage errors={state?.errors?.confirmPassword} />
-					</div> */}
 				</TabsContent>
 			</Tabs>
 		</form>

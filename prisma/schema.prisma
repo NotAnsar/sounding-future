@@ -40,6 +40,8 @@ model Artist {
   id                        String   @id @default(cuid())
   slug                      String   @unique
   name                      String
+  f_name                    String?
+  l_name                    String?
   pic                       String?
   bio                       String?  @db.Text
   socialId                  String?  @map("social_id") 

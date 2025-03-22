@@ -10,6 +10,14 @@ import { Prisma } from '@prisma/client';
 
 // Define the schema for profile update
 const ProfileSchema = z.object({
+	f_name: z
+		.string()
+		.min(1, 'First name is required')
+		.max(50, 'First name must be 50 characters or less'),
+	l_name: z
+		.string()
+		.min(1, 'Last name is required')
+		.max(50, 'Last name must be 50 characters or less'),
 	name: z
 		.string()
 		.min(1, 'Artist name is required')
@@ -39,6 +47,8 @@ export async function updateProfile(
 	const validatedFields = ProfileSchema.omit({ image: true }).safeParse({
 		name: formData.get('name'),
 		biography: formData.get('biography'),
+		f_name: formData.get('f_name'),
+		l_name: formData.get('l_name'),
 		genres: genresData,
 	});
 
@@ -65,7 +75,7 @@ export async function updateProfile(
 		};
 	}
 
-	const { name, biography, genres } = validatedFields.data;
+	const { name, biography, genres, f_name, l_name } = validatedFields.data;
 
 	try {
 		const session = await auth();
@@ -77,8 +87,8 @@ export async function updateProfile(
 		const slug = generateSlug(name);
 		const artist = await prisma.artist.upsert({
 			where: { id: session?.user?.artistId || '' },
-			create: { name, bio: biography, pic: imageUrl, slug },
-			update: { name, bio: biography, pic: imageUrl, slug },
+			create: { name, f_name, l_name, bio: biography, pic: imageUrl, slug },
+			update: { name, f_name, l_name, bio: biography, pic: imageUrl, slug },
 		});
 
 		const oldGenres = prevState?.prev?.genres || [];

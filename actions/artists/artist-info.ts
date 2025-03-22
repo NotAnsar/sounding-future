@@ -10,6 +10,14 @@ import { redirect } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 
 const ArtistSchema = z.object({
+	f_name: z
+		.string()
+		.min(1, 'First name is required')
+		.max(50, 'First name must be 50 characters or less'),
+	l_name: z
+		.string()
+		.min(1, 'Last name is required')
+		.max(50, 'Last name must be 50 characters or less'),
 	name: z
 		.string()
 		.min(1, 'Artist name is required')
@@ -48,6 +56,8 @@ export async function createArtist(
 		genres: genresData,
 		image,
 		published: formData.get('published') === 'true',
+		f_name: formData.get('f_name'),
+		l_name: formData.get('l_name'),
 	});
 
 	if (!validatedFields.success) {
@@ -64,7 +74,8 @@ export async function createArtist(
 			throw new Error('User not authenticated');
 		}
 
-		const { name, biography, genres, published, image } = validatedFields.data;
+		const { name, biography, genres, published, image, f_name, l_name } =
+			validatedFields.data;
 		const slug = generateSlug(name);
 
 		if (image instanceof File && image.size > 2 * 1024 * 1024) {
@@ -78,7 +89,15 @@ export async function createArtist(
 
 		const artist = await prisma.$transaction(async (tx) => {
 			const artist = await tx.artist.create({
-				data: { name, bio: biography, pic: imageUrl, published, slug },
+				data: {
+					name,
+					bio: biography,
+					pic: imageUrl,
+					published,
+					slug,
+					f_name,
+					l_name,
+				},
 			});
 
 			await tx.artistGenre.createMany({
@@ -122,6 +141,8 @@ export async function updateArtist(
 		biography: formData.get('biography'),
 		genres: genresData,
 		published: formData.get('published') === 'true',
+		f_name: formData.get('f_name'),
+		l_name: formData.get('l_name'),
 	});
 
 	if (!validatedFields.success) {
@@ -140,7 +161,8 @@ export async function updateArtist(
 	}
 
 	try {
-		const { name, biography, genres, published } = validatedFields.data;
+		const { name, biography, genres, published, f_name, l_name } =
+			validatedFields.data;
 		const slug = generateSlug(name);
 
 		const imageUrl = await updateFile(image, prevState?.prev?.image);
@@ -152,6 +174,8 @@ export async function updateArtist(
 				pic: imageUrl,
 				published,
 				slug,
+				f_name,
+				l_name,
 			},
 		});
 

@@ -11,11 +11,13 @@ const SettingSchema = z.object({
 	firstName: z
 		.string()
 		.min(1, 'First name is required')
-		.max(50, 'First name must be 50 characters or less'),
+		.max(50, 'First name must be 50 characters or less')
+		.optional(),
 	secondName: z
 		.string()
 		.min(1, 'Second name is required')
-		.max(50, 'Second name must be 50 characters or less'),
+		.max(50, 'Second name must be 50 characters or less')
+		.optional(),
 	username: z
 		.string()
 		.min(1, 'Username is required')
@@ -36,13 +38,15 @@ export async function updateUserAccount(
 	formData: FormData
 ): Promise<SettingsState> {
 	const validatedFields = SettingSchema.omit({ image: true }).safeParse({
-		firstName: formData.get('firstName'),
-		secondName: formData.get('secondName'),
+		firstName: formData.get('firstName') || undefined,
+		secondName: formData.get('secondName') || undefined,
 		username: formData.get('username'),
 		deleteImage: formData.get('deleteImage') || undefined,
 	});
 
 	if (!validatedFields.success) {
+		console.log(validatedFields.error.flatten().fieldErrors);
+
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to update account. Please check the form for errors.',

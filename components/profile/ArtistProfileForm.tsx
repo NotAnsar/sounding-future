@@ -78,6 +78,53 @@ export default function ArtistProfileForm({
 						</p>
 						<ErrorMessage errors={state?.errors?.name} />
 					</div>
+					<div className='grid gap-x-4 gap-y-2 sm:grid-cols-2 max-w-lg'>
+						<div className='grid gap-2'>
+							<Label
+								htmlFor='f_name'
+								className={cn(state?.errors?.f_name ? 'text-destructive' : '')}
+							>
+								First name
+							</Label>
+							<Input
+								type='text'
+								name='f_name'
+								id='f_name'
+								defaultValue={initialData?.f_name || undefined}
+								className={cn(
+									state?.errors?.f_name
+										? 'border-destructive focus-visible:ring-destructive '
+										: ''
+								)}
+							/>
+
+							<ErrorMessage errors={state?.errors?.f_name} />
+						</div>
+						<div className='grid gap-2'>
+							<Label
+								htmlFor='l_name'
+								className={cn(state?.errors?.l_name ? 'text-destructive' : '')}
+							>
+								Last name
+							</Label>
+							<Input
+								type='text'
+								name='l_name'
+								id='l_name'
+								defaultValue={initialData?.l_name || undefined}
+								className={cn(
+									state?.errors?.l_name
+										? 'border-destructive focus-visible:ring-destructive '
+										: ''
+								)}
+							/>
+
+							<ErrorMessage errors={state?.errors?.l_name} />
+						</div>
+						<p className='text-muted text-sm max-w-lg col-span-full'>
+							Your first and last name (will not be displayed publicly)
+						</p>
+					</div>
 					<ImageUpload
 						name='image'
 						error={state?.errors?.image}
