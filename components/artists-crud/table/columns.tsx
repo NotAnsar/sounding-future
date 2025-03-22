@@ -39,10 +39,14 @@ export const columns: ColumnDef<ArtistStats>[] = [
 		accessorKey: 'name',
 		header: '',
 		cell: ({ row }) => {
+			const user = row.original;
 			return (
-				<p className={'text-base font-semibold line-clamp-1'}>
-					{row.getValue('name')}
-				</p>
+				<div>
+					<p className={'text-base font-semibold line-clamp-1'}>{user.name}</p>
+					<p className='text-[15px] text-muted'>
+						{user?.f_name} {user?.l_name}
+					</p>
+				</div>
 			);
 		},
 	},
