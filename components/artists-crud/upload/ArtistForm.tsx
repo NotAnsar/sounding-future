@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Textarea } from '@/components/ui/textarea';
-import { ArtistDetails } from '@/db/artist';
+import { ArtistDetailsStats } from '@/db/artist';
 import { cn } from '@/lib/utils';
 import { Genre } from '@prisma/client';
 import { useFormState } from 'react-dom';
@@ -24,7 +24,7 @@ export default function ArtistForm({
 	initialData,
 	genres,
 }: {
-	initialData?: ArtistDetails;
+	initialData?: ArtistDetailsStats;
 	genres: Genre[];
 }) {
 	const initialState: ArtistFormState = {
@@ -81,7 +81,9 @@ export default function ArtistForm({
 							type='text'
 							name='f_name'
 							id='f_name'
-							defaultValue={initialData?.f_name || undefined}
+							defaultValue={
+								initialData?.f_name || initialData?.user?.f_name || undefined
+							}
 							className={cn(
 								state?.errors?.f_name
 									? 'border-destructive focus-visible:ring-destructive '
@@ -102,7 +104,9 @@ export default function ArtistForm({
 							type='text'
 							name='l_name'
 							id='l_name'
-							defaultValue={initialData?.l_name || undefined}
+							defaultValue={
+								initialData?.l_name || initialData?.user?.l_name || undefined
+							}
 							className={cn(
 								state?.errors?.l_name
 									? 'border-destructive focus-visible:ring-destructive '

@@ -44,7 +44,8 @@ export const columns: ColumnDef<ArtistStats>[] = [
 				<div>
 					<p className={'text-base font-semibold line-clamp-1'}>{user.name}</p>
 					<p className='text-[15px] text-muted'>
-						{user?.f_name} {user?.l_name}
+						{user?.f_name || user.user?.f_name}{' '}
+						{user?.l_name || user.user?.l_name}
 					</p>
 				</div>
 			);

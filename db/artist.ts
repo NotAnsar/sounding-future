@@ -174,10 +174,19 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 	};
 }> & { followed: boolean };
 
+export type ArtistDetailsStats = Prisma.ArtistGetPayload<{
+	include: {
+		genres: { include: { genre: true } };
+		socialLinks: true;
+		user: { select: { f_name: true; l_name: true } };
+		articles: { include: { article: true } };
+	};
+}> & { followed: boolean };
+
 export async function getArtistsById(
 	id: string,
 	publishedOnly: boolean = true
-): Promise<ArtistDetails | undefined> {
+): Promise<ArtistDetailsStats | undefined> {
 	const session = await auth();
 
 	try {
@@ -190,6 +199,7 @@ export async function getArtistsById(
 				genres: { include: { genre: true } },
 				socialLinks: true,
 				articles: { include: { article: true } },
+				user: { select: { f_name: true, l_name: true } },
 				followers: session?.user.id
 					? { where: { followingUserId: session.user.id } }
 					: undefined,
@@ -366,6 +376,7 @@ export type ArtistStats = Prisma.ArtistGetPayload<{
 	include: {
 		genres: { include: { genre: true } };
 		_count: { select: { tracks: true; followers: true } };
+		user: { select: { f_name: true; l_name: true } };
 		tracks: {
 			select: {
 				_count: { select: { listeners: true; likes: true } };
@@ -382,6 +393,7 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 			include: {
 				genres: { include: { genre: true } },
 				_count: { select: { tracks: true, followers: true } },
+				user: { select: { f_name: true, l_name: true } },
 
 				tracks: {
 					select: {
