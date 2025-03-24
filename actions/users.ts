@@ -13,6 +13,7 @@ import {
 	updateFile,
 	uploadFile,
 } from './utils/s3-image';
+// import { sendRoleChangeEmail } from '@/lib/email';
 
 const UserSchema = z.object({
 	f_name: z.string().optional(),
@@ -124,6 +125,11 @@ export async function updateUser(
 		validatedFields.data;
 
 	try {
+		const previousUser = await prisma.user.findUnique({ where: { id } });
+		if (!previousUser) {
+			return { message: 'User not found' };
+		}
+
 		const image = formData.get('image');
 
 		// Check file size
@@ -155,6 +161,15 @@ export async function updateUser(
 				image: imageUrl,
 			},
 		});
+
+		// if (previousUser.role !== 'pro' && role === 'pro' && email) {
+		// 	try {
+		// 		await sendRoleChangeEmail(email, name || previousUser.name);
+		// 	} catch (emailError) {
+		// 		console.error('Failed to send role change email:', emailError);
+		// 		// Continue even if email fails
+		// 	}
+		// }
 
 		revalidatePath('/', 'layout');
 	} catch (error) {

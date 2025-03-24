@@ -6,6 +6,7 @@ import { State } from '../utils/utils';
 import { checkFile, deleteFile, updateFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+// import { sendTrackPublishedEmail } from '@/lib/email';
 
 const fileSize = 200;
 
@@ -30,9 +31,6 @@ const UploadAudioSchema = z.object({
 type UploadAudioData = z.infer<typeof UploadAudioSchema>;
 
 export type AudioUploadState = State<UploadAudioData>;
-// & {
-// 	prev?: { variant1?: string; variant2?: string; variant3?: string };
-// };
 
 export async function uploadTrackInfo(
 	id: string,
@@ -58,7 +56,7 @@ export async function uploadTrackInfo(
 	try {
 		const track = await prisma.track.findUnique({
 			where: { id },
-			include: { artist: true },
+			include: { artist: { include: { user: true } } },
 		});
 
 		if (!track) {
@@ -112,6 +110,26 @@ export async function uploadTrackInfo(
 				variant3Name: variant3 ? variant3Name : undefined,
 			},
 		});
+
+		// if (published && !track.published) {
+		// 	const trackOwnerEmail = track.artist?.user?.email;
+		// 	const trackOwnerName = track.artist?.user?.name || 'Artist';
+
+		// 	if (trackOwnerEmail) {
+		// 		try {
+		// 			const trackUrl = `${process.env.NEXTAUTH_URL}/tracks/${track.slug}`;
+
+		// 			await sendTrackPublishedEmail(
+		// 				trackOwnerEmail,
+		// 				trackOwnerName,
+		// 				track.title,
+		// 				trackUrl
+		// 			);
+		// 		} catch (emailError) {
+		// 			console.error('Failed to send track published email:', emailError);
+		// 		}
+		// 	}
+		// }
 
 		revalidatePath('/', 'layout');
 	} catch (error) {

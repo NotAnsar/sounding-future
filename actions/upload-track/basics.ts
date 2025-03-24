@@ -9,6 +9,7 @@ import { checkFile, updateFile, uploadFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { Prisma } from '@prisma/client';
+// import { sendTrackCreatedEmail } from '@/lib/email';
 
 const TrackSchema = z.object({
 	trackName: z
@@ -133,6 +134,14 @@ export async function submitTrack(
 		await prisma.trackGenre.createMany({
 			data: genreTags.map((genreId) => ({ trackId, genreId })),
 		});
+
+		// if (isUser && user && user.email) {
+		// 	try {
+		// 		await sendTrackCreatedEmail(user.email, user.name || 'User', trackName);
+		// 	} catch (emailError) {
+		// 		console.error('Failed to send track creation email:', emailError);
+		// 	}
+		// }
 
 		revalidatePath('/', 'layout');
 	} catch (error) {

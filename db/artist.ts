@@ -389,7 +389,8 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 					},
 				},
 			},
-			orderBy: { tracks: { _count: 'desc' } },
+			// orderBy: { tracks: { _count: 'desc' } },
+			orderBy: { createdAt: 'desc' },
 			take: limit,
 		});
 
