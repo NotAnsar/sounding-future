@@ -12,6 +12,7 @@ const ArtistLinksSchema = z.object({
 	instagram: z.string().url('Invalid Instagram URL').optional(),
 	linkedin: z.string().url('Invalid LinkedIn URL').optional(),
 	youtube: z.string().url('Invalid YouTube URL').optional(),
+	mastodon: z.string().url('Invalid Mastodon URL').optional(),
 	soundingFutureArticles: z
 		.array(z.string().url('Invalid article URL'))
 		.max(10, 'You can only add up to 10 Sounding Future article links'),
@@ -39,6 +40,7 @@ export async function updateArtistLinks(
 		instagram: formData.get('instagram') || undefined,
 		linkedin: formData.get('linkedin') || undefined,
 		youtube: formData.get('youtube') || undefined,
+		mastodon: formData.get('mastodon') || undefined,
 		soundingFutureArticles: soundingFutureArticlesData,
 	});
 
@@ -57,6 +59,7 @@ export async function updateArtistLinks(
 		linkedin,
 		youtube,
 		soundingFutureArticles,
+		mastodon,
 	} = validatedFields.data;
 
 	try {
@@ -71,20 +74,22 @@ export async function updateArtistLinks(
 				where: { id: socialLinks.socialLinks.id },
 				data: {
 					website: websiteLink,
-					facebook,
-					instagram,
-					linkedin,
-					youtube,
+					facebook: facebook || null,
+					instagram: instagram || null,
+					linkedin: linkedin || null,
+					youtube: youtube || null,
+					mastodon: mastodon || null,
 				},
 			});
 		} else {
 			const newSocialLinks = await prisma.socialLinks.create({
 				data: {
 					website: websiteLink,
-					facebook,
-					instagram,
-					linkedin,
-					youtube,
+					facebook: facebook || null,
+					instagram: instagram || null,
+					linkedin: linkedin || null,
+					youtube: youtube || null,
+					mastodon: mastodon || null,
 				},
 			});
 

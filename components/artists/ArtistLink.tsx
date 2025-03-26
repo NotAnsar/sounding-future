@@ -56,6 +56,11 @@ export default function ArtistLink({
 						<Icons.youtube className='w-9 h-auto aspect-square text-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out' />
 					</Link>
 				)}
+				{socialLinks?.mastodon && (
+					<Link href={socialLinks?.mastodon} target='_blank'>
+						<Icons.mastodon className='w-9 mr-2 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out hover:fill-primary-foreground' />
+					</Link>
+				)}
 			</div>
 		</div>
 	);

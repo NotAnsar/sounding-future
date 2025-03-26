@@ -12,6 +12,7 @@ import { ArtistDetails } from '@/db/artist';
 import { myArticles } from '@/db/articles';
 import ArtistNav from './ArtistNav';
 import { updateArtistLinks } from '@/actions/artists/links';
+import { Icons } from '@/components/icons/socials';
 
 export default function ArtistLinksForm({
 	artistId,
@@ -143,6 +144,30 @@ export default function ArtistLinksForm({
 							/>
 						</div>
 						<ErrorMessage errors={state?.errors?.linkedin} />
+					</div>
+					<div className='grid gap-2 items-center'>
+						<Label
+							htmlFor='mastodon'
+							className={cn(state?.errors?.mastodon ? 'text-destructive' : '')}
+						>
+							Mastodon
+						</Label>
+						<div className='flex items-center max-w-lg'>
+							<Icons.mastodon className='w-6 mr-2 h-auto aspect-square text-foreground fill-foreground cursor-pointer hover:text-primary-foreground transition-colors duration-200 ease-out hover:fill-primary-foreground' />
+							<Input
+								type='text'
+								name='mastodon'
+								id='mastodon'
+								defaultValue={initialData?.socialLinks?.mastodon || undefined}
+								className={cn(
+									'flex-1',
+									state?.errors?.mastodon
+										? 'border-destructive focus-visible:ring-destructive '
+										: ''
+								)}
+							/>
+						</div>
+						<ErrorMessage errors={state?.errors?.mastodon} />
 					</div>
 					<div className='grid gap-2 items-center'>
 						<Label

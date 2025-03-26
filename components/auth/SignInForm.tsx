@@ -70,6 +70,9 @@ export default function SignInForm() {
 							)}
 							required
 						/>
+						<p className='text-sm text-muted'>
+							Please use a valid email address to avoid being marked as spam.
+						</p>
 						<ErrorMessage errors={state.errors?.email} />
 					</div>
 					<div className='grid gap-2'>

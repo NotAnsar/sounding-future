@@ -117,7 +117,9 @@ export default function ArtistForm({
 						<ErrorMessage errors={state?.errors?.l_name} />
 					</div>
 					<p className='text-muted text-sm max-w-lg col-span-full'>
-						Your first and last name (will not be displayed publicly)
+						For legal reasons, creators who add an artist profile and showcase
+						music on Sounding Future must provide their first and last name
+						(this information will not be displayed publicly).
 					</p>
 				</div>
 				<ImageUpload
