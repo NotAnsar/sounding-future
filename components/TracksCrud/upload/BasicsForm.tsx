@@ -22,6 +22,7 @@ import { YearSelect } from '@/components/YearSelect';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Artist, Genre, Partner, SourceFormat } from '@prisma/client';
 import { TrackWithgenres } from '@/db/tracks';
+import TrackRegistration from './TrackRegistration';
 
 export default function TrackBasicsForm({
 	role,
@@ -242,6 +243,12 @@ export default function TrackBasicsForm({
 					errors={state?.errors?.release}
 					initialValue={initialData?.releasedBy || undefined}
 				/>
+
+				<TrackRegistration
+					errors={state?.errors?.trackRegistration}
+					initialValue={initialData?.trackRegistration || undefined}
+				/>
+
 				<LegalAgreementSection />
 			</div>
 		</form>

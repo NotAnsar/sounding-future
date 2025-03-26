@@ -75,6 +75,7 @@ model Track {
   releaseYear  Int?     @map("release_year") 
   credits      String?
   releasedBy   String   @default("self-published")
+  trackRegistration   String?   
   published    Boolean  @default(false)
   createdAt    DateTime @default(now()) @map("created_at")
   duration     Int?      

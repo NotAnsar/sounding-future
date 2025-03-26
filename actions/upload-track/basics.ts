@@ -9,7 +9,6 @@ import { checkFile, updateFile, uploadFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { Prisma } from '@prisma/client';
-// import { sendTrackCreatedEmail } from '@/lib/email';
 
 const TrackSchema = z.object({
 	trackName: z
@@ -18,6 +17,10 @@ const TrackSchema = z.object({
 		.max(100, 'Track name must be 100 characters or less'),
 	releaseYear: z.string().min(1, 'Release year is required'),
 	release: z.string().min(1, 'Release is required'),
+	trackRegistration: z
+		.string()
+		.min(1, 'Track Registration is required')
+		.optional(),
 	genreTags: z
 		.array(z.string())
 		.min(1, 'At least one genre tag is required')
@@ -83,11 +86,10 @@ export async function submitTrack(
 		releaseYear: formData.get('releaseYear'),
 		sourceFormat: formData.get('sourceFormat'),
 		release: formData.get('release'),
+		trackRegistration: formData.get('trackRegistration'),
 	});
 
 	if (!validatedFields.success) {
-		console.log(validatedFields.error.flatten().fieldErrors);
-
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to submit track. Please check the form for errors.',
@@ -97,6 +99,7 @@ export async function submitTrack(
 	let trackId: string;
 	try {
 		const {
+			trackRegistration,
 			trackName,
 			artist,
 			releaseYear,
@@ -126,6 +129,8 @@ export async function submitTrack(
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy,
 				slug,
+				trackRegistration:
+					trackRegistration === 'NOT_REGISTERED' ? null : trackRegistration,
 			},
 		});
 
@@ -185,6 +190,7 @@ export async function updateTrack(
 		releaseYear: formData.get('releaseYear'),
 		sourceFormat: formData.get('sourceFormat'),
 		release: formData.get('release'),
+		trackRegistration: formData.get('trackRegistration'),
 	});
 
 	if (!validatedFields.success) {
@@ -202,6 +208,7 @@ export async function updateTrack(
 		genreTags,
 		sourceFormat,
 		release,
+		trackRegistration,
 	} = validatedFields.data;
 
 	const slug = generateSlug(trackName);
@@ -238,6 +245,8 @@ export async function updateTrack(
 				releasedBy: release,
 				curatedBy: isUser ? undefined : curatedBy ? curatedBy : null,
 				slug,
+				trackRegistration:
+					trackRegistration === 'NOT_REGISTERED' ? null : trackRegistration,
 			},
 		});
 
