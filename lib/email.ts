@@ -171,85 +171,98 @@ export function getEmailString(
 `;
 }
 
-export async function sendWelcomeEmail(email: string, username: string) {
+export async function sendArtistProfileCreatedEmail(
+	email: string,
+	username: string
+) {
 	await sendEmail({
-		subject: 'Welcome to Sounding Future!',
+		subject:
+			"Welcome, Creator! Let's bring your music to life in 3D AudioSpace",
 		name: 'Sounding Future',
 		from: process.env.EMAIL_USER || 'noreply@soundingfuture.com',
 		to: email,
 		body: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #333;">Welcome to Sounding Future!</h1>
-        <p>Hello ${username},</p>
-        <p>Thank you for joining Sounding Future! We're excited to have you as part of our community.</p>
-        
-        <h2 style="color: #ae3795; margin-top: 20px;">Getting Started</h2>
-        <p>Here are a few things you can do right away:</p>
-        <ul style="padding-left: 20px;">
-          <li><strong>Add your own tracks</strong> - You can upload and manage your own audio tracks through your profile dashboard.</li>
-          <li><strong>Explore binaural rendering</strong> - Our platform offers special binaural audio rendering services for immersive sound experiences.</li>
-          <li><strong>Connect with others</strong> - Discover and follow other creators in our community.</li>
-        </ul>
-        
-        <div style="background-color: #f7f7f7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-          <p style="margin: 0;"><strong>Pro Tip:</strong> Check out our <a href="${process.env.NEXTAUTH_URL}/help-center" style="color: #ae3795; text-decoration: none;">help section</a> for tutorials and guides on how to make the most of our platform.</p>
-        </div>
-        
-        <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
-        
-        <p>Happy creating!</p>
-        <p>The Sounding Future Team</p>
-        
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-        <small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
-      </div>
-    `,
+		<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+			
+			<p>Hi ${username},</p>
+			<p>Congratulations on creating your artist profile in Sounding Future's <b>3D AudioSpace</b>!</p>
+			<p>We'd love to feature up to <b>three of your tracks</b> on the platform.</p>
+
+			
+			<p style="margin: 0;">✅ To unlock the full potential of your multichannel or ambisonics music, please upload your audio files directly using our <b>file upload service</b>.</p>
+			<p style="margin: 0;">✅ Our Sounding Future team will create a <b>professional binaural/stereo rendering</b> of your tracks.</p>
+			<p style="margin: 0;">✅ This ensures your music delivers an <b>outstanding listening experience</b> on any standard headphones or loudspeakers.</p>
+			
+
+			<p style="text-align: center; margin: 25px 0;">
+				<a href="${process.env.NEXTAUTH_URL}/user/tracks" style="background-color: #ae3795; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+					👉 Upload your audio files now
+				</a>
+			</p>
+			
+			<p>Simply head to <a href="${process.env.NEXTAUTH_URL}/user/tracks" style="color: #467886; font-weight: 600;">My Tracks</a> and upload your music.</p>
+			<p>If you have any questions, feel free to contact us at <a href="mailto:office@soundingfuture.com" style="color: #467886; font-weight: 600;">office@soundingfuture.com</a></p>
+
+			<p>Best regards,<br>Sounding Future</p>
+			<p style="color: #666; font-style: italic; margin:0;">Innovations in Music & AudioTech<br>Discover. Learn. Stream 3D Audio.</p>
+			<p style="margin:0;">🌐 <a href="https://www.soundingfuture.com/en" style="color: #467886; font-weight: 500;">https://www.soundingfuture.com/</a></p>
+			<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+			<small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
+		</div>
+	`,
 	});
 }
 
-export async function sendTrackCreatedEmail(
-	email: string,
-	username: string,
-	trackName: string
-) {
+export async function sendWelcomeEmail(email: string, username: string) {
 	await sendEmail({
-		subject: 'Your New Track & Binaural Rendering Options',
+		subject: 'Welcome to Sounding Future - Start Your Musical Adventure',
 		name: 'Sounding Future',
 		from: process.env.EMAIL_USER || 'noreply@soundingfuture.com',
 		to: email,
 		body: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #333;">Your Track Has Been Created!</h1>
-        <p>Hello ${username},</p>
-        <p>Congratulations on creating your new track "${trackName}"! Your creativity is what makes our platform thrive.</p>
-        
-        <div style="background-color: #f7f7f7; padding: 20px; border-radius: 5px; margin: 20px 0;">
-          <h2 style="color: #ae3795; margin-top: 0;">Enhance Your Audio with Binaural Rendering</h2>
-          <p>Did you know that Sounding Future offers binaural rendering services? Transform your track into an immersive 3D audio experience!</p>
-          <p>Benefits include:</p>
-          <ul style="padding-left: 20px;">
-            <li>Create 3D spatial audio that surrounds the listener</li>
-            <li>Enhance the listening experience with realistic sound positioning</li>
-            <li>Make your tracks stand out from conventional stereo audio</li>
-          </ul>
-          <p style="margin-top: 20px;">
-            <a href="${process.env.NEXTAUTH_URL}/tracks/${encodeURIComponent(
-			trackName
-		)}/edit" style="background-color: #ae3795; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-              Try Binaural Rendering
-            </a>
-          </p>
-        </div>
-        
-        <p>If you need any assistance with your track or the binaural rendering process, our support team is always here to help.</p>
-        
-        <p>Keep creating amazing sounds!</p>
-        <p>The Sounding Future Team</p>
-        
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-        <small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
-      </div>
-    `,
+		<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+			
+			<p>Hi ${username},</p>
+			<p>Thank you for joining <b>Sounding Future's 3D AudioSpace</b>! We're excited to have you in our community.</p>
+			
+			
+			
+			<p style="margin: 0;">From now on, you can:</p>
+			<p style="margin: 0;">✅ Discover exciting tracks from other artists.</p>
+			<p style="margin: 0;">✅ Follow creators and stay updated on their latest releases.</p>
+			<p style="margin: 0;">✅ Like tracks to support your favorite artists.</p>
+			<p style="margin: 0;">✅ Save your favorite tracks in your personal collection.</p>
+			
+
+
+			<div >
+				 <h3>🎯 For creators:</h3>
+				 
+				 <p>
+				Interested in sharing your own multichannel or ambisonics music?
+				<br/>
+				Check if your music fits one of our <a href="${process.env.NEXTAUTH_URL}/genres" style="color: #467886; text-decoration: underline; font-weight: 500;">genres</a>. Then simply create your artist profile and upload your tracks along with all the details and audio files.
+				</p>
+			 </div>
+			
+
+			<p style="text-align: center; margin: 25px 0;">
+				 <a href="${process.env.NEXTAUTH_URL}/login" style="background-color: #ae3795; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+				 👉 Log in now and start exploring
+				 </a>
+			 </p>
+
+
+			<p>If you have any questions, feel free to contact us at <a href="mailto:office@soundingfuture.com" style="color: #467886; font-weight: 600;">office@soundingfuture.com</a></p>
+
+			<p>Best regards,<br>Sounding Future</p>
+			<p style="color: #666; font-style: italic; margin:0;">Innovations in Music & AudioTech<br>Discover. Learn. Stream 3D Audio.</p>
+			<p style="margin:0;">🌐 <a href="https://www.soundingfuture.com/en" style="color: #467886; font-weight: 500;">https://www.soundingfuture.com/</a></p>
+
+			<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+			<small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
+		</div>
+	`,
 	});
 }
 
@@ -260,38 +273,36 @@ export async function sendTrackPublishedEmail(
 	trackUrl: string
 ) {
 	await sendEmail({
-		subject: 'Your Track Has Been Published - Share Your Thoughts!',
+		subject: `Your Track ${trackName} is now live in the 3D AudioSpace`,
 		name: 'Sounding Future',
 		from: process.env.EMAIL_USER || 'noreply@soundingfuture.com',
 		to: email,
 		body: `
 		<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-			<h1 style="color: #333;">Your Track Is Now Live!</h1>
-			<p>Hello ${username},</p>
-			<p>Great news! Your track "${trackName}" has been reviewed and published by our admin team.</p>
 			
-			<div style="background-color: #f7f7f7; padding: 20px; border-radius: 5px; margin: 20px 0;">
-				<h2 style="color: #ae3795; margin-top: 0;">Share Your Experience</h2>
-				<p>We'd love to hear about your experience with Sounding Future:</p>
-				<ul style="padding-left: 20px;">
-					<li>How was your track uploading experience?</li>
-					<li>Did you try our binaural rendering service?</li>
-					<li>What features would you like to see in the future?</li>
-				</ul>
-				<p style="margin-top: 20px;">
-					<a href="${trackUrl}" style="background-color: #ae3795; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-						View Your Track
-					</a>
-				</p>
-			</div>
+			<p>Hi ${username},</p>
+			<p>Good news! We've completed the renderings for your track "${trackName}" and uploaded them to the 3D AudioSpace.</p>
+
+			<p>
+				✅ You can now listen to the different track variants here: <a href="${trackUrl}" style="color: #467886; font-weight: 600;">${trackUrl}</a>
+			</p>
+			<p>
+				✅ Please review the renderings and let us know if you're happy with the result or if you'd like any adjustments.
+			</p>
+			<p>
+			<b>👉 Listen now and share your feedback:</b> <br>
+			We look forward to hearing from you! Just drop us a message at <a href="mailto:office@soundingfuture.com" style="color: #467886; font-weight: 600;">office@soundingfuture.com</a>.
+			</p>
 			
-			<p>Feel free to reply to this email with your feedback or suggestions.</p>
-			
-			<p>Thank you for being part of Sounding Future!</p>
-			<p>The Sounding Future Team</p>
-			
+
+
+
+			<p>Best regards,<br>Sounding Future</p>
+			<p style="color: #666; font-style: italic; margin:0;">Innovations in Music & AudioTech<br>Discover. Learn. Stream 3D Audio.</p>
+			<p style="margin:0;">🌐 <a href="https://www.soundingfuture.com/en" style="color: #467886; font-weight: 500;">https://www.soundingfuture.com/</a></p>
+
 			<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-			<small style="color: #888;">You can reply directly to this email to share your feedback.</small>
+			<small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
 		</div>
 	`,
 	});
@@ -304,40 +315,34 @@ export async function sendRoleChangeEmail(email: string, username: string) {
 		from: process.env.EMAIL_USER || 'noreply@soundingfuture.com',
 		to: email,
 		body: `
-			<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-					<h1 style="color: #333;">You're Now a Pro User!</h1>
-					<p>Hello ${username},</p>
-					<p>Congratulations! Your Sounding Future account has been upgraded to <strong>Pro</strong> status.</p>
-					
-					<div style="background-color: #f7f7f7; padding: 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #ae3795;">
-							<h2 style="color: #ae3795; margin-top: 0; font-size: 24px;">Pro Plan</h2>
-							<p style="font-size: 18px; margin-bottom: 5px;">Become a Sounding Future supporter and use advanced features.</p>
-							<p style="font-size: 22px; font-weight: bold; color: #333; margin-top: 15px; margin-bottom: 20px;">45€ /year</p>
-							
-							<p style="font-weight: bold; margin-bottom: 10px;">Includes everything from the Free Plan plus:</p>
-							<ul style="padding-left: 20px; margin-top: 10px;">
-									<li style="margin-bottom: 8px;"><strong>Upload up to 20 tracks</strong></li>
-									<li style="margin-bottom: 8px;"><strong>Support discovery & promotion</strong> of new authors/artists</li>
-									<li style="margin-bottom: 8px;"><strong>Coming:</strong> implementing multichannel streaming</li>
-									<li style="margin-bottom: 8px;"><strong>Coming:</strong> development of dynamic streaming with head-tracking</li>
-									<li style="margin-bottom: 8px;"><strong>Coming:</strong> Artists can offer their physical releases and merchandise for sale in a dedicated showcase</li>
-									<li style="margin-bottom: 8px;"><strong>You're free to cancel</strong> your Pro Plan anytime</li>
-							</ul>
-							
-							<p style="margin-top: 25px;">
-									<a href="${process.env.NEXTAUTH_URL}/support-us" style="background-color: #ae3795; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold; font-size: 16px;">
-											Explore Your Pro Features
-									</a>
-							</p>
-					</div>
-					
-					<p>Thank you for supporting Sounding Future and helping us create an amazing platform for spatial audio!</p>
-					
-					<p>The Sounding Future Team</p>
-					
-					<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-					<small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
-			</div>
+		<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+			
+			<p>Hi ${username},</p>
+			<p>Congratulations! Your Sounding Future account has been successfully upgraded to <b>Pro status</b>. 🚀</p>
+			<p>As a Pro user, you now have access to exclusive features and benefits.</p>
+			<p>
+				You can find the full overview of all Pro benefits on our Support Us page: 
+				<br/>
+ 				👉 <a href="${process.env.NEXTAUTH_URL}/support-us" style="color: #467886; text-decoration: underline; font-weight: 500;">View Pro Benefits</a>
+			</p>
+			
+			
+			
+			<p style="margin-bottom: 0; font-weight: 600;">Thank you for supporting Sounding Future!</p>
+			<p style="margin: 0;">Your contribution helps us:</p>
+			<p style="margin: 0;">✅ Develop new features.</p>
+			<p style="margin: 0;">✅ Promote creators.</p>
+			<p style="margin: 0;">✅ Keep Sounding Future growing as an independent platform for immersive audio.</p>
+			
+			<p>If you have any questions, feel free to contact us at <a href="mailto:office@soundingfuture.com" style="color: #467886; font-weight: 600;">office@soundingfuture.com</a></p>
+
+			<p>Best regards,<br>Sounding Future</p>
+			<p style="color: #666; font-style: italic; margin:0;">Innovations in Music & AudioTech<br>Discover. Learn. Stream 3D Audio.</p>
+			<p style="margin:0;">🌐 <a href="https://www.soundingfuture.com/en" style="color: #467886; font-weight: 500;">https://www.soundingfuture.com/</a></p>
+
+			<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+			<small style="color: #888;">This is an automated email. Please do not reply directly to this message.</small>
+		</div>
 	`,
 	});
 }

@@ -135,14 +135,6 @@ export async function submitTrack(
 			data: genreTags.map((genreId) => ({ trackId, genreId })),
 		});
 
-		// if (isUser && user && user.email) {
-		// 	try {
-		// 		await sendTrackCreatedEmail(user.email, user.name || 'User', trackName);
-		// 	} catch (emailError) {
-		// 		console.error('Failed to send track creation email:', emailError);
-		// 	}
-		// }
-
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		console.error('Track submission error:', error);

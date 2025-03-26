@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { State } from '@/actions/utils/utils';
 import { signIn } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-// import { sendWelcomeEmail } from '@/lib/email';
+import { sendWelcomeEmail } from '@/lib/email';
 
 const RegisterSchema = z.object({
 	username: z
@@ -56,13 +56,12 @@ export async function register(
 			return user;
 		});
 
-		// // Send welcome email after successful registration
-		// try {
-		// 	await sendWelcomeEmail(email, username);
-		// } catch (emailError) {
-		// 	console.error('Failed to send welcome email:', emailError);
-		// 	// Continue with registration even if email fails
-		// }
+		try {
+			await sendWelcomeEmail(email, username);
+		} catch (emailError) {
+			console.error('Failed to send welcome email:', emailError);
+			// Continue with registration even if email fails
+		}
 
 		const result = await signIn('credentials', {
 			email,

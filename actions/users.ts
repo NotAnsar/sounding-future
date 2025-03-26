@@ -13,6 +13,7 @@ import {
 	updateFile,
 	uploadFile,
 } from './utils/s3-image';
+import { sendRoleChangeEmail } from '@/lib/email';
 // import { sendRoleChangeEmail } from '@/lib/email';
 
 const UserSchema = z.object({
@@ -162,14 +163,13 @@ export async function updateUser(
 			},
 		});
 
-		// if (previousUser.role !== 'pro' && role === 'pro' && email) {
-		// 	try {
-		// 		await sendRoleChangeEmail(email, name || previousUser.name);
-		// 	} catch (emailError) {
-		// 		console.error('Failed to send role change email:', emailError);
-		// 		// Continue even if email fails
-		// 	}
-		// }
+		if (previousUser.role !== 'pro' && role === 'pro' && email) {
+			try {
+				await sendRoleChangeEmail(email, name || previousUser.name);
+			} catch (emailError) {
+				console.error('Failed to send role change email:', emailError);
+			}
+		}
 
 		revalidatePath('/', 'layout');
 	} catch (error) {

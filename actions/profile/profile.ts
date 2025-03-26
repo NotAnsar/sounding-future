@@ -7,6 +7,7 @@ import { checkFile, updateFile } from '../utils/s3-image';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import { sendArtistProfileCreatedEmail } from '@/lib/email';
 
 // Define the schema for profile update
 const ProfileSchema = z.object({
@@ -118,6 +119,15 @@ export async function updateProfile(
 					where: { id: session?.user?.id },
 					data: { artistId: artist.id },
 				});
+
+				try {
+					await sendArtistProfileCreatedEmail(
+						session.user.email || '',
+						session.user.name || name
+					);
+				} catch (emailError) {
+					console.error('Failed to send artist welcome email:', emailError);
+				}
 			}
 		});
 

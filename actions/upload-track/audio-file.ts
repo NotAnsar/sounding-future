@@ -6,6 +6,7 @@ import { State } from '../utils/utils';
 import { checkFile, deleteFile, updateFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { sendTrackPublishedEmail } from '@/lib/email';
 // import { sendTrackPublishedEmail } from '@/lib/email';
 
 const fileSize = 200;
@@ -111,25 +112,25 @@ export async function uploadTrackInfo(
 			},
 		});
 
-		// if (published && !track.published) {
-		// 	const trackOwnerEmail = track.artist?.user?.email;
-		// 	const trackOwnerName = track.artist?.user?.name || 'Artist';
+		if (published && !track.published) {
+			const trackOwnerEmail = track.artist?.user?.email;
+			const trackOwnerName = track.artist?.user?.name || 'Artist';
 
-		// 	if (trackOwnerEmail) {
-		// 		try {
-		// 			const trackUrl = `${process.env.NEXTAUTH_URL}/tracks/${track.slug}`;
+			if (trackOwnerEmail) {
+				try {
+					const trackUrl = `${process.env.NEXTAUTH_URL}/tracks/${track.slug}`;
 
-		// 			await sendTrackPublishedEmail(
-		// 				trackOwnerEmail,
-		// 				trackOwnerName,
-		// 				track.title,
-		// 				trackUrl
-		// 			);
-		// 		} catch (emailError) {
-		// 			console.error('Failed to send track published email:', emailError);
-		// 		}
-		// 	}
-		// }
+					await sendTrackPublishedEmail(
+						trackOwnerEmail,
+						trackOwnerName,
+						track.title,
+						trackUrl
+					);
+				} catch (emailError) {
+					console.error('Failed to send track published email:', emailError);
+				}
+			}
+		}
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
