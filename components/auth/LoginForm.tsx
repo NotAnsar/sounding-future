@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
 import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
 import { toast } from '@/hooks/use-toast';
+import VerificationMessage from './VerificationMessage';
 
 export default function LoginForm() {
 	const [state, formAction] = useFormState(login, {});
@@ -37,9 +38,11 @@ export default function LoginForm() {
 		return formAction(formData);
 	};
 
+	// Check if the error is about email verification
+	const isVerificationError = state?.message?.includes('verify your email');
+
 	return (
 		<div className={`grid gap-3 `}>
-			{/* <form action={formAction}> */}
 			<form action={handleSubmit}>
 				<div className='grid gap-3'>
 					<div className='grid gap-2'>
@@ -85,9 +88,15 @@ export default function LoginForm() {
 					</div>
 
 					<div>
-						<ErrorMessage
-							errors={state?.message ? [state?.message] : undefined}
-						/>
+						{/* Show verification message if the error is about email verification */}
+						{isVerificationError ? (
+							<VerificationMessage message={state.message!} />
+						) : (
+							<ErrorMessage
+								errors={state?.message ? [state?.message] : undefined}
+							/>
+						)}
+
 						<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 
 						<SubmitButton
@@ -99,19 +108,6 @@ export default function LoginForm() {
 					</div>
 				</div>
 			</form>
-			{/* <div className='relative'>
-				<div className='absolute inset-0 flex items-center'>
-					<span className='w-full border-t' />
-				</div>
-				<div className='relative flex justify-center text-xs uppercase'>
-					<span className='bg-background px-2 text-muted-foreground'>
-						Or continue with
-					</span>
-				</div>
-			</div>
-			<div className='grid gap-3 w-full'>
-				<SignWithGoogle />
-			</div> */}
 		</div>
 	);
 }

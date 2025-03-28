@@ -346,3 +346,29 @@ export async function sendRoleChangeEmail(email: string, username: string) {
 	`,
 	});
 }
+
+export async function sendVerificationEmail(email: string, token: string) {
+	const verificationLink = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
+
+	await sendEmail({
+		subject: 'Verify Your Sounding Future Account',
+		name: 'Sounding Future',
+		from: process.env.EMAIL_USER || 'noreply@soundingfuture.com',
+		to: email,
+		body: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">Verify Your Email Address</h1>
+        <p>Thank you for signing up for Sounding Future! Please click the link below to verify your email address:</p>
+        <p style="margin: 20px 0;">
+          <a href="${verificationLink}" style="background-color: #ae3795; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            Verify Email
+          </a>
+        </p>
+        <p>This link will expire in 24 hours.</p>
+        <p>If you did not create an account, please ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <small style="color: #888;">This is an automated email. Please do not reply.</small>
+      </div>
+    `,
+	});
+}

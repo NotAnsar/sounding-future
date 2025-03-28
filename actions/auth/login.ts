@@ -45,6 +45,14 @@ export async function login(
 			return { message: 'No account found with that email address.' };
 		}
 
+		// email verification check
+		const verificationStartDate = new Date('2025-03-28'); // Today's date
+
+		if (user.createdAt >= verificationStartDate && !user.emailVerified) {
+			return { message: 'Please verify your email before logging in' };
+		}
+
+		// Check if the password is valid
 		const isPasswordValid = await compare(password, user.password);
 
 		if (!isPasswordValid) {

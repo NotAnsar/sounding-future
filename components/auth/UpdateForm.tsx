@@ -77,19 +77,6 @@ export default function UpdatePasswordForm({ token }: { token: string }) {
 					<SubmitButton className='mt-2.5 w-full'>Send Reset Link</SubmitButton>
 				</div>
 			</form>
-			{/* <div className='relative'>
-				<div className='absolute inset-0 flex items-center'>
-					<span className='w-full border-t' />
-				</div>
-				<div className='relative flex justify-center text-xs uppercase'>
-					<span className='bg-background px-2 text-muted-foreground'>
-						Or continue with
-					</span>
-				</div>
-			</div>
-			<div className='grid gap-3 w-full'>
-				<SignWithGoogle />
-			</div> */}
 		</div>
 	);
 }

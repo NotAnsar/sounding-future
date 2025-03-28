@@ -7,10 +7,10 @@ import ErrorMessage from '../ErrorMessage';
 import { SubmitButton } from './SubmitButton';
 import { cn } from '@/lib/utils';
 import { register } from '@/actions/auth/signup';
-// import SignWithGoogle from './SignWithGoogle';
 import { useCaptchaHook } from '@aacn.eu/use-friendly-captcha';
 import { FRIENDLY_CAPTCHA_SITEKEY } from '@/config/links';
 import { toast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 export default function SignInForm() {
 	const [state, formAction] = useFormState(register, {});
@@ -35,6 +35,17 @@ export default function SignInForm() {
 
 		return formAction(formData);
 	};
+
+	useEffect(() => {
+		if (state?.message) {
+			toast({
+				description: state?.message,
+				title: state?.success ? 'Success' : 'Error',
+				variant: state?.success ? 'default' : 'destructive',
+				duration: 5000,
+			});
+		}
+	}, [state]);
 
 	return (
 		<div className={`grid gap-2.5`}>
@@ -94,6 +105,8 @@ export default function SignInForm() {
 					<div>
 						<ErrorMessage
 							errors={state?.message ? [state?.message] : undefined}
+							// className={cn(state.success ? 'text-green-600' : '')}
+							className={cn('text-green-600')}
 						/>
 						<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 
