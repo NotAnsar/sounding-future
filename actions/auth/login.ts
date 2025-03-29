@@ -22,6 +22,7 @@ export async function login(
 	prevState: LoginState,
 	formData: FormData
 ): Promise<LoginState> {
+	let isNewUser;
 	const validatedFields = LoginSchema.safeParse({
 		email: formData.get('email'),
 		password: formData.get('password'),
@@ -66,12 +67,17 @@ export async function login(
 		if (result?.error) {
 			return { message: 'Login failed. Please try again later.' };
 		}
+		isNewUser = !user.lastLoginAt;
 	} catch (error) {
 		console.error('Login failed', error);
 		return { message: 'An unexpected error occurred. Please try again.' };
 	}
 
-	redirect('/');
+	if (isNewUser) {
+		redirect('/?welcome=true');
+	} else {
+		redirect('/');
+	}
 }
 
 export async function loginGuest(): Promise<LoginState> {

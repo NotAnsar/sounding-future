@@ -105,8 +105,7 @@ export default function SignInForm() {
 					<div>
 						<ErrorMessage
 							errors={state?.message ? [state?.message] : undefined}
-							// className={cn(state.success ? 'text-green-600' : '')}
-							className={cn('text-green-600')}
+							className={cn(state.success ? 'text-green-600' : '')}
 						/>
 						<div className='relative h-16'>{captchaHook.CaptchaWidget({})}</div>
 
