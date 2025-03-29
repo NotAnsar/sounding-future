@@ -1,7 +1,7 @@
 import SignInForm from '@/components/auth/SignInForm';
+import TermsAndPolicy from '@/components/auth/TermsAndPolicy';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { TermsAndPolicy } from '../login/page';
 
 export const metadata: Metadata = {
 	title: 'Sounding Future | Sign Up',

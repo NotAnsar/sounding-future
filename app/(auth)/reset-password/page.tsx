@@ -1,8 +1,8 @@
 import ResetForm from '@/components/auth/ResetForm';
+import TermsAndPolicy from '@/components/auth/TermsAndPolicy';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { TermsAndPolicy } from '../login/page';
 
 export const metadata: Metadata = {
 	title: 'Sounding Future | Reset Password',

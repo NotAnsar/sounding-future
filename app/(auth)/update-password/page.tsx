@@ -1,7 +1,7 @@
+import TermsAndPolicy from '@/components/auth/TermsAndPolicy';
 import UpdatePasswordForm from '@/components/auth/UpdateForm';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { TermsAndPolicy } from '../login/page';
 
 export const metadata: Metadata = {
 	title: 'Sounding Future | Update Password',
