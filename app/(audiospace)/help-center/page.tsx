@@ -38,6 +38,7 @@ export default async function Page() {
 							<div className='aspect-video relative w-full mt-auto rounded-lg overflow-hidden '>
 								<video
 									src={d.videoUrl}
+									poster={d.thumbnailUrl || undefined}
 									controls
 									className='absolute inset-0 w-full h-full object-cover'
 									preload='metadata'

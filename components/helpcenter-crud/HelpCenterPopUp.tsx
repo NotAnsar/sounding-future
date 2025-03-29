@@ -91,6 +91,7 @@ export default function WelcomeHelpDialog({
 					<div className='aspect-video relative w-full mt-2 rounded-lg overflow-hidden'>
 						<video
 							src={videoData.videoUrl}
+							poster={videoData.thumbnailUrl || undefined}
 							controls
 							className='absolute inset-0 w-full h-full object-cover'
 							preload='metadata'

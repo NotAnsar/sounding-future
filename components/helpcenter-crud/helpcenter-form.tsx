@@ -17,6 +17,7 @@ import {
 
 import { PublishToggle } from '../PublishToggle';
 import StudioVideoUpload from '../profile/VideoUpload';
+import StudioImageUpload from '../profile/StudioImageUpload';
 
 export default function HelpCenterForm({
 	initialData,
@@ -28,8 +29,10 @@ export default function HelpCenterForm({
 		errors: {},
 		prev: {
 			videoUrl: initialData?.videoUrl || undefined,
+			thumbnailUrl: initialData?.thumbnailUrl || undefined,
 		},
 	};
+
 	const [state, action] = useFormState(
 		initialData?.id
 			? updateHelpCenterVideo.bind(null, initialData?.id)
@@ -98,14 +101,14 @@ export default function HelpCenterForm({
 					initialData={initialData?.videoUrl || undefined}
 					message='Upload Video, max. 200mb'
 				/>
-				{/* <StudioImageUpload
+				<StudioImageUpload
 					name='thumbnailUrl'
 					error={state?.errors?.thumbnailUrl}
 					label='Thumbnail Image'
 					type='square'
 					initialData={initialData?.thumbnailUrl || undefined}
 					message='Upload Background image, max. 2mb'
-				/> */}
+				/>
 
 				<PublishToggle
 					defaultChecked={initialData?.published}

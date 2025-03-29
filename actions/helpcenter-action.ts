@@ -4,7 +4,12 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { State, videoallowedTypes, videoSchema } from './utils/utils';
+import {
+	imageSchema,
+	State,
+	videoallowedTypes,
+	videoSchema,
+} from './utils/utils';
 import {
 	checkFile,
 	deleteFile,
@@ -17,7 +22,7 @@ const formSchema = z.object({
 	title: z.string().min(2, 'Title must be at least 2 characters').trim(),
 	description: z.string().min(2, 'Description is required').trim(),
 	videoUrl: videoSchema.shape.file,
-
+	thumbnailUrl: imageSchema.shape.file.optional(),
 	published: z.boolean().default(false),
 	isNewUserVideo: z.boolean().default(false),
 });
@@ -25,7 +30,12 @@ const formSchema = z.object({
 type HelpCenterVideoData = z.infer<typeof formSchema>;
 
 export type HelpCenterVideoState =
-	| (State<HelpCenterVideoData> & { prev?: { videoUrl?: string | undefined } })
+	| (State<HelpCenterVideoData> & {
+			prev?: {
+				videoUrl?: string | undefined;
+				thumbnailUrl?: string | undefined;
+			};
+	  })
 	| undefined;
 
 export async function createHelpCenterVideo(
@@ -38,6 +48,7 @@ export async function createHelpCenterVideo(
 		videoUrl: formData.get('videoUrl'),
 		published: formData.get('published') === 'true',
 		isNewUserVideo: formData.get('isNewUserVideo') === 'true',
+		thumbnailUrl: await checkFile(formData.get('thumbnailUrl')),
 	});
 
 	if (!validatedFields.success) {
@@ -48,14 +59,17 @@ export async function createHelpCenterVideo(
 			message: 'Invalid data. Unable to create help center video.',
 		};
 	}
-	const { videoUrl, ...rest } = validatedFields.data;
+	const { videoUrl, thumbnailUrl: thumbnail, ...rest } = validatedFields.data;
 
 	try {
 		const videoFileUrl = await uploadFile(videoUrl, 'video');
 
+		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : undefined;
+
 		await prisma.helpCenterVideo.create({
-			data: { ...rest, videoUrl: videoFileUrl },
+			data: { ...rest, videoUrl: videoFileUrl, thumbnailUrl },
 		});
+
 		revalidatePath('/', 'layout');
 	} catch (error) {
 		return { message: 'Failed to create help center video' };
@@ -68,12 +82,14 @@ export async function updateHelpCenterVideo(
 	prevState: HelpCenterVideoState,
 	formData: FormData
 ) {
-	const validatedFields = formSchema.omit({ videoUrl: true }).safeParse({
-		title: formData.get('title'),
-		description: formData.get('description'),
-		published: formData.get('published') === 'true',
-		isNewUserVideo: formData.get('isNewUserVideo') === 'true',
-	});
+	const validatedFields = formSchema
+		.omit({ videoUrl: true, thumbnailUrl: true })
+		.safeParse({
+			title: formData.get('title'),
+			description: formData.get('description'),
+			published: formData.get('published') === 'true',
+			isNewUserVideo: formData.get('isNewUserVideo') === 'true',
+		});
 
 	if (!validatedFields.success) {
 		return {
@@ -110,9 +126,23 @@ export async function updateHelpCenterVideo(
 			'video'
 		);
 
+		const thumbnail = formData.get('thumbnailUrl');
+
+		if (thumbnail instanceof File && thumbnail.size > 2 * 1024 * 1024) {
+			return {
+				message: 'Thumbnail image must be less than 2MB',
+				errors: { backgroundImage: ['Thumbnail image must be less than 2MB'] },
+			};
+		}
+
+		const thumbnailUrl = await updateFile(
+			thumbnail,
+			prevState?.prev?.thumbnailUrl
+		);
+
 		await prisma.helpCenterVideo.update({
 			where: { id },
-			data: { ...validatedFields.data, videoUrl: videoFileUrl },
+			data: { ...validatedFields.data, videoUrl: videoFileUrl, thumbnailUrl },
 		});
 		revalidatePath('/', 'layout');
 	} catch (error) {
