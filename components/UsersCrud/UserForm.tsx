@@ -12,6 +12,7 @@ import { Artist, User } from '@prisma/client';
 import SelectInput from '../ui/select-input';
 import { roles } from '@/config/roles';
 import ProfileImageInput from '../settings/ProfileImageInput';
+import { useEffect, useState } from 'react';
 
 export default function UserForm({
 	initialData,
@@ -21,6 +22,7 @@ export default function UserForm({
 	artistsData: Artist[];
 }) {
 	const isEdit = !!initialData?.id;
+	const [formattedDate, setFormattedDate] = useState<string>('');
 
 	const initialState: UserFormState = {
 		message: null,
@@ -31,6 +33,15 @@ export default function UserForm({
 		initialData?.id ? updateUser.bind(null, initialData?.id) : addUser,
 		initialState
 	);
+
+	useEffect(() => {
+		if (initialData?.emailVerified) {
+			const date = new Date(initialData.emailVerified);
+			setFormattedDate(date.toLocaleString());
+		} else {
+			setFormattedDate('Not verified');
+		}
+	}, [initialData?.emailVerified]);
 
 	return (
 		<form action={action} className='mt-4 sm:mt-8 grid '>
@@ -179,6 +190,40 @@ export default function UserForm({
 					/>
 
 					<ErrorMessage errors={state?.errors?.email} />
+				</div>
+
+				<div className='grid gap-2 max-w-lg'>
+					<Label
+						htmlFor='emailVerified'
+						className={cn(
+							state?.errors?.emailVerified ? 'text-destructive' : ''
+						)}
+					>
+						Email Verification Status
+					</Label>
+
+					<SelectInput
+						options={[
+							{ value: 'verified', label: 'Verified' },
+							{ value: 'not_verified', label: 'Not Verified' },
+						]}
+						initialValue={
+							initialData?.emailVerified ? 'verified' : 'not_verified'
+						}
+						name='emailVerified'
+						placeholder='Select Verification Status'
+						className='max-w-lg'
+					/>
+
+					{isEdit && formattedDate && (
+						<p className='text-sm text-muted'>
+							{initialData?.emailVerified
+								? `Email verified: ${formattedDate}`
+								: 'Email not verified'}
+						</p>
+					)}
+
+					<ErrorMessage errors={state?.errors?.emailVerified} />
 				</div>
 
 				{!isEdit && (

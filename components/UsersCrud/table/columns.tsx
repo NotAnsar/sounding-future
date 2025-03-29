@@ -51,36 +51,40 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 		cell: ({ row }) => {
+			const { f_name, l_name, name } = row.original;
 			return (
-				<div className={'text-sm font-semibold line-clamp-1'}>
-					{row.getValue('name')}
+				<div>
+					<p className={'text-base font-semibold line-clamp-1'}>{name}</p>
+					<p className='text-sm text-muted'>
+						{f_name} {l_name}
+					</p>
 				</div>
 			);
 		},
 	},
-	{
-		accessorKey: 'f_name',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant='ghost'
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					className='hover:bg-transparent hover:text-foreground px-0'
-				>
-					Full Name
-					<ArrowUpDown className='ml-2 h-4 w-4' />
-				</Button>
-			);
-		},
-		cell: ({ row }) => {
-			const { f_name, l_name } = row.original;
-			return (
-				<div className={'text-sm font-semibold line-clamp-1'}>
-					{f_name} {l_name}
-				</div>
-			);
-		},
-	},
+	// {
+	// 	accessorKey: 'f_name',
+	// 	header: ({ column }) => {
+	// 		return (
+	// 			<Button
+	// 				variant='ghost'
+	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+	// 				className='hover:bg-transparent hover:text-foreground px-0'
+	// 			>
+	// 				Full Name
+	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
+	// 			</Button>
+	// 		);
+	// 	},
+	// 	cell: ({ row }) => {
+	// 		const { f_name, l_name } = row.original;
+	// 		return (
+	// 			<div className={'text-sm font-semibold line-clamp-1'}>
+	// 				{f_name} {l_name}
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 	{
 		accessorKey: 'email',
 		header: ({ column }) => {
@@ -134,6 +138,37 @@ export const columns: ColumnDef<UserStats>[] = [
 					) : (
 						<>
 							<Shield className='w-3 h-auto' /> User
+						</>
+					)}
+				</Badge>
+			);
+		},
+	},
+	{
+		accessorKey: 'emailVerified',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Email Verified
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const emailVerified = row.getValue('emailVerified');
+			return (
+				<Badge variant={emailVerified ? 'success' : 'archive'}>
+					{emailVerified ? (
+						<>
+							<ShieldCheck className='w-3 h-auto' /> Verified
+						</>
+					) : (
+						<>
+							<Shield className='w-3 h-auto' /> Not Verified
 						</>
 					)}
 				</Badge>

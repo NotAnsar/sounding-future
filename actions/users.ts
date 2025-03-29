@@ -32,6 +32,7 @@ const UserSchema = z.object({
 	role: z.string().optional(),
 	artistId: z.string().optional(),
 	deleteImage: z.string().optional(),
+	emailVerified: z.enum(['verified', 'not_verified']).optional(),
 });
 
 type UserData = z.infer<typeof UserSchema>;
@@ -53,6 +54,7 @@ export async function addUser(
 		role: formData.get('role') || undefined,
 		artistId: formData.get('artistId') || undefined,
 		image: await checkFile(formData.get('image')),
+		emailVerified: formData.get('emailVerified') || 'not_verified',
 	});
 
 	if (!validatedFields.success) {
@@ -62,12 +64,23 @@ export async function addUser(
 		};
 	}
 
-	const { f_name, l_name, email, password, name, role, artistId, image } =
-		validatedFields.data;
+	const {
+		f_name,
+		l_name,
+		email,
+		password,
+		name,
+		role,
+		artistId,
+		image,
+		emailVerified,
+	} = validatedFields.data;
 
 	try {
 		const hashedPassword = await hash(password, 10);
 		const imageUrl = image ? await uploadFile(image) : undefined;
+
+		const emailVerifiedDate = emailVerified === 'verified' ? new Date() : null;
 
 		await prisma.user.create({
 			data: {
@@ -79,6 +92,7 @@ export async function addUser(
 				role: role ? role : 'user',
 				artistId,
 				image: imageUrl,
+				emailVerified: emailVerifiedDate,
 			},
 		});
 
@@ -113,6 +127,7 @@ export async function updateUser(
 		role: formData.get('role') || undefined,
 		artistId: formData.get('artistId') || undefined,
 		deleteImage: formData.get('deleteImage') || undefined,
+		emailVerified: formData.get('emailVerified') || undefined,
 	});
 
 	if (!validatedFields.success) {
@@ -122,8 +137,16 @@ export async function updateUser(
 		};
 	}
 
-	const { f_name, l_name, email, name, role, artistId, deleteImage } =
-		validatedFields.data;
+	const {
+		f_name,
+		l_name,
+		email,
+		name,
+		role,
+		artistId,
+		deleteImage,
+		emailVerified,
+	} = validatedFields.data;
 
 	try {
 		const previousUser = await prisma.user.findUnique({ where: { id } });
@@ -148,6 +171,8 @@ export async function updateUser(
 		} else {
 			imageUrl = await updateFile(image, prevState?.prev?.image);
 		}
+		// Handle email verification status
+		const emailVerifiedValue = emailVerified === 'verified' ? new Date() : null;
 
 		// Update user details
 		await prisma.user.update({
@@ -160,6 +185,7 @@ export async function updateUser(
 				role,
 				artistId,
 				image: imageUrl,
+				emailVerified: emailVerifiedValue,
 			},
 		});
 
