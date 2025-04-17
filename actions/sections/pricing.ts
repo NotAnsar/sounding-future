@@ -79,6 +79,7 @@ export async function createPricingPlan(
 		name: formData.get('name'),
 		description: formData.get('description'),
 		priceAmount: formData.get('priceAmount'),
+
 		priceCurrency: formData.get('priceCurrency'),
 		pricePeriod: formData.get('pricePeriod'),
 		pageId: formData.get('pageId') || '1',
@@ -100,7 +101,10 @@ export async function createPricingPlan(
 
 		// Create the pricing plan
 		const plan = await prisma.pricingPlan.create({
-			data: { ...planData, priceAmount: priceAmount ?? null },
+			data: {
+				...planData,
+				priceAmount: formData.get('priceAmount') === '' ? null : priceAmount,
+			},
 		});
 
 		// Create the sections for this plan
@@ -185,7 +189,10 @@ export async function updatePricingPlan(
 		// Update the plan
 		await prisma.pricingPlan.update({
 			where: { id },
-			data: { ...planData, priceAmount: priceAmount ?? null },
+			data: {
+				...planData,
+				priceAmount: formData.get('priceAmount') === '' ? null : priceAmount,
+			},
 		});
 
 		// Get existing sections
