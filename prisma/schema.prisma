@@ -467,8 +467,8 @@ model PricingPlan {
   id              String   @id @default(cuid())
   name            String
   description     String
-  priceAmount     Float
-  priceCurrency   String
+  priceAmount     Float?
+  priceCurrency   String?
   pricePeriod     String?
   displayOrder    Int      @default(autoincrement())
   published                 Boolean  @default(false)

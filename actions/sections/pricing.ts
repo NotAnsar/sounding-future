@@ -20,8 +20,11 @@ const sectionSchema = z.object({
 const pricingPlanSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters').trim(),
 	description: z.string().min(2, 'Description is required').trim(),
-	priceAmount: z.coerce.number().nonnegative('Price must be 0 or greater'),
-	priceCurrency: z.string().min(1, 'Currency symbol is required').trim(),
+	priceAmount: z.coerce
+		.number()
+		.nonnegative('Price must be 0 or greater if provided')
+		.optional(),
+	priceCurrency: z.string().optional(),
 	pricePeriod: z.string().optional(),
 	pageId: z.string(),
 	buttonText: z.string().optional(),
@@ -85,8 +88,6 @@ export async function createPricingPlan(
 		sections: sectionsData,
 	});
 
-	console.log(formData.get('buttonLink'));
-
 	if (!validatedFields.success) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
@@ -95,11 +96,11 @@ export async function createPricingPlan(
 	}
 
 	try {
-		const { sections, ...planData } = validatedFields.data;
+		const { sections, priceAmount, ...planData } = validatedFields.data;
 
 		// Create the pricing plan
 		const plan = await prisma.pricingPlan.create({
-			data: planData,
+			data: { ...planData, priceAmount: priceAmount ?? null },
 		});
 
 		// Create the sections for this plan
@@ -179,12 +180,12 @@ export async function updatePricingPlan(
 	}
 
 	try {
-		const { sections, ...planData } = validatedFields.data;
+		const { sections, priceAmount, ...planData } = validatedFields.data;
 
 		// Update the plan
 		await prisma.pricingPlan.update({
 			where: { id },
-			data: planData,
+			data: { ...planData, priceAmount: priceAmount ?? null },
 		});
 
 		// Get existing sections

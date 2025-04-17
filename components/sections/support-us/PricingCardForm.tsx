@@ -149,7 +149,7 @@ export default function PricingCardForm({
 							type='number'
 							name='priceAmount'
 							id='priceAmount'
-							defaultValue={initialData?.priceAmount ?? 0}
+							defaultValue={initialData?.priceAmount ?? undefined}
 							className={cn(
 								state?.errors?.priceAmount
 									? 'border-destructive focus-visible:ring-destructive'
@@ -174,7 +174,7 @@ export default function PricingCardForm({
 							type='text'
 							name='priceCurrency'
 							id='priceCurrency'
-							defaultValue={initialData?.priceCurrency || '€'}
+							defaultValue={initialData?.priceCurrency || ''}
 							className={cn(
 								state?.errors?.priceCurrency
 									? 'border-destructive focus-visible:ring-destructive'
