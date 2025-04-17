@@ -469,7 +469,7 @@ model PricingPlan {
   description     String
   priceAmount     Float
   priceCurrency   String
-  pricePeriod     String
+  pricePeriod     String?
   displayOrder    Int      @default(autoincrement())
   published                 Boolean  @default(false)
   pageId          String

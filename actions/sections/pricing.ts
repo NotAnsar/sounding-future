@@ -22,7 +22,7 @@ const pricingPlanSchema = z.object({
 	description: z.string().min(2, 'Description is required').trim(),
 	priceAmount: z.coerce.number().nonnegative('Price must be 0 or greater'),
 	priceCurrency: z.string().min(1, 'Currency symbol is required').trim(),
-	pricePeriod: z.string().min(1, 'Period is required').trim(),
+	pricePeriod: z.string().optional(),
 	pageId: z.string(),
 	buttonText: z.string().optional(),
 	// buttonLink: z.string().url('Must be a valid URL').optional(),

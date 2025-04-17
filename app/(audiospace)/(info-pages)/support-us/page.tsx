@@ -41,7 +41,11 @@ export default async function page() {
 								{plan.priceAmount}
 								{plan.priceCurrency}
 							</span>{' '}
-							/<span className=''>{plan.pricePeriod}</span>
+							{plan.pricePeriod && (
+								<>
+									/<span className=''>{plan.pricePeriod}</span>
+								</>
+							)}
 						</div>
 
 						<div className='space-y-6'>

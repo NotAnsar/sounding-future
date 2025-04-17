@@ -100,7 +100,8 @@ function SortablePricingPlan({
 				<p className='text-sm text-muted'>{plan.description}</p>
 				<div className='text-sm text-muted-foreground'>
 					{plan.priceCurrency}
-					{plan.priceAmount}/{plan.pricePeriod}
+					{plan.priceAmount}
+					{plan.pricePeriod && <>/{plan.pricePeriod}</>}
 				</div>
 			</div>
 
