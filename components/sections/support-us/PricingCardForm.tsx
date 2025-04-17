@@ -198,7 +198,7 @@ export default function PricingCardForm({
 							type='text'
 							name='pricePeriod'
 							id='pricePeriod'
-							defaultValue={initialData?.pricePeriod || 'year'}
+							defaultValue={initialData?.pricePeriod || ''}
 							className={cn(
 								state?.errors?.pricePeriod
 									? 'border-destructive focus-visible:ring-destructive'
