@@ -70,7 +70,9 @@ export default function AudioFileForm({
 									{'2) Channel-based audio file (5.1, 7.2, ...).'}
 								</p>
 								<p className='text-sm text-muted ml-4'>
-									We will convert your file to binaural audio.
+									We will convert your file to binaural audio. If you send a
+									non-standard speaker setup (e.g., 8ch, 4ch, …), please include
+									a sketch of the speaker positions.
 								</p>
 							</div>
 
