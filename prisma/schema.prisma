@@ -55,6 +55,7 @@ model Artist {
   genres ArtistGenre[] @relation("ArtistToGenre")
   socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id], onDelete: SetNull)
   articles        ArtistArticle[] @relation("ArtistToArticle")
+  trackArtists TrackArtist[] // Add this line
 
   @@index([name])
   @@map("artist")
@@ -88,12 +89,18 @@ model Track {
   formatId     String?          @map("format_id") 
   
   // Relations
+  // -
   artist Artist @relation(fields: [artistId], references: [id])
+  // artist Artist? @relation(fields: [artistId], references: [id])  // Make optional
   curator      Partner?         @relation("PartnerCurated", fields: [curatedBy], references: [id])
   sourceFormat SourceFormat?    @relation(fields: [formatId], references: [id])
   genres TrackGenre[] 
   likes  Like[]
   listeners    ListeningHistory[]
+  artists TrackArtist[] // Add this line
+    
+
+
 
   
   @@index([title])
@@ -164,6 +171,8 @@ model TrackGenre {
   @@id([trackId, genreId])
   @@map("track_genres")
 }
+
+
 model Follow {
   followingUserId  String   @map("following_user_id")
   followedArtistId String   @map("followed_artist_id")
@@ -496,4 +505,20 @@ model PricingPlanSection {
   plan        PricingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
   
   @@index([planId])
+}
+
+
+model TrackArtist {
+  trackId   String   @map("track_id")
+  artistId  String   @map("artist_id")
+  isPrimary Boolean  @default(false) @map("is_primary")
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  track  Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([trackId, artistId])
+  @@map("track_artists")
 }
