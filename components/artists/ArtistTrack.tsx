@@ -5,7 +5,7 @@ import TracksCards from '../tracks/TracksCards';
 import { getPublicTracksByArtist } from '@/db/tracks';
 
 export default async function ArtistTrack({ id }: { id: string }) {
-	const tracks = await getPublicTracksByArtist(id);
+	const tracks = await getPublicTracksByArtist([id]);
 
 	return (
 		<TabsContent value='tracks'>

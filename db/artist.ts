@@ -50,6 +50,35 @@ export async function getArtists(
 		};
 	}
 }
+export async function getAllArtists(): Promise<ArtistRes> {
+	try {
+		const data = await prisma.artist.findMany({
+			orderBy: { tracks: { _count: 'desc' } },
+		});
+
+		return { data, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle specific Prisma errors
+			console.error(`Database error: ${error.code}`, error);
+
+			return { data: [], error: true, message: 'Database error' };
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			console.error('Validation error:', error);
+			return { data: [], error: true, message: 'Invalid data provided' };
+		}
+
+		console.error('Error fetching artists:', error);
+
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve artists. Please try again later.',
+		};
+	}
+}
 
 export async function getUnlinkedArtists(id?: string): Promise<ArtistRes> {
 	try {

@@ -30,7 +30,10 @@ const TrackSchema = z.object({
 		.min(1, { message: 'Track Source Format is required' }),
 	imageFile: imageSchema.shape.file,
 
-	artist: z.string().min(1, { message: 'You must select an artist' }),
+	artists: z
+		.array(z.string())
+		.min(1, 'At least one Artist is required')
+		.max(4, 'You can only select up to 4 Artists'),
 	curatedBy: z
 		.string()
 		.min(1, { message: 'You must select a curated collection' })
@@ -40,7 +43,11 @@ const TrackSchema = z.object({
 type TrackData = z.infer<typeof TrackSchema>;
 
 export type TrackFormState = State<TrackData> & {
-	prev?: { image?: string | undefined; genres?: string[] | undefined };
+	prev?: {
+		image?: string | undefined;
+		genres?: string[] | undefined;
+		artists?: string[] | undefined;
+	};
 };
 
 export async function submitTrack(
@@ -51,6 +58,10 @@ export async function submitTrack(
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
 
+	const artists = formData
+		.getAll('artists')
+		.filter((artist) => artist !== '') as string[];
+
 	const { isUser, artistId, needsArtistProfile, user } = await checkAuth();
 
 	if (needsArtistProfile) {
@@ -60,9 +71,22 @@ export async function submitTrack(
 		};
 	}
 
+	// For non-admin users, ensure their artist ID is used
+	const artistsToUse = isUser ? (artistId ? [artistId] : []) : artists;
+
+	if (artistsToUse.length === 0) {
+		return {
+			errors: { artists: ['At least one artist is required'] },
+			message: 'Failed to submit track. Please check the form for errors.',
+		};
+	}
+
+	// Check track limit for the user's artist
 	if (artistId) {
 		const trackCount = await prisma.track.count({
-			where: { artistId },
+			where: {
+				OR: [{ artistId }, { artists: { some: { artistId } } }],
+			},
 		});
 
 		if (user?.role === 'user' && trackCount >= 3) {
@@ -79,7 +103,7 @@ export async function submitTrack(
 
 	const validatedFields = TrackSchema.safeParse({
 		trackName: formData.get('trackName'),
-		artist: isUser ? artistId : formData.get('artist'),
+		artists: artistsToUse,
 		imageFile: await checkFile(formData.get('imageFile')),
 		curatedBy: formData.get('curatedBy') || undefined,
 		genreTags: genreTags,
@@ -101,7 +125,7 @@ export async function submitTrack(
 		const {
 			trackRegistration,
 			trackName,
-			artist,
+			artists,
 			releaseYear,
 			curatedBy,
 			genreTags,
@@ -119,11 +143,12 @@ export async function submitTrack(
 			create: { name: sourceFormat },
 		});
 
+		// Create the track with the primary artist
 		const track = await prisma.track.create({
 			data: {
 				title: trackName,
 				releaseYear: +releaseYear,
-				artistId: artist,
+				artistId: artists[0], // Set first artist as primary for backward compatibility
 				cover: imageUrl,
 				formatId: sourceFormatData.id,
 				releasedBy: release,
@@ -131,14 +156,26 @@ export async function submitTrack(
 				slug,
 				trackRegistration:
 					trackRegistration === 'NOT_REGISTERED' ? null : trackRegistration,
+
+				artists: {
+					createMany: {
+						data: artists.map((artistId, index) => ({
+							artistId,
+							isPrimary: true,
+							order: index,
+						})),
+					},
+				},
+
+				genres: {
+					createMany: {
+						data: genreTags.map((genreId) => ({ genreId })),
+					},
+				},
 			},
 		});
 
 		trackId = track.id;
-
-		await prisma.trackGenre.createMany({
-			data: genreTags.map((genreId) => ({ trackId, genreId })),
-		});
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
@@ -167,7 +204,8 @@ export async function updateTrack(
 	prevState: TrackFormState,
 	formData: FormData
 ): Promise<TrackFormState> {
-	const { isUser, artistId, needsArtistProfile } = await checkAuth();
+	const { isUser, artistId, needsArtistProfile, user } = await checkAuth();
+	const isAdmin = user?.role === 'admin';
 
 	if (needsArtistProfile) {
 		return {
@@ -180,11 +218,45 @@ export async function updateTrack(
 		.getAll('genreTags')
 		.filter((tag) => tag !== '') as string[];
 
+	// Only process artists data if user is admin
+	const artistsData = isAdmin
+		? (formData.getAll('artists').filter((artist) => artist !== '') as string[])
+		: [];
+
+	// If user is not admin, get current track's artists to preserve them
+	let currentArtists: string[] = [];
+	if (!isAdmin) {
+		const track = await prisma.track.findUnique({
+			where: { id },
+			include: { artists: true },
+		});
+
+		if (track) {
+			currentArtists = track.artists.map((a) => a.artistId);
+		}
+	}
+
+	// For non-admin users, preserve existing artists or use their artistId
+	const artistsToUse = isAdmin
+		? artistsData
+		: currentArtists.length > 0
+		? currentArtists
+		: artistId
+		? [artistId]
+		: [];
+
+	if (artistsToUse.length === 0) {
+		return {
+			errors: { artists: ['At least one artist is required'] },
+			message: 'Failed to update track. Please check the form for errors.',
+		};
+	}
+
 	const validatedFields = TrackSchema.omit({
 		imageFile: true,
 	}).safeParse({
 		trackName: formData.get('trackName'),
-		artist: isUser ? artistId : formData.get('artist'),
+		artists: artistsToUse,
 		curatedBy: formData.get('curatedBy') || undefined,
 		genreTags: genreTagsData,
 		releaseYear: formData.get('releaseYear'),
@@ -202,7 +274,7 @@ export async function updateTrack(
 
 	const {
 		trackName,
-		artist,
+		artists,
 		releaseYear,
 		curatedBy,
 		genreTags,
@@ -234,12 +306,13 @@ export async function updateTrack(
 			create: { name: sourceFormat },
 		});
 
+		// Update the track with the primary artist
 		await prisma.track.update({
 			where: { id },
 			data: {
 				title: trackName,
 				releaseYear: +releaseYear,
-				artistId: artist,
+				artistId: artists[0], // Set first artist as primary for backward compatibility
 				cover: imageUrl,
 				formatId: sourceFormatData.id,
 				releasedBy: release,
@@ -250,8 +323,8 @@ export async function updateTrack(
 			},
 		});
 
+		// Handle genres
 		const oldGenres = prevState?.prev?.genres || [];
-
 		const genresToAdd = genreTags.filter((id) => !oldGenres.includes(id));
 		const genresToRemove = oldGenres.filter((id) => !genreTags.includes(id));
 
@@ -269,6 +342,26 @@ export async function updateTrack(
 					trackId: id,
 					genreId: { in: genresToRemove },
 				},
+			});
+		}
+
+		// Only allow admins to modify artists
+		if (isAdmin) {
+			// Delete all existing artist connections and recreate them
+			await prisma.trackArtist.deleteMany({
+				where: {
+					trackId: id,
+				},
+			});
+
+			// Create all artist connections with all artists as primary
+			await prisma.trackArtist.createMany({
+				data: artists.map((artistId, index) => ({
+					trackId: id,
+					artistId,
+					isPrimary: true, // All artists are primary
+					order: index,
+				})),
 			});
 		}
 

@@ -91,7 +91,9 @@ export default function SearchResults({
 							/>
 							<div>
 								<p>{track.title}</p>
-								<p className='text-muted text-sm'>{track.artist.name}</p>
+								<p className='text-muted text-sm'>
+									{track.artists.map((a) => a.artist.name).join(', ')}
+								</p>
 							</div>
 						</Link>
 					))}

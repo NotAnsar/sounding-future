@@ -47,11 +47,18 @@ export function generateCuratorSchema(
 			track: tracks.map((track) => ({
 				'@type': 'MusicRecording',
 				name: track.title,
-				byArtist: {
-					'@type': 'MusicGroup',
-					name: track.artist.name,
-					url: `${baseUrl}/artists/${track.artist.slug}`,
-				},
+				byArtist:
+					track.artists.length > 1
+						? track.artists.map((artist) => ({
+								'@type': 'MusicGroup',
+								name: artist.artist.name,
+								url: `${baseUrl}/artists/${artist.artist.slug}`,
+						  }))
+						: {
+								'@type': 'MusicGroup',
+								name: track.artists[0]?.artist.name,
+								url: `${baseUrl}/artists/${track.artists[0]?.artist.slug}`,
+						  },
 				url: `${baseUrl}/tracks/${track.slug}`,
 				duration: track.duration
 					? `PT${Math.floor(track.duration / 60)}M${track.duration % 60}S`

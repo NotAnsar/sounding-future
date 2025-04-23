@@ -21,10 +21,15 @@ export default async function page({
 		return <Error message={track.message} />;
 	}
 
-	// Authorization check
 	const isUnauthorizedAccess =
-		session?.user?.role === 'user' &&
-		session?.user?.artistId !== track.data?.artistId;
+		session?.user?.role !== 'admin' &&
+		!(
+			session?.user?.artistId === track.data?.artistId ||
+			// Check if user is one of the artists in the track.artists array
+			track.data?.artists?.some(
+				(artist) => artist.artistId === session?.user?.artistId
+			)
+		);
 
 	if (isUnauthorizedAccess) {
 		return <Error message='You do not have permission to edit this track' />;

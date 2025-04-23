@@ -93,20 +93,35 @@ export default function PopularTracks({
 								<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
 									{track?.genres?.map((genre) => genre.genre.name).join(', ')}
 								</h6>
-								<Link
-									href={`/artists/${track.artist.slug}`}
-									className='text-sm font-medium text-muted line-clamp-1 sm:hidden block hover:underline'
-								>
-									{track.artist.name}
-								</Link>
+
+								<div className='text-sm font-medium text-muted line-clamp-1 sm:hidden block'>
+									{track?.artists?.map((artist, artistIndex) => (
+										<span key={artist.artist.id || artistIndex}>
+											{artistIndex > 0 && ', '}
+											<Link
+												href={`/artists/${artist.artist.slug}`}
+												className='hover:underline'
+											>
+												{artist.artist.name}
+											</Link>
+										</span>
+									))}
+								</div>
 							</TableCell>
 							<TableCell className='hidden sm:block'>
-								<Link
-									href={`/artists/${track.artist.slug}`}
-									className='text-muted text-base font-semibold text-nowrap hover:text-primary'
-								>
-									{track.artist.name}
-								</Link>
+								<>
+									{track?.artists?.map((artist, artistIndex) => (
+										<span key={artist.artist.id || artistIndex}>
+											{artistIndex > 0 && ', '}
+											<Link
+												href={`/artists/${artist.artist.slug}`}
+												className='text-muted text-base font-semibold hover:text-primary'
+											>
+												{artist.artist.name}
+											</Link>
+										</span>
+									))}
+								</>
 							</TableCell>
 							<TableCell className='text-right pr-4'>
 								<LikeForm trackId={track.id} liked={track.isLiked} />

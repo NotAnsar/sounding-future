@@ -1,7 +1,7 @@
 import BreadCrumb from '@/components/BreadCrumb';
 import Error from '@/components/Error';
 import TrackBasicsForm from '@/components/TracksCrud/upload/BasicsForm';
-import { getArtists } from '@/db/artist';
+import { getAllArtists } from '@/db/artist';
 import { getGenres } from '@/db/genre';
 import { getPartners } from '@/db/partner';
 import { getSourceFormats } from '@/db/source-format';
@@ -19,7 +19,7 @@ export default async function page({
 			auth(),
 			getSourceFormats(),
 			getPartners(),
-			getArtists(),
+			getAllArtists(),
 			getGenres(),
 			getTrackById(id),
 		]);
@@ -34,9 +34,19 @@ export default async function page({
 	}
 
 	// Authorization check
+	// const isUnauthorizedAccess =
+	// 	session?.user?.role === 'user' &&
+	// 	session?.user?.artistId !== track.data?.artistId;
+
 	const isUnauthorizedAccess =
-		session?.user?.role === 'user' &&
-		session?.user?.artistId !== track.data?.artistId;
+		session?.user?.role !== 'admin' &&
+		!(
+			session?.user?.artistId === track.data?.artistId ||
+			// Check if user is one of the artists in the track.artists array
+			track.data?.artists?.some(
+				(artist) => artist.artistId === session?.user?.artistId
+			)
+		);
 
 	if (isUnauthorizedAccess) {
 		return <Error message='You do not have permission to edit this track' />;

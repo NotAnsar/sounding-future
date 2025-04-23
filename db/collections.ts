@@ -21,6 +21,7 @@ export async function getLikedTracks(): Promise<PublicTrackWithLikeStatusRes> {
 				track: {
 					include: {
 						artist: true,
+						artists: { include: { artist: true }, orderBy: { order: 'asc' } },
 						genres: { include: { genre: true } },
 						likes: {
 							where: { userId: session.user.id },

@@ -10,23 +10,23 @@ export async function getRandomTracks(
 	try {
 		// Get random track IDs - one per artist
 		const trackIds = await prisma.$queryRaw<{ id: string }[]>`
-			WITH artists_with_tracks AS (
-				SELECT DISTINCT artist_id 
-				FROM tracks 
-				WHERE published = true
-			),
-			random_tracks AS (
-				SELECT t.id, t.artist_id, 
-					ROW_NUMBER() OVER (PARTITION BY t.artist_id ORDER BY RANDOM()) as rn
-				FROM tracks t
-				WHERE t.published = true
-			)
-			SELECT rt.id 
-			FROM random_tracks rt
-			WHERE rt.rn = 1
-			ORDER BY RANDOM()
-			LIMIT ${limit}
-		`;
+            WITH artists_with_tracks AS (
+                SELECT DISTINCT artist_id 
+                FROM tracks 
+                WHERE published = true
+            ),
+            random_tracks AS (
+                SELECT t.id, t.artist_id, 
+                    ROW_NUMBER() OVER (PARTITION BY t.artist_id ORDER BY RANDOM()) as rn
+                FROM tracks t
+                WHERE t.published = true
+            )
+            SELECT rt.id 
+            FROM random_tracks rt
+            WHERE rt.rn = 1
+            ORDER BY RANDOM()
+            LIMIT ${limit}
+        `;
 
 		// Extract IDs
 		const orderedIds = trackIds.map((t) => t.id);
@@ -35,7 +35,12 @@ export async function getRandomTracks(
 		const data = await prisma.track.findMany({
 			where: { id: { in: orderedIds } },
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					// Add new TrackArtist relation
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
 				likes: session?.user?.id
 					? { where: { userId: session.user.id } }
@@ -84,7 +89,12 @@ export async function getPublicTracks(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					// Add new TrackArtist relation
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
 				likes: session?.user.id
 					? {
@@ -135,17 +145,22 @@ export async function getPublicTracks(
 }
 
 export async function getPublicTracksByArtist(
-	artistSlug: string,
+	artistSlug: string[],
 	limit?: number
 ): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
 	try {
+		// Get tracks either as primary artist (old relationship) or via TrackArtist relation
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
-				likes: session?.user.id
+				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
 					  }
@@ -153,7 +168,13 @@ export async function getPublicTracksByArtist(
 				_count: { select: { likes: true } },
 			},
 			take: limit,
-			where: { artist: { slug: artistSlug }, published: true },
+			where: {
+				OR: [
+					{ artist: { slug: { in: artistSlug } } }, // Original relation with array support
+					{ artists: { some: { artist: { slug: { in: artistSlug } } } } }, // New relation with array support
+				],
+				published: true,
+			},
 			orderBy: { releaseYear: 'desc' },
 		});
 
@@ -192,7 +213,12 @@ export async function getArtistSimilarTracks(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					// Add new TrackArtist relation
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
 			},
 			take: limit,
@@ -243,10 +269,18 @@ export async function getPublicTracksById(
 					include: {
 						articles: { include: { article: true } },
 						socialLinks: true,
-						followers: session?.user.id
-							? { where: { followingUserId: session.user.id } }
-							: undefined,
 					},
+				},
+				artists: {
+					include: {
+						artist: {
+							include: {
+								articles: { include: { article: true } },
+								socialLinks: true,
+							},
+						},
+					},
+					orderBy: { order: 'asc' },
 				},
 				genres: { include: { genre: true } },
 				curator: true,
@@ -268,7 +302,6 @@ export async function getPublicTracksById(
 			data: {
 				...data,
 				isLiked: session?.user ? data.likes.length > 0 : false,
-				followed: session?.user ? data.artist.followers.length > 0 : false,
 			},
 			error: false,
 		};
@@ -299,8 +332,11 @@ export async function getTrackById(id: string): Promise<{
 	try {
 		const data = await prisma.track.findUnique({
 			where: { id },
-
 			include: {
+				artists: {
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: {
 					include: { genre: true },
 				},
@@ -355,10 +391,22 @@ export async function getTracksStats(): Promise<{
 	}
 
 	try {
+		// For admin, get all tracks. For artist, get tracks where they are either primary artist or collaborator
 		const data = await prisma.track.findMany({
-			where: { artistId: isAdmin ? undefined : artistId! },
+			where: isAdmin
+				? undefined
+				: {
+						OR: [
+							{ artistId: artistId! }, // Primary artist (old relation)
+							{ artists: { some: { artistId: artistId! } } }, // Collaborator (new relation)
+						],
+				  },
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: true,
 				curator: true,
 				_count: { select: { likes: true, listeners: true } },
@@ -397,7 +445,12 @@ export async function getPublicTracksByPartner(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					// Add new TrackArtist relation
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
 				likes: session?.user.id
 					? {
@@ -456,7 +509,12 @@ export async function getPublicTracksByGenre(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true,
+				artist: true, // Keep for backward compatibility
+				artists: {
+					// Add new TrackArtist relation
+					include: { artist: true },
+					orderBy: { order: 'asc' },
+				},
 				genres: { include: { genre: true } },
 				likes: session?.user.id
 					? {
@@ -504,6 +562,11 @@ export async function getPublicTracksByGenre(
 	}
 }
 
+// Updated type definitions to include TrackArtist relation
+export type TrackArtistData = Prisma.TrackArtistGetPayload<{
+	include: { artist: true };
+}>;
+
 export type ArtistDetails = Prisma.ArtistGetPayload<{
 	include: { socialLinks: true; articles: { include: { article: true } } };
 }>;
@@ -513,15 +576,26 @@ export type TrackDetails = Prisma.TrackGetPayload<{
 		artist: {
 			include: { articles: { include: { article: true } }; socialLinks: true };
 		};
+		artists: {
+			include: {
+				artist: {
+					include: {
+						articles: { include: { article: true } };
+						socialLinks: true;
+					};
+				};
+			};
+		};
 		genres: { include: { genre: true } };
 		curator: true;
 		sourceFormat: true;
 	};
-}> & { isLiked: boolean; followed: boolean };
+}> & { isLiked: boolean };
 
 export type PublicTrack = Prisma.TrackGetPayload<{
 	include: {
 		artist: true;
+		artists: { include: { artist: true } };
 		genres: { include: { genre: true } };
 	};
 }>;
@@ -537,11 +611,14 @@ export type PublicTrackWithLikeStatusRes = {
 	message?: string;
 };
 
-export type TrackWithgenres = { genres: Genre[] } & Track;
+export type TrackWithgenres = { genres: Genre[] } & Track & {
+		artists: TrackArtistData[];
+	};
 
 export type TrackWithCounts = Prisma.TrackGetPayload<{
 	include: {
 		artist: true;
+		artists: { include: { artist: true } };
 		genres: true;
 		curator: true;
 		_count: {

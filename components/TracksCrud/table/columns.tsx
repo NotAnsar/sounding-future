@@ -52,7 +52,7 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 						{track.title}
 					</Link>
 					<h6 className='text-sm font-light text-muted line-clamp-1 hidden sm:block'>
-						{track.artist.name}
+						{track.artists.map((artist) => artist.artist.name).join(', ')}
 					</h6>
 				</>
 			);
@@ -60,7 +60,8 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 	},
 	{
 		accessorKey: 'artist',
-		accessorFn: (row) => row.artist.name,
+		accessorFn: (row) =>
+			row.artists.map((artist) => artist.artist.name).join(', '),
 		header: ({ column }) => {
 			return (
 				<Button
@@ -74,7 +75,9 @@ export const columns: ColumnDef<TrackWithCounts>[] = [
 			);
 		},
 		cell: ({ row }) => {
-			const name = row?.original?.artist?.name;
+			const name = row?.original?.artists
+				.map((artist) => artist.artist.name)
+				.join(', ');
 
 			return <h1 className='text-muted text-base font-semibold'>{name}</h1>;
 		},

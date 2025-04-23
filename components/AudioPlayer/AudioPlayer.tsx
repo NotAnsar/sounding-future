@@ -29,6 +29,8 @@ export default function AudioPlayer() {
 
 	if (!currentTrack) return null;
 
+	console.log(currentTrack);
+
 	return (
 		<div className='w-full dark:bg-player bg-[#dadafa] fixed bottom-0 py-3 px-4 md:px-5 flex items-center justify-between gap-2 z-10 '>
 			<div className='flex gap-3 items-center w-auto md:min-w-[200px] xl:min-w-[250px] max-w-[250px] md:w-[250px]'>
@@ -41,8 +43,8 @@ export default function AudioPlayer() {
 				/>
 				<div className='truncate hidden md:block'>
 					<h2 className='font-semibold truncate'>{currentTrack.title}</h2>
-					<h5 className='text-sm text-muted font-semibold'>
-						{currentTrack.artist.name}
+					<h5 className='text-sm text-muted font-semibold truncate'>
+						{currentTrack.artists.map((a) => a.artist.name).join(', ')}
 					</h5>
 				</div>
 			</div>

@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
 import LikeForm from '@/components/LikeForm';
-import FollowForm from '@/components/FollowForm';
 
 export default function TrackDetails({ track }: { track: TrackDetails }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
@@ -82,40 +81,79 @@ export default function TrackDetails({ track }: { track: TrackDetails }) {
 							<LikeForm
 								trackId={track.id}
 								liked={track.isLiked}
-								// className='w-7 h-auto text-white hover:text-white'
 								className='w-7 h-auto text-grey hover:text-white '
 								likedClassname='text-grey fill-grey hover:text-white hover:fill-white'
 							/>
 						</div>
 
-						<ShareButton artistId={track.artist.slug} />
+						<ShareButton
+							artistsSlugs={track.artists.map((a) => ({
+								slug: a.artist.slug,
+								name: a.artist.name,
+							}))}
+						/>
 					</div>
 				</div>
 
 				<div className='flex gap-2.5 items-center'>
-					{track?.artist?.pic ? (
-						<Image
-							alt={track?.artist?.name}
-							src={track?.artist?.pic}
-							className='rounded-full w-8 sm:w-12 h-auto aspect-square object-cover'
-							width={48}
-							height={48}
-						/>
+					{track.artists && track.artists.length > 0 ? (
+						<>
+							<div className='flex flex-col sm:flex-row sm:items-center w-full'>
+								<div className='flex-shrink-0'>
+									<div className='flex'>
+										{track.artists.map((artist, index) =>
+											artist.artist.pic ? (
+												<div
+													key={artist.artist.id}
+													className={cn(
+														'relative',
+														index === 0 ? 'ml-0' : '-ml-3.5 sm:-ml-4'
+													)}
+												>
+													<Image
+														alt={artist.artist.name}
+														src={artist.artist.pic}
+														className='rounded-full w-9 sm:w-10 h-9 sm:h-10 object-cover'
+														width={40}
+														height={40}
+													/>
+												</div>
+											) : (
+												<div
+													key={artist.artist.id}
+													className={cn(
+														'relative rounded-full w-8 sm:w-10 h-8 sm:h-10 bg-muted border-2 border-white',
+														index === 0 ? 'ml-0' : '-ml-3 sm:-ml-4'
+													)}
+												/>
+											)
+										)}
+									</div>
+								</div>
+								<div className='flex flex-wrap items-center mt-2 sm:mt-0 sm:ml-2 max-w-full'>
+									{track.artists.map((artist, index) => (
+										<div
+											key={`name-${artist.artist.id}`}
+											className='flex items-center'
+										>
+											<Link
+												href={`/artists/${artist.artist.slug}`}
+												className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer truncate max-w-[200px] sm:max-w-[300px]'
+												title={artist.artist.name}
+											>
+												{artist.artist.name}
+											</Link>
+											{index < track.artists.length - 1 && (
+												<span className='mx-1 flex-shrink-0'>•</span>
+											)}
+										</div>
+									))}
+								</div>
+							</div>
+						</>
 					) : (
-						<div className='rounded-full w-8 sm:w-12 h-auto bg-muted' />
+						<div className='rounded-full w-8 h-8 sm:w-10 sm:h-10 bg-muted flex-shrink-0' />
 					)}
-
-					<Link
-						href={`/artists/${track.artist.slug}`}
-						className='text-lg sm:text-2xl font-semibold hover:underline cursor-pointer line-clamp-1 '
-					>
-						{track.artist.name}
-					</Link>
-					<FollowForm
-						artistId={track.artist.id}
-						followed={track.followed}
-						className='min-w-6 w-6 sm:min-w-7 sm:w-7 h-auto '
-					/>
 				</div>
 			</div>
 		</div>
@@ -124,10 +162,10 @@ export default function TrackDetails({ track }: { track: TrackDetails }) {
 
 function ShareButton({
 	className,
-	artistId,
+	artistsSlugs,
 }: {
 	className?: string;
-	artistId?: string;
+	artistsSlugs?: { slug: string; name: string }[];
 }) {
 	return (
 		<DropdownMenu>
@@ -148,20 +186,23 @@ function ShareButton({
 					Copy link to track
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					onClick={() => {
-						navigator.clipboard.writeText(
-							`${window.location.origin}/artists/${artistId}`
-						);
-						toast({
-							description: 'Artist link copied to clipboard',
-						});
-					}}
-					className='cursor-pointer'
-				>
-					<Copy className='w-4 h-auto aspect-square text-muted mr-1.5' />
-					Copy link to artist
-				</DropdownMenuItem>
+				{artistsSlugs?.map(({ name, slug }) => (
+					<DropdownMenuItem
+						key={slug}
+						onClick={() => {
+							navigator.clipboard.writeText(
+								`${window.location.origin}/artists/${slug}`
+							);
+							toast({
+								description: 'Artist link copied to clipboard',
+							});
+						}}
+						className='cursor-pointer'
+					>
+						<Copy className='w-4 h-auto aspect-square text-muted mr-1.5' />
+						Copy link to {name}
+					</DropdownMenuItem>
+				))}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

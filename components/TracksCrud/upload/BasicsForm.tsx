@@ -39,6 +39,8 @@ export default function TrackBasicsForm({
 	artistsData: Artist[];
 	genresData: Genre[];
 }) {
+	console.log(initialData?.artists?.map((g) => g.artistId));
+
 	const initialState: TrackFormState = {
 		message: null,
 		errors: {},
@@ -86,26 +88,28 @@ export default function TrackBasicsForm({
 					<div className='grid gap-2'>
 						<Label
 							htmlFor='artist'
-							className={cn(state?.errors?.artist ? 'text-destructive' : '')}
+							className={cn(state?.errors?.artists ? 'text-destructive' : '')}
 						>
-							Artist *
+							Artists *
 						</Label>
 
-						<SelectInput
-							name='artist'
-							options={artistsData.map((a) => ({ label: a.name, value: a.id }))}
-							initialValue={initialData?.artistId}
-							placeholder='Select Artist'
-							searchPlaceholder='Search Artist...'
+						<MultiSelect
+							options={artistsData.map((g) => ({ label: g.name, value: g.id }))}
+							initialValue={initialData?.artists?.map((g) => g.artistId)}
+							name='artists'
+							placeholder='Select Artists'
+							searchPlaceholder='Search Artists...'
 							emptyMessage='No Artist found.'
+							classNameMaxWidth={'w-full'}
 							className={cn(
-								state?.errors?.artist
+								state?.errors?.artists
 									? 'border-destructive focus-visible:ring-destructive '
 									: ''
 							)}
+							required
 						/>
 
-						<ErrorMessage errors={state?.errors?.artist} />
+						<ErrorMessage errors={state?.errors?.artists} />
 					</div>
 				) : null}
 

@@ -1,7 +1,6 @@
 import { TabsContent } from '@/components/ui/tabs';
 import TrackDetails from '@/components/tracks/track/TrackDetails';
 import { Tabs } from '@/components/ui/tabs';
-// import { Icons } from '@/components/icons/track-icons';
 import TrackList from '@/components/tracks/TrackList';
 import TrackNav from '@/components/tracks/track/TrackNav';
 import TracksCarousel from '@/components/home/NewTracks';
@@ -31,13 +30,23 @@ export async function generateMetadata({
 	const track = trackRes.data;
 
 	return {
-		title: `${track.title} • ${track.artist.name} - Track`,
+		title: `${track.title} • ${track.artists
+			.map((a) => a.artist.name)
+			.join(', ')} - Track`,
 		description:
-			track.info || `Listen to ${track.title} by ${track.artist.name}`,
+			track.info ||
+			`Listen to ${track.title} by ${track.artists
+				.map((a) => a.artist.name)
+				.join(', ')}`,
 		openGraph: {
-			title: `${track.title} • ${track.artist.name} - Track`,
+			title: `${track.title} • ${track.artists
+				.map((a) => a.artist.name)
+				.join(', ')} - Track`,
 			description:
-				track.info || `Listen to ${track.title} by ${track.artist.name}`,
+				track.info ||
+				`Listen to ${track.title} by ${track.artists
+					.map((a) => a.artist.name)
+					.join(', ')}`,
 			images: [track.cover],
 			type: 'music.song',
 		},
@@ -96,16 +105,24 @@ export default async function page({
 							</TabsContent>
 							<TabsContent value='others'>
 								<p className='font-semibold text-muted text-lg mb-4 px-2'>
-									Other tracks from {track?.artist?.name}
+									Other tracks from{' '}
+									{track?.artists.map(
+										(a, i) =>
+											a.artist.name +
+											(i === track.artists.length - 1 ? '' : ', ')
+									)}
 								</p>
 
 								<Suspense
 									fallback={<div>Loading tracks by current artist...</div>}
 								>
-									<TracksByCurrentArtist artistId={track.artist.slug} />
+									<TracksByCurrentArtist
+										artistId={track.artists.map((a) => a.artist.slug)}
+									/>
 								</Suspense>
 							</TabsContent>
-							<TrackArtistDetails artist={track.artist} />
+							<TrackArtistDetails artists={track.artists} />
+							{/* <TrackArtistDetails artist={track.artist} /> */}
 						</div>
 						<div>
 							<ul className='mt-2 px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
@@ -180,7 +197,7 @@ async function SimilarTracks({ genres, id }: { genres: Genre[]; id?: string }) {
 	);
 }
 
-async function TracksByCurrentArtist({ artistId }: { artistId: string }) {
+async function TracksByCurrentArtist({ artistId }: { artistId: string[] }) {
 	const tracks = await getPublicTracksByArtist(artistId, 8);
 
 	if (tracks.error) {
