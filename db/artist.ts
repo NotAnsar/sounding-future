@@ -12,7 +12,7 @@ export async function getArtists(
 	try {
 		let data = await prisma.artist.findMany({
 			where: { published: true },
-			orderBy: { tracks: { _count: 'desc' } },
+			orderBy: { trackArtists: { _count: 'desc' } },
 		});
 
 		if (random) {
@@ -50,10 +50,11 @@ export async function getArtists(
 		};
 	}
 }
+
 export async function getAllArtists(): Promise<ArtistRes> {
 	try {
 		const data = await prisma.artist.findMany({
-			orderBy: { tracks: { _count: 'desc' } },
+			orderBy: { trackArtists: { _count: 'desc' } }, // Changed from tracks to trackArtists
 		});
 
 		return { data, error: false };
@@ -118,7 +119,7 @@ export async function getSimilarArtists(
 ): Promise<ArtistRes> {
 	try {
 		const data = await prisma.artist.findMany({
-			orderBy: { tracks: { _count: 'desc' } },
+			orderBy: { trackArtists: { _count: 'desc' } }, // Changed from tracks to trackArtists
 			where: {
 				published: true,
 				genres:
@@ -166,7 +167,7 @@ export async function getArtistsBySlug(
 				genres: { include: { genre: true } },
 				socialLinks: true,
 				articles: { include: { article: true } },
-				followers: session?.user.id
+				followers: session?.user?.id
 					? { where: { followingUserId: session.user.id } }
 					: undefined,
 			},
@@ -229,7 +230,7 @@ export async function getArtistsById(
 				socialLinks: true,
 				articles: { include: { article: true } },
 				user: { select: { f_name: true, l_name: true } },
-				followers: session?.user.id
+				followers: session?.user?.id
 					? { where: { followingUserId: session.user.id } }
 					: undefined,
 			},
@@ -258,26 +259,74 @@ export async function getArtistsById(
 	}
 }
 
-export type ArtistList = Prisma.ArtistGetPayload<{
-	include: {
-		genres: { include: { genre: true } };
-		socialLinks: true;
-		_count: { select: { tracks: true } };
-		tracks: {
-			include: {
-				listeners: {
-					select: {
-						id: true;
-						createdAt: true;
-						trackId: true;
-						userId: true;
-						listenedAt: true;
-					};
-				};
-			};
-		};
-	};
-}>;
+// Define types for the data we work with
+type TrackListener = {
+	id: string;
+	createdAt: Date;
+	trackId: string;
+	userId: string;
+	listenedAt: Date;
+};
+
+type Genre = {
+	id: string;
+	slug: string;
+	name: string;
+	createdAt: Date;
+	displayOrder: number;
+};
+
+type ArtistGenre = {
+	genre: Genre;
+	artistId: string;
+	genreId: string;
+	createdAt: Date;
+};
+
+type SocialLinks = {
+	id: string;
+	facebook: string | null;
+	instagram: string | null;
+	linkedin: string | null;
+	vimeo: string | null;
+	website: string | null;
+	youtube: string | null;
+	mastodon: string | null;
+	createdAt: Date;
+};
+
+type TrackWithListeners = {
+	id: string;
+	title: string;
+	slug: string;
+	cover: string;
+	listeners: TrackListener[];
+	// Add any other essential fields required by your app
+};
+
+type ArtistCountInfo = {
+	trackArtists: number;
+	tracks: number;
+	followers?: number;
+};
+
+// Define the ArtistList type more specifically
+export type ArtistList = {
+	id: string;
+	slug: string;
+	name: string;
+	f_name: string | null;
+	l_name: string | null;
+	pic: string | null;
+	bio: string | null;
+	socialId: string | null;
+	createdAt: Date;
+	published: boolean;
+	genres: ArtistGenre[];
+	socialLinks: SocialLinks | null;
+	tracks: TrackWithListeners[];
+	_count: ArtistCountInfo;
+};
 
 export async function getArtistsList(
 	limit?: number,
@@ -297,18 +346,22 @@ export async function getArtistsList(
 				socialLinks: true,
 				_count: {
 					select: {
-						tracks: true,
+						trackArtists: true,
 					},
 				},
-				tracks: {
+				trackArtists: {
 					include: {
-						listeners: {
-							select: {
-								id: true,
-								createdAt: true,
-								trackId: true,
-								userId: true,
-								listenedAt: true,
+						track: {
+							include: {
+								listeners: {
+									select: {
+										id: true,
+										createdAt: true,
+										trackId: true,
+										userId: true,
+										listenedAt: true,
+									},
+								},
 							},
 						},
 					},
@@ -323,10 +376,43 @@ export async function getArtistsList(
 			take: limit,
 		});
 
-		if (type === 'popular') {
-			// Sort by total listeners while maintaining the original structure
+		// Transform trackArtists to match the expected tracks structure
+		const transformedArtists: ArtistList[] = artists.map((artist) => {
+			// Extract tracks from trackArtists
+			const tracks = artist.trackArtists.map((ta) => ({
+				id: ta.track.id,
+				title: ta.track.title,
+				slug: ta.track.slug,
+				cover: ta.track.cover,
+				listeners: ta.track.listeners,
+			}));
+
+			// Create a simplified ArtistList object
 			return {
-				data: [...artists].sort((a, b) => {
+				id: artist.id,
+				slug: artist.slug,
+				name: artist.name,
+				f_name: artist.f_name,
+				l_name: artist.l_name,
+				pic: artist.pic,
+				bio: artist.bio,
+				socialId: artist.socialId,
+				createdAt: artist.createdAt,
+				published: artist.published,
+				genres: artist.genres,
+				socialLinks: artist.socialLinks,
+				tracks,
+				_count: {
+					trackArtists: artist._count.trackArtists,
+					tracks: artist._count.trackArtists,
+				},
+			};
+		});
+
+		if (type === 'popular') {
+			// Sort by total listeners
+			return {
+				data: [...transformedArtists].sort((a, b) => {
 					const aListeners = a.tracks.reduce(
 						(sum, track) => sum + track.listeners.length,
 						0
@@ -342,7 +428,7 @@ export async function getArtistsList(
 		}
 
 		return {
-			data: artists,
+			data: transformedArtists,
 			error: false,
 		};
 	} catch (error) {
@@ -401,18 +487,31 @@ export type myArtistData = Prisma.ArtistGetPayload<{
 	};
 }>;
 
-export type ArtistStats = Prisma.ArtistGetPayload<{
-	include: {
-		genres: { include: { genre: true } };
-		_count: { select: { tracks: true; followers: true } };
-		user: { select: { f_name: true; l_name: true } };
-		tracks: {
-			select: {
-				_count: { select: { listeners: true; likes: true } };
-			};
-		};
+// Define the ArtistStats type with more specific types
+export type ArtistStats = {
+	id: string;
+	slug: string;
+	name: string;
+	f_name: string | null;
+	l_name: string | null;
+	pic: string | null;
+	bio: string | null;
+	socialId: string | null;
+	createdAt: Date;
+	published: boolean;
+	genres: ArtistGenre[];
+	user: {
+		f_name: string | null;
+		l_name: string | null;
+	} | null;
+	played: number;
+	liked: number;
+	_count: {
+		trackArtists: number;
+		followers: number;
+		tracks: number;
 	};
-}> & { played: number; liked: number };
+};
 
 type ArtistStatRes = { data: ArtistStats[]; error?: boolean; message?: string };
 
@@ -421,26 +520,57 @@ export async function getArtistsStats(limit?: number): Promise<ArtistStatRes> {
 		const data = await prisma.artist.findMany({
 			include: {
 				genres: { include: { genre: true } },
-				_count: { select: { tracks: true, followers: true } },
+				_count: { select: { trackArtists: true, followers: true } },
 				user: { select: { f_name: true, l_name: true } },
-
-				tracks: {
+				trackArtists: {
 					select: {
-						_count: { select: { listeners: true, likes: true } },
+						track: {
+							select: {
+								_count: { select: { listeners: true, likes: true } },
+							},
+						},
 					},
 				},
 			},
-			// orderBy: { tracks: { _count: 'desc' } },
 			orderBy: { createdAt: 'desc' },
 			take: limit,
 		});
 
-		// Calculate total plays across all tracks
-		const statsWithPlays = data.map((artist) => ({
-			...artist,
-			played: artist.tracks.reduce((s, t) => s + t._count.listeners, 0),
-			liked: artist.tracks.reduce((sum, track) => sum + track._count.likes, 0),
-		}));
+		// Calculate total plays and likes for each artist
+		const statsWithPlays: ArtistStats[] = data.map((artist) => {
+			// Calculate totals
+			const played = artist.trackArtists.reduce(
+				(s, ta) => s + ta.track._count.listeners,
+				0
+			);
+			const liked = artist.trackArtists.reduce(
+				(sum, ta) => sum + ta.track._count.likes,
+				0
+			);
+
+			// Create a simplified ArtistStats object
+			return {
+				id: artist.id,
+				slug: artist.slug,
+				name: artist.name,
+				f_name: artist.f_name,
+				l_name: artist.l_name,
+				pic: artist.pic,
+				bio: artist.bio,
+				socialId: artist.socialId,
+				createdAt: artist.createdAt,
+				published: artist.published,
+				genres: artist.genres,
+				user: artist.user,
+				played,
+				liked,
+				_count: {
+					trackArtists: artist._count.trackArtists,
+					followers: artist._count.followers,
+					tracks: artist._count.trackArtists,
+				},
+			};
+		});
 
 		return { data: statsWithPlays, error: false };
 	} catch (error) {

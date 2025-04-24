@@ -11,7 +11,7 @@ export async function deleteArtist(id: string): Promise<DeleteState> {
 		// Check if artist has any tracks
 		const artistWithTracks = await prisma.artist.findUnique({
 			where: { id },
-			include: { tracks: true },
+			include: { trackArtists: { include: { track: true } } },
 		});
 
 		if (!artistWithTracks) {
@@ -19,7 +19,7 @@ export async function deleteArtist(id: string): Promise<DeleteState> {
 		}
 
 		// If artist has tracks, prevent deletion
-		if (artistWithTracks.tracks.length > 0) {
+		if (artistWithTracks.trackArtists.length > 0) {
 			return {
 				success: false,
 				message:

@@ -8,17 +8,19 @@ export async function getRandomTracks(
 	const session = await auth();
 
 	try {
-		// Get random track IDs - one per artist
+		// Updated SQL query to use track_artists instead of artist_id
 		const trackIds = await prisma.$queryRaw<{ id: string }[]>`
             WITH artists_with_tracks AS (
-                SELECT DISTINCT artist_id 
-                FROM tracks 
-                WHERE published = true
+                SELECT DISTINCT ta.artist_id 
+                FROM track_artists ta
+                JOIN tracks t ON t.id = ta.track_id
+                WHERE t.published = true
             ),
             random_tracks AS (
-                SELECT t.id, t.artist_id, 
-                    ROW_NUMBER() OVER (PARTITION BY t.artist_id ORDER BY RANDOM()) as rn
+                SELECT t.id, ta.artist_id, 
+                    ROW_NUMBER() OVER (PARTITION BY ta.artist_id ORDER BY RANDOM()) as rn
                 FROM tracks t
+                JOIN track_artists ta ON t.id = ta.track_id
                 WHERE t.published = true
             )
             SELECT rt.id 
@@ -35,9 +37,7 @@ export async function getRandomTracks(
 		const data = await prisma.track.findMany({
 			where: { id: { in: orderedIds } },
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
-					// Add new TrackArtist relation
 					include: { artist: true },
 					orderBy: { order: 'asc' },
 				},
@@ -89,14 +89,12 @@ export async function getPublicTracks(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
-					// Add new TrackArtist relation
 					include: { artist: true },
 					orderBy: { order: 'asc' },
 				},
 				genres: { include: { genre: true } },
-				likes: session?.user.id
+				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
 					  }
@@ -104,7 +102,7 @@ export async function getPublicTracks(
 				_count: {
 					select: {
 						likes: true,
-						listeners: true, // Include listeners count
+						listeners: true,
 					},
 				},
 			},
@@ -128,7 +126,6 @@ export async function getPublicTracks(
 	} catch (error) {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -138,7 +135,6 @@ export async function getPublicTracks(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
@@ -151,10 +147,8 @@ export async function getPublicTracksByArtist(
 	const session = await auth();
 
 	try {
-		// Get tracks either as primary artist (old relationship) or via TrackArtist relation
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
 					include: { artist: true },
 					orderBy: { order: 'asc' },
@@ -169,10 +163,13 @@ export async function getPublicTracksByArtist(
 			},
 			take: limit,
 			where: {
-				OR: [
-					{ artist: { slug: { in: artistSlug } } }, // Original relation with array support
-					{ artists: { some: { artist: { slug: { in: artistSlug } } } } }, // New relation with array support
-				],
+				artists: {
+					some: {
+						artist: {
+							slug: { in: artistSlug },
+						},
+					},
+				},
 				published: true,
 			},
 			orderBy: { releaseYear: 'desc' },
@@ -188,7 +185,6 @@ export async function getPublicTracksByArtist(
 	} catch (error) {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -198,7 +194,6 @@ export async function getPublicTracksByArtist(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
@@ -213,9 +208,7 @@ export async function getArtistSimilarTracks(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
-					// Add new TrackArtist relation
 					include: { artist: true },
 					orderBy: { order: 'asc' },
 				},
@@ -241,7 +234,6 @@ export async function getArtistSimilarTracks(
 	} catch (error) {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -251,7 +243,6 @@ export async function getArtistSimilarTracks(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
@@ -265,12 +256,6 @@ export async function getPublicTracksById(
 	try {
 		const data = await prisma.track.findUnique({
 			include: {
-				artist: {
-					include: {
-						articles: { include: { article: true } },
-						socialLinks: true,
-					},
-				},
 				artists: {
 					include: {
 						artist: {
@@ -285,7 +270,7 @@ export async function getPublicTracksById(
 				genres: { include: { genre: true } },
 				curator: true,
 				sourceFormat: true,
-				likes: session?.user.id
+				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
 					  }
@@ -308,7 +293,6 @@ export async function getPublicTracksById(
 	} catch (error) {
 		let message = 'Unable to retrieve track. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -318,7 +302,6 @@ export async function getPublicTracksById(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: null, error: true, message };
 	}
@@ -357,7 +340,6 @@ export async function getTrackById(id: string): Promise<{
 	} catch (error) {
 		let message = 'Unable to retrieve track. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -367,7 +349,6 @@ export async function getTrackById(id: string): Promise<{
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: undefined, error: true, message };
 	}
@@ -379,7 +360,7 @@ export async function getTracksStats(): Promise<{
 	message?: string;
 }> {
 	const session = await auth();
-	const isAdmin = session?.user.role === 'admin';
+	const isAdmin = session?.user?.role === 'admin';
 	const artistId = session?.user?.artistId;
 
 	if (!isAdmin && !artistId) {
@@ -391,18 +372,14 @@ export async function getTracksStats(): Promise<{
 	}
 
 	try {
-		// For admin, get all tracks. For artist, get tracks where they are either primary artist or collaborator
+		// For admin, get all tracks. For artist, get tracks where they are a collaborator
 		const data = await prisma.track.findMany({
 			where: isAdmin
 				? undefined
 				: {
-						OR: [
-							{ artistId: artistId! }, // Primary artist (old relation)
-							{ artists: { some: { artistId: artistId! } } }, // Collaborator (new relation)
-						],
+						artists: { some: { artistId: artistId! } },
 				  },
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
 					include: { artist: true },
 					orderBy: { order: 'asc' },
@@ -419,7 +396,6 @@ export async function getTracksStats(): Promise<{
 		let message = 'Unable to retrieve tracks. Please try again later.';
 
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -429,7 +405,6 @@ export async function getTracksStats(): Promise<{
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
@@ -445,14 +420,12 @@ export async function getPublicTracksByPartner(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
-					// Add new TrackArtist relation
 					include: { artist: true },
 					orderBy: { order: 'asc' },
 				},
 				genres: { include: { genre: true } },
-				likes: session?.user.id
+				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
 					  }
@@ -483,7 +456,6 @@ export async function getPublicTracksByPartner(
 	} catch (error) {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -493,7 +465,6 @@ export async function getPublicTracksByPartner(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
@@ -509,14 +480,12 @@ export async function getPublicTracksByGenre(
 	try {
 		const data = await prisma.track.findMany({
 			include: {
-				artist: true, // Keep for backward compatibility
 				artists: {
-					// Add new TrackArtist relation
 					include: { artist: true },
 					orderBy: { order: 'asc' },
 				},
 				genres: { include: { genre: true } },
-				likes: session?.user.id
+				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
 					  }
@@ -546,7 +515,6 @@ export async function getPublicTracksByGenre(
 	} catch (error) {
 		let message = 'Unable to retrieve tracks. Please try again later.';
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			// Handle specific Prisma errors
 			console.error(`Database error: ${error.code}`, error);
 			message = `Database error`;
 		}
@@ -556,13 +524,12 @@ export async function getPublicTracksByGenre(
 			message = 'Invalid data provided';
 		}
 
-		// Generic error handling
 		console.error('Error fetching tracks:', error);
 		return { data: [], error: true, message };
 	}
 }
 
-// Updated type definitions to include TrackArtist relation
+// Updated type definitions to remove artist field references
 export type TrackArtistData = Prisma.TrackArtistGetPayload<{
 	include: { artist: true };
 }>;
@@ -573,9 +540,6 @@ export type ArtistDetails = Prisma.ArtistGetPayload<{
 
 export type TrackDetails = Prisma.TrackGetPayload<{
 	include: {
-		artist: {
-			include: { articles: { include: { article: true } }; socialLinks: true };
-		};
 		artists: {
 			include: {
 				artist: {
@@ -594,7 +558,6 @@ export type TrackDetails = Prisma.TrackGetPayload<{
 
 export type PublicTrack = Prisma.TrackGetPayload<{
 	include: {
-		artist: true;
 		artists: { include: { artist: true } };
 		genres: { include: { genre: true } };
 	};
@@ -617,7 +580,6 @@ export type TrackWithgenres = { genres: Genre[] } & Track & {
 
 export type TrackWithCounts = Prisma.TrackGetPayload<{
 	include: {
-		artist: true;
 		artists: { include: { artist: true } };
 		genres: true;
 		curator: true;

@@ -76,7 +76,7 @@ export default function TracksCards({
 							className='cursor-pointer group'
 						>
 							<h5 className='text-muted text-sm md:text-base font-semibold text-nowrap truncate '>
-								{track?.artist?.name}
+								{track?.artists?.map((artist) => artist.artist.name).join(', ')}
 							</h5>
 							<h4
 								className={cn(

@@ -7,7 +7,6 @@ import { checkFile, deleteFile, updateFile } from '../utils/s3-image';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { sendTrackPublishedEmail } from '@/lib/email';
-// import { sendTrackPublishedEmail } from '@/lib/email';
 
 const fileSize = 200;
 
@@ -57,7 +56,12 @@ export async function uploadTrackInfo(
 	try {
 		const track = await prisma.track.findUnique({
 			where: { id },
-			include: { artist: { include: { user: true } } },
+			include: {
+				artists: {
+					include: { artist: { include: { user: true } } },
+					orderBy: { order: 'asc' },
+				},
+			},
 		});
 
 		if (!track) {
@@ -78,25 +82,27 @@ export async function uploadTrackInfo(
 		const variant1Name = variant1?.name;
 		const variant2Name = variant2?.name;
 		const variant3Name = variant3?.name;
+		const artistsNames = track.artists.map((a) => a.artistId).join(',');
+		const artistsSlugs = track.artists.map((a) => a.artist.slug).join(',');
 
 		const variant1Url = await updateFile(
 			formData.get('variant1'),
 			track?.variant1 || undefined,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin`
+			`${artistsNames}-${track.id}-${artistsSlugs}-${track.slug}-bin`
 		);
 
 		const variant2Url = await updateFile(
 			formData.get('variant2'),
 			track?.variant2 || undefined,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-bin-plus`
+			`${artistsNames}-${track.id}-${artistsSlugs}-${track.slug}-bin-plus`
 		);
 		const variant3Url = await updateFile(
 			formData.get('variant3'),
 			track?.variant3 || undefined,
 			'audio',
-			`${track.artist.id}-${track.id}-${track.artist.slug}-${track.slug}-stereo`
+			`${artistsNames}-${track.id}-${artistsSlugs}-${track.slug}-stereo`
 		);
 
 		await prisma.track.update({
@@ -113,23 +119,32 @@ export async function uploadTrackInfo(
 		});
 
 		if (published && !track.published) {
-			const trackOwnerEmail = track.artist?.user?.email;
-			const trackOwnerName = track.artist?.user?.name || 'Artist';
+			const emailPromises = track.artists
+				.filter(({ artist }) => artist?.user?.email)
+				.map(async ({ artist }) => {
+					const trackOwnerEmail = artist?.user?.email;
+					const trackOwnerName = artist?.user?.name || 'Artist';
 
-			if (trackOwnerEmail) {
-				try {
-					const trackUrl = `${process.env.NEXTAUTH_URL}/tracks/${track.slug}`;
+					if (trackOwnerEmail) {
+						try {
+							const trackUrl = `${process.env.NEXTAUTH_URL}/tracks/${track.slug}`;
 
-					await sendTrackPublishedEmail(
-						trackOwnerEmail,
-						trackOwnerName,
-						track.title,
-						trackUrl
-					);
-				} catch (emailError) {
-					console.error('Failed to send track published email:', emailError);
-				}
-			}
+							return sendTrackPublishedEmail(
+								trackOwnerEmail,
+								trackOwnerName,
+								track.title,
+								trackUrl
+							);
+						} catch (emailError) {
+							console.error(
+								`Failed to send email to ${trackOwnerEmail}:`,
+								emailError
+							);
+						}
+					}
+				});
+
+			await Promise.all(emailPromises);
 		}
 
 		revalidatePath('/', 'layout');

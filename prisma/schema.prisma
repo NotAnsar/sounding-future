@@ -85,13 +85,11 @@ model Track {
 
   // Foreign keys
   curatedBy    String?          @map("curated_by") 
-  artistId     String           @map("artist_id") 
+  artistId     String?           @map("artist_id") 
   formatId     String?          @map("format_id") 
   
   // Relations
-  // -
-  artist Artist @relation(fields: [artistId], references: [id])
-  // artist Artist? @relation(fields: [artistId], references: [id])  // Make optional
+  artist Artist? @relation(fields: [artistId], references: [id])  // Make optional
   curator      Partner?         @relation("PartnerCurated", fields: [curatedBy], references: [id])
   sourceFormat SourceFormat?    @relation(fields: [formatId], references: [id])
   genres TrackGenre[] 

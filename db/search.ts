@@ -3,7 +3,6 @@ import { Artist, Prisma } from '@prisma/client';
 
 export type SearchedTrack = Prisma.TrackGetPayload<{
 	include: {
-		artist: true;
 		artists: { include: { artist: true }; orderBy: { order: 'asc' } };
 	};
 }>;
@@ -27,7 +26,6 @@ export async function searchTrack(
 				published: true,
 			},
 			include: {
-				artist: true,
 				artists: { include: { artist: true }, orderBy: { order: 'asc' } },
 			},
 			take: limit,

@@ -20,15 +20,17 @@ export async function getLikedTracks(): Promise<PublicTrackWithLikeStatusRes> {
 			include: {
 				track: {
 					include: {
-						artist: true,
-						artists: { include: { artist: true }, orderBy: { order: 'asc' } },
+						artists: {
+							include: { artist: true },
+							orderBy: { order: 'asc' },
+						},
 						genres: { include: { genre: true } },
 						likes: {
 							where: { userId: session.user.id },
 						},
 						_count: {
 							select: {
-								likes: true, // Total likes count
+								likes: true,
 								listeners: true,
 							},
 						},
@@ -91,18 +93,22 @@ export async function getFollowingArtists(): Promise<{
 						socialLinks: true,
 						_count: {
 							select: {
-								tracks: true,
+								trackArtists: true, // Count through trackArtists instead of tracks
 							},
 						},
-						tracks: {
+						trackArtists: {
 							include: {
-								listeners: {
-									select: {
-										id: true,
-										createdAt: true,
-										trackId: true,
-										userId: true,
-										listenedAt: true,
+								track: {
+									include: {
+										listeners: {
+											select: {
+												id: true,
+												createdAt: true,
+												trackId: true,
+												userId: true,
+												listenedAt: true,
+											},
+										},
 									},
 								},
 							},
@@ -112,9 +118,34 @@ export async function getFollowingArtists(): Promise<{
 			},
 		});
 
-		// Extract artists from follows and ensure they exist
+		// Extract artists from follows and transform to maintain expected structure
 		const artists = follows
-			.map((follow) => follow.artist)
+			.map((follow) => {
+				if (!follow.artist) return null;
+
+				// Transform the data to match the expected ArtistList structure
+				const result: ArtistList = {
+					id: follow.artist.id,
+					slug: follow.artist.slug,
+					name: follow.artist.name,
+					f_name: follow.artist.f_name,
+					l_name: follow.artist.l_name,
+					pic: follow.artist.pic,
+					bio: follow.artist.bio,
+					socialId: follow.artist.socialId,
+					createdAt: follow.artist.createdAt,
+					published: follow.artist.published,
+					genres: follow.artist.genres,
+					socialLinks: follow.artist.socialLinks,
+					tracks: follow.artist.trackArtists.map((ta) => ta.track),
+					_count: {
+						...follow.artist._count,
+						tracks: follow.artist._count.trackArtists,
+					},
+				};
+
+				return result;
+			})
 			.filter((artist): artist is ArtistList => artist !== null);
 
 		return {

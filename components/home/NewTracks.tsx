@@ -75,11 +75,11 @@ export default function TracksCarousel({
 
 							<Link className='group' href={`/tracks/${track.slug}`}>
 								<p className='text-muted text-sm md:text-base font-semibold line-clamp-1 w-full'>
-									{track?.artist?.name}
+									{track?.artists?.map((a) => a.artist.name).join(', ')}
 								</p>
+
 								<p
 									className={cn(
-										// 'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-primary-foreground'
 										'text-sm sm:text-[17px] font-semibold line-clamp-1 group-hover:text-trackTitle-hover-light dark:group-hover:text-trackTitle-hover-dark'
 									)}
 								>
