@@ -81,6 +81,7 @@ model Track {
   createdAt    DateTime @default(now()) @map("created_at")
   duration     Int?      
   articleLink  String?      
+  isrcCode  String?      
 
 
   // Foreign keys

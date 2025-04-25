@@ -81,8 +81,7 @@ export default function TrackRegistration({
 			</RadioGroup>
 
 			<p className='text-muted text-sm'>
-				Is this track registered with any performance rights organization or
-				collecting society (e.g., AKM, GEMA, SUISA, SACEM, etc.)?
+			Is this track registered with a performance rights organization (e.g., AKM, GEMA, SUISA)? Only registered works are eligible for royalties.
 			</p>
 
 			<ErrorMessage errors={errors} />

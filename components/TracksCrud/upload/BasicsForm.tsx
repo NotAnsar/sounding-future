@@ -39,8 +39,6 @@ export default function TrackBasicsForm({
 	artistsData: Artist[];
 	genresData: Genre[];
 }) {
-	console.log(initialData?.artists?.map((g) => g.artistId));
-
 	const initialState: TrackFormState = {
 		message: null,
 		errors: {},
@@ -252,6 +250,32 @@ export default function TrackBasicsForm({
 					errors={state?.errors?.trackRegistration}
 					initialValue={initialData?.trackRegistration || undefined}
 				/>
+
+				<div className='grid gap-2'>
+					<Label
+						htmlFor='isrcCode'
+						className={cn(state?.errors?.isrcCode ? 'text-destructive' : '')}
+					>
+						ISRC Code (optional)
+					</Label>
+					<Input
+						type='text'
+						name='isrcCode'
+						id='isrcCode'
+						defaultValue={initialData?.isrcCode || undefined}
+						className={cn(
+							state?.errors?.isrcCode
+								? 'border-destructive focus-visible:ring-destructive '
+								: ''
+						)}
+					/>
+
+					<p className='text-muted text-sm '>
+						Enter the ISRC (International Standard Recording Code)
+					</p>
+
+					<ErrorMessage errors={state?.errors?.isrcCode} />
+				</div>
 
 				<LegalAgreementSection />
 			</div>

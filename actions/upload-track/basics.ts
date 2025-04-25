@@ -15,6 +15,7 @@ const TrackSchema = z.object({
 		.string()
 		.min(1, 'Track name is required')
 		.max(100, 'Track name must be 100 characters or less'),
+
 	releaseYear: z.string().min(1, 'Release year is required'),
 	release: z.string().min(1, 'Release is required'),
 	trackRegistration: z
@@ -37,6 +38,13 @@ const TrackSchema = z.object({
 	curatedBy: z
 		.string()
 		.min(1, { message: 'You must select a curated collection' })
+		.optional(),
+	isrcCode: z
+		.string()
+		.min(1, {
+			message:
+				'You must select the ISRC (International Standard Recording Code)',
+		})
 		.optional(),
 });
 
@@ -111,6 +119,7 @@ export async function submitTrack(
 		sourceFormat: formData.get('sourceFormat'),
 		release: formData.get('release'),
 		trackRegistration: formData.get('trackRegistration'),
+		isrcCode: formData.get('isrcCode') || undefined,
 	});
 
 	if (!validatedFields.success) {
@@ -132,6 +141,7 @@ export async function submitTrack(
 			imageFile,
 			sourceFormat,
 			release,
+			isrcCode,
 		} = validatedFields.data;
 
 		const slug = generateSlug(trackName);
@@ -147,6 +157,7 @@ export async function submitTrack(
 		const track = await prisma.track.create({
 			data: {
 				title: trackName,
+				isrcCode,
 				releaseYear: +releaseYear,
 				cover: imageUrl,
 				formatId: sourceFormatData.id,
@@ -196,164 +207,6 @@ export async function submitTrack(
 
 	redirect(`/user/tracks/upload/${trackId}/info`);
 }
-
-// export async function updateTrack(
-// 	id: string,
-// 	prevState: TrackFormState,
-// 	formData: FormData
-// ): Promise<TrackFormState> {
-// 	const { isUser, artistId, needsArtistProfile } = await checkAuth();
-
-// 	if (needsArtistProfile) {
-// 		return {
-// 			message:
-// 				'You need to set up an artist profile first. Please visit your artist profile settings to create one before uploading your tracks.',
-// 		};
-// 	}
-
-// 	const genreTagsData = formData
-// 		.getAll('genreTags')
-// 		.filter((tag) => tag !== '') as string[];
-
-// 	const artistsData = formData
-// 		.getAll('artists')
-// 		.filter((artist) => artist !== '') as string[];
-
-// 	// For non-admin users, ensure their artist ID is used
-// 	const artistsToUse = isUser ? (artistId ? [artistId] : []) : artistsData;
-
-// 	if (artistsToUse.length === 0) {
-// 		return {
-// 			errors: { artists: ['At least one artist is required'] },
-// 			message: 'Failed to update track. Please check the form for errors.',
-// 		};
-// 	}
-
-// 	const validatedFields = TrackSchema.omit({
-// 		imageFile: true,
-// 	}).safeParse({
-// 		trackName: formData.get('trackName'),
-// 		artists: artistsToUse,
-// 		curatedBy: formData.get('curatedBy') || undefined,
-// 		genreTags: genreTagsData,
-// 		releaseYear: formData.get('releaseYear'),
-// 		sourceFormat: formData.get('sourceFormat'),
-// 		release: formData.get('release'),
-// 		trackRegistration: formData.get('trackRegistration'),
-// 	});
-
-// 	if (!validatedFields.success) {
-// 		return {
-// 			errors: validatedFields.error.flatten().fieldErrors,
-// 			message: 'Failed to update track. Please check the form for errors.',
-// 		};
-// 	}
-
-// 	const {
-// 		trackName,
-// 		artists,
-// 		releaseYear,
-// 		curatedBy,
-// 		genreTags,
-// 		sourceFormat,
-// 		release,
-// 		trackRegistration,
-// 	} = validatedFields.data;
-
-// 	const slug = generateSlug(trackName);
-
-// 	try {
-// 		const imageFile = formData.get('imageFile');
-
-// 		if (imageFile instanceof File && imageFile.size > 2 * 1024 * 1024) {
-// 			return {
-// 				message: 'Track cover image must be less than 2MB',
-// 				errors: { imageFile: ['Track cover image must be less than 2MB'] },
-// 			};
-// 		}
-
-// 		const imageUrl = await updateFile(
-// 			formData.get('imageFile'),
-// 			prevState?.prev?.image
-// 		);
-
-// 		const sourceFormatData = await prisma.sourceFormat.upsert({
-// 			where: { id: sourceFormat },
-// 			update: {},
-// 			create: { name: sourceFormat },
-// 		});
-
-// 		// Update the track with the primary artist
-// 		await prisma.track.update({
-// 			where: { id },
-// 			data: {
-// 				title: trackName,
-// 				releaseYear: +releaseYear,
-// 				artistId: artists[0], // Set first artist as primary for backward compatibility
-// 				cover: imageUrl,
-// 				formatId: sourceFormatData.id,
-// 				releasedBy: release,
-// 				curatedBy: isUser ? undefined : curatedBy ? curatedBy : null,
-// 				slug,
-// 				trackRegistration:
-// 					trackRegistration === 'NOT_REGISTERED' ? null : trackRegistration,
-// 			},
-// 		});
-
-// 		// Handle genres
-// 		const oldGenres = prevState?.prev?.genres || [];
-// 		const genresToAdd = genreTags.filter((id) => !oldGenres.includes(id));
-// 		const genresToRemove = oldGenres.filter((id) => !genreTags.includes(id));
-
-// 		// Add new genres
-// 		if (genresToAdd.length > 0) {
-// 			await prisma.trackGenre.createMany({
-// 				data: genresToAdd.map((genreId) => ({ trackId: id, genreId })),
-// 			});
-// 		}
-
-// 		// Remove old genres
-// 		if (genresToRemove.length > 0) {
-// 			await prisma.trackGenre.deleteMany({
-// 				where: {
-// 					trackId: id,
-// 					genreId: { in: genresToRemove },
-// 				},
-// 			});
-// 		}
-
-// 		// Delete all existing artist connections and recreate them
-// 		await prisma.trackArtist.deleteMany({
-// 			where: {
-// 				trackId: id,
-// 			},
-// 		});
-
-// 		// Create all artist connections with all artists as primary
-// 		await prisma.trackArtist.createMany({
-// 			data: artists.map((artistId, index) => ({
-// 				trackId: id,
-// 				artistId,
-// 				isPrimary: true, // All artists are primary
-// 				order: index,
-// 			})),
-// 		});
-
-// 		revalidatePath('/', 'layout');
-// 	} catch (error) {
-// 		console.error('Track update error:', error);
-// 		if (
-// 			error instanceof Prisma.PrismaClientKnownRequestError &&
-// 			error.code === 'P2002'
-// 		) {
-// 			return { message: 'A Track with this name already exists' };
-// 		}
-
-// 		return { message: 'Failed to update track info. Please try again.' };
-// 	}
-
-// 	redirect(`/user/tracks/upload/${id}/info`);
-// }
 
 export async function updateTrack(
 	id: string,
@@ -419,6 +272,7 @@ export async function updateTrack(
 		sourceFormat: formData.get('sourceFormat'),
 		release: formData.get('release'),
 		trackRegistration: formData.get('trackRegistration'),
+		isrcCode: formData.get('isrcCode') || undefined,
 	});
 
 	if (!validatedFields.success) {
@@ -437,6 +291,7 @@ export async function updateTrack(
 		sourceFormat,
 		release,
 		trackRegistration,
+		isrcCode,
 	} = validatedFields.data;
 
 	const slug = generateSlug(trackName);
@@ -475,6 +330,7 @@ export async function updateTrack(
 				slug,
 				trackRegistration:
 					trackRegistration === 'NOT_REGISTERED' ? null : trackRegistration,
+				isrcCode: isrcCode ? isrcCode : null,
 			},
 		});
 
