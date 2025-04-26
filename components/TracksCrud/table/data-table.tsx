@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
 			const headers = [
 				'Track Number',
 				'Track Title',
-				'Composer',
+				'Artists Names',
 				'Label',
 				'Year of Release',
 				'ISRC Code',
@@ -96,9 +96,9 @@ export function DataTable<TData, TValue>({
 			interface ExcelRowData {
 				trackNumber: number;
 				title: string;
-				composer: string;
+				artists: string;
 				label: string;
-				releaseYear: string;
+				releaseYear: number | string;
 				isrcCode: string;
 				creationDate: string;
 				published: string;
@@ -112,7 +112,7 @@ export function DataTable<TData, TValue>({
 				const track = row.original as TrackWithCounts;
 
 				// Artist name(s) for composer field
-				const composer = track.artists
+				const artistsNames = track.artists
 					? track.artists.map((artist) => artist.artist.name).join(', ')
 					: '';
 
@@ -127,9 +127,9 @@ export function DataTable<TData, TValue>({
 				return {
 					trackNumber: index + 1,
 					title: track.title || '',
-					composer: composer,
+					artists: artistsNames || '',
 					label: track.releasedBy || '',
-					releaseYear: track.releaseYear?.toString() || '',
+					releaseYear: track.releaseYear || '',
 					isrcCode: track.isrcCode || '',
 					creationDate: creationDate,
 					published: publishing,
@@ -144,7 +144,7 @@ export function DataTable<TData, TValue>({
 				worksheet.addRow([
 					row.trackNumber,
 					row.title,
-					row.composer,
+					row.artists,
 					row.label,
 					row.releaseYear,
 					row.isrcCode,
