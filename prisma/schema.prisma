@@ -83,7 +83,6 @@ model Track {
   articleLink  String?      
   isrcCode  String?      
 
-
   // Foreign keys
   curatedBy    String?          @map("curated_by") 
   artistId     String?           @map("artist_id") 
