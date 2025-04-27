@@ -45,8 +45,6 @@ export async function updateUserAccount(
 	});
 
 	if (!validatedFields.success) {
-		console.log(validatedFields.error.flatten().fieldErrors);
-
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to update account. Please check the form for errors.',
