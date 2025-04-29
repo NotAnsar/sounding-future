@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button, buttonVariants } from '../../ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 import { Icons } from '@/components/icons/track-icons';
 import { MainNavIcons } from '@/config/sidenav';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DeletePartnerButton } from './DeletePartner';
 import { PartnerStats } from '@/db/partner';
+import Badge from '@/components/Badge';
 
 export const columns: ColumnDef<PartnerStats>[] = [
 	{
@@ -42,6 +43,38 @@ export const columns: ColumnDef<PartnerStats>[] = [
 				<div className={'text-base font-semibold line-clamp-1'}>
 					{row.getValue('name')}
 				</div>
+			);
+		},
+	},
+	{
+		accessorKey: 'inProgress',
+		cell: ({ row }) => {
+			const inProgress = row.getValue('inProgress');
+			return (
+				<div className='text-sm text-nowrap flex gap-1 items-center'>
+					<Badge variant={inProgress ? 'archive' : 'success'}>
+						{inProgress ? (
+							<ArrowUpDown className='w-3 h-auto ' />
+						) : (
+							<CheckCircle className='w-3 h-auto ' />
+						)}
+						<p className='text-inherit'>
+							{inProgress ? 'In Progress' : 'Complete'}
+						</p>
+					</Badge>
+				</div>
+			);
+		},
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					In Progress
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
 			);
 		},
 	},

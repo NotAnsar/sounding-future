@@ -50,7 +50,15 @@ export default function PartnersCarousel({
 
 				<CarouselContent>
 					{partners?.map((partner, i) => (
-						<CarouselItem key={i} className='basis-40 md:basis-52 lg:basis-56'>
+						<CarouselItem
+							key={i}
+							className='basis-40 md:basis-52 lg:basis-56 relative'
+						>
+							{partner.inProgress && (
+								<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
+									in progress
+								</div>
+							)}
 							<Link
 								href={`/curated/${partner?.slug}`}
 								className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'

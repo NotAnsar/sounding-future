@@ -34,6 +34,7 @@ const PartnerSchema = z.object({
 	vimeo: z.string().url('Invalid Vimeo URL').optional(),
 	linkedin: z.string().url('Invalid LinkedIn URL').optional(),
 	youtube: z.string().url('Invalid YouTube URL').optional(),
+	inProgress: z.boolean().optional().default(false), // Add this line
 });
 
 type PartnerData = z.infer<typeof PartnerSchema>;
@@ -58,6 +59,7 @@ export async function addPartner(
 		vimeo: formData.get('vimeo') || undefined,
 		linkedin: formData.get('linkedin') || undefined,
 		youtube: formData.get('youtube') || undefined,
+		inProgress: formData.get('inProgress') === 'true', // Add this line
 	});
 
 	if (!validatedFields.success) {
@@ -67,8 +69,15 @@ export async function addPartner(
 		};
 	}
 
-	const { name, info, image, country, studioPic, ...socialLinksData } =
-		validatedFields.data;
+	const {
+		name,
+		info,
+		image,
+		country,
+		studioPic,
+		inProgress,
+		...socialLinksData
+	} = validatedFields.data;
 
 	const slug = generateSlug(name);
 
@@ -90,6 +99,7 @@ export async function addPartner(
 				picture: imageUrl,
 				socialId: socialLinks.id,
 				slug,
+				inProgress,
 			},
 		});
 
@@ -128,6 +138,7 @@ export async function updatePartner(
 		vimeo: formData.get('vimeo') || undefined,
 		linkedin: formData.get('linkedin') || undefined,
 		youtube: formData.get('youtube') || undefined,
+		inProgress: formData.get('inProgress') === 'true',
 	});
 
 	if (!validatedFields.success) {
@@ -137,7 +148,8 @@ export async function updatePartner(
 		};
 	}
 
-	const { name, info, country, ...socialLinksData } = validatedFields.data;
+	const { name, info, country, inProgress, ...socialLinksData } =
+		validatedFields.data;
 	const slug = generateSlug(name);
 
 	try {
@@ -187,6 +199,7 @@ export async function updatePartner(
 				picture: imageUrl,
 				socialId: socialLink?.id,
 				slug,
+				inProgress,
 			},
 		});
 

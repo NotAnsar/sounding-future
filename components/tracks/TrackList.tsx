@@ -22,11 +22,11 @@ export default function TrackList({
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	return (
 		<div className={cn('p-4 lg:w-2/3', className)}>
+			{tracks?.length === 0 && notFoundLabel && (
+				<p className='text-base text-muted'>{notFoundLabel}</p>
+			)}
 			<Table>
 				<TableBody>
-					{tracks?.length === 0 && (
-						<p className='text-base text-muted'>{notFoundLabel}</p>
-					)}
 					{tracks?.map((track, index) => {
 						const isCurrentTrack = currentTrack?.id === track?.id;
 						return (

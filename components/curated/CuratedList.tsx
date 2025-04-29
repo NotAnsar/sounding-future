@@ -21,7 +21,13 @@ export default function CuratedList({
 				<p className='text-base text-muted'>No partners found</p>
 			)}
 			{partners.map((c, i) => (
-				<Link key={i} href={`/curated/${c?.slug}`}>
+				<Link key={i} href={`/curated/${c?.slug}`} className='relative'>
+					{c.inProgress && (
+						<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
+							in progress
+						</div>
+					)}
+
 					<div className='rounded-2xl block border overflow-hidden w-full h-auto mb-2'>
 						<Image
 							src={c?.picture}

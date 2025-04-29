@@ -8,12 +8,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Globe, Facebook, Instagram, Linkedin, Youtube } from 'lucide-react';
+import {
+	Globe,
+	Facebook,
+	Instagram,
+	Linkedin,
+	Youtube,
+	Clock,
+} from 'lucide-react';
 import { addPartner, PartnerFormState, updatePartner } from '@/actions/curated';
 import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { SelectInput } from '@/components/ui/select-input';
 import { countries } from '@/config/countries';
 import { PartnerLinks } from '@/db/partner';
+import { Switch } from '@/components/ui/switch';
 
 export default function CuratedForm({
 	initialData,
@@ -248,6 +256,40 @@ export default function CuratedForm({
 									: ''
 							)}
 						/>
+					</div>
+
+					<div className='mt-4 p-4 border rounded-md bg-transparent max-w-lg'>
+						<div className='flex items-start gap-3'>
+							<div className='mt-0.5 text-muted'>
+								<Clock className='h-5 w-5' />
+							</div>
+							<div className='flex-1 space-y-2'>
+								<div className='flex items-center justify-between'>
+									<div className='flex items-center gap-3'>
+										<Label
+											htmlFor='inProgress'
+											className='text-base font-medium'
+										>
+											Partner Development Status
+										</Label>
+										{initialData?.inProgress && (
+											<span className='text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 font-medium'>
+												In Progress
+											</span>
+										)}
+									</div>
+									<Switch
+										id='inProgress'
+										name='inProgress'
+										defaultChecked={initialData?.inProgress || false}
+										value='true'
+									/>
+								</div>
+								<p className='text-muted-foreground text-sm'>
+									{`Toggle this if the partner profile is still being developed and should be marked as "In Progress" in the system.`}
+								</p>
+							</div>
+						</div>
 					</div>
 					<ErrorMessage errors={state?.errors?.youtube} />
 				</div>

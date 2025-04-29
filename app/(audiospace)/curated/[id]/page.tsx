@@ -56,9 +56,16 @@ export default async function page({
 					) : (
 						<>
 							{isTable ? (
-								<TrackList tracks={tracks.data} className='p-0' />
+								<TrackList
+									tracks={tracks.data}
+									className='p-0'
+									notFoundLabel='Artist Selection Coming Soon'
+								/>
 							) : (
-								<TracksCards tracks={tracks.data} />
+								<TracksCards
+									tracks={tracks.data}
+									notFoundLabel='Artist Selection Coming Soon'
+								/>
 							)}
 						</>
 					)}
