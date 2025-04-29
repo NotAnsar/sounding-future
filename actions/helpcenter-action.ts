@@ -52,8 +52,6 @@ export async function createHelpCenterVideo(
 	});
 
 	if (!validatedFields.success) {
-		console.log(validatedFields.error.flatten().fieldErrors);
-
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Invalid data. Unable to create help center video.',

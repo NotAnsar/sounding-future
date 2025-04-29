@@ -13,9 +13,11 @@ import LikeForm from '../LikeForm';
 export default function TrackList({
 	tracks,
 	className,
+	notFoundLabel = 'No tracks found',
 }: {
 	tracks: PublicTrackWithLikeStatus[];
 	className?: string;
+	notFoundLabel?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 	return (
@@ -23,7 +25,7 @@ export default function TrackList({
 			<Table>
 				<TableBody>
 					{tracks?.length === 0 && (
-						<p className='text-base text-muted'>No tracks found</p>
+						<p className='text-base text-muted'>{notFoundLabel}</p>
 					)}
 					{tracks?.map((track, index) => {
 						const isCurrentTrack = currentTrack?.id === track?.id;

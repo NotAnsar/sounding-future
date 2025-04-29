@@ -271,8 +271,6 @@ export async function uploadTrackInfo(
 	const { published, variant1, variant2, variant3, duration } =
 		validatedFields.data;
 
-	console.log(duration);
-
 	try {
 		const track = await prisma.track.findUnique({
 			where: { id },

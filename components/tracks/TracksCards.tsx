@@ -10,9 +10,11 @@ import { PublicTrack } from '@/db/tracks';
 export default function TracksCards({
 	tracks,
 	className,
+	notFoundLabel = 'No tracks found',
 }: {
 	tracks: PublicTrack[];
 	className?: string;
+	notFoundLabel?: string;
 }) {
 	const { currentTrack, isPlaying, togglePlayPause, playNewTrack } = useAudio();
 
@@ -24,7 +26,7 @@ export default function TracksCards({
 			)}
 		>
 			{tracks?.length === 0 && (
-				<p className='text-base text-muted'>No tracks found</p>
+				<p className='text-base text-muted'>{notFoundLabel}</p>
 			)}
 			{tracks?.map((track, i) => {
 				const isCurrentTrack = currentTrack?.id === track?.id;
