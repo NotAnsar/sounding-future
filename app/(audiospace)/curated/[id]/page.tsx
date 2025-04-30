@@ -59,12 +59,12 @@ export default async function page({
 								<TrackList
 									tracks={tracks.data}
 									className='p-0'
-									notFoundLabel='Artist Selection Coming Soon'
+									notFoundLabel='Track Selection Coming Soon'
 								/>
 							) : (
 								<TracksCards
 									tracks={tracks.data}
-									notFoundLabel='Artist Selection Coming Soon'
+									notFoundLabel='Track Selection Coming Soon'
 								/>
 							)}
 						</>
@@ -79,12 +79,12 @@ export default async function page({
 								<TrackList
 									tracks={tracks.data}
 									className='p-0'
-									notFoundLabel='Artist Selection Coming Soon'
+									notFoundLabel='Track Selection Coming Soon'
 								/>
 							) : (
 								<TracksCards
 									tracks={tracks.data}
-									notFoundLabel='Artist Selection Coming Soon'
+									notFoundLabel='Track Selection Coming Soon'
 								/>
 							)}
 						</>
