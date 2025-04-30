@@ -276,11 +276,19 @@ export async function getPublicTracksById(
 					  }
 					: false,
 			},
-			where: { slug, published: true },
+			where: { slug },
 		});
 
 		if (!data) {
 			return { data: null, error: true, message: 'Track not found' };
+		}
+
+		if (!data.published) {
+			return {
+				data: null,
+				error: true,
+				message: 'This track has not been published yet.',
+			};
 		}
 
 		return {
