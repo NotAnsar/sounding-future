@@ -67,11 +67,11 @@ model Track {
   title        String
   cover        String
   info         String?  @db.Text
-  variant1     String?  
+  variant1     String?  // binaural
   variant1Name String?  
-  variant2     String?  
+  variant2     String?  // binaural plus
   variant2Name String?  
-  variant3     String?  
+  variant3     String?  // stereo
   variant3Name String?  
   releaseYear  Int?     @map("release_year") 
   credits      String?

@@ -64,135 +64,6 @@ export function DataTable<TData, TValue>({
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
-	// // Function to download table data as Excel file using ExcelJS
-	// const handleExcelDownload = async () => {
-	// 	try {
-	// 		// Get filtered rows
-	// 		const rows = table.getFilteredRowModel().rows;
-
-	// 		// Create a new workbook and worksheet
-	// 		const workbook = new ExcelJS.Workbook();
-	// 		const worksheet = workbook.addWorksheet('Tracks');
-
-	// 		// Define all the headers requested by the user
-	// 		const headers = [
-	// 			'Track Number',
-	// 			'Track Title',
-	// 			'Artists Names',
-	// 			'Label',
-	// 			'Year of Release',
-	// 			'ISRC Code',
-	// 			'Creation Date on Platform',
-	// 			'Published',
-	// 			'Number of Plays',
-	// 			'Number of Likes',
-	// 			'Curated by',
-	// 		];
-
-	// 		// Add headers row
-	// 		worksheet.addRow(headers);
-
-	// 		// Create type-safe rows for Excel export
-	// 		interface ExcelRowData {
-	// 			trackNumber: number;
-	// 			title: string;
-	// 			artists: string;
-	// 			label: string;
-	// 			releaseYear: number | string;
-	// 			isrcCode: string;
-	// 			creationDate: string;
-	// 			published: string;
-	// 			plays: number;
-	// 			likes: number;
-	// 			curator: string;
-	// 		}
-
-	// 		// Add data rows with proper typing
-	// 		const excelRows = rows.map((row, index): ExcelRowData => {
-	// 			const track = row.original as TrackWithCounts;
-
-	// 			// Artist name(s) for composer field
-	// 			const artistsNames = track.artists
-	// 				? track.artists.map((artist) => artist.artist.name).join(', ')
-	// 				: '';
-
-	// 			// Format date
-	// 			const creationDate = track.createdAt
-	// 				? new Date(track.createdAt).toLocaleDateString()
-	// 				: '';
-
-	// 			// Publishing status
-	// 			const publishing = track.published ? 'Published' : 'Unpublished';
-
-	// 			return {
-	// 				trackNumber: index + 1,
-	// 				title: track.title || '',
-	// 				artists: artistsNames || '',
-	// 				label: track.releasedBy || '',
-	// 				releaseYear: track.releaseYear || '',
-	// 				isrcCode: track.isrcCode || '',
-	// 				creationDate: creationDate,
-	// 				published: publishing,
-	// 				plays: track._count?.listeners || 0,
-	// 				likes: track._count?.likes || 0,
-	// 				curator: track.curator?.name || '',
-	// 			};
-	// 		});
-
-	// 		// Add rows to worksheet
-	// 		excelRows.forEach((row) => {
-	// 			worksheet.addRow([
-	// 				row.trackNumber,
-	// 				row.title,
-	// 				row.artists,
-	// 				row.label,
-	// 				row.releaseYear,
-	// 				row.isrcCode,
-	// 				row.creationDate,
-	// 				row.published,
-	// 				row.plays,
-	// 				row.likes,
-	// 				row.curator,
-	// 			]);
-	// 		});
-
-	// 		// Style the header row
-	// 		const headerRow = worksheet.getRow(1);
-	// 		headerRow.font = { bold: true };
-	// 		headerRow.fill = {
-	// 			type: 'pattern',
-	// 			pattern: 'solid',
-	// 			fgColor: { argb: 'FFE0E0E0' },
-	// 		};
-
-	// 		// Auto-size columns based on content
-	// 		worksheet.columns.forEach((column) => {
-	// 			if (column && column.eachCell) {
-	// 				let maxLength = 10;
-	// 				column.eachCell({ includeEmpty: true }, (cell) => {
-	// 					const columnLength = cell.value ? cell.value.toString().length : 10;
-	// 					if (columnLength > maxLength) {
-	// 						maxLength = columnLength;
-	// 					}
-	// 				});
-	// 				column.width = Math.min(maxLength + 2, 30); // Cap at 30 to prevent very wide columns
-	// 			}
-	// 		});
-
-	// 		// Generate Excel file buffer
-	// 		const buffer = await workbook.xlsx.writeBuffer();
-
-	// 		// Create a blob and trigger download
-	// 		const blob = new Blob([buffer], {
-	// 			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	// 		});
-	// 		saveAs(blob, 'tracks_data.xlsx');
-	// 	} catch (error) {
-	// 		console.error('Error generating Excel file:', error);
-	// 		alert('Failed to generate Excel file');
-	// 	}
-	// };
-
 	// Function to download table data as Excel file using ExcelJS
 	const handleExcelDownload = async () => {
 		try {
@@ -220,6 +91,9 @@ export function DataTable<TData, TValue>({
 				'Number of Plays',
 				'Number of Likes',
 				'Curated by',
+				'Binaural',
+				'Binaural+',
+				'Stereo',
 			];
 
 			// Add headers row
@@ -242,6 +116,9 @@ export function DataTable<TData, TValue>({
 				plays: number;
 				likes: number;
 				curator: string;
+				binaural: string;
+				binauralPlus: string;
+				stereo: string;
 			}
 
 			// Helper function to format duration from seconds to mm:ss
@@ -295,6 +172,12 @@ export function DataTable<TData, TValue>({
 					plays: track._count?.listeners || 0,
 					likes: track._count?.likes || 0,
 					curator: track.curator?.name || '',
+					binaural: track.variant1Name || '',
+					binauralPlus: track.variant2Name || '',
+					stereo: track.variant3Name || '',
+					// binaural: track.variant1Name?.split('.')[0] || '',
+					// binauralPlus: track.variant2Name?.split('.')[0] || '',
+					// stereo: track.variant3Name?.split('.')[0] || '',
 				};
 			});
 
@@ -316,6 +199,9 @@ export function DataTable<TData, TValue>({
 					row.plays,
 					row.likes,
 					row.curator,
+					row.binaural,
+					row.binauralPlus,
+					row.stereo,
 				]);
 			});
 
