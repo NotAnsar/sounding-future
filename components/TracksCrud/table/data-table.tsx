@@ -311,14 +311,16 @@ export function DataTable<TData, TValue>({
 						</Button>
 					)}
 
-					<Button
-						variant='outline'
-						onClick={handleExcelDownload}
-						className='flex items-center gap-2'
-					>
-						<Download className='h-4 w-4' />
-						<span>Export Excel</span>
-					</Button>
+					{isAdmin && (
+						<Button
+							variant='outline'
+							onClick={handleExcelDownload}
+							className='flex items-center gap-2'
+						>
+							<Download className='h-4 w-4' />
+							<span>Export Excel</span>
+						</Button>
+					)}
 				</div>
 			</div>
 
