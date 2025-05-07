@@ -83,6 +83,22 @@ export default function AudioFileForm({
 								Please also send us a stereo file of your track as a reference.
 							</p>
 						</div>
+
+						<div className='space-y-1.5'>
+							<h3 className='font-semibold text-lg'>Loudness Guidelines</h3>
+							<p className='text-[15px] text-muted '>
+								We normalize all audio files to -23 LUFS according to the EBU
+								R128 Standard to maintain high sound quality and preserve
+								dynamics.
+							</p>
+							<p className='text-[15px] text-muted'>
+								<span className='text-foreground font-semibold'>
+									Best practice:
+								</span>{' '}
+								master your tracks to this standard with a maximum True Peak of
+								-1 dBTP.
+							</p>
+						</div>
 					</div>
 
 					{/* Upload Section */}
