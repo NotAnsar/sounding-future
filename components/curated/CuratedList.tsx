@@ -23,7 +23,7 @@ export default function CuratedList({
 			{partners.map((c, i) => (
 				<Link key={i} href={`/curated/${c?.slug}`} className='relative'>
 					{c.inProgress && (
-						<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
+						<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl text-white'>
 							in progress
 						</div>
 					)}

@@ -54,8 +54,8 @@ export default function PartnersCarousel({
 							key={i}
 							className='basis-40 md:basis-52 lg:basis-56 relative'
 						>
-							{partner.inProgress && (
-								<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
+							{partner?.inProgress && (
+								<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl text-white'>
 									in progress
 								</div>
 							)}

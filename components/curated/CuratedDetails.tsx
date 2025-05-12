@@ -26,9 +26,12 @@ export default function CuratedDetails({
 					'rounded-3xl border border-border/15 overflow-hidden relative group cursor-pointer sm:min-w-64 sm:w-64 xl:min-w-[268px] xl:w-[268px] '
 				)}
 			>
-				<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
-					in progress
-				</div>
+				{curated?.inProgress && (
+					<div className='absolute top-3 right-3 p-2 bg-[#131822] z-10 text-center text-[10px] flex flex-col justify-center items-center leading-3 uppercase rounded-xl'>
+						in progress
+					</div>
+				)}
+
 				<Image
 					alt={curated?.name}
 					src={curated?.picture}
