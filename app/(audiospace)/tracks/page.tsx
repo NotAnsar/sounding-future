@@ -3,7 +3,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import TrackList from '@/components/tracks/TrackList';
 import HeaderBanner from '@/components/HeaderBanner';
 import DynamicNav from '@/components/curated/DynamicNav';
-import { getPublicTracks } from '@/db/tracks';
+import { getPublicTracks, getRandomTracks } from '@/db/tracks';
 import { generateTracksListingSchema } from '@/schema/tracks-schema';
 
 export async function generateMetadata({
@@ -41,7 +41,10 @@ export default async function page({
 	const isTable = type === 'table';
 	const tabValue =
 		sort === 'popular' ? 'popular' : sort === 'new' ? 'new' : 'default';
-	const tracks = await getPublicTracks(undefined, tabValue);
+	const tracks =
+		tabValue === 'default'
+			? await getRandomTracks(undefined)
+			: await getPublicTracks(undefined, tabValue);
 
 	return (
 		<>

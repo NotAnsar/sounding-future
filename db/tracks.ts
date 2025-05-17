@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { Genre, Prisma, type Track } from '@prisma/client';
 
 export async function getRandomTracks(
-	limit: number = 8
+	limit?: number
 ): Promise<PublicTrackWithLikeStatusRes> {
 	const session = await auth();
 
@@ -27,7 +27,7 @@ export async function getRandomTracks(
             FROM random_tracks rt
             WHERE rt.rn = 1
             ORDER BY RANDOM()
-            LIMIT ${limit}
+						 ${limit ? Prisma.sql`LIMIT ${limit}` : Prisma.sql``}
         `;
 
 		// Extract IDs

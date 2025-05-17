@@ -17,7 +17,7 @@ export default async function page({
 	searchParams: { welcome: string };
 }) {
 	const [tracks, genres, partners, artists] = await Promise.all([
-		getRandomTracks(),
+		getRandomTracks(8),
 		getGenres(),
 		getPartners(true),
 		getArtists(8, true),
