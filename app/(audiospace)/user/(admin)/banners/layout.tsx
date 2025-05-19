@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default async function Layout({
 	children,
@@ -9,7 +9,7 @@ export default async function Layout({
 	const session = await auth();
 
 	if (!session || session.user.role !== 'admin') {
-		notFound();
+		redirect('/');
 	}
 
 	return <>{children}</>;

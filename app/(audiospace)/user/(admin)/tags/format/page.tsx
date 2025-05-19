@@ -3,7 +3,7 @@ import { columns } from '@/components/tags/SourceForm/table/columns';
 import { DataTable } from '@/components/tags/SourceForm/table/data-table';
 import TagsNav from '@/components/tags/TagsNav';
 import { auth } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { CreateFormatButton } from '@/components/tags/SourceForm/table/format-dialog';
 import { getSourceFormats } from '@/db/source-format';
 import Error from '@/components/Error';
@@ -16,7 +16,7 @@ export default async function page() {
 	]);
 
 	if (!session || session.user.role !== 'admin') {
-		notFound();
+		redirect('/');
 	}
 
 	if (sourceFormats.error) {

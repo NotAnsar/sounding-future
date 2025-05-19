@@ -7,13 +7,13 @@ import { CreateGenreButton } from '@/components/tags/GenreForm/table/genre-dialo
 import TagsNav from '@/components/tags/TagsNav';
 import { getGenres } from '@/db/genre';
 import { auth } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default async function page() {
 	const [session, genres] = await Promise.all([auth(), getGenres()]);
 
 	if (!session || session.user.role !== 'admin') {
-		notFound();
+		redirect('/');
 	}
 
 	if (genres.error) {

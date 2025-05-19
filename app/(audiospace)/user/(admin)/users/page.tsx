@@ -7,13 +7,13 @@ import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default async function page() {
 	const [session, data] = await Promise.all([auth(), getUsers()]);
 
 	if (!session || session.user.role !== 'admin') {
-		notFound();
+		redirect('/');
 	}
 
 	if (data.error) {
