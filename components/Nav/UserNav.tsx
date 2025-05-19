@@ -19,6 +19,7 @@ import {
 	Layout,
 	UsersRound,
 	BadgeInfo,
+	GraduationCap,
 } from 'lucide-react';
 import Link from 'next/link';
 import { AvatarImage } from '@radix-ui/react-avatar';
@@ -164,17 +165,25 @@ export default function UserNav({
 							</Link>
 						</DropdownMenuItem>
 
-						{isAdmin && (
-							<DropdownMenuItem className='cursor-pointer p-0' asChild>
-								<Link
-									href={'/user/users'}
-									className='px-2 py-2.5 w-full flex items-center'
-								>
-									<UsersRound className='w-4 h-auto mr-2 ' />
-									Users Management
-								</Link>
-							</DropdownMenuItem>
-						)}
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/users'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<UsersRound className='w-4 h-auto mr-2 ' />
+								Users Management
+							</Link>
+						</DropdownMenuItem>
+
+						<DropdownMenuItem className='cursor-pointer p-0' asChild>
+							<Link
+								href={'/user/lms'}
+								className='px-2 py-2.5 w-full flex items-center'
+							>
+								<GraduationCap className='w-4 h-auto mr-2 ' />
+								LMS Management
+							</Link>
+						</DropdownMenuItem>
 					</>
 				) : null}
 

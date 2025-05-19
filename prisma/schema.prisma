@@ -519,3 +519,15 @@ model TrackArtist {
   @@id([trackId, artistId])
   @@map("track_artists")
 }
+
+model Instructor {
+  id        String   @id @default(cuid())
+  name      String
+  bio       String?  @db.Text
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  @@map("instructors")
+}
