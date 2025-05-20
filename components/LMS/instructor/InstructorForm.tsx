@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { Instructor } from '@prisma/client';
+import { Artist, Instructor } from '@prisma/client';
 import { PublishToggle } from '@/components/PublishToggle';
 import {
 	InstructorFormState,
@@ -15,11 +15,14 @@ import {
 	updateInstructor,
 } from '@/actions/lms/instructor-action';
 import ImageUpload from '@/components/profile/ImageUpload';
+import SelectInput from '@/components/ui/select-input';
 
 export default function InstructorForm({
 	initialData,
+	artists,
 }: {
 	initialData?: Instructor;
+	artists: Artist[];
 }) {
 	const initialState: InstructorFormState = { message: null, errors: {} };
 	const [state, action] = useFormState(
@@ -92,6 +95,32 @@ export default function InstructorForm({
 					size='xl'
 					message='Upload instructor image, max. 2MB'
 				/>
+
+				<div className='grid gap-2'>
+					<Label
+						htmlFor='artistId'
+						className={cn(state?.errors?.artistId ? 'text-destructive' : '')}
+					>
+						Artist (Optional)
+					</Label>
+
+					<SelectInput
+						name='artistId'
+						options={artists.map((a) => ({ label: a.name, value: a.id }))}
+						initialValue={initialData?.artistId || undefined}
+						placeholder='Select Artist'
+						searchPlaceholder='Search Artist...'
+						emptyMessage='No Artist found.'
+						className={cn(
+							state?.errors?.artistId
+								? 'border-destructive focus-visible:ring-destructive '
+								: ''
+						)}
+						allowClear
+					/>
+
+					<ErrorMessage errors={state?.errors?.artistId} />
+				</div>
 
 				<PublishToggle
 					defaultChecked={initialData?.published}

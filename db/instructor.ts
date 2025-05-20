@@ -1,11 +1,33 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma, type Instructor } from '@prisma/client';
 
-type InstructorRes = { data: Instructor[]; error?: boolean; message?: string };
+export type InstructorWithArtist = Prisma.InstructorGetPayload<{
+	include: {
+		artist: {
+			select: { id: true; name: true; pic: true; slug: true };
+		};
+	};
+}>;
+
+type InstructorRes = {
+	data: InstructorWithArtist[];
+	error?: boolean;
+	message?: string;
+};
 
 export async function getInstructors(): Promise<InstructorRes> {
 	try {
 		const instructors = await prisma.instructor.findMany({
+			include: {
+				artist: {
+					select: {
+						id: true,
+						name: true,
+						pic: true,
+						slug: true,
+					},
+				},
+			},
 			orderBy: { createdAt: 'desc' },
 		});
 

@@ -20,8 +20,9 @@ const InstructorSchema = z.object({
 		.min(1, 'Instructor name is required')
 		.max(100, 'Instructor name must be 100 characters or less'),
 	bio: z.string().optional(),
-	image: imageSchema.shape.file.optional(),
+	image: imageSchema.shape.file,
 	published: z.boolean().optional(),
+	artistId: z.string().optional(),
 });
 
 type InstructorData = z.infer<typeof InstructorSchema>;
@@ -37,6 +38,7 @@ export async function addInstructor(
 	const validatedFields = InstructorSchema.safeParse({
 		name: formData.get('name'),
 		bio: formData.get('bio') || undefined,
+		artistId: formData.get('artistId') || undefined,
 		image: await checkFile(formData.get('image')),
 		published: formData.get('published') === 'true',
 	});
@@ -49,7 +51,7 @@ export async function addInstructor(
 		};
 	}
 
-	const { name, bio, image, published } = validatedFields.data;
+	const { name, bio, image, published, artistId } = validatedFields.data;
 
 	try {
 		const imageUrl = image ? await uploadFile(image) : undefined;
@@ -60,6 +62,7 @@ export async function addInstructor(
 				bio,
 				image: imageUrl,
 				published: published || false,
+				artistId,
 			},
 		});
 
@@ -83,11 +86,11 @@ export async function updateInstructor(
 	prevState: InstructorFormState,
 	formData: FormData
 ): Promise<InstructorFormState> {
-	const validatedFields = InstructorSchema.safeParse({
+	const validatedFields = InstructorSchema.omit({ image: true }).safeParse({
 		name: formData.get('name'),
 		bio: formData.get('bio') || undefined,
 		published: formData.get('published') === 'true',
-		deleteImage: formData.get('deleteImage') || undefined,
+		artistId: formData.get('artistId') || undefined,
 	});
 
 	if (!validatedFields.success) {
@@ -105,7 +108,7 @@ export async function updateInstructor(
 		};
 	}
 
-	const { name, bio, published } = validatedFields.data;
+	const { name, bio, published, artistId } = validatedFields.data;
 
 	try {
 		const previousInstructor = await prisma.instructor.findUnique({
@@ -127,11 +130,14 @@ export async function updateInstructor(
 				bio,
 				image: imageUrl,
 				published,
+				artistId: artistId ? artistId : null,
 			},
 		});
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
+		console.log(error);
+
 		if (
 			error instanceof Prisma.PrismaClientKnownRequestError &&
 			error.code === 'P2002'

@@ -55,7 +55,10 @@ model Artist {
   genres ArtistGenre[] @relation("ArtistToGenre")
   socialLinks   SocialLinks?   @relation(fields: [socialId], references: [id], onDelete: SetNull)
   articles        ArtistArticle[] @relation("ArtistToArticle")
-  trackArtists TrackArtist[] // Add this line
+  trackArtists TrackArtist[] 
+  instructor  Instructor?    
+
+
 
   @@index([name])
   @@map("artist")
@@ -525,9 +528,15 @@ model Instructor {
   name      String
   bio       String?  @db.Text
   image     String?
+  artistId  String?  @unique @map("artist_id")
+
   published Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
+
+  // Relations
+  artist    Artist?  @relation(fields: [artistId], references: [id])
+
 
   @@map("instructors")
 }

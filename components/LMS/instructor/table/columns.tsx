@@ -7,11 +7,11 @@ import Image from 'next/image';
 import { Icons } from '@/components/icons/track-icons';
 import Link from 'next/link';
 import { cn, formatTimestamp } from '@/lib/utils';
-import { Instructor } from '@prisma/client';
 import Badge from '@/components/Badge';
 import { DeleteInstructorButton } from './DeleteInstructor';
+import { InstructorWithArtist } from '@/db/instructor';
 
-export const columns: ColumnDef<Instructor>[] = [
+export const columns: ColumnDef<InstructorWithArtist>[] = [
 	{
 		accessorKey: 'image',
 		header: '',
@@ -77,7 +77,41 @@ export const columns: ColumnDef<Instructor>[] = [
 			);
 		},
 	},
+	{
+		accessorKey: 'artist',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Artist
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const artist = row.original.artist;
 
+			if (!artist) {
+				return (
+					<div className='text-muted-foreground text-sm'>No artist linked</div>
+				);
+			}
+
+			return (
+				<div className='flex items-center gap-2'>
+					<span className='font-medium'>{artist.name}</span>
+				</div>
+			);
+		},
+		sortingFn: (rowA, rowB) => {
+			const artistA = rowA.original.artist?.name || '';
+			const artistB = rowB.original.artist?.name || '';
+			return artistA.localeCompare(artistB);
+		},
+	},
 	{
 		accessorKey: 'published',
 		header: () => <div className='text-nowrap text-sm'>Status</div>,
