@@ -36,7 +36,7 @@ export default async function page() {
 				/>{' '}
 				<CreateGenreButton />
 			</div>
-			<TagsNav />
+			<TagsNav currentPath='Genre' />
 			<DataTable
 				columns={columns}
 				data={genres.data}

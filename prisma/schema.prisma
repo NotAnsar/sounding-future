@@ -540,3 +540,29 @@ model Instructor {
 
   @@map("instructors")
 }
+
+model CourseTopic {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "3D Audio basics", "Recording"
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  // courses     Course[]
+  
+  @@map("course_topics")
+}
+
+model CourseSeries {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Rethinking music"
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
+  
+  // // Relations
+  // courses     Course[]
+  
+  @@map("course_series")
+}

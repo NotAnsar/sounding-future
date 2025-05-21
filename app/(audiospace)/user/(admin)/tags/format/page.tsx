@@ -39,7 +39,7 @@ export default async function page() {
 				/>
 				<CreateFormatButton />
 			</div>
-			<TagsNav isFormatPage />
+			<TagsNav currentPath='Format' />
 
 			<DataTable
 				columns={columns}
