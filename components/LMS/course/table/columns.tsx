@@ -1,0 +1,195 @@
+'use client';
+
+import { ColumnDef } from '@tanstack/react-table';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { ArrowUpDown, BookOpen, Shield, ShieldCheck } from 'lucide-react';
+import Image from 'next/image';
+import { Icons } from '@/components/icons/track-icons';
+import Link from 'next/link';
+import { cn, formatTimestamp } from '@/lib/utils';
+import Badge from '@/components/Badge';
+import { DeleteCourseButton } from './DeleteCourse';
+import { CourseWithRelations } from '@/db/course';
+
+export const columns: ColumnDef<CourseWithRelations>[] = [
+	{
+		accessorKey: 'thumbnail',
+		header: '',
+		cell: ({ row }) => {
+			const course = row.original;
+			return (
+				<div className='max-w-14'>
+					{course?.thumbnail ? (
+						<Image
+							src={course.thumbnail}
+							alt={course.title}
+							width={56}
+							height={56}
+							className='min-w-14 max-w-14 h-auto aspect-video object-cover border border-border rounded-md'
+						/>
+					) : (
+						<div className='min-w-14 max-w-14 h-auto aspect-video object-cover border border-border rounded-md bg-muted flex items-center justify-center'>
+							<BookOpen className='w-6 h-6 mx-auto my-auto text-white' />
+						</div>
+					)}
+				</div>
+			);
+		},
+	},
+	{
+		accessorKey: 'title',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Title
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const { title } = row.original;
+			return <p className={'text-base font-semibold line-clamp-1'}>{title}</p>;
+		},
+	},
+	{
+		accessorKey: 'level',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Level
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const level = row.getValue('level') as string;
+			return <Badge variant='admin'>{level}</Badge>;
+		},
+	},
+	{
+		accessorKey: 'instructorId',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Intructor
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const instructor = row.original.instructor;
+			return (
+				<>
+					{instructor?.name ? (
+						<p className={'font-semibold line-clamp-1 text-[15px]'}>
+							{instructor.name}
+						</p>
+					) : (
+						<p className={'text-muted-foreground text-[15px]'}>N/A</p>
+					)}
+				</>
+			);
+		},
+	},
+	{
+		accessorKey: 'accessType',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Access
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const accessType = row.getValue('accessType') as string;
+			return (
+				<Badge variant={accessType === 'PRO' ? 'admin' : 'archive'}>
+					{accessType}
+				</Badge>
+			);
+		},
+	},
+	{
+		accessorKey: 'published',
+		header: () => <div className='text-nowrap text-sm'>Status</div>,
+		cell: ({ row }) => {
+			const published = row.getValue('published');
+
+			return (
+				<Badge variant={published ? 'success' : 'archive'}>
+					{published ? (
+						<>
+							<ShieldCheck className='w-3 h-auto mr-1' /> Published
+						</>
+					) : (
+						<>
+							<Shield className='w-3 h-auto mr-1' /> Draft
+						</>
+					)}
+				</Badge>
+			);
+		},
+	},
+	{
+		accessorKey: 'createdAt',
+		header: ({ column }) => {
+			return (
+				<Button
+					variant='ghost'
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className='hover:bg-transparent hover:text-foreground px-0'
+				>
+					Created
+					<ArrowUpDown className='ml-2 h-4 w-4' />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			return (
+				<div className='text-sm text-nowrap'>
+					{formatTimestamp(row.getValue('createdAt'))}
+				</div>
+			);
+		},
+	},
+	{
+		id: 'chapters',
+		header: () => <div className='text-nowrap text-sm'>Chapters</div>,
+		cell: ({ row }) => {
+			const chapters = row.original.chapters;
+			return <div className='text-sm text-nowrap'>{chapters.length}</div>;
+		},
+	},
+	{
+		id: 'edit',
+		cell: ({ row }) => (
+			<Link
+				href={`/user/lms/edit/${row.original.id}`}
+				className={cn(buttonVariants({ variant: 'ghost' }))}
+			>
+				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
+			</Link>
+		),
+	},
+	{
+		id: 'delete',
+		cell: ({ row }) => <DeleteCourseButton id={row.original.id} />,
+	},
+];

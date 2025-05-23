@@ -25,7 +25,7 @@ export default async function CourseSeriesPage() {
 			<div className='flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mb-12 gap-2'>
 				<BreadCrumb
 					items={[
-						{ link: '/user/tags', text: 'Tags' },
+						{ link: '/user/lms', text: 'Courses' },
 
 						{
 							link: '/user/lms/course-series',

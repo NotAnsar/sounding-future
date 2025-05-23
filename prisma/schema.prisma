@@ -523,6 +523,11 @@ model TrackArtist {
   @@map("track_artists")
 }
 
+
+// LMS
+
+
+
 model Instructor {
   id        String   @id @default(cuid())
   name      String
@@ -536,6 +541,8 @@ model Instructor {
 
   // Relations
   artist    Artist?  @relation(fields: [artistId], references: [id])
+  courses   Course[]                  // Courses led by this instructor
+  chapters  ChapterToInstructor[]     // Chapters taught by this instructor
 
 
   @@map("instructors")
@@ -549,10 +556,12 @@ model CourseTopic {
   updatedAt   DateTime @updatedAt
   
   // Relations
-  // courses     Course[]
+  courses     CourseToTopic[]  // Courses related to this topic
   
   @@map("course_topics")
 }
+
+
 
 model CourseSeries {
   id          String   @id @default(cuid())
@@ -562,7 +571,93 @@ model CourseSeries {
   updatedAt   DateTime @updatedAt
   
   // // Relations
-  // courses     Course[]
+  courses     Course[]  // Courses in this series
   
   @@map("course_series")
 }
+
+
+// Add this to your schema.prisma file
+
+model Course {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  thumbnail   String?     // URL to course image
+  learnings   String[]    // Array of key learning points
+  skills      String?     @db.Text
+  credits     String?     @db.Text
+  accessType  String      @default("PRO") @map("access_type") // PRO, FREE, etc.
+  level       String      @default("BEGINNER") @map("course_level") // BEGINNER, INTERMEDIATE, ADVANCED
+  published   Boolean     @default(false)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt
+  
+  // Foreign keys
+  instructorId String?    @map("instructor_id")
+  seriesId     String?    @map("series_id")
+  
+  // Relations
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+  series       CourseSeries? @relation(fields: [seriesId], references: [id])
+  chapters     Chapter[]   
+  topics       CourseToTopic[]
+  
+  @@map("courses")
+}
+
+model Chapter {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  videoUrl    String?     @map("video_url")
+  videoDuration Int?     @map("video_duration") // Duration in seconds
+  downloads   String[]    // Array of download URLs
+  thumbnail   String?     // URL to thumbnail
+  accessType  String      @default("PRO") @map("access_type") // PRO, FREE, etc.
+  position    Int         @default(autoincrement())  // For ordering chapters
+  
+  published   Boolean     @default(false)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt
+  
+  // Foreign keys
+  courseId    String      @map("course_id")
+  
+  // Relations
+  course      Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructors ChapterToInstructor[]
+  
+  @@map("chapters")
+}
+
+// Junction table for Course to Topic (many-to-many)
+model CourseToTopic {
+  courseId  String      @map("course_id")
+  topicId   String      @map("topic_id")
+  
+  // Relations
+  course    Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  topic     CourseTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  
+  @@id([courseId, topicId])
+  @@map("course_topics_junction")
+}
+
+// Junction table for Chapter to Instructor (many-to-many)
+model ChapterToInstructor {
+  chapterId    String     @map("chapter_id")
+  instructorId String     @map("instructor_id")
+  
+  // Relations
+  chapter      Chapter    @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  
+  @@id([chapterId, instructorId])
+  @@map("chapter_instructors")
+}
+
+
+
+
+
