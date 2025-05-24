@@ -8,7 +8,11 @@ import {
 import { cn } from '@/lib/utils';
 import { Fragment } from 'react';
 
-type BreadcrumbItem = { text: string; link: string; isCurrent?: boolean };
+export type BreadcrumbItem = {
+	text: string;
+	link: string;
+	isCurrent?: boolean;
+};
 type Props = { items: BreadcrumbItem[] };
 
 export default function BreadCrumb({ items }: Props) {

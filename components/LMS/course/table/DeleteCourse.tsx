@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -14,7 +13,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { deleteCourse } from '@/actions/lms/course-action';
 import { toast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
 
 export function DeleteCourseButton({ id }: { id: string }) {
 	const [open, setOpen] = useState(false);
@@ -40,14 +38,9 @@ export function DeleteCourseButton({ id }: { id: string }) {
 
 	return (
 		<>
-			<Button
-				variant='ghost'
-				size='icon'
-				onClick={() => setOpen(true)}
-				disabled={loading}
-			>
-				<Trash2 className='w-5 h-auto aspect-square text-muted' />
-			</Button>
+			<button onClick={() => setOpen(true)} disabled={loading}>
+				Delete Course
+			</button>
 			<AlertDialog open={open} onOpenChange={setOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>

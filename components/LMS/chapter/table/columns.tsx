@@ -1,29 +1,21 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Eye, EyeOff, Edit, Trash } from 'lucide-react';
+import { MoreHorizontal, Eye, EyeOff, Video, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Badge from '@/components/Badge';
 import { ChapterWithRelations } from '@/db/chapter';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { DeleteChapterButton } from './../DeleteChapterButton';
 
 export const columns: ColumnDef<ChapterWithRelations>[] = [
-	{
-		accessorKey: 'position',
-		header: '#',
-		cell: ({ row }) => (
-			<div className='font-medium'>{row.getValue('position')}</div>
-		),
-	},
 	{
 		accessorKey: 'title',
 		header: 'Title',
@@ -31,7 +23,15 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 			const chapter = row.original;
 			return (
 				<div>
-					<div className='font-medium'>{chapter.title}</div>
+					<div className='font-medium flex items-center gap-2'>
+						{chapter.title}
+						{chapter.videoUrl && (
+							<Video className='w-3 h-3 text-muted-foreground' />
+						)}
+						{chapter.thumbnail && (
+							<ImageIcon className='w-3 h-3 text-muted-foreground aspect-square' />
+						)}
+					</div>
 					{chapter.description && (
 						<div className='text-sm text-muted-foreground line-clamp-1'>
 							{chapter.description}
@@ -50,11 +50,42 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 		},
 	},
 	{
-		accessorKey: 'duration',
+		accessorKey: 'instructors',
+		header: 'Instructors',
+		cell: ({ row }) => {
+			const instructors = row.original.instructors;
+			if (!instructors || instructors.length === 0) {
+				return <span className='text-muted-foreground'>No instructors</span>;
+			}
+
+			const instructorNames = instructors.map((rel) => rel.instructor.name);
+
+			if (instructorNames.length === 1) {
+				return <div className='font-medium text-sm'>{instructorNames[0]}</div>;
+			}
+
+			return (
+				<div className='text-sm'>
+					<div className='font-medium'>{instructorNames[0]}</div>
+					{instructorNames.length > 1 && (
+						<div className='text-xs text-muted-foreground'>
+							+{instructorNames.length - 1} more
+						</div>
+					)}
+				</div>
+			);
+		},
+	},
+	{
+		accessorKey: 'videoDuration',
 		header: 'Duration',
 		cell: ({ row }) => {
-			const duration = row.getValue('duration') as number | null;
-			return duration ? `${duration} min` : '-';
+			const duration = row.getValue('videoDuration') as number | null;
+			if (!duration) return '-';
+
+			const minutes = Math.floor(duration / 60);
+			const seconds = duration % 60;
+			return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 		},
 	},
 	{
@@ -75,7 +106,7 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 		cell: ({ row }) => {
 			const published = row.getValue('published') as boolean;
 			return (
-				<Badge variant={published ? 'admin' : 'archive'}>
+				<Badge variant={published ? 'success' : 'archive'}>
 					{published ? (
 						<>
 							<Eye className='w-3 h-3 mr-1' />
@@ -114,17 +145,20 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuSeparator />
 						<DropdownMenuItem asChild>
 							<Link href={`/user/lms/chapters/edit/${chapter.id}`}>
-								<Edit className='mr-2 h-4 w-4' />
-								Edit
+								Edit chapter
 							</Link>
 						</DropdownMenuItem>
-						<DropdownMenuItem className='text-destructive'>
-							<Trash className='mr-2 h-4 w-4' />
-							Delete
+						<DropdownMenuItem
+							className='text-destructive focus:text-destructive'
+							onSelect={(e) => e.preventDefault()}
+						>
+							<DeleteChapterButton
+								id={chapter.id}
+								title={chapter.title}
+								courseName={chapter.course.title}
+							/>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

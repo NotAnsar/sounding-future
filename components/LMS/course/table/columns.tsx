@@ -1,15 +1,13 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { ArrowUpDown, BookOpen, Shield, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
-import { Icons } from '@/components/icons/track-icons';
-import Link from 'next/link';
-import { cn, formatTimestamp } from '@/lib/utils';
+import { formatTimestamp } from '@/lib/utils';
 import Badge from '@/components/Badge';
-import { DeleteCourseButton } from './DeleteCourse';
 import { CourseWithRelations } from '@/db/course';
+import { ActionsCell } from './ActionsCell';
 
 export const columns: ColumnDef<CourseWithRelations>[] = [
 	{
@@ -177,19 +175,29 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 			return <div className='text-sm text-nowrap'>{chapters.length}</div>;
 		},
 	},
+	// {
+	// 	id: 'edit',
+	// 	cell: ({ row }) => (
+	// 		<Link
+	// 			href={`/user/lms/edit/${row.original.id}`}
+	// 			className={cn(buttonVariants({ variant: 'ghost' }))}
+	// 		>
+	// 			<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
+	// 		</Link>
+	// 	),
+	// },
+	// {
+	// 	id: 'delete',
+	// 	cell: ({ row }) => <DeleteCourseButton id={row.original.id} />,
+	// },
 	{
-		id: 'edit',
+		id: 'actions',
+		header: () => <div className='text-center'>Actions</div>,
 		cell: ({ row }) => (
-			<Link
-				href={`/user/lms/edit/${row.original.id}`}
-				className={cn(buttonVariants({ variant: 'ghost' }))}
-			>
-				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
-			</Link>
+			<ActionsCell
+				courseId={row.original.id}
+				chapterCount={row.original.chapters.length}
+			/>
 		),
-	},
-	{
-		id: 'delete',
-		cell: ({ row }) => <DeleteCourseButton id={row.original.id} />,
 	},
 ];

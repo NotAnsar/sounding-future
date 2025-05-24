@@ -1,18 +1,39 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { Chapter } from '@prisma/client';
 
-export type ChapterWithRelations = Prisma.ChapterGetPayload<{
-	include: { course: { select: { id: true; title: true } } };
-}>;
+export type ChapterWithRelations = Chapter & {
+	course: {
+		id: string;
+		title: string;
+	};
+	instructors: {
+		instructorId: string;
+		instructor: {
+			id: string;
+			name: string;
+		};
+	}[];
+};
 
-export async function getChapters() {
+export async function getChapters(courseId?: string) {
 	try {
 		const chapters = await prisma.chapter.findMany({
+			where: courseId ? { courseId } : undefined,
 			include: {
 				course: {
 					select: {
 						id: true,
 						title: true,
+					},
+				},
+				instructors: {
+					include: {
+						instructor: {
+							select: {
+								id: true,
+								name: true,
+							},
+						},
 					},
 				},
 			},
@@ -41,6 +62,16 @@ export async function getChapterById(id: string) {
 						title: true,
 					},
 				},
+				instructors: {
+					include: {
+						instructor: {
+							select: {
+								id: true,
+								name: true,
+							},
+						},
+					},
+				},
 			},
 		});
 
@@ -59,32 +90,6 @@ export async function getChapterById(id: string) {
 			data: null,
 			error: true,
 			message: 'Failed to fetch chapter',
-		};
-	}
-}
-
-export async function getChaptersByCourse(courseId: string) {
-	try {
-		const chapters = await prisma.chapter.findMany({
-			where: { courseId },
-			orderBy: { position: 'asc' },
-			include: {
-				course: {
-					select: {
-						id: true,
-						title: true,
-					},
-				},
-			},
-		});
-
-		return { data: chapters, error: false };
-	} catch (error) {
-		console.error('Error fetching chapters by course:', error);
-		return {
-			data: null,
-			error: true,
-			message: 'Failed to fetch chapters',
 		};
 	}
 }

@@ -4,6 +4,7 @@ import ChapterForm from '@/components/LMS/chapter/ChapterForm';
 import Error from '@/components/Error';
 import { notFound } from 'next/navigation';
 import BreadCrumb from '@/components/BreadCrumb';
+import { getInstructors } from '@/db/instructor';
 
 export const metadata = {
 	title: 'Edit Chapter - LMS',
@@ -17,9 +18,10 @@ export default async function EditChapterPage({
 }) {
 	const { id } = params;
 
-	const [chapter, courses] = await Promise.all([
+	const [chapter, courses, instructors] = await Promise.all([
 		getChapterById(id),
 		getCourses(),
+		getInstructors(),
 	]);
 
 	if (chapter.error || !chapter.data) {
@@ -34,7 +36,6 @@ export default async function EditChapterPage({
 		<div className='mt-4'>
 			<BreadCrumb
 				items={[
-					{ link: '/user/lms', text: 'LMS' },
 					{ link: '/user/lms/chapters', text: 'Chapters' },
 					{
 						link: `/user/lms/chapters/edit/${id}`,
@@ -44,7 +45,11 @@ export default async function EditChapterPage({
 				]}
 			/>
 
-			<ChapterForm initialData={chapter.data} courses={courses.data || []} />
+			<ChapterForm
+				initialData={chapter.data}
+				courses={courses.data || []}
+				instructors={instructors.data || []}
+			/>
 		</div>
 	);
 }
