@@ -41,7 +41,7 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 export async function updateFile(
 	imageFormdata: FormDataEntryValue | null,
 	prevImageUrl: string | undefined,
-	type: 'image' | 'audio' | 'video' = 'image',
+	type: 'image' | 'audio' | 'video' | 'download' = 'image',
 	audioFileName?: string
 ) {
 	const imageFile = await checkFile(imageFormdata);
@@ -56,33 +56,51 @@ export async function updateFile(
 
 export async function uploadFile(
 	file: File,
-	type: 'image' | 'audio' | 'video' = 'image',
-	audioFileName?: string
+	type: 'image' | 'audio' | 'video' | 'download' = 'image',
+	customFileName?: string
 ) {
 	if (!file) throw new Error('File is required for upload.');
 
 	try {
 		// Log file details
-		console.log('Uploading file:', { name: file.name });
+		console.log('Uploading file:', { name: file.name, type });
 
 		const extension = file.name.split('.').pop();
 		const randomSuffix = Math.floor(Math.random() * 10000);
-		const fileName = `${type}s/${
-			audioFileName ? `${audioFileName}-${randomSuffix}` : uuidv4()
-		}.${extension}`;
+
+		// Generate filename based on type
+		let fileName: string;
+		if (type === 'download') {
+			// For downloads, preserve original filename with random suffix
+			const originalName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+			fileName = `downloads/${
+				customFileName || `${originalName}-${randomSuffix}`
+			}.${extension}`;
+		} else {
+			fileName = `${type}s/${
+				customFileName ? `${customFileName}-${randomSuffix}` : uuidv4()
+			}.${extension}`;
+		}
 
 		const arrayBuffer = await file.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
 
 		// Log upload attempt
-		console.log('Attempting upload with params:', { fileName });
+		console.log('Attempting upload with params:', {
+			fileName,
+			fileSize: buffer.length,
+		});
 
 		const command = new PutObjectCommand({
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: fileName,
 			Body: buffer,
 			ContentType: file.type,
-			ContentLength: buffer.length, // Add explicit content length
+			ContentLength: buffer.length,
+			// Add Content-Disposition for downloads
+			...(type === 'download' && {
+				ContentDisposition: `attachment; filename="${file.name}"`,
+			}),
 		});
 
 		const result = await s3.send(command);
@@ -113,4 +131,16 @@ export async function uploadFile(
 		});
 		throw new Error(`Failed to upload file: ${(error as UploadError).message}`);
 	}
+}
+
+// Helper function to upload multiple download files
+export async function uploadDownloadFiles(files: File[]): Promise<string[]> {
+	const uploadPromises = files.map((file) => uploadFile(file, 'download'));
+	return Promise.all(uploadPromises);
+}
+
+// Helper function to delete multiple download files
+export async function deleteDownloadFiles(fileUrls: string[]): Promise<void> {
+	const deletePromises = fileUrls.map((url) => deleteFile(url));
+	await Promise.all(deletePromises);
 }

@@ -19,6 +19,7 @@ import { PublishToggle } from '@/components/PublishToggle';
 import VideoUploadSection from './VideoUploadSection';
 import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { MultiSelect } from '@/components/ui/multi-select';
+import DownloadsUploadSection from './DownloadsUploadSection';
 
 interface ChapterFormProps {
 	initialData?: ChapterWithRelations;
@@ -33,6 +34,7 @@ const initialState: ChapterFormState = {
 	prev: {
 		videoUrl: undefined,
 		thumbnail: undefined,
+		downloads: undefined,
 	},
 };
 
@@ -49,6 +51,7 @@ export default function ChapterForm({
 		prev: {
 			videoUrl: initialData?.videoUrl || undefined,
 			thumbnail: initialData?.thumbnail || undefined,
+			downloads: initialData?.downloads || undefined,
 		},
 	};
 
@@ -239,6 +242,12 @@ export default function ChapterForm({
 					type='square'
 					initialData={initialData?.thumbnail || undefined}
 					message='Upload thumbnail image, max. 2mb'
+				/>
+
+				{/* Downloads Upload Section */}
+				<DownloadsUploadSection
+					errors={state?.errors?.downloads}
+					initialDownloads={initialData?.downloads || []}
 				/>
 
 				{/* Publish Toggle */}

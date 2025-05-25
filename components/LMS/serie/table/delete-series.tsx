@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -14,61 +14,82 @@ import {
 } from '@/components/ui/alert-dialog';
 import { deleteSeries } from '@/actions/lms/series-action';
 import { toast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
+import { Loader, Trash2 } from 'lucide-react';
 
-export function DeleteSeriesButton({ id }: { id: string }) {
-	const [open, setOpen] = useState(false);
-	const [loading, setLoading] = useState(false);
+export const DeleteSeries = ({
+	id,
+	open,
+	setOpen,
+}: {
+	id: string;
+	open: boolean;
+	setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+	const [state, action] = useFormState(deleteSeries.bind(null, id), {});
 
-	async function handleDelete() {
-		setLoading(true);
-		const result = await deleteSeries(id);
-
-		if (result.success) {
-			toast({ description: 'Course series deleted successfully' });
-		} else {
+	useEffect(() => {
+		if (state?.message) {
+			setOpen(false);
 			toast({
-				title: 'Error',
-				description: result.message || 'Failed to delete course series',
-				variant: 'destructive',
+				description: state?.message,
+				variant: state.success ? 'default' : 'destructive',
 			});
 		}
+	}, [state, setOpen]);
 
-		setLoading(false);
-		setOpen(false);
-	}
+	return (
+		<AlertDialog open={open} onOpenChange={setOpen}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete Course Series</AlertDialogTitle>
+					<AlertDialogDescription>
+						Are you sure you want to delete this course series? This action
+						cannot be undone.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<form action={action}>
+						<PendingButton />
+					</form>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+};
+
+function PendingButton() {
+	const { pending } = useFormStatus();
+
+	return (
+		<Button
+			type='submit'
+			aria-disabled={pending}
+			disabled={pending}
+			className='bg-destructive text-white hover:bg-destructive/90 w-full'
+		>
+			{pending && <Loader className='mr-2 h-4 w-4 animate-spin' />}
+			{pending ? 'Deleting...' : 'Delete'}
+		</Button>
+	);
+}
+
+export function DeleteSeriesButton({ id }: { id: string }) {
+	const [open, setOpen] = useState<boolean>(false);
 
 	return (
 		<>
-			<Button
-				variant='ghost'
-				size='icon'
-				onClick={() => setOpen(true)}
-				disabled={loading}
-			>
+			<Button variant='ghost' size='icon' onClick={() => setOpen(true)}>
 				<Trash2 className='w-5 h-auto aspect-square text-muted' />
 			</Button>
-			<AlertDialog open={open} onOpenChange={setOpen}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Course Series</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete this course series? This action
-							cannot be undone.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleDelete}
-							disabled={loading}
-							className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-						>
-							{loading ? 'Deleting...' : 'Delete'}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			{open && (
+				<DeleteSeries
+					id={id}
+					open={open}
+					setOpen={setOpen}
+					key={open ? 'opened' : 'closed'}
+				/>
+			)}
 		</>
 	);
 }

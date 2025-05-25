@@ -8,6 +8,7 @@ import { formatTimestamp } from '@/lib/utils';
 import Badge from '@/components/Badge';
 import { CourseWithRelations } from '@/db/course';
 import { ActionsCell } from './ActionsCell';
+import Link from 'next/link';
 
 export const columns: ColumnDef<CourseWithRelations>[] = [
 	{
@@ -23,7 +24,7 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 							alt={course.title}
 							width={56}
 							height={56}
-							className='min-w-14 max-w-14 h-auto aspect-video object-cover border border-border rounded-md'
+							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md'
 						/>
 					) : (
 						<div className='min-w-14 max-w-14 h-auto aspect-video object-cover border border-border rounded-md bg-muted flex items-center justify-center'>
@@ -100,7 +101,13 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 
 			return (
 				<div className={'font-semibold line-clamp-1 text-[15px]'}>
-					{primaryInstructor?.name}
+					<Link
+						href={`/user/lms/instructors/${primaryInstructor?.id}`}
+						className='cursor-pointer'
+					>
+						{primaryInstructor?.name}
+					</Link>
+
 					{additionalCount > 0 && (
 						<span className='text-muted-foreground text-sm'>
 							{' '}

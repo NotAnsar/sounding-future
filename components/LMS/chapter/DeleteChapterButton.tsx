@@ -1,19 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { deleteChapter } from '@/actions/lms/chapter-action';
 import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Loader } from 'lucide-react';
 
 interface DeleteChapterButtonProps {
 	id: string;
@@ -21,53 +22,33 @@ interface DeleteChapterButtonProps {
 	courseName: string;
 }
 
-export function DeleteChapterButton({
+export const DeleteChapter = ({
 	id,
 	title,
 	courseName,
-}: DeleteChapterButtonProps) {
-	const [open, setOpen] = useState(false);
-	const [loading, setLoading] = useState(false);
+	open,
+	setOpen,
+}: {
+	id: string;
+	title: string;
+	courseName: string;
+	open: boolean;
+	setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+	const [state, action] = useFormState(deleteChapter.bind(null, id), {});
 
-	async function handleDelete() {
-		setLoading(true);
-
-		try {
-			const response = await deleteChapter(id);
-
-			if (response.success) {
-				toast({
-					description: `Chapter "${title}" deleted successfully`,
-				});
-			} else {
-				toast({
-					title: 'Error',
-					description: response.message || 'Failed to delete chapter',
-					variant: 'destructive',
-				});
-			}
-		} catch (error) {
-			toast({
-				title: 'Error',
-				description: 'An unexpected error occurred',
-				variant: 'destructive',
-			});
-		} finally {
-			setLoading(false);
+	useEffect(() => {
+		if (state?.message) {
 			setOpen(false);
+			toast({
+				description: state?.message,
+				variant: state.success ? 'default' : 'destructive',
+			});
 		}
-	}
+	}, [state, setOpen]);
 
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
-			<AlertDialogTrigger asChild>
-				<button
-					className='flex items-center justify-start w-full h-auto p-0 text-destructive hover:text-destructive'
-					disabled={loading}
-				>
-					{loading ? 'Deleting...' : 'Delete chapter'}
-				</button>
-			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete Chapter</AlertDialogTitle>
@@ -91,16 +72,57 @@ export function DeleteChapterButton({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-					<AlertDialogAction
-						onClick={handleDelete}
-						disabled={loading}
-						className='bg-destructive/70 text-destructive-foreground hover:bg-destructive/90'
-					>
-						{loading ? 'Deleting...' : 'Delete Chapter'}
-					</AlertDialogAction>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<form action={action}>
+						<PendingButton />
+					</form>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
+	);
+};
+
+function PendingButton() {
+	const { pending } = useFormStatus();
+
+	return (
+		<Button
+			type='submit'
+			aria-disabled={pending}
+			disabled={pending}
+			className='bg-destructive text-white hover:bg-destructive/90 w-full'
+		>
+			{pending && <Loader className='mr-2 h-4 w-4 animate-spin' />}
+			{pending ? 'Deleting...' : 'Delete Chapter'}
+		</Button>
+	);
+}
+
+export function DeleteChapterButton({
+	id,
+	title,
+	courseName,
+}: DeleteChapterButtonProps) {
+	const [open, setOpen] = useState<boolean>(false);
+
+	return (
+		<>
+			<button
+				className='flex items-center justify-start w-full h-auto p-0 text-destructive hover:text-destructive'
+				onClick={() => setOpen(true)}
+			>
+				Delete chapter
+			</button>
+			{open && (
+				<DeleteChapter
+					id={id}
+					title={title}
+					courseName={courseName}
+					open={open}
+					setOpen={setOpen}
+					key={open ? 'opened' : 'closed'}
+				/>
+			)}
+		</>
 	);
 }

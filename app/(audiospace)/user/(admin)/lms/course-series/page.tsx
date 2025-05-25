@@ -29,7 +29,7 @@ export default async function CourseSeriesPage() {
 
 						{
 							link: '/user/lms/course-series',
-							text: 'Topics',
+							text: 'Series',
 							isCurrent: true,
 						},
 					]}

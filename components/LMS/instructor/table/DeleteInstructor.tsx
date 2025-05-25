@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -42,8 +44,8 @@ export const DeleteInstructor = ({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete your
-						instructors and remove its data from our servers.
+						This action cannot be undone. This will permanently delete this
+						instructor and remove their data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

@@ -11,6 +11,7 @@ export type DeleteState = {
 };
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const MAX_DOWNLOAD_FILE_SIZE = 10 * 1024 * 1024; // 10MB for downloads
 
 export const imageSchema = z.object({
 	file: z
@@ -54,6 +55,21 @@ export const videoSchema = z.object({
 		}, 'Only .mp4, .webm, .mov, and .avi formats are supported.'),
 });
 
+// Downloads schema for various file types
+export const downloadSchema = z.object({
+	file: z
+		.any()
+		.refine((file: File) => file?.size !== 0, 'File is required')
+		.refine(
+			(file: File) => file?.size < MAX_DOWNLOAD_FILE_SIZE,
+			`Max size is ${MAX_DOWNLOAD_FILE_SIZE / (1024 * 1024)}MB.`
+		)
+		.refine(
+			(file: File) => checkDownloadFileType(file),
+			'Only PDF, JPG, JPEG, PNG, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, ZIP files are supported.'
+		),
+});
+
 export const squareImageSchema = z.object({
 	file: z
 		.any()
@@ -87,13 +103,27 @@ const checkFileType = (file: File) => {
 	return allowedTypes.includes(file?.type);
 };
 
-// // Utility function for slug generation
-// export function generateSlug(name: string): string {
-// 	return name
-// 		.toLowerCase()
-// 		.replace(/[^a-z0-9]+/g, '-')
-// 		.replace(/(^-|-$)/g, '');
-// }
+// Check file type for downloads
+const checkDownloadFileType = (file: File) => {
+	const allowedTypes = [
+		// Images
+		'image/png',
+		'image/jpeg',
+		'image/jpg',
+		// Documents
+		'application/pdf',
+		'application/msword',
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		'application/vnd.ms-excel',
+		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		'application/vnd.ms-powerpoint',
+		'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+		'text/plain',
+		'application/zip',
+		'application/x-zip-compressed',
+	];
+	return allowedTypes.includes(file?.type);
+};
 
 export function generateSlug(name: string): string {
 	return name

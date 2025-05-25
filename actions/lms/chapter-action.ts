@@ -1,7 +1,12 @@
 'use server';
 
 import { z } from 'zod';
-import { State, videoSchema, imageSchema } from '@/actions/utils/utils';
+import {
+	State,
+	videoSchema,
+	imageSchema,
+	downloadSchema,
+} from '@/actions/utils/utils';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -10,6 +15,8 @@ import {
 	deleteFile,
 	updateFile,
 	uploadFile,
+	uploadDownloadFiles,
+	deleteDownloadFiles,
 } from '@/actions/utils/s3-image';
 
 // Define Chapter schema for validation - matching Prisma schema
@@ -22,6 +29,7 @@ const ChapterSchema = z.object({
 	videoUrl: videoSchema.shape.file.optional(),
 	videoDuration: z.number().min(0, 'Duration must be positive').optional(),
 	thumbnail: imageSchema.shape.file.optional(),
+	downloads: z.array(downloadSchema.shape.file).optional(),
 	courseId: z.string().min(1, 'Course is required'),
 	instructorIds: z
 		.array(z.string())
@@ -37,6 +45,7 @@ export type ChapterFormState = State<ChapterData> & {
 	prev?: {
 		videoUrl?: string | undefined;
 		thumbnail?: string | undefined;
+		downloads?: string[] | undefined;
 	};
 };
 
@@ -106,6 +115,40 @@ async function updateCoursePublishStatus(
 	}
 }
 
+function getDeletedDownloads(formData: FormData): string[] {
+	const deletedUrls: string[] = [];
+	const entries = Array.from(formData.entries());
+
+	for (const [key, value] of entries) {
+		if (key.startsWith('deleteDownloads[') && typeof value === 'string') {
+			deletedUrls.push(value);
+		}
+	}
+
+	console.log('Files marked for deletion:', deletedUrls);
+	return deletedUrls;
+}
+
+// Helper function to process download files from FormData
+function getDownloadFiles(formData: FormData): File[] {
+	const files: File[] = [];
+
+	// Get all values for the 'downloads' key
+	const downloadEntries = formData.getAll('downloads');
+
+	for (const entry of downloadEntries) {
+		if (entry instanceof File && entry.size > 0) {
+			files.push(entry);
+		}
+	}
+
+	console.log(
+		'Download files found:',
+		files.map((f) => ({ name: f.name, size: f.size }))
+	);
+	return files;
+}
+
 export async function addChapter(
 	prevState: ChapterFormState,
 	formData: FormData
@@ -142,6 +185,9 @@ export async function addChapter(
 		};
 	}
 
+	// Get download files
+	const downloadFiles = getDownloadFiles(formData);
+
 	// Get next position
 	const position = await getNextChapterPosition(courseId);
 
@@ -153,6 +199,7 @@ export async function addChapter(
 			? Number(formData.get('videoDuration'))
 			: undefined,
 		thumbnail: await checkFile(formData.get('thumbnail')),
+		downloads: downloadFiles,
 		courseId: courseId,
 		instructorIds: instructorIds,
 		accessType: formData.get('accessType') || 'PRO',
@@ -170,6 +217,7 @@ export async function addChapter(
 	const {
 		videoUrl,
 		thumbnail,
+		downloads,
 		instructorIds: validatedInstructorIds,
 		...otherData
 	} = validatedFields.data;
@@ -181,12 +229,22 @@ export async function addChapter(
 		// Upload thumbnail if provided
 		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : null;
 
+		console.log(downloads);
+
+		// Upload download files if provided
+		const downloadUrls =
+			downloads && downloads.length > 0
+				? await uploadDownloadFiles(downloads)
+				: [];
+
+		console.log(downloadUrls);
 		// Create chapter with instructor relationships
 		await prisma.chapter.create({
 			data: {
 				...otherData,
 				videoUrl: videoFileUrl,
 				thumbnail: thumbnailUrl,
+				downloads: downloadUrls,
 				instructors: {
 					create: validatedInstructorIds.map((instructorId) => ({
 						instructorId: instructorId,
@@ -249,10 +307,15 @@ export async function updateChapter(
 		};
 	}
 
+	// Get download files and deleted downloads
+	const downloadFiles = getDownloadFiles(formData);
+	const deletedDownloadUrls = getDeletedDownloads(formData);
+
 	const validatedFields = ChapterSchema.omit({
 		position: true,
 		videoUrl: true,
 		thumbnail: true,
+		downloads: true,
 	}).safeParse({
 		title: formData.get('title'),
 		description: formData.get('description') || undefined,
@@ -279,7 +342,12 @@ export async function updateChapter(
 		// Get current chapter state to check if it's being unpublished
 		const currentChapter = await prisma.chapter.findUnique({
 			where: { id },
-			select: { published: true, courseId: true, videoUrl: true },
+			select: {
+				published: true,
+				courseId: true,
+				videoUrl: true,
+				downloads: true,
+			},
 		});
 
 		const wasPublished = currentChapter?.published || false;
@@ -311,6 +379,25 @@ export async function updateChapter(
 			prevState?.prev?.thumbnail
 		);
 
+		// Handle downloads update
+		let finalDownloads = currentChapter?.downloads || [];
+
+		// Remove deleted downloads
+		if (deletedDownloadUrls.length > 0) {
+			// Delete files from S3
+			await deleteDownloadFiles(deletedDownloadUrls);
+			// Remove from the array
+			finalDownloads = finalDownloads.filter(
+				(url) => !deletedDownloadUrls.includes(url)
+			);
+		}
+
+		// Add new download files
+		if (downloadFiles.length > 0) {
+			const newDownloadUrls = await uploadDownloadFiles(downloadFiles);
+			finalDownloads = [...finalDownloads, ...newDownloadUrls];
+		}
+
 		// Update chapter and instructor relationships
 		await prisma.chapter.update({
 			where: { id },
@@ -318,6 +405,7 @@ export async function updateChapter(
 				...updateData,
 				videoUrl: finalVideoUrl,
 				thumbnail: thumbnailUrl,
+				downloads: finalDownloads,
 				instructors: {
 					// Delete existing relationships
 					deleteMany: {},
@@ -354,6 +442,7 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 			select: {
 				videoUrl: true,
 				thumbnail: true,
+				downloads: true,
 				courseId: true,
 				published: true,
 			},
@@ -374,14 +463,16 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 		if (chapter?.thumbnail) {
 			await deleteFile(chapter.thumbnail);
 		}
+		if (chapter?.downloads && chapter.downloads.length > 0) {
+			await deleteDownloadFiles(chapter.downloads);
+		}
 
 		// Check if course should be unpublished (if deleted chapter was published)
 		if (chapter.courseId) {
 			await updateCoursePublishStatus(chapter.courseId, wasPublished);
 		}
 
-		revalidatePath('/user/lms/chapters');
-		revalidatePath('/user/lms'); // Also revalidate courses list
+		revalidatePath('/user/lms', 'layout'); // Also revalidate courses list
 		return { success: true, message: 'Chapter deleted successfully' };
 	} catch (error) {
 		console.error('Delete chapter error:', error);
