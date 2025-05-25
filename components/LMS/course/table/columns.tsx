@@ -72,8 +72,9 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 			return <Badge variant='admin'>{level}</Badge>;
 		},
 	},
+
 	{
-		accessorKey: 'instructorId',
+		accessorKey: 'instructors',
 		header: ({ column }) => {
 			return (
 				<Button
@@ -81,23 +82,32 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					Intructor
+					Instructors
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
 		cell: ({ row }) => {
-			const instructor = row.original.instructor;
+			const instructors = row.original.instructors;
+			if (!instructors || instructors.length === 0) {
+				return <p className={'text-muted-foreground text-[15px]'}>N/A</p>;
+			}
+
+			const primaryInstructor =
+				instructors.find((rel) => rel.isPrimary)?.instructor ||
+				instructors[0]?.instructor;
+			const additionalCount = instructors.length - 1;
+
 			return (
-				<>
-					{instructor?.name ? (
-						<p className={'font-semibold line-clamp-1 text-[15px]'}>
-							{instructor.name}
-						</p>
-					) : (
-						<p className={'text-muted-foreground text-[15px]'}>N/A</p>
+				<div className={'font-semibold line-clamp-1 text-[15px]'}>
+					{primaryInstructor?.name}
+					{additionalCount > 0 && (
+						<span className='text-muted-foreground text-sm'>
+							{' '}
+							+{additionalCount} more
+						</span>
 					)}
-				</>
+				</div>
 			);
 		},
 	},
@@ -175,21 +185,7 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 			return <div className='text-sm text-nowrap'>{chapters.length}</div>;
 		},
 	},
-	// {
-	// 	id: 'edit',
-	// 	cell: ({ row }) => (
-	// 		<Link
-	// 			href={`/user/lms/edit/${row.original.id}`}
-	// 			className={cn(buttonVariants({ variant: 'ghost' }))}
-	// 		>
-	// 			<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />
-	// 		</Link>
-	// 	),
-	// },
-	// {
-	// 	id: 'delete',
-	// 	cell: ({ row }) => <DeleteCourseButton id={row.original.id} />,
-	// },
+
 	{
 		id: 'actions',
 		header: () => <div className='text-center'>Actions</div>,

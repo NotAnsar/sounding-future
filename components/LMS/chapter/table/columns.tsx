@@ -61,12 +61,24 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 			const instructorNames = instructors.map((rel) => rel.instructor.name);
 
 			if (instructorNames.length === 1) {
-				return <div className='font-medium text-sm'>{instructorNames[0]}</div>;
+				return (
+					<Link
+						href={`/user/lms/instructors/${instructors[0].instructor.id}`}
+						className='font-medium text-sm cursor-pointer'
+					>
+						{instructorNames[0]}
+					</Link>
+				);
 			}
 
 			return (
 				<div className='text-sm'>
-					<div className='font-medium'>{instructorNames[0]}</div>
+					<Link
+						href={`/user/lms/instructors/${instructors[0].instructor.id}`}
+						className='font-medium cursor-pointer'
+					>
+						{instructorNames[0]}
+					</Link>
 					{instructorNames.length > 1 && (
 						<div className='text-xs text-muted-foreground'>
 							+{instructorNames.length - 1} more

@@ -53,7 +53,7 @@ export default async function page() {
 					Chapters
 				</Link>
 				<Link
-					href={'/user/lms/intructors'}
+					href={'/user/lms/instructors'}
 					className={cn(buttonVariants({ variant: 'outline' }))}
 				>
 					Instructors

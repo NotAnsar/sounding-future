@@ -1,35 +1,36 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { ArrowUpDown, Shield, ShieldCheck, UserIcon } from 'lucide-react';
+import { ArrowUpDown, Shield, ShieldCheck, BookOpen } from 'lucide-react';
 import Image from 'next/image';
-import { Icons } from '@/components/icons/track-icons';
-import Link from 'next/link';
-import { cn, formatTimestamp } from '@/lib/utils';
 import Badge from '@/components/Badge';
+import { InstructorStats } from '@/db/instructor';
+import { Button, buttonVariants } from '@/components/ui/button';
+import InstructorCoursesPopUp from './InstructorCoursesPopUp';
+import Link from 'next/link';
+import { cn, convertDateFormat } from '@/lib/utils';
+import { Icons } from '@/components/icons/track-icons';
 import { DeleteInstructorButton } from './DeleteInstructor';
-import { InstructorWithArtist } from '@/db/instructor';
 
-export const columns: ColumnDef<InstructorWithArtist>[] = [
+export const columns: ColumnDef<InstructorStats>[] = [
 	{
 		accessorKey: 'image',
 		header: '',
 		cell: ({ row }) => {
-			const user = row.original;
+			const instructor = row.original;
 			return (
 				<div className='max-w-14'>
-					{user?.image ? (
+					{instructor?.image ? (
 						<Image
-							src={user?.image}
-							alt={user.name}
+							src={instructor.image}
+							alt={instructor.name}
 							width={56}
 							height={56}
-							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-full '
+							className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md'
 						/>
 					) : (
-						<div className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-full bg-muted flex items-center justify-center'>
-							<UserIcon className='w-6 h-6 mx-auto my-auto text-white' />
+						<div className='min-w-14 max-w-14 h-auto aspect-square object-cover border border-border rounded-md bg-muted flex items-center justify-center'>
+							<BookOpen className='w-6 h-6 text-muted-foreground' />
 						</div>
 					)}
 				</div>
@@ -45,14 +46,20 @@ export const columns: ColumnDef<InstructorWithArtist>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					Username
+					Name
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
 		cell: ({ row }) => {
-			const { name } = row.original;
-			return <p className={'text-base font-semibold line-clamp-1'}>{name}</p>;
+			const instructor = row.original;
+			return (
+				<div>
+					<p className={'text-base font-semibold line-clamp-1'}>
+						{instructor.name}
+					</p>
+				</div>
+			);
 		},
 	},
 	{
@@ -70,15 +77,16 @@ export const columns: ColumnDef<InstructorWithArtist>[] = [
 			);
 		},
 		cell: ({ row }) => {
+			const bio = row.getValue('bio') as string;
 			return (
-				<div className={'text-base font-semibold max-w-60 line-clamp-1'}>
-					{row.getValue('bio')}
+				<div className={'text-sm max-w-60 line-clamp-2'}>
+					{bio || 'No bio available'}
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: 'artist',
+		accessorKey: '_count',
 		header: ({ column }) => {
 			return (
 				<Button
@@ -86,30 +94,32 @@ export const columns: ColumnDef<InstructorWithArtist>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					Artist
+					Courses
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
 		cell: ({ row }) => {
-			const artist = row.original.artist;
-
-			if (!artist) {
-				return (
-					<div className='text-muted-foreground text-sm'>No artist linked</div>
-				);
-			}
+			const instructor = row.original;
+			const coursesCount = instructor._count?.courses ?? 0;
+			const chaptersCount = instructor._count?.chapters ?? 0;
 
 			return (
-				<div className='flex items-center gap-2'>
-					<span className='font-medium'>{artist.name}</span>
-				</div>
+				<InstructorCoursesPopUp
+					instructorId={instructor.id}
+					coursesCount={coursesCount}
+					chaptersCount={chaptersCount}
+				/>
 			);
 		},
 		sortingFn: (rowA, rowB) => {
-			const artistA = rowA.original.artist?.name || '';
-			const artistB = rowB.original.artist?.name || '';
-			return artistA.localeCompare(artistB);
+			const totalA =
+				(rowA.original._count?.courses ?? 0) +
+				(rowA.original._count?.chapters ?? 0);
+			const totalB =
+				(rowB.original._count?.courses ?? 0) +
+				(rowB.original._count?.chapters ?? 0);
+			return totalA - totalB;
 		},
 	},
 	{
@@ -126,14 +136,13 @@ export const columns: ColumnDef<InstructorWithArtist>[] = [
 						</>
 					) : (
 						<>
-							<Shield className='w-3 h-auto' /> UnPublished
+							<Shield className='w-3 h-auto' /> Unpublished
 						</>
 					)}
 				</Badge>
 			);
 		},
 	},
-
 	{
 		accessorKey: 'createdAt',
 		header: ({ column }) => {
@@ -143,25 +152,21 @@ export const columns: ColumnDef<InstructorWithArtist>[] = [
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 					className='hover:bg-transparent hover:text-foreground px-0'
 				>
-					Date Joined
+					Created
 					<ArrowUpDown className='ml-2 h-4 w-4' />
 				</Button>
 			);
 		},
 		cell: ({ row }) => {
-			return (
-				<div className='text-sm text-nowrap'>
-					{formatTimestamp(row.getValue('createdAt'))}
-				</div>
-			);
+			const date = new Date(row.getValue('createdAt'));
+			return <div className='text-sm'>{convertDateFormat(date)}</div>;
 		},
 	},
-
 	{
 		id: 'edit',
 		cell: ({ row }) => (
 			<Link
-				href={`/user/lms/intructors/${row.original.id}`}
+				href={`/user/lms/instructors/${row.original.id}`}
 				className={cn(buttonVariants({ variant: 'ghost' }))}
 			>
 				<Icons.edit className='w-5 h-auto aspect-square fill-muted text-muted' />

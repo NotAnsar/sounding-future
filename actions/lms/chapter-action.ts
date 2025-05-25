@@ -211,6 +211,7 @@ export async function updateChapter(
 	formData: FormData
 ): Promise<ChapterFormState> {
 	const published = formData.get('published') === 'true';
+	const deleteVideo = formData.get('deleteVideo') === 'true';
 
 	// Get instructor IDs from form data
 	const instructorIds = formData.getAll('instructorIds') as string[];
@@ -226,16 +227,25 @@ export async function updateChapter(
 	const videoFile = await checkFile(formData.get('videoUrl'));
 	const existingVideoUrl = prevState?.prev?.videoUrl;
 
+	// Determine final video state after operations
+	let willHaveVideo = false;
+	if (deleteVideo) {
+		// Video is being deleted
+		willHaveVideo = !!videoFile; // Only if new video is uploaded
+	} else {
+		// Video is not being deleted
+		willHaveVideo = !!videoFile || !!existingVideoUrl;
+	}
+
 	// Validate video requirement for publishing
-	const videoValidation = validateVideoForPublishing(
-		published,
-		!!videoFile,
-		existingVideoUrl
-	);
-	if (!videoValidation.isValid) {
+	if (published && !willHaveVideo) {
 		return {
-			errors: { published: [videoValidation.error!] },
-			message: videoValidation.error!,
+			errors: {
+				published: [
+					'Cannot publish chapter without a video. Please upload a video first.',
+				],
+			},
+			message: 'Cannot publish chapter without a video.',
 		};
 	}
 
@@ -269,18 +279,30 @@ export async function updateChapter(
 		// Get current chapter state to check if it's being unpublished
 		const currentChapter = await prisma.chapter.findUnique({
 			where: { id },
-			select: { published: true, courseId: true },
+			select: { published: true, courseId: true, videoUrl: true },
 		});
 
 		const wasPublished = currentChapter?.published || false;
 		const isBeingUnpublished = wasPublished && !published;
 
-		// Handle video file update
-		const videoFileUrl = await updateFile(
-			videoFile || null,
-			prevState?.prev?.videoUrl,
-			'video'
-		);
+		let finalVideoUrl = currentChapter?.videoUrl;
+
+		// Handle video deletion
+		if (deleteVideo && currentChapter?.videoUrl) {
+			await deleteFile(currentChapter.videoUrl);
+			finalVideoUrl = null;
+		}
+
+		// Handle new video upload
+		if (videoFile) {
+			// If there was an existing video and we're not deleting it, update it
+			if (finalVideoUrl && !deleteVideo) {
+				finalVideoUrl = await updateFile(videoFile, finalVideoUrl, 'video');
+			} else {
+				// Upload new video
+				finalVideoUrl = await uploadFile(videoFile, 'video');
+			}
+		}
 
 		// Handle thumbnail update
 		const thumbnailFile = formData.get('thumbnail');
@@ -294,7 +316,7 @@ export async function updateChapter(
 			where: { id },
 			data: {
 				...updateData,
-				videoUrl: videoFileUrl,
+				videoUrl: finalVideoUrl,
 				thumbnail: thumbnailUrl,
 				instructors: {
 					// Delete existing relationships

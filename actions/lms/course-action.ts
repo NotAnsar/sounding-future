@@ -1,16 +1,16 @@
 'use server';
 
 import { z } from 'zod';
-import { imageSchema, State } from '@/actions/utils/utils';
-import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
 import {
 	checkFile,
-	deleteFile,
-	updateFile,
 	uploadFile,
+	updateFile,
+	deleteFile,
 } from '@/actions/utils/s3-image';
+import { imageSchema } from '../utils/utils';
 
 // Define Chapter schema for validation - title is optional
 const ChapterSchema = z.object({
@@ -39,13 +39,19 @@ const CourseSchema = z.object({
 	deletedChapters: z.array(z.string()).optional(),
 	skills: z.string().optional(),
 	credits: z.string().optional(),
-	instructorId: z.string().optional(),
+	instructorIds: z.array(z.string()).optional(),
 	seriesId: z.string().optional(),
 });
 
 type CourseData = z.infer<typeof CourseSchema>;
 
-export type CourseFormState = State<CourseData> & {
+export type CourseFormState = {
+	message?: string | null;
+	errors?: {
+		[K in keyof CourseData]?: string[];
+	} & {
+		[key: string]: string[];
+	};
 	prev?: { thumbnail?: string | undefined };
 };
 
@@ -59,7 +65,7 @@ async function canPublishCourse(
 	courseId?: string
 ): Promise<{ canPublish: boolean; reason?: string }> {
 	if (!courseId) {
-		return { canPublish: false, reason: 'Course must be created first' };
+		return { canPublish: false, reason: 'Course ID is required' };
 	}
 
 	// Check if course has any chapters
@@ -72,7 +78,7 @@ async function canPublishCourse(
 	if (totalChaptersCount === 0) {
 		return {
 			canPublish: false,
-			reason: 'Course must have at least one chapter',
+			reason: 'Course must have at least one chapter to be published',
 		};
 	}
 
@@ -87,7 +93,7 @@ async function canPublishCourse(
 	if (publishedChaptersCount === 0) {
 		return {
 			canPublish: false,
-			reason: 'Course must have at least one published chapter',
+			reason: 'Course must have at least one published chapter to be published',
 		};
 	}
 
@@ -98,6 +104,11 @@ async function canPublishCourse(
 function extractFormData(formData: FormData) {
 	// Extract topics as array
 	const topicIds = formData.getAll('topicIds').map((value) => value.toString());
+
+	// Extract instructor IDs as array
+	const instructorIds = formData
+		.getAll('instructorIds')
+		.map((value) => value.toString());
 
 	// Extract learnings as array - handle both old textarea format and new array format
 	const learningsEntries = [];
@@ -112,31 +123,34 @@ function extractFormData(formData: FormData) {
 
 	// Fallback to old textarea format if no array format found
 	if (learningsEntries.length === 0) {
-		const learningsText = formData.get('learnings')?.toString() || '';
-		learningsEntries.push(
-			...learningsText.split('\n').filter((line) => line.trim() !== '')
-		);
+		const learningsText = formData.get('learnings')?.toString();
+		if (learningsText) {
+			const splitLearnings = learningsText
+				.split('\n')
+				.map((line) => line.trim())
+				.filter(Boolean);
+			learningsEntries.push(...splitLearnings);
+		}
 	}
 
 	// Extract chapters as array with all necessary fields
 	const chapters = [];
 	let chapterIndex = 0;
 	while (formData.has(`chapters[${chapterIndex}][id]`)) {
-		const chapterId = formData.get(`chapters[${chapterIndex}][id]`)?.toString();
-		const chapterTitle =
-			formData.get(`chapters[${chapterIndex}][title]`)?.toString() || '';
-		const chapterPosition = parseInt(
+		const id = formData.get(`chapters[${chapterIndex}][id]`)?.toString();
+		const title = formData.get(`chapters[${chapterIndex}][title]`)?.toString();
+		const position = parseInt(
 			formData.get(`chapters[${chapterIndex}][position]`)?.toString() || '0'
 		);
 		const isNew =
 			formData.get(`chapters[${chapterIndex}][isNew]`)?.toString() === 'true';
 
-		if (chapterId && chapterPosition) {
+		if (id && position > 0) {
 			chapters.push({
-				id: chapterId,
-				title: chapterTitle,
-				position: chapterPosition,
-				isNew: isNew,
+				id,
+				title: title || undefined,
+				position,
+				isNew,
 			});
 		}
 		chapterIndex++;
@@ -157,6 +171,7 @@ function extractFormData(formData: FormData) {
 
 	return {
 		topicIds: topicIds.length > 0 ? topicIds : undefined,
+		instructorIds: instructorIds.length > 0 ? instructorIds : undefined,
 		learnings: learningsEntries,
 		chapters,
 		deletedChapters,
@@ -167,7 +182,8 @@ export async function addCourse(
 	prevState: CourseFormState,
 	formData: FormData
 ): Promise<CourseFormState> {
-	const { topicIds, learnings, chapters } = extractFormData(formData);
+	const { topicIds, instructorIds, learnings, chapters } =
+		extractFormData(formData);
 
 	const validatedFields = CourseSchema.safeParse({
 		title: formData.get('title'),
@@ -179,7 +195,7 @@ export async function addCourse(
 		accessType: formData.get('accessType') || 'PRO',
 		level: formData.get('level') || 'BEGINNER',
 		published: formData.get('published') === 'true',
-		instructorId: formData.get('instructorId') || undefined,
+		instructorIds: instructorIds,
 		seriesId: formData.get('seriesId') || undefined,
 		topicIds: topicIds,
 		chapters: chapters,
@@ -195,30 +211,21 @@ export async function addCourse(
 	const {
 		thumbnail,
 		topicIds: validatedTopicIds,
+		instructorIds: validatedInstructorIds,
 		chapters: validatedChapters,
 		published,
 		...otherData
 	} = validatedFields.data;
 
-	// Check if trying to publish without chapters
-	if (published) {
-		if (!validatedChapters || validatedChapters.length === 0) {
-			return {
-				errors: {
-					published: ['Cannot publish course without chapters'],
-				},
-				message: 'Cannot publish course without chapters.',
-			};
-		}
-
-		// New courses with chapters can't be published immediately since chapters will be created as unpublished
+	// Validate that we're not trying to publish a course without chapters
+	if (published && (!validatedChapters || validatedChapters.length === 0)) {
 		return {
 			errors: {
 				published: [
-					'Cannot publish course without at least one published chapter',
+					'Cannot publish course without chapters. Please add chapters first.',
 				],
 			},
-			message: 'Cannot publish course without published chapters.',
+			message: 'Cannot publish course without chapters.',
 		};
 	}
 
@@ -228,7 +235,7 @@ export async function addCourse(
 		const course = await prisma.course.create({
 			data: {
 				...otherData,
-				published: false, // Always create course as unpublished initially
+				published: false, // Always create as draft first
 				thumbnail: thumbnailUrl,
 				// Create connections to topics
 				topics: {
@@ -237,26 +244,32 @@ export async function addCourse(
 							topic: { connect: { id: topicId } },
 						})) || [],
 				},
+				// Create connections to instructors
+				instructors: {
+					create:
+						validatedInstructorIds?.map((instructorId, index) => ({
+							instructor: { connect: { id: instructorId } },
+							isPrimary: index === 0, // First instructor is primary
+						})) || [],
+				},
 			},
 		});
 
-		// Create chapters - titles can be empty
+		// Create chapters if provided
 		if (validatedChapters && validatedChapters.length > 0) {
-			const chaptersToCreate = validatedChapters
-				.filter((chapter) => chapter.isNew) // Only create new chapters
-				.map((chapter) => ({
-					title: chapter.title || 'Untitled Chapter', // Default title if empty
-					position: chapter.position,
-					accessType: 'PRO',
-					published: false, // Always create chapters as unpublished
-					courseId: course.id,
-				}));
-
-			if (chaptersToCreate.length > 0) {
-				await prisma.chapter.createMany({
-					data: chaptersToCreate,
-				});
-			}
+			await Promise.all(
+				validatedChapters.map((chapter) =>
+					prisma.chapter.create({
+						data: {
+							id: chapter.id,
+							title: chapter.title || 'Untitled Chapter',
+							position: chapter.position,
+							courseId: course.id,
+							published: false,
+						},
+					})
+				)
+			);
 		}
 
 		revalidatePath('/user/lms');
@@ -272,7 +285,7 @@ export async function updateCourse(
 	prevState: CourseFormState,
 	formData: FormData
 ): Promise<CourseFormState> {
-	const { topicIds, learnings, chapters, deletedChapters } =
+	const { topicIds, instructorIds, learnings, chapters, deletedChapters } =
 		extractFormData(formData);
 
 	const validatedFields = CourseSchema.omit({ thumbnail: true }).safeParse({
@@ -282,12 +295,12 @@ export async function updateCourse(
 		level: formData.get('level') || 'BEGINNER',
 		published: formData.get('published') === 'true',
 		topicIds: topicIds,
+		instructorIds: instructorIds,
 		chapters: chapters,
 		deletedChapters: deletedChapters,
 		description: formData.get('description') || undefined,
 		skills: formData.get('skills') || undefined,
 		credits: formData.get('credits') || undefined,
-		instructorId: formData.get('instructorId') || undefined,
 		seriesId: formData.get('seriesId') || undefined,
 	});
 
@@ -298,89 +311,77 @@ export async function updateCourse(
 		};
 	}
 
-	const { published } = validatedFields.data;
-
-	// Check if trying to publish course without chapters or published chapters
-	if (published) {
-		// First check: Will the course have chapters after all operations?
-		const currentChapterCount = await prisma.chapter.count({
-			where: { courseId: id },
-		});
-
-		const newChaptersCount = chapters?.filter((ch) => ch.isNew)?.length || 0;
-		const deletedChaptersCount = deletedChapters?.length || 0;
-		const finalChapterCount =
-			currentChapterCount + newChaptersCount - deletedChaptersCount;
-
-		if (finalChapterCount === 0) {
-			return {
-				errors: {
-					published: ['Cannot publish course without chapters'],
-				},
-				message: 'Course cannot be published without chapters.',
-			};
-		}
-
-		// Second check: Does the course have published chapters?
-		const publishCheck = await canPublishCourse(id);
-		if (!publishCheck.canPublish) {
-			return {
-				errors: {
-					published: [`Cannot publish course: ${publishCheck.reason}`],
-				},
-				message: `Course cannot be published: ${publishCheck.reason}`,
-			};
-		}
-	}
-
-	const thumbnail = formData.get('thumbnail');
-	if (thumbnail instanceof File && thumbnail.size > 2 * 1024 * 1024) {
-		return {
-			message: 'Thumbnail must be less than 2MB',
-			errors: { thumbnail: ['Thumbnail must be less than 2MB'] },
-		};
-	}
-
 	const {
 		topicIds: validatedTopicIds,
+		instructorIds: validatedInstructorIds,
 		chapters: validatedChapters,
 		deletedChapters: validatedDeletedChapters,
 		description,
 		skills,
 		credits,
-		instructorId,
 		seriesId,
+		published,
 		...otherData
 	} = validatedFields.data;
 
-	try {
-		// Get the current course to check if we need to update the image
-		const currentCourse = await prisma.course.findUnique({
-			where: { id },
-			select: { thumbnail: true },
-		});
-
-		let thumbnailUrl = currentCourse?.thumbnail;
-
-		// Handle thumbnail update if provided
-		if (thumbnail instanceof File && thumbnail.size > 0) {
-			if (thumbnailUrl) {
-				// Update existing image
-				thumbnailUrl = await updateFile(thumbnail, thumbnailUrl);
-			} else {
-				// Upload new image
-				thumbnailUrl = await uploadFile(thumbnail);
-			}
+	// If trying to publish, validate course requirements
+	if (published) {
+		const publishValidation = await canPublishCourse(id);
+		if (!publishValidation.canPublish) {
+			return {
+				errors: {
+					published: [publishValidation.reason || 'Cannot publish course'],
+				},
+				message: publishValidation.reason || 'Cannot publish course',
+			};
 		}
+	}
+
+	try {
+		// Handle thumbnail update
+		const thumbnailFile = formData.get('thumbnail');
+		const thumbnailUrl = await updateFile(
+			thumbnailFile,
+			prevState?.prev?.thumbnail
+		);
 
 		// Update course with chapters position reordering
 		await prisma.$transaction(async (tx) => {
-			// First, delete chapters that were marked for deletion
+			// Delete chapters if any
 			if (validatedDeletedChapters && validatedDeletedChapters.length > 0) {
+				// Get chapters to delete with their media files
+				const chaptersToDelete = await tx.chapter.findMany({
+					where: {
+						id: { in: validatedDeletedChapters },
+						courseId: id,
+					},
+					select: {
+						id: true,
+						thumbnail: true,
+						videoUrl: true,
+					},
+				});
+
+				// Delete media files
+				const deletePromises = [];
+				for (const chapter of chaptersToDelete) {
+					if (chapter.thumbnail) {
+						deletePromises.push(deleteFile(chapter.thumbnail));
+					}
+					if (chapter.videoUrl) {
+						deletePromises.push(deleteFile(chapter.videoUrl));
+					}
+				}
+
+				if (deletePromises.length > 0) {
+					await Promise.allSettled(deletePromises);
+				}
+
+				// Delete chapters from database
 				await tx.chapter.deleteMany({
 					where: {
 						id: { in: validatedDeletedChapters },
-						courseId: id, // Ensure we only delete chapters from this course
+						courseId: id,
 					},
 				});
 			}
@@ -390,120 +391,64 @@ export async function updateCourse(
 				where: { courseId: id },
 			});
 
-			// Handle chapters - both new and existing
+			// Delete all existing instructor connections
+			await tx.courseToInstructor.deleteMany({
+				where: { courseId: id },
+			});
+
+			// Handle chapters updates and creation
 			if (validatedChapters && validatedChapters.length > 0) {
-				// Separate new chapters from existing ones
-				const newChapters = validatedChapters.filter(
-					(chapter) => chapter.isNew
-				);
-				const existingChapters = validatedChapters.filter(
-					(chapter) => !chapter.isNew
-				);
-
-				// Create new chapters with course ID
-				if (newChapters.length > 0) {
-					const chaptersToCreate = newChapters.map((chapter) => ({
-						title: chapter.title || 'Untitled Chapter',
-						position: chapter.position,
-						accessType: 'PRO',
-						published: false, // Always create new chapters as unpublished
-						courseId: id,
-					}));
-
-					await tx.chapter.createMany({
-						data: chaptersToCreate,
-					});
-				}
-
-				// Update existing chapters (position and title)
-				for (const chapter of existingChapters) {
-					// Check if chapter exists and belongs to this course
-					const existingChapter = await tx.chapter.findFirst({
-						where: {
-							id: chapter.id,
-							courseId: id,
-						},
-					});
-
-					if (existingChapter) {
+				for (const chapter of validatedChapters) {
+					if (chapter.isNew) {
+						// Create new chapter
+						await tx.chapter.create({
+							data: {
+								id: chapter.id,
+								title: chapter.title || 'Untitled Chapter',
+								position: chapter.position,
+								courseId: id,
+								published: false,
+							},
+						});
+					} else {
 						// Update existing chapter position and title
 						await tx.chapter.update({
 							where: { id: chapter.id },
 							data: {
 								position: chapter.position,
-								title: chapter.title || existingChapter.title, // Keep existing title if new one is empty
+								title: chapter.title || 'Untitled Chapter',
 							},
 						});
 					}
 				}
 			}
 
-			// After all operations, verify course can be published
-			if (published) {
-				const finalPublishCheck = await canPublishCourse(id);
-				if (!finalPublishCheck.canPublish) {
-					// If conditions not met, keep course unpublished
-					await tx.course.update({
-						where: { id },
-						data: {
-							...otherData,
-							description: description ? description : null,
-							skills: skills ? skills : null,
-							credits: credits ? credits : null,
-							instructorId: instructorId ? instructorId : null,
-							seriesId: seriesId ? seriesId : null,
-							thumbnail: thumbnailUrl,
-							published: false, // Force unpublished
-							topics: {
-								create:
-									validatedTopicIds?.map((topicId) => ({
-										topic: { connect: { id: topicId } },
-									})) || [],
-							},
-						},
-					});
-				} else {
-					// Course can be published
-					await tx.course.update({
-						where: { id },
-						data: {
-							...otherData,
-							description: description ? description : null,
-							skills: skills ? skills : null,
-							credits: credits ? credits : null,
-							instructorId: instructorId ? instructorId : null,
-							seriesId: seriesId ? seriesId : null,
-							thumbnail: thumbnailUrl,
-							topics: {
-								create:
-									validatedTopicIds?.map((topicId) => ({
-										topic: { connect: { id: topicId } },
-									})) || [],
-							},
-						},
-					});
-				}
-			} else {
-				// Not trying to publish, update normally
-				await tx.course.update({
-					where: { id },
-					data: {
-						...otherData,
-						description: description ? description : null,
-						skills: skills ? skills : null,
-						credits: credits ? credits : null,
-						instructorId: instructorId ? instructorId : null,
-						seriesId: seriesId ? seriesId : null,
-						thumbnail: thumbnailUrl,
-						topics: {
-							create:
-								validatedTopicIds?.map((topicId) => ({
-									topic: { connect: { id: topicId } },
-								})) || [],
-						},
+			// Update course and create new topic and instructor connections
+			await tx.course.update({
+				where: { id },
+				data: {
+					...otherData,
+					published,
+					description: description ? description : null,
+					skills: skills ? skills : null,
+					credits: credits ? credits : null,
+					seriesId: seriesId ? seriesId : null,
+					thumbnail: thumbnailUrl,
+					topics: {
+						create:
+							validatedTopicIds?.map((topicId) => ({
+								topic: { connect: { id: topicId } },
+							})) || [],
 					},
-				});
-			}
+					instructors: {
+						create:
+							validatedInstructorIds?.map((instructorId, index) => ({
+								instructor: { connect: { id: instructorId } },
+								isPrimary: index === 0, // First instructor is primary
+							})) || [],
+					},
+				},
+			});
 		});
 
 		revalidatePath('/user/lms');
@@ -517,18 +462,49 @@ export async function updateCourse(
 
 export async function deleteCourse(id: string): Promise<DeleteCourseState> {
 	try {
-		// Get course details to get the thumbnail URL
+		// Get course details with all chapters and their media files
 		const course = await prisma.course.findUnique({
 			where: { id },
-			select: { thumbnail: true },
+			select: {
+				thumbnail: true,
+				chapters: {
+					select: {
+						id: true,
+						thumbnail: true,
+						videoUrl: true,
+					},
+				},
+			},
 		});
+
+		if (!course) {
+			return { success: false, message: 'Course not found' };
+		}
 
 		// Delete the course (chapters will be cascade deleted due to foreign key)
 		await prisma.course.delete({ where: { id } });
 
-		// Delete the thumbnail if it exists
-		if (course?.thumbnail) {
-			await deleteFile(course.thumbnail);
+		// Delete all media files
+		const deletePromises = [];
+
+		// Delete course thumbnail
+		if (course.thumbnail) {
+			deletePromises.push(deleteFile(course.thumbnail));
+		}
+
+		// Delete all chapter media files
+		for (const chapter of course.chapters) {
+			if (chapter.thumbnail) {
+				deletePromises.push(deleteFile(chapter.thumbnail));
+			}
+			if (chapter.videoUrl) {
+				deletePromises.push(deleteFile(chapter.videoUrl));
+			}
+		}
+
+		// Execute all deletions in parallel
+		if (deletePromises.length > 0) {
+			await Promise.allSettled(deletePromises);
 		}
 
 		revalidatePath('/user/lms');

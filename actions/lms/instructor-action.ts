@@ -78,7 +78,7 @@ export async function addInstructor(
 		}
 		return { message: 'Failed to create instructor' };
 	}
-	redirect('/user/lms/intructors');
+	redirect('/user/lms/instructors');
 }
 
 export async function updateInstructor(
@@ -146,7 +146,7 @@ export async function updateInstructor(
 		}
 		return { message: 'Failed to update instructor' };
 	}
-	redirect('/user/lms/intructors');
+	redirect('/user/lms/instructors');
 }
 
 export async function deleteInstructor(id: string): Promise<DeleteState> {
@@ -173,5 +173,42 @@ export async function deleteInstructor(id: string): Promise<DeleteState> {
 		}
 
 		return { success: false, message: 'Failed to delete instructor' };
+	}
+}
+
+import {
+	getInstructorChaptersAndCourses,
+	InstructorChaptersAndCourses,
+} from '@/db/instructor';
+
+export async function getInstructorCoursesAction(
+	instructorId: string
+): Promise<{
+	success: boolean;
+	data: InstructorChaptersAndCourses | null;
+	error?: string;
+}> {
+	try {
+		const result = await getInstructorChaptersAndCourses(instructorId);
+
+		if (result.error) {
+			return {
+				success: false,
+				data: null,
+				error: result.message || 'Failed to fetch instructor data',
+			};
+		}
+
+		return {
+			success: true,
+			data: result.data,
+		};
+	} catch (error) {
+		console.error('Server action error:', error);
+		return {
+			success: false,
+			data: null,
+			error: 'Failed to fetch instructor courses and chapters',
+		};
 	}
 }

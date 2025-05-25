@@ -42,6 +42,9 @@ export default function CourseForm({
 	const initialTopicIds =
 		initialData?.topics.map((relation) => relation.topic.id) || [];
 
+	const initialInstructorIds =
+		initialData?.instructors?.map((relation) => relation.instructor.id) || [];
+
 	// Access type options
 	const accessTypeOptions = [
 		{ label: 'Free', value: 'FREE' },
@@ -167,30 +170,37 @@ export default function CourseForm({
 					</div>
 				</div>
 
+				{/* Instructors */}
 				<div className='grid gap-2'>
 					<Label
-						htmlFor='instructorId'
+						htmlFor='instructorIds'
 						className={cn(
-							state?.errors?.instructorId ? 'text-destructive' : ''
+							state?.errors?.instructorIds ? 'text-destructive' : ''
 						)}
 					>
-						Instructor (Optional)
+						Instructors (Optional)
 					</Label>
-					<SelectInput
-						name='instructorId'
-						options={instructors.map((i) => ({ label: i.name, value: i.id }))}
-						initialValue={initialData?.instructorId || undefined}
-						placeholder='Select Instructor'
-						searchPlaceholder='Search Instructor...'
-						emptyMessage='No instructor found.'
-						allowClear
+					<MultiSelect
+						name='instructorIds'
+						options={instructors.map((instructor) => ({
+							label: instructor.name,
+							value: instructor.id,
+						}))}
+						initialValue={initialInstructorIds}
+						placeholder='Select Instructors'
+						searchPlaceholder='Search Instructors...'
+						emptyMessage='No instructors found.'
 						className={cn(
-							state?.errors?.instructorId
+							state?.errors?.instructorIds
 								? 'border-destructive focus-visible:ring-destructive'
 								: ''
 						)}
 					/>
-					<ErrorMessage errors={state?.errors?.instructorId} />
+					<p className='text-muted-foreground text-sm'>
+						Select instructors for this course. The first selected instructor
+						will be the primary instructor.
+					</p>
+					<ErrorMessage errors={state?.errors?.instructorIds} />
 				</div>
 
 				<div className='grid gap-2'>

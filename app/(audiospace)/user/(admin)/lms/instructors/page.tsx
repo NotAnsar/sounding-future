@@ -25,7 +25,7 @@ export default async function page() {
 							{ link: '/user/lms', text: 'Courses' },
 
 							{
-								link: '/user/lms/intructors',
+								link: '/user/lms/instructors',
 								text: 'Instructors',
 								isCurrent: true,
 							},
@@ -34,7 +34,7 @@ export default async function page() {
 				</div>
 
 				<Link
-					href={'/user/lms/intructors/new'}
+					href={'/user/lms/instructors/new'}
 					className={cn(buttonVariants())}
 				>
 					<Plus className='w-4 h-auto aspect-square mr-2' /> Add Instructor

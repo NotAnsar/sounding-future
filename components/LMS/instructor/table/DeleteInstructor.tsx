@@ -43,7 +43,7 @@ export const DeleteInstructor = ({
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your
-						intructors and remove its data from our servers.
+						instructors and remove its data from our servers.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

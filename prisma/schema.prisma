@@ -523,11 +523,6 @@ model TrackArtist {
   @@map("track_artists")
 }
 
-
-// LMS
-
-
-
 model Instructor {
   id        String   @id @default(cuid())
   name      String
@@ -541,7 +536,7 @@ model Instructor {
 
   // Relations
   artist    Artist?  @relation(fields: [artistId], references: [id])
-  courses   Course[]                  // Courses led by this instructor
+  courses   CourseToInstructor[]      // Many-to-many with courses
   chapters  ChapterToInstructor[]     // Chapters taught by this instructor
 
 
@@ -594,14 +589,14 @@ model Course {
   updatedAt   DateTime    @updatedAt
   
   // Foreign keys
-  instructorId String?    @map("instructor_id")
+  
   seriesId     String?    @map("series_id")
   
   // Relations
-  instructor   Instructor? @relation(fields: [instructorId], references: [id])
   series       CourseSeries? @relation(fields: [seriesId], references: [id])
   chapters     Chapter[]   
   topics       CourseToTopic[]
+  instructors  CourseToInstructor[]  // Many-to-many with instructors
   
   @@map("courses")
 }
@@ -658,6 +653,15 @@ model ChapterToInstructor {
 }
 
 
-
-
-
+model CourseToInstructor {
+  courseId     String     @map("course_id")
+  instructorId String     @map("instructor_id")
+  isPrimary    Boolean    @default(false) @map("is_primary") // To mark main instructor
+  
+  // Relations
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  
+  @@id([courseId, instructorId])
+  @@map("course_instructors")
+}

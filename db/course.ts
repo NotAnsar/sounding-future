@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 
 export type CourseWithRelations = Prisma.CourseGetPayload<{
 	include: {
-		instructor: true;
+		instructors: { include: { instructor: true } };
 		series: true;
 		topics: { include: { topic: true } };
 		chapters: true;
@@ -20,7 +20,7 @@ export async function getCourses(): Promise<CourseRes> {
 	try {
 		const courses = await prisma.course.findMany({
 			include: {
-				instructor: true,
+				instructors: { include: { instructor: true } },
 				series: true,
 				topics: { include: { topic: true } },
 				chapters: { orderBy: { position: 'asc' } },
@@ -57,7 +57,7 @@ export async function getCourseById(id: string): Promise<{
 		const course = await prisma.course.findUnique({
 			where: { id },
 			include: {
-				instructor: true,
+				instructors: { include: { instructor: true } },
 				series: true,
 				topics: { include: { topic: true } },
 				chapters: { orderBy: { position: 'asc' } },

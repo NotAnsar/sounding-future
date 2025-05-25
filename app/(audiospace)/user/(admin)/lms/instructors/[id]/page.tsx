@@ -26,10 +26,10 @@ export default async function Page({
 		<div className='mt-4'>
 			<BreadCrumb
 				items={[
-					{ link: '/user/lms/intructors', text: 'Instructors' },
+					{ link: '/user/lms/instructors', text: 'Instructors' },
 
 					{
-						link: '/user/lms/intructors/new',
+						link: '/user/lms/instructors/new',
 						text: 'Add Instructors',
 						isCurrent: true,
 					},

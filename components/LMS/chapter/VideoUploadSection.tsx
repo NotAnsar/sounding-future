@@ -66,6 +66,7 @@ export default function VideoUploadSection({
 	onDurationExtracted,
 }: VideoUploadSectionProps) {
 	const [duration, setDuration] = useState<number>(initialDuration);
+	const [videoDeleted, setVideoDeleted] = useState<boolean>(false);
 
 	// Handle duration update
 	const handleDurationExtracted = useCallback(
@@ -76,10 +77,27 @@ export default function VideoUploadSection({
 		[onDurationExtracted]
 	);
 
+	// Handle video deletion
+	const handleVideoDeleted = useCallback(() => {
+		setVideoDeleted(true);
+		setDuration(0);
+		onDurationExtracted?.(0);
+	}, [onDurationExtracted]);
+
+	// Handle video restored (when new video is uploaded after deletion)
+	const handleVideoRestored = useCallback(() => {
+		setVideoDeleted(false);
+	}, []);
+
 	return (
 		<div className='grid gap-2'>
 			{/* Hidden input for duration */}
 			<input type='hidden' name='videoDuration' value={duration} />
+
+			{/* Hidden input to signal video deletion */}
+			{videoDeleted && initialVideoUrl && (
+				<input type='hidden' name='deleteVideo' value='true' />
+			)}
 
 			{/* Video Upload */}
 			<Label
@@ -93,8 +111,10 @@ export default function VideoUploadSection({
 				name='videoUrl'
 				errors={errors?.videoUrl}
 				message='Upload video file, max. 200mb'
-				url={initialVideoUrl}
+				url={videoDeleted ? undefined : initialVideoUrl}
 				onDurationExtracted={handleDurationExtracted}
+				onVideoDeleted={handleVideoDeleted}
+				onVideoRestored={handleVideoRestored}
 			/>
 
 			{/* Duration Display */}
@@ -120,6 +140,8 @@ interface VideoUploadInputProps {
 	accept?: string;
 	url?: string;
 	onDurationExtracted?: (duration: number) => void;
+	onVideoDeleted?: () => void;
+	onVideoRestored?: () => void;
 }
 
 function VideoUploadInput({
@@ -129,9 +151,11 @@ function VideoUploadInput({
 	accept = 'video/*',
 	url,
 	onDurationExtracted,
+	onVideoDeleted,
+	onVideoRestored,
 }: VideoUploadInputProps) {
 	const [isPending] = React.useTransition();
-	const [preview, setPreview] = useState<string | null>(url || null);
+	const [preview, setPreview] = useState<string | null>(null);
 	const [isExtracting, setIsExtracting] = useState(false);
 
 	// Handle file change to extract duration and set preview
@@ -142,6 +166,9 @@ function VideoUploadInput({
 			onDurationExtracted?.(0);
 			return;
 		}
+
+		// Restore video if it was deleted and new one is uploaded
+		onVideoRestored?.();
 
 		// Set preview
 		const reader = new FileReader();
@@ -181,14 +208,15 @@ function VideoUploadInput({
 		e.preventDefault();
 		setPreview(null);
 		onDurationExtracted?.(0);
+		onVideoDeleted?.();
 
 		// Clear the file input
 		const input = document.getElementById(name) as HTMLInputElement;
 		if (input) input.value = '';
 
 		toast({
-			title: 'Video removed',
-			description: 'Video has been removed from the chapter',
+			title: 'Video marked for deletion',
+			description: 'Video will be removed when you save the chapter',
 		});
 	};
 
@@ -220,7 +248,19 @@ function VideoUploadInput({
 			)}
 
 			{url && !preview && (
-				<p className='text-[13px] text-muted'>{url.split('/').pop() || url}</p>
+				<div className='flex items-center justify-between'>
+					<p className='text-[13px] text-muted'>
+						{url.split('/').pop() || url}
+					</p>
+					<Button
+						onClick={handleDelete}
+						disabled={isPending}
+						variant='destructive'
+						size='sm'
+					>
+						<Trash className='w-4 h-4' />
+					</Button>
+				</div>
 			)}
 
 			{preview && (
