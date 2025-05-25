@@ -63,8 +63,8 @@ export const DeleteChapter = ({
 							thumbnail) will also be permanently deleted.
 						</p>
 						{/* Warning about course unpublishing */}
-						<div className='bg-destructive/40 border border-destructive/20 rounded-md p-3 mt-3'>
-							<p className='text-sm text-destructive-foreground font-medium'>
+						<div className='bg-destructive/15 dark:bg-destructive/40 border border-destructive/20 rounded-md p-3 mt-3'>
+							<p className='text-sm text-foreground font-medium'>
 								⚠️ Note: If this is the last published chapter in the course,
 								the course will be automatically unpublished.
 							</p>

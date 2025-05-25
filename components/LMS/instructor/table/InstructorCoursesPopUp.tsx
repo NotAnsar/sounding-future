@@ -114,7 +114,7 @@ export default function InstructorCoursesPopUp({
 													</p>
 												</div>
 												<Link
-													href={`/user/lms/courses/edit/${course.id}`}
+													href={`/user/lms/edit/${course.id}`}
 													className={cn(
 														buttonVariants({ size: 'sm', variant: 'outline' })
 													)}

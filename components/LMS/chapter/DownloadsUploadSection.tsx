@@ -181,7 +181,7 @@ export default function DownloadsUploadSection({
 										'flex items-center justify-between p-3 border rounded-lg',
 										isDeleted
 											? 'bg-destructive/10 border-destructive/20'
-											: 'bg-muted/50'
+											: 'bg-button border-secondary'
 									)}
 								>
 									<div className='flex items-center gap-3'>
@@ -189,7 +189,7 @@ export default function DownloadsUploadSection({
 										<div className='grid gap-1'>
 											<span
 												className={cn(
-													'text-sm font-medium',
+													'text-sm text-white',
 													isDeleted && 'line-through text-muted-foreground'
 												)}
 											>
@@ -199,7 +199,7 @@ export default function DownloadsUploadSection({
 												href={downloadUrl}
 												target='_blank'
 												rel='noopener noreferrer'
-												className='text-xs text-blue-600 hover:text-blue-800 underline'
+												className='text-xs text-primary hover:text-primary/80 underline font-semibold'
 											>
 												View file
 											</a>
@@ -252,7 +252,7 @@ export default function DownloadsUploadSection({
 						{previewFiles.map((file, index) => (
 							<div
 								key={`new-${index}`}
-								className='flex items-center justify-between p-3 border rounded-lg bg-green-50 border-green-200'
+								className='flex items-center justify-between p-3 border rounded-lg bg-player/80 border-secondary'
 							>
 								<div className='flex items-center gap-3'>
 									<div className='text-muted-foreground'>
