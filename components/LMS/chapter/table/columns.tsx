@@ -45,8 +45,15 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 		accessorKey: 'course',
 		header: 'Course',
 		cell: ({ row }) => {
-			const course = row.getValue('course') as { title: string };
-			return <div className='font-medium'>{course.title}</div>;
+			const course = row.original.course;
+			return (
+				<Link
+					href={`/user/lms/edit/${course.id}`}
+					className='font-medium cursor-pointer'
+				>
+					{course.title}
+				</Link>
+			);
 		},
 	},
 	{
