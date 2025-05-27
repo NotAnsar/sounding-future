@@ -136,7 +136,7 @@ export async function updateInstructor(
 
 		revalidatePath('/', 'layout');
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 
 		if (
 			error instanceof Prisma.PrismaClientKnownRequestError &&

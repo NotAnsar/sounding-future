@@ -31,7 +31,6 @@ export async function deleteFile(fileUrl: string): Promise<void> {
 		});
 
 		await s3.send(command);
-		console.log(`Successfully deleted file with key: ${fileKey}`);
 	} catch (error) {
 		console.error('Error deleting file from S3:', error);
 		throw new Error(`Failed to delete file from S3`);
@@ -63,7 +62,6 @@ export async function uploadFile(
 
 	try {
 		// Log file details
-		console.log('Uploading file:', { name: file.name, type });
 
 		const extension = file.name.split('.').pop();
 		const randomSuffix = Math.floor(Math.random() * 10000);
@@ -85,12 +83,6 @@ export async function uploadFile(
 		const arrayBuffer = await file.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
 
-		// Log upload attempt
-		console.log('Attempting upload with params:', {
-			fileName,
-			fileSize: buffer.length,
-		});
-
 		const command = new PutObjectCommand({
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: fileName,
@@ -103,10 +95,7 @@ export async function uploadFile(
 			}),
 		});
 
-		const result = await s3.send(command);
-
-		// Log success
-		console.log('Upload successful:', result);
+		await s3.send(command);
 
 		return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${fileName}`;
 	} catch (error) {

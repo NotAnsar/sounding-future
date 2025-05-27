@@ -545,6 +545,7 @@ model Instructor {
 
 model CourseTopic {
   id          String   @id @default(cuid())
+  slug        String   @unique
   name        String   // e.g., "3D Audio basics", "Recording"
   description String?  @db.Text
   createdAt   DateTime @default(now()) @map("created_at")
@@ -561,6 +562,7 @@ model CourseTopic {
 model CourseSeries {
   id          String   @id @default(cuid())
   name        String   // e.g., "Rethinking music"
+  slug        String   @unique
   description String?  @db.Text
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt

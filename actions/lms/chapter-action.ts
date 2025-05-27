@@ -104,10 +104,6 @@ async function updateCoursePublishStatus(
 				where: { id: courseId },
 				data: { published: false },
 			});
-
-			console.log(
-				`Course ${courseId} auto-unpublished - no published chapters remaining`
-			);
 		}
 	} catch (error) {
 		console.error('Error updating course publish status:', error);
@@ -125,7 +121,6 @@ function getDeletedDownloads(formData: FormData): string[] {
 		}
 	}
 
-	console.log('Files marked for deletion:', deletedUrls);
 	return deletedUrls;
 }
 
@@ -142,10 +137,6 @@ function getDownloadFiles(formData: FormData): File[] {
 		}
 	}
 
-	console.log(
-		'Download files found:',
-		files.map((f) => ({ name: f.name, size: f.size }))
-	);
 	return files;
 }
 
@@ -192,7 +183,7 @@ export async function addChapter(
 	const position = await getNextChapterPosition(courseId);
 
 	const validatedFields = ChapterSchema.safeParse({
-		title: formData.get('title'),
+		title: formData.get('title') || undefined,
 		description: formData.get('description') || undefined,
 		videoUrl: videoFile,
 		videoDuration: formData.get('videoDuration')
@@ -229,15 +220,12 @@ export async function addChapter(
 		// Upload thumbnail if provided
 		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : null;
 
-		console.log(downloads);
-
 		// Upload download files if provided
 		const downloadUrls =
 			downloads && downloads.length > 0
 				? await uploadDownloadFiles(downloads)
 				: [];
 
-		console.log(downloadUrls);
 		// Create chapter with instructor relationships
 		await prisma.chapter.create({
 			data: {

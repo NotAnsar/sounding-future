@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { generateSlug } from '../utils/utils';
 
 const seriesSchema = z.object({
 	name: z
@@ -40,8 +41,9 @@ export async function createSeries(prevState: SeriesState, formData: FormData) {
 
 	try {
 		const { name, description } = validatedFields.data;
+		const slug = generateSlug(name);
 
-		await prisma.courseSeries.create({ data: { name, description } });
+		await prisma.courseSeries.create({ data: { name, description, slug } });
 		revalidatePath('/user/lms/course-series');
 	} catch (error) {
 		if (
@@ -73,10 +75,11 @@ export async function updateSeries(
 
 	try {
 		const { name, description } = validatedFields.data;
+		const slug = generateSlug(name);
 
 		await prisma.courseSeries.update({
 			where: { id },
-			data: { name, description },
+			data: { name, description, slug },
 		});
 		revalidatePath('/user/lms/course-series');
 	} catch (error) {

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { generateSlug } from '../utils/utils';
 
 const topicSchema = z.object({
 	name: z
@@ -40,8 +41,9 @@ export async function createTopic(prevState: TopicState, formData: FormData) {
 
 	try {
 		const { name, description } = validatedFields.data;
+		const slug = generateSlug(name);
 
-		await prisma.courseTopic.create({ data: { name, description } });
+		await prisma.courseTopic.create({ data: { name, description, slug } });
 		revalidatePath('/user/lms/course-topics');
 	} catch (error) {
 		if (
@@ -73,10 +75,11 @@ export async function updateTopic(
 
 	try {
 		const { name, description } = validatedFields.data;
+		const slug = generateSlug(name);
 
 		await prisma.courseTopic.update({
 			where: { id },
-			data: { name, description },
+			data: { name, description, slug },
 		});
 		revalidatePath('/user/lms/course-topics');
 	} catch (error) {

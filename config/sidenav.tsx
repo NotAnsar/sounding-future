@@ -1,3 +1,6 @@
+import { cn } from '@/lib/utils';
+import { BookOpen } from 'lucide-react';
+
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const MainNavIcons = {
@@ -66,6 +69,11 @@ export const MainNavIcons = {
 			/>
 		</svg>
 	),
+	book: (props: IconProps) => {
+		const { className, ...rest } = props;
+
+		return <BookOpen {...rest} className={cn(className, 'fill-transparent')} />;
+	},
 };
 
 export const CollectionIcons = {
@@ -138,6 +146,7 @@ export const mainNav = [
 	{ title: 'Genres', icon: MainNavIcons.tag, path: '/genres' },
 	{ title: 'Curated', icon: MainNavIcons.star, path: '/curated' },
 	{ title: 'Artists', icon: MainNavIcons.artist, path: '/artists' },
+	{ title: 'Courses', icon: MainNavIcons.book, path: '/courses' },
 ];
 
 export const collection = [
