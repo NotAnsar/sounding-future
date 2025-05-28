@@ -79,3 +79,34 @@ export async function getCourseById(id: string): Promise<{
 		};
 	}
 }
+
+export async function getCourseBySlug(slug: string): Promise<{
+	data: CourseWithRelations | null;
+	error?: boolean;
+	message?: string;
+}> {
+	try {
+		const course = await prisma.course.findUnique({
+			where: { slug },
+			include: {
+				instructors: { include: { instructor: true } },
+				series: true,
+				topics: { include: { topic: true } },
+				chapters: { orderBy: { position: 'asc' } },
+			},
+		});
+
+		if (!course) {
+			return { data: null, error: true, message: 'Course not found' };
+		}
+
+		return { data: course, error: false };
+	} catch (error) {
+		console.error('Error fetching course:', error);
+		return {
+			data: null,
+			error: true,
+			message: 'Unable to retrieve course. Please try again later.',
+		};
+	}
+}

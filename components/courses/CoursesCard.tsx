@@ -12,8 +12,8 @@ export default function CoursesCard({
 }) {
 	return (
 		<Link
-			href={`/tracks/${course.slug}`}
-			className='bg-player rounded-lg overflow-hidden'
+			href={`/courses/${course.slug}`}
+			className='bg-player rounded-lg overflow-hidden hover:bg-player/80'
 		>
 			<div className='block overflow-hidden w-full h-auto  mb-2 relative group cursor-pointer'>
 				<Image
@@ -21,7 +21,7 @@ export default function CoursesCard({
 					alt={course.title}
 					width={220}
 					height={220}
-					className='w-full h-auto aspect-video object-cover cursor-pointer border-border '
+					className='w-full h-auto aspect-video object-cover cursor-pointer border-border hover:scale-105 transition-transform duration-300'
 				/>
 			</div>
 
@@ -68,7 +68,7 @@ export default function CoursesCard({
 				<div className='flex items-center gap-4 my-2'>
 					<span
 						className={cn(
-							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/70 text-primary-foreground py-0.5',
+							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
 							course.accessType.toLowerCase() !== 'free' &&
 								'bg-muted-foreground dark:bg-muted-foreground text-white'
 						)}
@@ -77,7 +77,7 @@ export default function CoursesCard({
 					</span>
 					<span
 						className={cn(
-							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/70 text-primary-foreground py-0.5',
+							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
 							course.accessType.toLowerCase() !== 'pro' &&
 								'bg-muted-foreground dark:bg-muted-foreground text-white'
 						)}
@@ -95,16 +95,16 @@ export default function CoursesCard({
 export function CoursesListCard({ course }: { course: CourseWithRelations }) {
 	return (
 		<Link
-			href={`/tracks/${course.slug}`}
+			href={`/courses/${course.slug}`}
 			className='bg-player rounded-lg overflow-hidden flex gap-4 hover:bg-player/80 transition-colors'
 		>
-			<div className='flex-shrink-0 w-auto h-full relative group cursor-pointer'>
+			<div className='flex-shrink-0 w-auto h-full relative group cursor-pointer overflow-hidden'>
 				<Image
 					src={course.thumbnail}
 					alt={course.title}
 					width={220}
 					height={220}
-					className='w-auto h-full object-cover rounded-l cursor-pointer border-border aspect-video'
+					className='w-auto h-full object-cover rounded-l cursor-pointer border-border aspect-video hover:scale-105 transition-transform duration-300'
 				/>
 			</div>
 
@@ -153,7 +153,7 @@ export function CoursesListCard({ course }: { course: CourseWithRelations }) {
 				<div className='flex items-center gap-2 mb-2'>
 					<span
 						className={cn(
-							'text-xs px-2 rounded-full bg-primary/40 dark:bg-primary/70 text-primary-foreground py-0.5',
+							'text-xs px-2 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
 							course.accessType.toLowerCase() !== 'free' &&
 								'bg-muted-foreground dark:bg-muted-foreground text-white'
 						)}
@@ -162,7 +162,7 @@ export function CoursesListCard({ course }: { course: CourseWithRelations }) {
 					</span>
 					<span
 						className={cn(
-							'text-xs px-2 rounded-full bg-primary/40 dark:bg-primary/70 text-primary-foreground py-0.5',
+							'text-xs px-2 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
 							course.accessType.toLowerCase() !== 'pro' &&
 								'bg-muted-foreground dark:bg-muted-foreground text-white'
 						)}
