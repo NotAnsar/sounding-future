@@ -1,4 +1,5 @@
 import ContactUsButton from '@/components/termsAndLegal/ContactUsButton';
+import VideoPlayer from '@/components/VideoPlayer';
 import { getHelpCenter } from '@/db/help-center';
 
 export default async function Page() {
@@ -35,16 +36,13 @@ export default async function Page() {
 
 							<p className='pb-2 '>{d.description}</p>
 
-							<div className='aspect-video relative w-full mt-auto rounded-lg overflow-hidden '>
-								<video
-									src={d.videoUrl}
+							<div className='aspect-video relative w-full mt-auto rounded-lg overflow-hidden border-2'>
+								<VideoPlayer
+									src={d.videoUrl || ''}
 									poster={d.thumbnailUrl || undefined}
-									controls
-									className='absolute inset-0 w-full h-full object-cover'
-									preload='metadata'
-								>
-									Your browser does not support the video tag.
-								</video>
+									title={d.title}
+									className='w-full h-full'
+								/>
 							</div>
 						</section>
 					))}

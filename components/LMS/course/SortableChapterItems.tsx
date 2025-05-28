@@ -111,7 +111,7 @@ function SortableChapterItem({
 								'flex-1 border-transparent',
 								error ? 'border-destructive focus-visible:ring-destructive' : ''
 							)}
-							placeholder='Enter chapter title (optional)'
+							placeholder='Enter chapter title'
 						/>
 
 						<div className='flex items-center gap-1'>
@@ -327,7 +327,7 @@ export default function SortableChapterItems({
 									onChange={updateChapterItem}
 									onRemove={removeChapterItem}
 									onAddNew={addChapterItem}
-									error={!!(errors && errors.length > 0)}
+									// error={!!(errors && errors.length > 0)}
 									canRemove={true}
 									courseId={courseId}
 									isEditing={isEditing}

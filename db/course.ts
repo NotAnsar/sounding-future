@@ -23,7 +23,10 @@ export async function getCourses(published?: boolean): Promise<CourseRes> {
 				instructors: { include: { instructor: true } },
 				series: true,
 				topics: { include: { topic: true } },
-				chapters: { orderBy: { position: 'asc' } },
+				chapters: {
+					where: published ? { published: published } : undefined,
+					orderBy: { position: 'asc' },
+				},
 			},
 			where: published ? { published: published } : undefined,
 			orderBy: { createdAt: 'desc' },
@@ -80,8 +83,21 @@ export async function getCourseById(id: string): Promise<{
 	}
 }
 
+export type CourseDetails = Prisma.CourseGetPayload<{
+	include: {
+		instructors: {
+			include: {
+				instructor: { include: { courses: { include: { course: true } } } };
+			};
+		};
+		series: true;
+		topics: { include: { topic: true } };
+		chapters: true;
+	};
+}>;
+
 export async function getCourseBySlug(slug: string): Promise<{
-	data: CourseWithRelations | null;
+	data: CourseDetails | null;
 	error?: boolean;
 	message?: string;
 }> {
@@ -89,10 +105,14 @@ export async function getCourseBySlug(slug: string): Promise<{
 		const course = await prisma.course.findUnique({
 			where: { slug },
 			include: {
-				instructors: { include: { instructor: true } },
+				instructors: {
+					include: {
+						instructor: { include: { courses: { include: { course: true } } } },
+					},
+				},
 				series: true,
 				topics: { include: { topic: true } },
-				chapters: { orderBy: { position: 'asc' } },
+				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
 			},
 		});
 

@@ -264,7 +264,7 @@ export default function CourseForm({
 					initialChapters={initialData?.chapters || []}
 					courseId={initialData?.id}
 					isEditing={isEditing}
-					// errors={state?.errors?.chapters}
+					errors={state?.errors?.chapters}
 				/>
 
 				<div className='grid gap-2'>
