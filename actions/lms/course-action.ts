@@ -10,7 +10,7 @@ import {
 	updateFile,
 	deleteFile,
 } from '@/actions/utils/s3-image';
-import { imageSchema } from '../utils/utils';
+import { generateSlug, imageSchema } from '../utils/utils';
 
 // Define Chapter schema for validation - title is optional
 const ChapterSchema = z.object({
@@ -230,13 +230,23 @@ export async function addCourse(
 	}
 
 	try {
-		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : undefined;
+		if (!thumbnail) {
+			return {
+				errors: { thumbnail: ['Thumbnail is required'] },
+				message: 'Thumbnail is required',
+			};
+		}
+
+		const thumbnailUrl = await uploadFile(thumbnail);
+		const { title } = otherData;
+		const slug = generateSlug(title);
 
 		const course = await prisma.course.create({
 			data: {
 				...otherData,
 				published: false, // Always create as draft first
 				thumbnail: thumbnailUrl,
+				slug,
 				// Create connections to topics
 				topics: {
 					create:
@@ -345,6 +355,8 @@ export async function updateCourse(
 			prevState?.prev?.thumbnail
 		);
 
+		const { title } = otherData;
+		const slug = generateSlug(title);
 		// Update course with chapters position reordering
 		await prisma.$transaction(async (tx) => {
 			// Delete chapters if any
@@ -434,6 +446,7 @@ export async function updateCourse(
 					credits: credits ? credits : null,
 					seriesId: seriesId ? seriesId : null,
 					thumbnail: thumbnailUrl,
+					slug,
 					topics: {
 						create:
 							validatedTopicIds?.map((topicId) => ({

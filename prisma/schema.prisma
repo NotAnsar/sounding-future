@@ -578,9 +578,10 @@ model CourseSeries {
 
 model Course {
   id          String      @id @default(cuid())
+  slug        String     @unique
   title       String
   description String?     @db.Text
-  thumbnail   String?     // URL to course image
+  thumbnail   String     // URL to course image
   learnings   String[]    // Array of key learning points
   skills      String?     @db.Text
   credits     String?     @db.Text
@@ -605,6 +606,7 @@ model Course {
 
 model Chapter {
   id          String      @id @default(cuid())
+  slug        String     @unique
   title       String
   description String?     @db.Text
   videoUrl    String?     @map("video_url")

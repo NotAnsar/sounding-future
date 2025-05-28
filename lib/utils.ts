@@ -53,3 +53,17 @@ export function formatTimestamp(
 
 	return formattedDate;
 }
+
+export function formatCourseDuration(seconds: number): string {
+	if (seconds < 60) {
+		return `${seconds} second${seconds !== 1 ? 's' : ''}`;
+	}
+
+	if (seconds < 3600) {
+		const minutes = Math.floor(seconds / 60);
+		return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+	}
+
+	const hours = Math.floor(seconds / 3600);
+	return `${hours} hour${hours !== 1 ? 's' : ''}`;
+}

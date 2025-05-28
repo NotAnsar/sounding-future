@@ -16,7 +16,7 @@ type CourseRes = {
 	message?: string;
 };
 
-export async function getCourses(): Promise<CourseRes> {
+export async function getCourses(published?: boolean): Promise<CourseRes> {
 	try {
 		const courses = await prisma.course.findMany({
 			include: {
@@ -25,6 +25,7 @@ export async function getCourses(): Promise<CourseRes> {
 				topics: { include: { topic: true } },
 				chapters: { orderBy: { position: 'asc' } },
 			},
+			where: published ? { published: published } : undefined,
 			orderBy: { createdAt: 'desc' },
 		});
 

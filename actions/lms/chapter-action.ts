@@ -6,6 +6,7 @@ import {
 	videoSchema,
 	imageSchema,
 	downloadSchema,
+	generateSlug,
 } from '@/actions/utils/utils';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
@@ -226,6 +227,9 @@ export async function addChapter(
 				? await uploadDownloadFiles(downloads)
 				: [];
 
+		const { title } = otherData;
+		const slug = generateSlug(title);
+
 		// Create chapter with instructor relationships
 		await prisma.chapter.create({
 			data: {
@@ -233,6 +237,7 @@ export async function addChapter(
 				videoUrl: videoFileUrl,
 				thumbnail: thumbnailUrl,
 				downloads: downloadUrls,
+				slug,
 				instructors: {
 					create: validatedInstructorIds.map((instructorId) => ({
 						instructorId: instructorId,
@@ -386,6 +391,8 @@ export async function updateChapter(
 			finalDownloads = [...finalDownloads, ...newDownloadUrls];
 		}
 
+		const { title } = updateData;
+		const slug = generateSlug(title);
 		// Update chapter and instructor relationships
 		await prisma.chapter.update({
 			where: { id },
@@ -394,6 +401,7 @@ export async function updateChapter(
 				videoUrl: finalVideoUrl,
 				thumbnail: thumbnailUrl,
 				downloads: finalDownloads,
+				slug,
 				instructors: {
 					// Delete existing relationships
 					deleteMany: {},
