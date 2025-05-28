@@ -19,6 +19,9 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+	),
 	title: '3D AudioSpace',
 	description:
 		'Innovative streaming with the 3D AudioSpace from Sounding Future.',

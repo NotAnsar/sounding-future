@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 const BASE_URL = 'https://audiospace.soundingfuture.com';
 
 interface Partner {

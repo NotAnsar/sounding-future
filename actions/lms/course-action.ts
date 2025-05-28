@@ -15,7 +15,8 @@ import { generateSlug, imageSchema } from '../utils/utils';
 // Define Chapter schema for validation - title is optional
 const ChapterSchema = z.object({
 	id: z.string(),
-	title: z.string().optional(),
+	title: z.string().min(1, 'Chapter title is required'),
+
 	position: z.number().min(1),
 	isNew: z.boolean().optional(),
 });
@@ -148,7 +149,7 @@ function extractFormData(formData: FormData) {
 		if (id && position > 0) {
 			chapters.push({
 				id,
-				title: title || undefined,
+				title: title,
 				position,
 				isNew,
 			});
@@ -268,17 +269,19 @@ export async function addCourse(
 		// Create chapters if provided
 		if (validatedChapters && validatedChapters.length > 0) {
 			await Promise.all(
-				validatedChapters.map((chapter) =>
-					prisma.chapter.create({
+				validatedChapters.map((chapter) => {
+					const slug = generateSlug(chapter.title);
+					return prisma.chapter.create({
 						data: {
 							id: chapter.id,
-							title: chapter.title || 'Untitled Chapter',
+							title: chapter.title,
 							position: chapter.position,
 							courseId: course.id,
 							published: false,
+							slug,
 						},
-					})
-				)
+					});
+				})
 			);
 		}
 
@@ -412,23 +415,27 @@ export async function updateCourse(
 			if (validatedChapters && validatedChapters.length > 0) {
 				for (const chapter of validatedChapters) {
 					if (chapter.isNew) {
+						const slug = generateSlug(chapter.title);
 						// Create new chapter
 						await tx.chapter.create({
 							data: {
 								id: chapter.id,
-								title: chapter.title || 'Untitled Chapter',
+								title: chapter.title,
 								position: chapter.position,
 								courseId: id,
 								published: false,
+								slug,
 							},
 						});
 					} else {
+						const slug = generateSlug(chapter.title);
 						// Update existing chapter position and title
 						await tx.chapter.update({
 							where: { id: chapter.id },
 							data: {
 								position: chapter.position,
-								title: chapter.title || 'Untitled Chapter',
+								title: chapter.title,
+								slug,
 							},
 						});
 					}
