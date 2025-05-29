@@ -144,11 +144,9 @@ export default function CourseChapterList({
 							: 'bg-secondary hover:bg-secondary/80 border-transparent',
 						isPending && 'pointer-events-none'
 					)}
+					onClick={() => handleChapterClick(chapter.slug)}
 				>
-					<div
-						className='flex items-center gap-3 cursor-pointer'
-						onClick={() => handleChapterClick(chapter.slug)}
-					>
+					<div className='flex items-center gap-3 cursor-pointer'>
 						{index === currentChapterIndex ? (
 							<Icons.play className='w-10 h-10 fill-primary' />
 						) : (
@@ -198,7 +196,7 @@ export default function CourseChapterList({
 								}}
 								disabled={downloadingChapter === chapter.id}
 								className={cn(
-									'p-2 rounded-full transition-all duration-200 z-10',
+									'p-2 rounded-full transition-all duration-200 z-10 group',
 									'hover:bg-primary/10 hover:scale-110 active:scale-95',
 									'focus:outline-none focus:ring-2 focus:ring-primary/20',
 									downloadingChapter === chapter.id
@@ -210,7 +208,7 @@ export default function CourseChapterList({
 								{downloadingChapter === chapter.id ? (
 									<div className='w-[18px] h-[18px] animate-spin rounded-full border-2 border-primary border-t-transparent' />
 								) : (
-									<Icons.download className='w-[18px] h-[18px] text-foreground hover:text-primary transition-colors' />
+									<Icons.download className='w-[18px] h-[18px] text-foreground group-hover:text-primary transition-colors' />
 								)}
 							</button>
 						)}

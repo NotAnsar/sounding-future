@@ -17,7 +17,10 @@ export default function InstructorTab({ course }: { course: CourseDetails }) {
 				</div>
 				<div className='space-y-8 mt-8'>
 					{course.instructors.map((instructorData, index) => (
-						<div key={index} className='flex gap-6'>
+						<div
+							key={index}
+							className='flex gap-6 flex-col lg:flex-row items-start lg:items-center'
+						>
 							<div className='w-44 relative'>
 								{instructorData.instructor.image ? (
 									<Image
@@ -32,10 +35,10 @@ export default function InstructorTab({ course }: { course: CourseDetails }) {
 								)}
 							</div>
 							<div>
-								<h3 className='text-xl font-semibold mb-2'>
+								<h3 className='md:text-lg lg:text-xl font-semibold mb-2'>
 									{instructorData.instructor.name}
 								</h3>
-								<p className='text-lg leading-relaxed'>
+								<p className='text-sm md:text-base lg:text-lg leading-relaxed'>
 									{instructorData.instructor.bio}
 								</p>
 							</div>

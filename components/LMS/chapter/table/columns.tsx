@@ -33,7 +33,7 @@ export const columns: ColumnDef<ChapterWithRelations>[] = [
 						)}
 					</div>
 					{chapter.description && (
-						<div className='text-sm text-muted-foreground line-clamp-1'>
+						<div className='text-sm text-muted-foreground line-clamp-1 max-w-[250px]'>
 							{chapter.description}
 						</div>
 					)}

@@ -1,3 +1,5 @@
+'use client';
+
 import { likeTrack } from '@/actions/like-track';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';

@@ -8,6 +8,7 @@ import LearningTab from '@/components/courses/course-details/LearningTab';
 import InstructorTab from '@/components/courses/course-details/InstructorTab';
 import CourseVideoSection from '@/components/courses/course-details/CourseVideoSection';
 import CourseChapterList from '@/components/courses/course-details/CourseChapterTab';
+import LikeCourseForm, { ShareCourseButton } from '@/components/LikeCourseForm';
 
 export async function generateMetadata({
 	params,
@@ -58,13 +59,26 @@ export default async function page({
 				currentChapterIndex={activeChapterIndex}
 			/>
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
-				<CoursesDetailsNav
-					tabs={[
-						{ label: 'Course Content', link: 'content' },
-						{ label: 'Learnings & Skills', link: 'learnings' },
-						{ label: 'Instructor & Credits', link: 'instructor' },
-					]}
-				/>
+				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
+					<CoursesDetailsNav
+						tabs={[
+							{ label: 'Course Content', link: 'content' },
+							{ label: 'Learnings & Skills', link: 'learnings' },
+							{ label: 'Instructor & Credits', link: 'instructor' },
+						]}
+					/>
+					<div className='flex items-center gap-2 ml-auto'>
+						<LikeCourseForm
+							courseId={course.id}
+							liked={course.isLiked || false}
+							className='text-foreground w-6'
+						/>
+						<ShareCourseButton
+							chapterSlug={currentChapter.slug}
+							courseSlug={course.slug}
+						/>
+					</div>
+				</div>
 				<TabsContent value='content'>
 					<CourseChapterList
 						course={course}

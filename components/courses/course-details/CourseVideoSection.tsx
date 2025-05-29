@@ -35,7 +35,7 @@ export default function CourseVideoSection({
 			{/* Current Chapter Info */}
 			{currentChapter && (
 				<div className='bg-secondary rounded-lg p-4'>
-					<div className='flex items-center justify-between mb-2'>
+					<div className='flex items-center justify-between '>
 						<h2 className='text-xl font-semibold'>{currentChapter.title}</h2>
 						<div className='flex items-center gap-2'>
 							{currentChapter.accessType?.toLowerCase() === 'pro' && (
@@ -49,7 +49,7 @@ export default function CourseVideoSection({
 						</div>
 					</div>
 					{currentChapter.description && (
-						<p className='text-muted-foreground text-sm'>
+						<p className='text-muted-foreground text-sm mt-2'>
 							{currentChapter.description}
 						</p>
 					)}

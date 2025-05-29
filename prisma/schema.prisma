@@ -31,6 +31,7 @@ model User {
   artist     Artist?   @relation("UserArtist", fields: [artistId], references: [id], onDelete: SetNull) 
   follows   Follow[]
   likes     Like[]
+  courseLikes CourseLike[]
   listeningHistory ListeningHistory[]
 
   @@map("user")
@@ -600,6 +601,7 @@ model Course {
   chapters     Chapter[]   
   topics       CourseToTopic[]
   instructors  CourseToInstructor[]  // Many-to-many with instructors
+  likes       CourseLike[]
   
   @@map("courses")
 }
@@ -668,4 +670,17 @@ model CourseToInstructor {
   
   @@id([courseId, instructorId])
   @@map("course_instructors")
+}
+
+model CourseLike {
+  userId    String   @map("user_id")
+  courseId  String   @map("course_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId])
+  @@map("course_likes")
 }
