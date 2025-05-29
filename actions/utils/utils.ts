@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { slugify } from 'transliteration';
 
 export type State<T> = {
 	errors?: { [K in keyof T]?: string[] };
@@ -126,16 +127,22 @@ const checkDownloadFileType = (file: File) => {
 };
 
 export function generateSlug(name: string): string {
-	return name
-		.normalize('NFD') // Decompose accented characters into base + diacritic
-		.replace(/[\u0300-\u036f]/g, '') // Remove all diacritical marks
-		.replace(/ł/g, 'l') // Replace ł with l
-		.replace(/ø/g, 'o') // Replace ø with o
-		.replace(/ç/g, 'c') // Replace ç with c
-		.replace(/ñ/g, 'n') // Replace ñ with n
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric sequences with hyphens
-		.replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
+	return slugify(name, {
+		lowercase: true,
+		separator: '-',
+		trim: true,
+		ignore: [],
+	});
+	// return name
+	// 	.normalize('NFD') // Decompose accented characters into base + diacritic
+	// 	.replace(/[\u0300-\u036f]/g, '') // Remove all diacritical marks
+	// 	.replace(/ł/g, 'l') // Replace ł with l
+	// 	.replace(/ø/g, 'o') // Replace ø with o
+	// 	.replace(/ç/g, 'c') // Replace ç with c
+	// 	.replace(/ñ/g, 'n') // Replace ñ with n
+	// 	.toLowerCase()
+	// 	.replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric sequences with hyphens
+	// 	.replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
 }
 
 export const isValidVariant = (variant: string | null): boolean =>
