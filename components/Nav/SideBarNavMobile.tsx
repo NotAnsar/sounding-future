@@ -52,7 +52,7 @@ export default function SideBarNavMobile({
 			</Link>
 			<div className='flex flex-col gap-3 py-2 h-full overflow-y-auto'>
 				<div className='px-3 py-2 space-y-6'>
-					<div className='flex flex-col gap-2'>
+					<div className='flex flex-col gap-1.5'>
 						{mainNav.map((item, i) => (
 							<NavItem
 								Icon={item.icon}
@@ -70,7 +70,7 @@ export default function SideBarNavMobile({
 						<h2 className='text-muted text-xs uppercase pl-4 mb-3 font-medium'>
 							MY COLLECTION
 						</h2>
-						<div className='flex flex-col gap-2'>
+						<div className='flex flex-col gap-1.5'>
 							{collection.map((item, i) => (
 								<NavItem
 									Icon={item.icon}

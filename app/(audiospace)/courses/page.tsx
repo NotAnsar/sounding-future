@@ -67,7 +67,9 @@ export default async function page({
 					(isTable ? (
 						<div className='grid grid-cols-1 gap-4'>
 							{filteredCourses.map((c) => (
-								<CoursesListCard course={c} key={c.id} />
+								<>
+									<CoursesListCard course={c} key={c.id} />
+								</>
 							))}
 						</div>
 					) : (

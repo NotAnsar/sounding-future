@@ -97,41 +97,6 @@ export type CourseDetails = Prisma.CourseGetPayload<{
 	};
 }>;
 
-// export async function getCourseBySlug(slug: string): Promise<{
-// 	data: CourseDetails | null;
-// 	error?: boolean;
-// 	message?: string;
-// }> {
-// 	try {
-// 		const course = await prisma.course.findUnique({
-// 			where: { slug },
-// 			include: {
-// 				instructors: {
-// 					include: {
-// 						instructor: { include: { courses: { include: { course: true } } } },
-// 					},
-// 				},
-// 				series: true,
-// 				topics: { include: { topic: true } },
-// 				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
-// 			},
-// 		});
-
-// 		if (!course) {
-// 			return { data: null, error: true, message: 'Course not found' };
-// 		}
-
-// 		return { data: course, error: false };
-// 	} catch (error) {
-// 		console.error('Error fetching course:', error);
-// 		return {
-// 			data: null,
-// 			error: true,
-// 			message: 'Unable to retrieve course. Please try again later.',
-// 		};
-// 	}
-// }
-
 export async function getCourseBySlug(slug: string): Promise<{
 	data: (CourseDetails & { isLiked?: boolean }) | null;
 	error?: boolean;
@@ -176,6 +141,74 @@ export async function getCourseBySlug(slug: string): Promise<{
 			data: null,
 			error: true,
 			message: 'Unable to retrieve course. Please try again later.',
+		};
+	}
+}
+
+export async function getUserFavoriteCoursesWithDetails(
+	userId?: string
+): Promise<{
+	data: (CourseDetails & { isLiked: boolean; likeCount: number })[];
+	error?: boolean;
+	message?: string;
+}> {
+	const session = await auth();
+	const targetUserId = userId || session?.user?.id;
+
+	if (!targetUserId) {
+		return {
+			data: [],
+			error: true,
+			message: 'User not authenticated',
+		};
+	}
+
+	try {
+		const courses = await prisma.course.findMany({
+			where: {
+				published: true,
+				likes: {
+					some: {
+						userId: targetUserId,
+					},
+				},
+			},
+			include: {
+				instructors: {
+					include: {
+						instructor: { include: { courses: { include: { course: true } } } },
+					},
+				},
+				series: true,
+				topics: { include: { topic: true } },
+				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
+				likes: true,
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+
+		const coursesWithLikeInfo = courses.map((course) => ({
+			...course,
+			isLiked: true,
+			likeCount: course.likes.length,
+		}));
+
+		return { data: coursesWithLikeInfo, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			return {
+				data: [],
+				error: true,
+				message: `Database error`,
+			};
+		}
+
+		console.error('Error fetching favorite courses with details:', error);
+		return {
+			data: [],
+			error: true,
+			message: 'Unable to retrieve favorite courses. Please try again later.',
 		};
 	}
 }
