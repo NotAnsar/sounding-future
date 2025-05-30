@@ -6,9 +6,11 @@ import React from 'react';
 export default function MembershipPlan({
 	isPro,
 	isAdmin,
+	upgradeUrl = 'https://buy.stripe.com/9AQ4id4eB05P8OkcMM',
 }: {
 	isPro: boolean;
 	isAdmin: boolean;
+	upgradeUrl?: string;
 }) {
 	if (isAdmin) {
 		return (
@@ -63,7 +65,7 @@ export default function MembershipPlan({
 					{!isPro && (
 						<Link
 							className={cn(buttonVariants({ size: 'sm' }), 'w-full mt-4')}
-							href={'https://buy.stripe.com/9AQ4id4eB05P8OkcMM'}
+							href={upgradeUrl}
 							target='_blank'
 						>
 							Upgrade

@@ -6,9 +6,10 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import Link from 'next/link';
 import MembershipPlan from './MembershipPlan';
 import { auth } from '@/lib/auth';
+import { getProSubscription } from '@/db/support-us';
 
 export default async function Page() {
-	const session = await auth();
+	const [session, { data }] = await Promise.all([auth(), getProSubscription()]);
 
 	const userRole = session?.user.role;
 	const isPro = userRole === 'pro';
@@ -21,7 +22,11 @@ export default async function Page() {
 				value='membership'
 				className='mt-8 space-y-8 max-w-screen-md'
 			>
-				<MembershipPlan isPro={isPro} isAdmin={isAdmin} />
+				<MembershipPlan
+					isPro={isPro}
+					isAdmin={isAdmin}
+					upgradeUrl={data || undefined}
+				/>
 
 				{!isAdmin && (
 					<div>

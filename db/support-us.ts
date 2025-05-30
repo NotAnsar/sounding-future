@@ -108,3 +108,35 @@ export async function getSubscriptionById(id?: string): Promise<{
 		};
 	}
 }
+
+export async function getProSubscription(): Promise<{
+	data: string | null;
+	error?: boolean;
+	message?: string;
+}> {
+	try {
+		const data = await prisma.pricingPlan.findFirst({
+			where: { name: { equals: 'pro', mode: 'insensitive' } },
+			select: { buttonLink: true },
+		});
+
+		if (!data?.buttonLink) {
+			return {
+				data: null,
+				error: true,
+				message: 'Subscription url not found',
+			};
+		}
+
+		return { data: data.buttonLink, error: false };
+	} catch (error) {
+		console.error('Error fetching Subscription card data:', error);
+
+		return {
+			data: null,
+			error: true,
+			message:
+				'Unable to retrieve Subscription card data. Please try again later.',
+		};
+	}
+}

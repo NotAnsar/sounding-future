@@ -218,3 +218,27 @@ export async function getUserFavoriteCoursesWithDetails(
 		};
 	}
 }
+
+export async function checkUserAccess() {
+	const session = await auth();
+
+	if (!session?.user) {
+		return {
+			isAuthenticated: false,
+			isAdmin: false,
+			isPro: false,
+			canAccessPro: false,
+		};
+	}
+
+	const userRole = session?.user.role;
+	const isPro = userRole === 'pro';
+	const isAdmin = userRole === 'admin';
+
+	return {
+		isAuthenticated: true,
+		isAdmin,
+		isPro,
+		canAccessPro: isAdmin || isPro,
+	};
+}

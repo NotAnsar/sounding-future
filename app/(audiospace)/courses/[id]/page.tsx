@@ -1,5 +1,5 @@
 import Error from '@/components/Error';
-import { getCourseBySlug } from '@/db/course';
+import { checkUserAccess, getCourseBySlug } from '@/db/course';
 import { Metadata } from 'next';
 import CoursesDetailsNav from '@/components/courses/course-details/CoursesDetailsNav';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -9,7 +9,6 @@ import InstructorTab from '@/components/courses/course-details/InstructorTab';
 import CourseVideoSection from '@/components/courses/course-details/CourseVideoSection';
 import CourseChapterList from '@/components/courses/course-details/CourseChapterTab';
 import LikeCourseForm, { ShareCourseButton } from '@/components/LikeCourseForm';
-import { auth } from '@/lib/auth';
 
 export async function generateMetadata({
 	params,
@@ -34,11 +33,10 @@ export default async function page({
 	params: { id: string };
 	searchParams: { tab?: string; chapter?: string };
 }) {
-	const [session, res] = await Promise.all([
-		auth(),
+	const [userAccess, res] = await Promise.all([
+		checkUserAccess(),
 		getCourseBySlug(params.id),
 	]);
-	const isAuthenticated = !!session?.user;
 
 	const tabValue = ['content', 'learnings', 'instructor'].includes(tab || '')
 		? tab
@@ -63,7 +61,8 @@ export default async function page({
 				course={course}
 				currentChapter={currentChapter}
 				currentChapterIndex={activeChapterIndex}
-				isAuth={isAuthenticated}
+				isAuth={userAccess.isAuthenticated}
+				canAccessPro={userAccess.canAccessPro} // ADD THIS LINE
 			/>
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
@@ -90,6 +89,7 @@ export default async function page({
 					<CourseChapterList
 						course={course}
 						currentChapterIndex={activeChapterIndex}
+						canAccessPro={userAccess.canAccessPro}
 					/>
 				</TabsContent>
 				<LearningTab course={course} />
