@@ -8,6 +8,7 @@ export type CourseWithRelations = Prisma.CourseGetPayload<{
 		series: true;
 		topics: { include: { topic: true } };
 		chapters: true;
+		_count: { select: { courseProgress: true } };
 	};
 }>;
 
@@ -28,6 +29,7 @@ export async function getCourses(published?: boolean): Promise<CourseRes> {
 					where: published ? { published: published } : undefined,
 					orderBy: { position: 'asc' },
 				},
+				_count: { select: { courseProgress: true } },
 			},
 			where: published ? { published: published } : undefined,
 			orderBy: { createdAt: 'desc' },
@@ -66,6 +68,7 @@ export async function getCourseById(id: string): Promise<{
 				series: true,
 				topics: { include: { topic: true } },
 				chapters: { orderBy: { position: 'asc' } },
+				_count: { select: { courseProgress: true } },
 			},
 		});
 
@@ -94,6 +97,7 @@ export type CourseDetails = Prisma.CourseGetPayload<{
 		series: true;
 		topics: { include: { topic: true } };
 		chapters: true;
+		_count: { select: { courseProgress: true } };
 	};
 }>;
 
@@ -116,6 +120,7 @@ export async function getCourseBySlug(slug: string): Promise<{
 				series: true,
 				topics: { include: { topic: true } },
 				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
+				_count: { select: { courseProgress: true } },
 				likes: session?.user?.id
 					? {
 							where: { userId: session.user.id },
@@ -182,6 +187,7 @@ export async function getUserFavoriteCoursesWithDetails(
 				series: true,
 				topics: { include: { topic: true } },
 				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
+				_count: { select: { courseProgress: true } },
 				likes: true,
 			},
 			orderBy: { createdAt: 'desc' },

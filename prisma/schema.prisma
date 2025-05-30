@@ -602,7 +602,6 @@ model Course {
   topics       CourseToTopic[]
   instructors  CourseToInstructor[]  // Many-to-many with instructors
   likes       CourseLike[]
-  chapterProgress ChapterProgress[]
   courseProgress  CourseProgress[]
   
   @@map("courses")
@@ -689,46 +688,38 @@ model CourseLike {
   @@map("course_likes")
 }
 
-// Add these models after your existing models
-
 model ChapterProgress {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
-  chapterId   String   @map("chapter_id")
-  courseId    String   @map("course_id")
-  watchedAt   DateTime @default(now()) @map("watched_at")
-  completed   Boolean  @default(false)
-  watchTime   Int      @default(0) @map("watch_time") // Time watched in seconds
-  lastPosition Int     @default(0) @map("last_position") // Last playback position in seconds
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt
+  userId       String   @map("user_id")
+  chapterId    String   @map("chapter_id")
+  completed    Boolean  @default(false)
+  lastPosition Int      @default(0) @map("last_position") // Last playback position in seconds
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chapter  Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, chapterId])
+  @@id([userId, chapterId])
   @@map("chapter_progress")
+
 }
 
+
+
 model CourseProgress {
-  id               String   @id @default(cuid())
-  userId           String   @map("user_id")
-  courseId         String   @map("course_id")
-  currentChapterId String?  @map("current_chapter_id")
-  lastAccessedAt   DateTime @default(now()) @map("last_accessed_at")
-  completedChapters Int     @default(0) @map("completed_chapters")
-  totalChapters    Int     @default(0) @map("total_chapters")
-  progressPercentage Float  @default(0) @map("progress_percentage")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt
+  userId           String    @map("user_id")
+  courseId         String    @map("course_id")
+  currentChapterId String?   @map("current_chapter_id")
+  startedAt        DateTime  @default(now()) @map("started_at")
+  lastAccessedAt   DateTime  @default(now()) @map("last_accessed_at")
+  completedAt      DateTime? @map("completed_at")
+  updatedAt        DateTime  @updatedAt
 
   // Relations
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   course         Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   currentChapter Chapter? @relation(fields: [currentChapterId], references: [id])
 
-  @@unique([userId, courseId])
+  @@id([userId, courseId])
   @@map("course_progress")
 }

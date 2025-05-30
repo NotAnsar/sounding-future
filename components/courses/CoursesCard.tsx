@@ -56,10 +56,12 @@ export default function CoursesCard({
 							)}
 						</span>
 					</div>
-					<div className='flex items-center gap-1'>
-						<Play className='w-3.5 h-auto aspect-square ' />
-						<span>1234</span>
-					</div>
+					{course._count.courseProgress > 0 && (
+						<div className='flex items-center gap-1'>
+							<Play className='w-3.5 h-auto aspect-square' />
+							<span>{course._count.courseProgress}</span>
+						</div>
+					)}
 					<div className='flex items-center gap-1'>
 						<CircleGauge className='w-3.5 h-auto aspect-square ' />
 						<span>{course.level}</span>
@@ -147,10 +149,12 @@ export function CoursesListCard({ course }: { course: CourseWithRelations }) {
 							)}
 						</span>
 					</div>
-					<div className='flex items-center gap-1'>
-						<Play className='w-3.5 h-auto aspect-square' />
-						<span>1234</span>
-					</div>
+					{course._count.courseProgress > 0 && (
+						<div className='flex items-center gap-1'>
+							<Play className='w-3.5 h-auto aspect-square' />
+							<span>{course._count.courseProgress}</span>
+						</div>
+					)}
 					<div className='flex items-center gap-1'>
 						<CircleGauge className='w-3.5 h-auto aspect-square' />
 						<span>{course.level}</span>

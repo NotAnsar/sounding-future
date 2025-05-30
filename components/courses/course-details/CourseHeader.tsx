@@ -88,10 +88,13 @@ export default function CourseHeader({
 						Pro
 					</span>
 				</div>
-				<div className='flex items-center gap-2 ml-auto'>
-					<Play className='w-4 h-auto aspect-square ' />
-					<span>1234</span>
-				</div>
+
+				{course._count.courseProgress > 0 && (
+					<div className='flex items-center gap-2 ml-auto'>
+						<Play className='w-4 h-auto aspect-square ' />
+						<span>{course._count.courseProgress}</span>
+					</div>
+				)}
 			</div>
 
 			<div className='flex md:hidden items-center gap-2 w-full mt-2'>
