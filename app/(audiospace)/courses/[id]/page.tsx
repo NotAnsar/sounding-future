@@ -9,6 +9,7 @@ import InstructorTab from '@/components/courses/course-details/InstructorTab';
 import CourseVideoSection from '@/components/courses/course-details/CourseVideoSection';
 import CourseChapterList from '@/components/courses/course-details/CourseChapterTab';
 import LikeCourseForm, { ShareCourseButton } from '@/components/LikeCourseForm';
+import { auth } from '@/lib/auth';
 
 export async function generateMetadata({
 	params,
@@ -33,7 +34,12 @@ export default async function page({
 	params: { id: string };
 	searchParams: { tab?: string; chapter?: string };
 }) {
-	const res = await getCourseBySlug(params.id);
+	const [session, res] = await Promise.all([
+		auth(),
+		getCourseBySlug(params.id),
+	]);
+	const isAuthenticated = !!session?.user;
+
 	const tabValue = ['content', 'learnings', 'instructor'].includes(tab || '')
 		? tab
 		: 'content';
@@ -57,6 +63,7 @@ export default async function page({
 				course={course}
 				currentChapter={currentChapter}
 				currentChapterIndex={activeChapterIndex}
+				isAuth={isAuthenticated}
 			/>
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
