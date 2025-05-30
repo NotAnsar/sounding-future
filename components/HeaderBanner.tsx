@@ -44,7 +44,3 @@ export default function HeaderBanner({
 		</div>
 	);
 }
-
-{
-	/* <div className={cn('w-full min-h-40 sm:h-48 md:h-52 relative', className)}></div> */
-}
