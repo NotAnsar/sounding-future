@@ -19,7 +19,7 @@ export default function InstructorTab({ course }: { course: CourseDetails }) {
 					{course.instructors.map((instructorData, index) => (
 						<div
 							key={index}
-							className='flex gap-6 flex-col lg:flex-row items-start lg:items-center'
+							className='flex gap-6 flex-col lg:flex-row items-start '
 						>
 							<div className='w-44 relative'>
 								{instructorData.instructor.image ? (
