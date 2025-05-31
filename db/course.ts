@@ -242,3 +242,70 @@ export async function checkUserAccess() {
 		canAccessPro: isAdmin || isPro,
 	};
 }
+
+// NEW FUNCTION: Get course progress with chapter completion status
+export async function getCourseProgress(courseId: string) {
+	try {
+		const session = await auth();
+		const userId = session?.user?.id;
+		if (!userId) {
+			return {
+				success: false,
+				progress: null,
+				completedChapters: [],
+				completionPercentage: 0,
+				totalChapters: 0,
+				completedCount: 0,
+			};
+		}
+
+		// Get course progress
+		const courseProgress = await prisma.courseProgress.findUnique({
+			where: {
+				userId_courseId: { userId, courseId: courseId },
+			},
+		});
+
+		// Get all completed chapters for this course
+		const completedChapters = await prisma.chapterProgress.findMany({
+			where: {
+				userId,
+				chapter: { courseId: courseId, published: true },
+				completed: true,
+			},
+			select: { chapterId: true },
+		});
+
+		// Get total published chapters count
+		const totalChapters = await prisma.chapter.count({
+			where: {
+				courseId: courseId,
+				published: true,
+			},
+		});
+
+		const completionPercentage =
+			totalChapters > 0
+				? Math.round((completedChapters.length / totalChapters) * 100)
+				: 0;
+
+		return {
+			success: true,
+			progress: courseProgress,
+			completedChapters: completedChapters.map((cp) => cp.chapterId),
+			completionPercentage,
+			totalChapters,
+			completedCount: completedChapters.length,
+		};
+	} catch (error) {
+		console.error('Error getting course progress:', error);
+		return {
+			success: false,
+			progress: null,
+			completedChapters: [],
+			completionPercentage: 0,
+			totalChapters: 0,
+			completedCount: 0,
+		};
+	}
+}

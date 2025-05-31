@@ -1,5 +1,9 @@
 import Error from '@/components/Error';
-import { checkUserAccess, getCourseBySlug } from '@/db/course';
+import {
+	checkUserAccess,
+	getCourseBySlug,
+	getCourseProgress,
+} from '@/db/course';
 import { Metadata } from 'next';
 import CoursesDetailsNav from '@/components/courses/course-details/CoursesDetailsNav';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -45,6 +49,8 @@ export default async function page({
 	if (res.error || !res.data) return <Error message={res.message} />;
 	const course = res.data;
 
+	const progressData = await getCourseProgress(course.id);
+
 	// Find current chapter by slug or default to first chapter
 	const currentChapterIndex = chapter
 		? course.chapters.findIndex((ch) => ch.slug === chapter)
@@ -56,13 +62,18 @@ export default async function page({
 
 	return (
 		<div className='space-y-6'>
-			<CourseHeader course={course} />
+			<CourseHeader
+				course={course}
+				progressData={progressData}
+				isAuthenticated={userAccess.isAuthenticated}
+			/>
 			<CourseVideoSection
 				course={course}
 				currentChapter={currentChapter}
 				currentChapterIndex={activeChapterIndex}
 				isAuth={userAccess.isAuthenticated}
 				canAccessPro={userAccess.canAccessPro} // ADD THIS LINE
+				completedChapters={progressData.completedChapters || []} // NEW PROP
 			/>
 			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
@@ -90,6 +101,8 @@ export default async function page({
 						course={course}
 						currentChapterIndex={activeChapterIndex}
 						canAccessPro={userAccess.canAccessPro}
+						completedChapters={progressData.completedChapters || []}
+						isAuthenticated={userAccess.isAuthenticated}
 					/>
 				</TabsContent>
 				<LearningTab course={course} />

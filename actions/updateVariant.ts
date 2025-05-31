@@ -33,7 +33,7 @@ export async function updatePreferredVariant(
 		revalidatePath('/');
 		return { success: true, message: 'Variant status updated' };
 	} catch (error) {
-		console.log(error);
+		console.error('Error updating preferred variant:', error);
 
 		return { success: false, message: 'Failed to update variant' };
 	}

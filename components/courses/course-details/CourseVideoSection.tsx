@@ -1,9 +1,9 @@
 'use client';
 
+import VideoPlayerCourse from '../VideoPlayerCourse';
 import { CourseWithRelations } from '@/db/course';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useTransition } from 'react';
-import VideoPlayerCourse from '../VideoPlayerCourse';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
@@ -14,6 +14,7 @@ interface CourseVideoSectionProps {
 	currentChapterIndex: number;
 	isAuth?: boolean;
 	canAccessPro?: boolean;
+	completedChapters?: string[]; // NEW PROP
 }
 
 export default function CourseVideoSection({
@@ -22,6 +23,7 @@ export default function CourseVideoSection({
 	currentChapterIndex,
 	isAuth,
 	canAccessPro = false,
+	completedChapters = [], // NEW PROP
 }: CourseVideoSectionProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -32,6 +34,10 @@ export default function CourseVideoSection({
 	const isProChapter = currentChapter?.accessType?.toLowerCase() === 'pro';
 	const hasAccess = !isProChapter || canAccessPro;
 
+	// NEW: Check if current chapter is completed
+	const isCurrentChapterCompleted =
+		isAuth && currentChapter && completedChapters.includes(currentChapter.id);
+
 	// Auto-next with transition for better UX
 	const handleVideoEnd = useCallback(() => {
 		if (!isAuth || !hasAccess) return;
@@ -40,7 +46,6 @@ export default function CourseVideoSection({
 		const hasNextChapter = nextChapterIndex < course.chapters.length;
 
 		if (hasNextChapter) {
-			console.log('Video ended, navigating to next chapter');
 			const nextChapter = course.chapters[nextChapterIndex];
 
 			startTransition(() => {
@@ -116,6 +121,12 @@ export default function CourseVideoSection({
 							{isProChapter && (
 								<span className='text-sm px-3 rounded-full bg-primary/30 dark:bg-primary/55 text-primary-foreground border-primary/45 border'>
 									Pro Only
+								</span>
+							)}
+
+							{isCurrentChapterCompleted && (
+								<span className='text-sm px-3 rounded-full border-green-600 text-green-600 bg-green-400/40 dark:bg-green-600/40 border'>
+									Completed
 								</span>
 							)}
 							<span className='text-sm text-muted-foreground'>

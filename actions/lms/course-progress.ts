@@ -2,6 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 export async function updateCourseProgress(
 	courseId: string,
@@ -138,9 +139,10 @@ export async function updateChapterProgress(
 						},
 					});
 
-					console.log(
+					console.info(
 						`Course ${chapter.courseId} marked as completed for user ${session.user.id}`
 					);
+					revalidatePath(`/courses/${chapter.courseId}`);
 				}
 			}
 		}

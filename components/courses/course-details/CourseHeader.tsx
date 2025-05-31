@@ -2,11 +2,25 @@ import { CourseWithRelations } from '@/db/course';
 import { cn, formatCourseDuration } from '@/lib/utils';
 import { BookOpen, CircleGauge, Clock4, Play } from 'lucide-react';
 
+interface CourseHeaderProps {
+	course: CourseWithRelations;
+	isAuthenticated?: boolean;
+	progressData?: {
+		completionPercentage: number;
+		completedCount: number;
+		totalChapters: number;
+	};
+}
+
 export default function CourseHeader({
 	course,
-}: {
-	course: CourseWithRelations;
-}) {
+	isAuthenticated = false,
+	progressData = {
+		completionPercentage: 0,
+		completedCount: 0,
+		totalChapters: course.chapters.filter((c) => c.published).length,
+	},
+}: CourseHeaderProps) {
 	return (
 		<div className='px-4 sm:px-6 lg:px-8 py-4 sm:py-8 dark:bg-[#141B29] bg-secondary rounded-2xl'>
 			<div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2'>
@@ -17,35 +31,41 @@ export default function CourseHeader({
 					)}
 				</div>
 
-				<div className='w-full sm:w-64 items-center justify-center sm:justify-end hidden md:flex'>
-					<div className='relative hidden items-center justify-center md:flex'>
-						<svg className='w-16 h-16 transform ' viewBox='0 0 36 36'>
-							<path
-								className='dark:text-gray-200 text-zinc-400 '
-								stroke='currentColor'
-								strokeWidth='3'
-								fill='transparent'
-								d='M18 2.0845
+				{isAuthenticated && (
+					<div className='w-full sm:w-64 items-center justify-center sm:justify-end hidden md:flex'>
+						<div className='relative hidden items-center justify-center md:flex'>
+							<svg className='w-16 h-16 transform ' viewBox='0 0 36 36'>
+								<path
+									className='dark:text-gray-200 text-zinc-400 '
+									stroke='currentColor'
+									strokeWidth='3'
+									fill='transparent'
+									d='M18 2.0845
 					a 15.9155 15.9155 0 0 1 0 31.831
 					a 15.9155 15.9155 0 0 1 0 -31.831'
-							/>
-							<path
-								className='text-primary'
-								stroke='currentColor'
-								strokeWidth='3'
-								strokeDasharray='35, 100'
-								strokeLinecap='round'
-								fill='transparent'
-								d='M18 2.0845
+								/>
+								{progressData.completionPercentage > 0 && (
+									<path
+										className='text-primary'
+										stroke='currentColor'
+										strokeWidth='3'
+										strokeDasharray={`${progressData.completionPercentage}, 100`}
+										strokeLinecap='round'
+										fill='transparent'
+										d='M18 2.0845
 					a 15.9155 15.9155 0 0 1 0 31.831
 					a 15.9155 15.9155 0 0 1 0 -31.831'
-							/>
-						</svg>
-						<div className='absolute inset-0 flex items-center justify-center'>
-							<span className='text-sm font-medium'>35%</span>
+									/>
+								)}
+							</svg>
+							<div className='absolute inset-0 flex items-center justify-center'>
+								<span className='text-sm font-medium'>
+									{progressData.completionPercentage}%
+								</span>
+							</div>
 						</div>
 					</div>
-				</div>
+				)}
 			</div>
 
 			<div className='flex gap-x-3 gap-y-1 font-medium my-1.5 text-[15px] flex-wrap'>
@@ -102,10 +122,12 @@ export default function CourseHeader({
 				<div className='flex-1 dark:bg-gray-200 bg-zinc-400 rounded-full h-2'>
 					<div
 						className='bg-primary h-2 rounded-full'
-						style={{ width: '35%' }}
-					></div>
+						style={{ width: `${progressData.completionPercentage}%` }}
+					/>
 				</div>
-				<span className='text-sm font-medium'>35%</span>
+				<span className='text-sm font-medium'>
+					{isAuthenticated ? `${progressData.completionPercentage}%` : '0%'}
+				</span>
 			</div>
 		</div>
 	);
