@@ -243,7 +243,6 @@ export async function checkUserAccess() {
 	};
 }
 
-// NEW FUNCTION: Get course progress with chapter completion status
 export async function getCourseProgress(courseId: string) {
 	try {
 		const session = await auth();
@@ -256,6 +255,7 @@ export async function getCourseProgress(courseId: string) {
 				completionPercentage: 0,
 				totalChapters: 0,
 				completedCount: 0,
+				currentChapter: null,
 			};
 		}
 
@@ -289,6 +289,63 @@ export async function getCourseProgress(courseId: string) {
 				? Math.round((completedChapters.length / totalChapters) * 100)
 				: 0;
 
+		// NEW: Smart current chapter logic - only move forward, never backward
+		let currentChapter = courseProgress?.currentChapterId || null;
+
+		if (currentChapter) {
+			// Check if current chapter is completed
+			const isCurrentChapterCompleted = completedChapters.some(
+				(cp) => cp.chapterId === currentChapter
+			);
+
+			if (isCurrentChapterCompleted) {
+				// Get all published chapters in order
+				const publishedChapters = await prisma.chapter.findMany({
+					where: {
+						courseId: courseId,
+						published: true,
+					},
+					orderBy: { position: 'asc' },
+					select: { id: true, position: true },
+				});
+
+				// Find current chapter position
+				const currentChapterData = publishedChapters.find(
+					(ch) => ch.id === currentChapter
+				);
+
+				if (currentChapterData) {
+					// Get completed chapter IDs
+					const completedChapterIds = completedChapters.map(
+						(cp) => cp.chapterId
+					);
+
+					// Find the NEXT incomplete chapter (only chapters AFTER current position)
+					const nextIncompleteChapter = publishedChapters.find(
+						(chapter) =>
+							chapter.position > currentChapterData.position &&
+							!completedChapterIds.includes(chapter.id)
+					);
+
+					// Only move forward if there's a next incomplete chapter
+					if (nextIncompleteChapter) {
+						currentChapter = nextIncompleteChapter.id;
+
+						// Update the database with the new current chapter
+						await prisma.courseProgress.update({
+							where: {
+								userId_courseId: { userId, courseId: courseId },
+							},
+							data: {
+								currentChapterId: currentChapter,
+								lastAccessedAt: new Date(),
+							},
+						});
+					}
+				}
+			}
+		}
+
 		return {
 			success: true,
 			progress: courseProgress,
@@ -296,6 +353,7 @@ export async function getCourseProgress(courseId: string) {
 			completionPercentage,
 			totalChapters,
 			completedCount: completedChapters.length,
+			currentChapter: currentChapter,
 		};
 	} catch (error) {
 		console.error('Error getting course progress:', error);
@@ -306,6 +364,7 @@ export async function getCourseProgress(courseId: string) {
 			completionPercentage: 0,
 			totalChapters: 0,
 			completedCount: 0,
+			currentChapter: null,
 		};
 	}
 }
