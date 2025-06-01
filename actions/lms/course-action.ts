@@ -541,7 +541,6 @@ export async function getBatchCurrentChapters(courseIds: string[]): Promise<{
 }> {
 	try {
 		const session = await auth();
-		console.log(session?.user?.id);
 
 		if (!session?.user?.id) {
 			return {};

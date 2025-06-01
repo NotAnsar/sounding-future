@@ -82,46 +82,6 @@ export type ArtistLikeWithUser = {
 	tracks: { title: string; slug: string }[];
 };
 
-// export const getArtistLikes = async (
-// 	artistId: string
-// ): Promise<ArtistLikeWithUser[]> => {
-// 	const likes = await prisma.like.findMany({
-// 		where: { track: { artistId } },
-// 		include: {
-// 			user: {
-// 				select: {
-// 					id: true,
-// 					f_name: true,
-// 					l_name: true,
-// 					image: true,
-// 					name: true,
-// 					artist: { select: { slug: true, published: true } },
-// 				},
-// 			},
-// 			track: { select: { title: true, slug: true } },
-// 		},
-// 		orderBy: { createdAt: 'desc' },
-// 	});
-
-// 	const groupedLikes = likes.reduce((acc, like) => {
-// 		const userId = like.user.id;
-// 		const existingUser = acc.find((item) => item.user.id === userId);
-
-// 		if (existingUser) {
-// 			existingUser.tracks.push(like.track);
-// 		} else {
-// 			acc.push({
-// 				user: like.user,
-// 				tracks: [like.track],
-// 			});
-// 		}
-
-// 		return acc;
-// 	}, [] as ArtistLikeWithUser[]);
-
-// 	return groupedLikes;
-// };
-
 export const getArtistLikes = async (
 	artistId: string
 ): Promise<ArtistLikeWithUser[]> => {

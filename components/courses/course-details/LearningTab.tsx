@@ -28,7 +28,7 @@ export default function LearningTab({ course }: { course: CourseDetails }) {
 				<div className='p-6 pb-9 bg-secondary rounded-lg mb-4'>
 					<div className='flex gap-3 items-center'>
 						<Icons.skills className='w-7 h-auto aspect-square text-primary-foreground min-w-7 max-w-7' />
-						<h1 className='text-xl sm:texttext-2xl font-bold text-primary-foreground'>
+						<h1 className='text-xl sm:text-2xl font-bold text-primary-foreground'>
 							What skills and tools you need for this course
 						</h1>
 					</div>

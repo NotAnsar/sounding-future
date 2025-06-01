@@ -143,7 +143,7 @@ export default async function page({
 
 			<Tabs value={activeTab} className='w-full'>
 				<div className='flex justify-between items-center mb-6'>
-					<TabsList className='grid w-fit grid-cols-2 bg-secondary gap-2'>
+					<TabsList className='grid w-fit grid-cols-2 gap-2'>
 						<TabsTrigger value='liked' asChild>
 							<Link
 								href={handleTabChange('liked')}
