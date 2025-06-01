@@ -5,10 +5,10 @@ import { Tabs } from '@/components/ui/tabs';
 import CoursesNav from '@/components/courses/CoursesNav';
 import { getTopics } from '@/db/topic';
 import Error from '@/components/Error';
-import CoursesCard, { CoursesListCard } from '@/components/courses/CoursesCard';
+import CoursesList from '@/components/courses/CoursesList';
 
 export async function generateMetadata() {
-	const courses = await getCourses(true, true);
+	const courses = await getCourses(true);
 
 	if (courses.error) {
 		return { title: 'Courses Not Found' };
@@ -33,18 +33,11 @@ export default async function page({
 }) {
 	const isTable = type === 'table';
 	const tabValue = sort || 'all';
-	const [topics, courses] = await Promise.all([
-		getTopics(),
-		getCourses(true, true),
-	]);
+	const [topics, courses] = await Promise.all([getTopics(), getCourses(true)]);
 
 	if (topics.error || !topics.data) return <Error message={topics.message} />;
 	if (courses.error || !courses.data)
 		return <Error message={courses.message} />;
-
-	console.log(
-		courses.data.map((c) => ({ name: c.title, cha: c.currentChapterSlug }))
-	);
 
 	const data = [
 		{ label: 'All', link: 'all' },
@@ -70,26 +63,14 @@ export default async function page({
 						No courses found for this topic.
 					</p>
 				)}
-				{filteredCourses.length > 0 &&
-					(isTable ? (
-						<div className='grid grid-cols-1 gap-4'>
-							{filteredCourses.map((c) => (
-								<>
-									<CoursesListCard course={c} key={c.id} />
-								</>
-							))}
-						</div>
-					) : (
-						<div
-							className={
-								'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-10 2xl:gap-x-10 '
-							}
-						>
-							{filteredCourses.map((c) => (
-								<CoursesCard course={c} key={c.id} />
-							))}
-						</div>
-					))}
+
+				{filteredCourses.length > 0 && (
+					<CoursesList
+						courses={filteredCourses}
+						isTable={isTable}
+						enableChapterLinks={true} // ADD THIS LINE
+					/>
+				)}
 			</Tabs>
 		</>
 	);

@@ -164,7 +164,9 @@ export function CoursesListCard({
 
 	return (
 		<Link
-			href={`/courses/${course.slug}`}
+			href={`/courses/${course.slug}${
+				course.currentChapterSlug ? `?chapter=${course.currentChapterSlug}` : ''
+			}`}
 			className='bg-player rounded-lg overflow-hidden flex flex-col sm:flex-row gap-0 sm:gap-4 hover:bg-player/80 transition-colors'
 		>
 			{/* Image Container with Fixed Aspect Ratio */}

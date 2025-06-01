@@ -12,18 +12,12 @@ export type CourseWithRelations = Prisma.CourseGetPayload<{
 	};
 }>;
 
-export async function getCourses(
-	published?: boolean,
-	progress?: boolean
-): Promise<{
-	data: (CourseWithRelations & { currentChapterSlug?: string })[];
+export async function getCourses(published?: boolean): Promise<{
+	data: CourseWithRelations[];
 	error?: boolean;
 	message?: string;
 }> {
 	try {
-		const session = await auth();
-		const userId = session?.user?.id;
-
 		const courses = await prisma.course.findMany({
 			include: {
 				instructors: { include: { instructor: true } },
@@ -39,39 +33,7 @@ export async function getCourses(
 			orderBy: { createdAt: 'desc' },
 		});
 
-		// If user is authenticated, get their current chapter for each course
-		let coursesWithProgress = courses;
-		if (userId && progress) {
-			const userProgress = await prisma.courseProgress.findMany({
-				where: {
-					userId,
-					courseId: { in: courses.map((c) => c.id) },
-				},
-				select: {
-					courseId: true,
-					currentChapterId: true,
-				},
-			});
-
-			coursesWithProgress = courses.map((course) => {
-				const progress = userProgress.find((p) => p.courseId === course.id);
-				let currentChapterSlug;
-
-				if (progress?.currentChapterId) {
-					const currentChapter = course.chapters.find(
-						(ch) => ch.id === progress.currentChapterId
-					);
-					currentChapterSlug = currentChapter?.slug;
-				}
-
-				return {
-					...course,
-					currentChapterSlug,
-				};
-			});
-		}
-
-		return { data: coursesWithProgress, error: false };
+		return { data: courses, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);

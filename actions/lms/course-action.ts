@@ -11,6 +11,7 @@ import {
 	deleteFile,
 } from '@/actions/utils/s3-image';
 import { generateSlug, imageSchema } from '../utils/utils';
+import { auth } from '@/lib/auth';
 
 // Define Chapter schema for validation - title is optional
 const ChapterSchema = z.object({
@@ -532,5 +533,68 @@ export async function deleteCourse(id: string): Promise<DeleteCourseState> {
 	} catch (error) {
 		console.error('Delete error:', error);
 		return { success: false, message: 'Failed to delete course' };
+	}
+}
+
+export async function getBatchCurrentChapters(courseIds: string[]): Promise<{
+	[courseId: string]: string | undefined;
+}> {
+	try {
+		const session = await auth();
+		console.log(session?.user?.id);
+
+		if (!session?.user?.id) {
+			return {};
+		}
+
+		// Get course progress with current chapter IDs
+		const courseProgress = await prisma.courseProgress.findMany({
+			where: {
+				userId: session.user.id,
+				courseId: { in: courseIds },
+				currentChapterId: { not: null },
+			},
+			select: {
+				courseId: true,
+				currentChapterId: true,
+			},
+		});
+
+		if (courseProgress.length === 0) {
+			return {};
+		}
+
+		// Get the chapters to convert IDs to slugs
+		const currentChapterIds = courseProgress
+			.map((p) => p.currentChapterId)
+			.filter(Boolean) as string[];
+
+		const chapters = await prisma.chapter.findMany({
+			where: {
+				id: { in: currentChapterIds },
+			},
+			select: {
+				id: true,
+				slug: true,
+			},
+		});
+
+		// Build the result object
+		const result: Record<string, string> = {};
+		courseProgress.forEach((progress) => {
+			if (progress.currentChapterId) {
+				const chapter = chapters.find(
+					(ch) => ch.id === progress.currentChapterId
+				);
+				if (chapter?.slug) {
+					result[progress.courseId] = chapter.slug;
+				}
+			}
+		});
+
+		return result;
+	} catch (error) {
+		console.error('Error fetching current chapters:', error);
+		return {};
 	}
 }
