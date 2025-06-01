@@ -37,8 +37,11 @@ export default function NavItem({
 							: 'sideNavForeground',
 				}),
 				'justify-start py-2 pr-3 hover:text-white duration-200 transition-none tracks-nav',
-				isCurrentPath ? 'text-white tracks-nav' : '',
-				isCurrentPath && 'current-path'
+				isCurrentPath || (isCollection && isCollectionCurrentPath)
+					? 'text-white tracks-nav'
+					: '',
+				(isCurrentPath || (isCollection && isCollectionCurrentPath)) &&
+					'current-path'
 			)}
 			href={path}
 		>

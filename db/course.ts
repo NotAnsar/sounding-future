@@ -368,3 +368,155 @@ export async function getCourseProgress(courseId: string) {
 		};
 	}
 }
+
+export async function getUserLearningCourses(userId?: string): Promise<{
+	data: (CourseDetails & {
+		isLiked: boolean;
+		likeCount: number;
+		progressPercentage: number;
+		lastAccessedAt: Date | null;
+		isCompleted: boolean;
+	})[];
+	error?: boolean;
+	message?: string;
+}> {
+	const session = await auth();
+	const targetUserId = userId || session?.user?.id;
+
+	if (!targetUserId) {
+		return {
+			data: [],
+			error: true,
+			message: 'User not authenticated',
+		};
+	}
+
+	try {
+		// Step 1: Get user's course progress
+		const userProgressData = await prisma.courseProgress.findMany({
+			where: { userId: targetUserId },
+			select: {
+				courseId: true,
+				lastAccessedAt: true,
+				completedAt: true,
+			},
+			orderBy: { lastAccessedAt: 'desc' },
+		});
+
+		if (userProgressData.length === 0) {
+			return { data: [], error: false };
+		}
+
+		const courseIds = userProgressData.map((p) => p.courseId);
+
+		// Step 2: Get course details with FULL instructor structure to match CourseDetails type
+		const courses = await prisma.course.findMany({
+			where: {
+				id: { in: courseIds },
+				published: true,
+			},
+			include: {
+				instructors: {
+					include: {
+						instructor: {
+							include: {
+								courses: { include: { course: true } }, // This matches the CourseDetails type
+							},
+						},
+					},
+				},
+				series: true,
+				topics: { include: { topic: true } },
+				chapters: {
+					where: { published: true },
+					orderBy: { position: 'asc' },
+				},
+				_count: { select: { courseProgress: true } },
+				likes: true, // Get all likes to calculate likeCount
+			},
+		});
+
+		// Step 3: Get chapter progress
+		const chapterProgress = await prisma.chapterProgress.findMany({
+			where: {
+				userId: targetUserId,
+				completed: true,
+				chapter: {
+					courseId: { in: courseIds },
+					published: true,
+				},
+			},
+			select: {
+				chapterId: true,
+				chapter: {
+					select: {
+						courseId: true,
+					},
+				},
+			},
+		});
+
+		// Group completed chapters by course
+		const completedChaptersByCourse = chapterProgress.reduce(
+			(acc, progress) => {
+				const courseId = progress.chapter.courseId;
+				if (!acc[courseId]) acc[courseId] = [];
+				acc[courseId].push(progress.chapterId);
+				return acc;
+			},
+			{} as Record<string, string[]>
+		);
+
+		// Combine data and calculate progress
+		const coursesWithProgress = courses.map((course) => {
+			const progressInfo = userProgressData.find(
+				(p) => p.courseId === course.id
+			);
+			const completedChapters = completedChaptersByCourse[course.id] || [];
+			const totalChapters = course.chapters.length;
+
+			const progressPercentage =
+				totalChapters > 0
+					? Math.round((completedChapters.length / totalChapters) * 100)
+					: 0;
+
+			return {
+				...course,
+				isLiked: course.likes.some((like) => like.userId === targetUserId),
+				likeCount: course.likes.length,
+				progressPercentage,
+				lastAccessedAt: progressInfo?.lastAccessedAt || null,
+				isCompleted: progressInfo?.completedAt !== null,
+			};
+		});
+
+		// Sort by last accessed
+		coursesWithProgress.sort((a, b) => {
+			if (!a.lastAccessedAt) return 1;
+			if (!b.lastAccessedAt) return -1;
+			return (
+				new Date(b.lastAccessedAt).getTime() -
+				new Date(a.lastAccessedAt).getTime()
+			);
+		});
+
+		return { data: coursesWithProgress, error: false };
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			console.error(`Database error: ${error.code}`, error);
+			return {
+				data: [],
+				error: true,
+				message: `Database error: ${error.code}`,
+			};
+		}
+
+		console.error('Error fetching user learning courses:', error);
+		return {
+			data: [],
+			error: true,
+			message:
+				'Unable to retrieve your learning courses. Please try again later.',
+		};
+	}
+}

@@ -196,13 +196,8 @@ export const collection = [
 		path: '/collection/tracks',
 	},
 	{
-		title: 'Liked Courses',
-		icon: CollectionIcons.coursesHeart,
+		title: 'Courses',
+		icon: CollectionIcons.learning,
 		path: '/collection/courses',
 	},
-	// {
-	// 	title: 'My Learning',
-	// 	icon: CollectionIcons.learning,
-	// 	path: '/collection/learning',
-	// },
 ];
