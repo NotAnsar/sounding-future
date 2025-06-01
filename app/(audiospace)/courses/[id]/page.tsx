@@ -13,7 +13,6 @@ import InstructorTab from '@/components/courses/course-details/InstructorTab';
 import CourseVideoSection from '@/components/courses/course-details/CourseVideoSection';
 import CourseChapterList from '@/components/courses/course-details/CourseChapterTab';
 import LikeCourseForm, { ShareCourseButton } from '@/components/LikeCourseForm';
-import { redirect } from 'next/navigation';
 
 export async function generateMetadata({
 	params,
@@ -51,22 +50,6 @@ export default async function page({
 	const course = res.data;
 
 	const progressData = await getCourseProgress(course.id);
-
-	if (userAccess.isAuthenticated && !chapter && progressData.currentChapter) {
-		// Find the current chapter slug
-		const currentChapter = course.chapters.find(
-			(ch) => ch.id === progressData.currentChapter
-		);
-
-		if (currentChapter) {
-			// Redirect to current chapter with preserving other search params
-			const params = new URLSearchParams();
-			if (tab) params.set('tab', tab);
-			params.set('chapter', currentChapter.slug);
-
-			redirect(`/courses/${course.slug}?${params.toString()}`);
-		}
-	}
 
 	// Find current chapter by slug or default to first chapter
 	const currentChapterIndex = chapter

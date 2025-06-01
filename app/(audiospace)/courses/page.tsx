@@ -8,7 +8,7 @@ import Error from '@/components/Error';
 import CoursesCard, { CoursesListCard } from '@/components/courses/CoursesCard';
 
 export async function generateMetadata() {
-	const courses = await getCourses(true);
+	const courses = await getCourses(true, true);
 
 	if (courses.error) {
 		return { title: 'Courses Not Found' };
@@ -33,11 +33,18 @@ export default async function page({
 }) {
 	const isTable = type === 'table';
 	const tabValue = sort || 'all';
-	const [topics, courses] = await Promise.all([getTopics(), getCourses(true)]);
+	const [topics, courses] = await Promise.all([
+		getTopics(),
+		getCourses(true, true),
+	]);
 
 	if (topics.error || !topics.data) return <Error message={topics.message} />;
 	if (courses.error || !courses.data)
 		return <Error message={courses.message} />;
+
+	console.log(
+		courses.data.map((c) => ({ name: c.title, cha: c.currentChapterSlug }))
+	);
 
 	const data = [
 		{ label: 'All', link: 'all' },

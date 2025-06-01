@@ -12,14 +12,18 @@ export type CourseWithRelations = Prisma.CourseGetPayload<{
 	};
 }>;
 
-type CourseRes = {
-	data: CourseWithRelations[];
+export async function getCourses(
+	published?: boolean,
+	progress?: boolean
+): Promise<{
+	data: (CourseWithRelations & { currentChapterSlug?: string })[];
 	error?: boolean;
 	message?: string;
-};
-
-export async function getCourses(published?: boolean): Promise<CourseRes> {
+}> {
 	try {
+		const session = await auth();
+		const userId = session?.user?.id;
+
 		const courses = await prisma.course.findMany({
 			include: {
 				instructors: { include: { instructor: true } },
@@ -35,7 +39,39 @@ export async function getCourses(published?: boolean): Promise<CourseRes> {
 			orderBy: { createdAt: 'desc' },
 		});
 
-		return { data: courses, error: false };
+		// If user is authenticated, get their current chapter for each course
+		let coursesWithProgress = courses;
+		if (userId && progress) {
+			const userProgress = await prisma.courseProgress.findMany({
+				where: {
+					userId,
+					courseId: { in: courses.map((c) => c.id) },
+				},
+				select: {
+					courseId: true,
+					currentChapterId: true,
+				},
+			});
+
+			coursesWithProgress = courses.map((course) => {
+				const progress = userProgress.find((p) => p.courseId === course.id);
+				let currentChapterSlug;
+
+				if (progress?.currentChapterId) {
+					const currentChapter = course.chapters.find(
+						(ch) => ch.id === progress.currentChapterId
+					);
+					currentChapterSlug = currentChapter?.slug;
+				}
+
+				return {
+					...course,
+					currentChapterSlug,
+				};
+			});
+		}
+
+		return { data: coursesWithProgress, error: false };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			console.error(`Database error: ${error.code}`, error);
@@ -153,7 +189,11 @@ export async function getCourseBySlug(slug: string): Promise<{
 export async function getUserFavoriteCoursesWithDetails(
 	userId?: string
 ): Promise<{
-	data: (CourseDetails & { isLiked: boolean; likeCount: number })[];
+	data: (CourseDetails & {
+		isLiked: boolean;
+		likeCount: number;
+		currentChapterSlug?: string;
+	})[];
 	error?: boolean;
 	message?: string;
 }> {
@@ -193,11 +233,36 @@ export async function getUserFavoriteCoursesWithDetails(
 			orderBy: { createdAt: 'desc' },
 		});
 
-		const coursesWithLikeInfo = courses.map((course) => ({
-			...course,
-			isLiked: true,
-			likeCount: course.likes.length,
-		}));
+		// Get user's current chapter progress for these courses
+		const userProgress = await prisma.courseProgress.findMany({
+			where: {
+				userId: targetUserId,
+				courseId: { in: courses.map((c) => c.id) },
+			},
+			select: {
+				courseId: true,
+				currentChapterId: true,
+			},
+		});
+
+		const coursesWithLikeInfo = courses.map((course) => {
+			const progress = userProgress.find((p) => p.courseId === course.id);
+			let currentChapterSlug;
+
+			if (progress?.currentChapterId) {
+				const currentChapter = course.chapters.find(
+					(ch) => ch.id === progress.currentChapterId
+				);
+				currentChapterSlug = currentChapter?.slug;
+			}
+
+			return {
+				...course,
+				isLiked: true,
+				likeCount: course.likes.length,
+				currentChapterSlug,
+			};
+		});
 
 		return { data: coursesWithLikeInfo, error: false };
 	} catch (error) {
@@ -376,6 +441,7 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 		progressPercentage: number;
 		lastAccessedAt: Date | null;
 		isCompleted: boolean;
+		currentChapterSlug?: string;
 	})[];
 	error?: boolean;
 	message?: string;
@@ -399,6 +465,7 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 				courseId: true,
 				lastAccessedAt: true,
 				completedAt: true,
+				currentChapterId: true,
 			},
 			orderBy: { lastAccessedAt: 'desc' },
 		});
@@ -420,7 +487,7 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 					include: {
 						instructor: {
 							include: {
-								courses: { include: { course: true } }, // This matches the CourseDetails type
+								courses: { include: { course: true } },
 							},
 						},
 					},
@@ -432,7 +499,7 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 					orderBy: { position: 'asc' },
 				},
 				_count: { select: { courseProgress: true } },
-				likes: true, // Get all likes to calculate likeCount
+				likes: true,
 			},
 		});
 
@@ -480,6 +547,15 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 					? Math.round((completedChapters.length / totalChapters) * 100)
 					: 0;
 
+			// Find current chapter slug
+			let currentChapterSlug;
+			if (progressInfo?.currentChapterId) {
+				const currentChapter = course.chapters.find(
+					(ch) => ch.id === progressInfo.currentChapterId
+				);
+				currentChapterSlug = currentChapter?.slug;
+			}
+
 			return {
 				...course,
 				isLiked: course.likes.some((like) => like.userId === targetUserId),
@@ -487,6 +563,7 @@ export async function getUserLearningCourses(userId?: string): Promise<{
 				progressPercentage,
 				lastAccessedAt: progressInfo?.lastAccessedAt || null,
 				isCompleted: progressInfo?.completedAt !== null,
+				currentChapterSlug,
 			};
 		});
 
