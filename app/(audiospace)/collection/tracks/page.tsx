@@ -63,7 +63,17 @@ export default async function page({
 			{data.length === 0 ? (
 				<div className='flex flex-col items-center justify-center h-96'>
 					<h2 className='text-2xl font-semibold'>No Liked Tracks Found</h2>
-					<p className='text-gray-500'>{"You haven't liked any tracks yet."}</p>
+					<p className='text-muted text-center max-w-md'>
+						{
+							"You haven't liked any tracks yet. Explore our tracks and start liking them!"
+						}{' '}
+						<Link
+							href={'/tracks'}
+							className='text-primary hover:underline font-medium'
+						>
+							Browse Tracks
+						</Link>
+					</p>
 				</div>
 			) : (
 				<>

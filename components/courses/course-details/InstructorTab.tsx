@@ -44,43 +44,49 @@ export default function InstructorTab({ course }: { course: CourseDetails }) {
 							</div>
 						</div>
 					))}
-					<div>
-						<p className='text-lg font-semibold'>
-							Other courses of{' '}
-							{course.instructors.map((i) => i.instructor.name).join(', ')} :
-						</p>
-
-						<div className='mt-2 space-y-1'>
-							{Array.from(
-								new Set(
-									course.instructors
-										.map(({ instructor }) =>
-											instructor.courses.map((c) => c.course.slug)
-										)
-										.flat()
-								)
+					{(() => {
+						const otherCourses = Array.from(
+							new Set(
+								course.instructors
+									.map(({ instructor }) =>
+										instructor.courses.map((c) => c.course.slug)
+									)
+									.flat()
 							)
-								.filter((slug) => slug !== course.slug) // Remove current course
-								.map((slug) => {
-									// Find the course data for this unique slug
-									const courseData = course.instructors
-										.map(({ instructor }) => instructor.courses)
-										.flat()
-										.find((c) => c.course.slug === slug)?.course;
+						).filter((slug) => slug !== course.slug);
 
-									return courseData ? (
-										<Link
-											href={`/courses/${courseData.slug}`}
-											className='hover:underline block'
-											key={courseData.slug}
-										>
-											{courseData.title}
-										</Link>
-									) : null;
-								})
-								.filter(Boolean)}
-						</div>
-					</div>
+						return otherCourses.length > 0 ? (
+							<div>
+								<p className='text-lg font-semibold'>
+									Other courses of{' '}
+									{course.instructors.map((i) => i.instructor.name).join(', ')}{' '}
+									:
+								</p>
+
+								<div className='mt-2 space-y-1'>
+									{otherCourses
+										.map((slug) => {
+											// Find the course data for this unique slug
+											const courseData = course.instructors
+												.map(({ instructor }) => instructor.courses)
+												.flat()
+												.find((c) => c.course.slug === slug)?.course;
+
+											return courseData ? (
+												<Link
+													href={`/courses/${courseData.slug}`}
+													className='hover:underline block'
+													key={courseData.slug}
+												>
+													{courseData.title}
+												</Link>
+											) : null;
+										})
+										.filter(Boolean)}
+								</div>
+							</div>
+						) : null;
+					})()}
 				</div>
 			</div>
 			{course.credits && (

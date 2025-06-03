@@ -137,7 +137,7 @@ export default async function page({
 	return (
 		<div>
 			<div className='flex justify-between items-center mb-6'>
-				<h1 className='text-4xl sm:text-5xl font-semibold'>My Collection</h1>
+				<h1 className='text-4xl sm:text-5xl font-semibold'>Courses</h1>
 				<ViewToggle />
 			</div>
 

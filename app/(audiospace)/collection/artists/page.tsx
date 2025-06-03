@@ -59,8 +59,18 @@ export default async function page({
 
 			{data.length === 0 ? (
 				<div className='flex flex-col items-center justify-center h-96'>
-					<h2 className='text-2xl font-semibold'>No artists found</h2>
-					<p className='text-muted'>Follow artists to see them here</p>
+					<h2 className='text-2xl font-semibold'>No Followed Artists Found</h2>
+					<p className='text-muted text-center max-w-md'>
+						{
+							"You haven't followed any artists yet. Explore our artists and start following them!"
+						}{' '}
+						<Link
+							href={'/artists'}
+							className='text-primary hover:underline font-medium'
+						>
+							Browse Artists
+						</Link>
+					</p>
 				</div>
 			) : (
 				<div className='xl:w-2/3'>

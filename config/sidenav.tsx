@@ -181,7 +181,7 @@ export const mainNav = [
 	{ title: 'Genres', icon: MainNavIcons.tag, path: '/genres' },
 	{ title: 'Curated', icon: MainNavIcons.star, path: '/curated' },
 	{ title: 'Artists', icon: MainNavIcons.artist, path: '/artists' },
-	{ title: 'Courses', icon: MainNavIcons.book, path: '/courses' },
+	// { title: 'Courses', icon: MainNavIcons.book, path: '/courses' },
 ];
 
 export const collection = [
@@ -195,9 +195,9 @@ export const collection = [
 		icon: CollectionIcons.tracks,
 		path: '/collection/tracks',
 	},
-	{
-		title: 'Courses',
-		icon: CollectionIcons.learning,
-		path: '/collection/courses',
-	},
+	// {
+	// 	title: 'Courses',
+	// 	icon: CollectionIcons.learning,
+	// 	path: '/collection/courses',
+	// },
 ];
