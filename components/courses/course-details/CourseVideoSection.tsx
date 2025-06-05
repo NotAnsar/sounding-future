@@ -75,37 +75,28 @@ export default function CourseVideoSection({
 			) : !hasAccess ? (
 				<ProGate />
 			) : (
-				<div className='aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
+				<>
 					{currentChapter ? (
-						<>
-							<VideoPlayerCourse
-								src={currentChapter.videoUrl || ''}
-								poster={currentChapter.thumbnail || undefined}
-								title={currentChapter.title || course.title}
-								className='w-full h-full'
-								onVideoEnd={handleVideoEnd}
-								// NEW PROPS ADDED:
-								chapterId={currentChapter.id}
-								courseId={course.id}
-								isAuthenticated={isAuth}
-							/>
-
-							{/* Loading overlay during transition */}
-							{isPending && (
-								<div className='absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-sm z-10'>
-									<div className='text-white text-center'>
-										<div className='w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2' />
-										<p className='text-sm'>Loading next chapter...</p>
-									</div>
-								</div>
-							)}
-						</>
+						<VideoPlayerCourse
+							src={currentChapter.videoUrl || ''}
+							poster={currentChapter.thumbnail || undefined}
+							title={currentChapter.title || course.title}
+							className='w-full h-full'
+							onVideoEnd={handleVideoEnd}
+							// NEW PROPS ADDED:
+							chapterId={currentChapter.id}
+							courseId={course.id}
+							isAuthenticated={isAuth}
+							isPending={isPending}
+						/>
 					) : (
-						<div className='bg-secondary flex items-center justify-center h-full'>
-							<p className='text-muted-foreground'>No chapters available</p>
+						<div className='aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
+							<div className='bg-secondary flex items-center justify-center h-full'>
+								<p className='text-muted-foreground'>No chapters available</p>
+							</div>
 						</div>
 					)}
-				</div>
+				</>
 			)}
 
 			{/* Current Chapter Info with transition state */}

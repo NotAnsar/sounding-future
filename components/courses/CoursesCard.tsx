@@ -120,7 +120,7 @@ export default function CoursesCard({
 				</div>
 
 				{/* Access Type Badges */}
-				<div className='flex items-center gap-4 my-2'>
+				{/* <div className='flex items-center gap-4 my-2'>
 					<span
 						className={cn(
 							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
@@ -139,7 +139,9 @@ export default function CoursesCard({
 					>
 						Pro
 					</span>
-				</div>
+				</div> */}
+
+				<AccessTypeBadges accessType={course.accessType} />
 
 				{/* Last Accessed Info */}
 				{hasProgress && course.lastAccessedAt && (
@@ -360,4 +362,38 @@ function CourseStatus({
 	}
 
 	return null;
+}
+
+export function AccessTypeBadges({
+	accessType,
+	className,
+}: {
+	accessType: string;
+	className?: string;
+}) {
+	if (!accessType) return null;
+	return (
+		<div className='flex items-center gap-4 my-2'>
+			<span
+				className={cn(
+					'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
+					className,
+					accessType.toLowerCase() !== 'free' &&
+						'bg-gray-700 dark:bg-gray-800 text-gray-300 opacity-90'
+				)}
+			>
+				Free
+			</span>
+			<span
+				className={cn(
+					'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5 ',
+					className,
+					accessType.toLowerCase() !== 'pro' &&
+						'bg-gray-700 dark:bg-gray-800 text-gray-300 opacity-90'
+				)}
+			>
+				Pro
+			</span>
+		</div>
+	);
 }
