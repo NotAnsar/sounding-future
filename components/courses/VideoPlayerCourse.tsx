@@ -11,7 +11,7 @@ import {
 } from '@/actions/lms/course-progress';
 // import VideoMarkerBar from './course-details/VideoMarkerBar';
 
-// // Dummy markers data for demo - adjust timestamps for your video length
+// Dummy markers data for demo - adjust timestamps for your video length
 // const DUMMY_MARKERS = [
 // 	{
 // 		id: '1',
@@ -74,7 +74,7 @@ export default function VideoPlayerCourse({
 	// // State for markers
 	// const [currentTime, setCurrentTime] = useState(0);
 	// const [duration, setDuration] = useState(0);
-	// const [markersVisible, setMarkersVisible] = useState(showMarkers);
+	// const [markersVisible, setMarkersVisible] = useState(true);
 
 	// // Handle seeking from markers
 	// const handleSeek = (time: number) => {

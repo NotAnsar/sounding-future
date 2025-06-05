@@ -1,6 +1,7 @@
 import { CourseWithRelations } from '@/db/course';
-import { cn, formatCourseDuration } from '@/lib/utils';
+import { formatCourseDuration } from '@/lib/utils';
 import { BookOpen, CircleGauge, Clock4, Play } from 'lucide-react';
+import { AccessTypeBadges } from '../CoursesCard';
 
 interface CourseHeaderProps {
 	course: CourseWithRelations;
@@ -88,7 +89,11 @@ export default function CourseHeader({
 					<CircleGauge className='w-4 h-auto aspect-square ' />
 					<span>{course.level}</span>
 				</div>
-				<div className='flex items-center gap-3 my-2 flex-wrap'>
+				<AccessTypeBadges
+					accessType={course.accessType}
+					classNameContainer='gap-2'
+				/>
+				{/* <div className='flex items-center gap-3 my-2 flex-wrap'>
 					<span
 						className={cn(
 							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
@@ -107,7 +112,7 @@ export default function CourseHeader({
 					>
 						Pro
 					</span>
-				</div>
+				</div> */}
 
 				{course._count.courseProgress > 0 && (
 					<div className='flex items-center gap-2 ml-auto'>

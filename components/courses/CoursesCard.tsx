@@ -119,28 +119,6 @@ export default function CoursesCard({
 					</div>
 				</div>
 
-				{/* Access Type Badges */}
-				{/* <div className='flex items-center gap-4 my-2'>
-					<span
-						className={cn(
-							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
-							course.accessType.toLowerCase() !== 'free' &&
-								'bg-muted-foreground dark:bg-muted-foreground text-white'
-						)}
-					>
-						Free
-					</span>
-					<span
-						className={cn(
-							'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
-							course.accessType.toLowerCase() !== 'pro' &&
-								'bg-muted-foreground dark:bg-muted-foreground text-white'
-						)}
-					>
-						Pro
-					</span>
-				</div> */}
-
 				<AccessTypeBadges accessType={course.accessType} />
 
 				{/* Last Accessed Info */}
@@ -219,7 +197,6 @@ export function CoursesListCard({
 						/>
 					)}
 				</div>
-
 				<h4
 					className={cn(
 						'text-primary-foreground text-sm sm:text-base lg:text-lg font-semibold line-clamp-2 hover:text-primary-foreground/95 duration-200 transition-all mb-2'
@@ -227,14 +204,12 @@ export function CoursesListCard({
 				>
 					{course?.title}
 				</h4>
-
 				{/* Progress Bar */}
 				{hasProgress && (
 					<div className='mb-3'>
 						<ProgressBar percentage={course.progressPercentage || 0} />
 					</div>
 				)}
-
 				{/* Course Stats - Responsive Grid */}
 				<div className='flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-muted font-medium mb-2'>
 					<div className='flex items-center gap-1'>
@@ -266,28 +241,11 @@ export function CoursesListCard({
 					</div>
 				</div>
 
-				{/* Access Type Badges */}
-				<div className='flex items-center gap-2 mb-3 flex-wrap'>
-					<span
-						className={cn(
-							'text-xs px-2 py-1 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground',
-							course.accessType.toLowerCase() !== 'free' &&
-								'bg-muted-foreground dark:bg-muted-foreground text-white'
-						)}
-					>
-						Free
-					</span>
-					<span
-						className={cn(
-							'text-xs px-2 py-1 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground',
-							course.accessType.toLowerCase() !== 'pro' &&
-								'bg-muted-foreground dark:bg-muted-foreground text-white'
-						)}
-					>
-						Pro
-					</span>
-				</div>
-
+				<AccessTypeBadges
+					accessType={course.accessType}
+					classNameContainer='flex items-center gap-2 mb-3 flex-wrap'
+					className='text-xs px-2 py-1'
+				/>
 				{/* Last Accessed Info */}
 				{hasProgress && course.lastAccessedAt && (
 					<div className='text-xs text-muted-foreground mb-2'>
@@ -295,7 +253,6 @@ export function CoursesListCard({
 						{new Date(course.lastAccessedAt).toLocaleDateString()}
 					</div>
 				)}
-
 				{/* Description */}
 				<p className='line-clamp-2 sm:line-clamp-3 text-xs sm:text-sm text-muted-foreground'>
 					{course?.description}
@@ -367,13 +324,15 @@ function CourseStatus({
 export function AccessTypeBadges({
 	accessType,
 	className,
+	classNameContainer,
 }: {
 	accessType: string;
 	className?: string;
+	classNameContainer?: string;
 }) {
 	if (!accessType) return null;
 	return (
-		<div className='flex items-center gap-4 my-2'>
+		<div className={cn('flex items-center gap-4 my-2', classNameContainer)}>
 			<span
 				className={cn(
 					'text-sm px-2.5 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground py-0.5',
