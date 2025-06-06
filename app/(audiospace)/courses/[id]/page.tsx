@@ -75,10 +75,7 @@ export default async function page({
 				canAccessPro={userAccess.canAccessPro} // ADD THIS LINE
 				completedChapters={progressData.completedChapters || []} // NEW PROP
 			/>
-			<Tabs
-				defaultValue={tabValue}
-				className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'
-			>
+			<Tabs value={tabValue} className='mt-4 sm:mt-8 grid gap-2 sm:gap-3'>
 				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
 					<CoursesDetailsNav
 						tabs={[
@@ -109,7 +106,7 @@ export default async function page({
 					/>
 				</TabsContent>
 				<LearningTab course={course} />
-				<InstructorTab course={course} />
+				<InstructorTab course={course} currentChapterId={currentChapter.id} />
 			</Tabs>
 		</div>
 	);

@@ -56,18 +56,22 @@ export async function getChapterById(id: string) {
 		const chapter = await prisma.chapter.findUnique({
 			where: { id },
 			include: {
-				course: {
-					select: {
-						id: true,
-						title: true,
-					},
-				},
+				course: { select: { id: true, title: true, slug: true } },
 				instructors: {
 					include: {
 						instructor: {
 							select: {
 								id: true,
 								name: true,
+								bio: true,
+								image: true,
+								courses: {
+									select: {
+										course: {
+											select: { slug: true, title: true, published: true },
+										},
+									},
+								},
 							},
 						},
 					},
