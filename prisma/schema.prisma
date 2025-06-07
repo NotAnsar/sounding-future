@@ -631,6 +631,8 @@ model Chapter {
   instructors ChapterToInstructor[]
   progress        ChapterProgress[]
   currentProgress CourseProgress[]
+  markers     VideoMarker[]  // Add this line
+
   
   @@map("chapters")
 }
@@ -722,4 +724,23 @@ model CourseProgress {
 
   @@id([userId, courseId])
   @@map("course_progress")
+}
+
+model VideoMarker {
+  id          String   @id @default(cuid())
+  timestamp   Int      // Position in seconds
+  title       String
+  description String?  @db.Text
+  position    Int      @default(autoincrement()) // For ordering markers
+  
+  // Foreign key
+  chapterId   String   @map("chapter_id")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  
+  @@map("video_markers")
 }

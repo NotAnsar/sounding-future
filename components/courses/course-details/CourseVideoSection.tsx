@@ -30,7 +30,6 @@ export default function CourseVideoSection({
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const [isPending, startTransition] = useTransition();
-	const [showChapterList, setShowChapterList] = useState(true);
 
 	const isProChapter = currentChapter?.accessType?.toLowerCase() === 'pro';
 	const hasAccess = !isProChapter || canAccessPro;
@@ -74,64 +73,16 @@ export default function CourseVideoSection({
 			) : (
 				<>
 					{currentChapter ? (
-						<div className='relative'>
-							<button
-								onClick={() => setShowChapterList(!showChapterList)}
-								className='absolute top-4 right-4 z-10 bg-button hover:bg-button/70 text-white p-2 rounded-full transition-all duration-200 backdrop-blur-sm'
-								title={
-									showChapterList ? 'Hide chapter list' : 'Show chapter list'
-								}
-							>
-								{showChapterList ? (
-									<ChevronRight className='w-4 h-4' />
-								) : (
-									<ChevronLeft className='w-4 h-4' />
-								)}
-							</button>
-
-							<div
-								className={cn(
-									'transition-all duration-300',
-									showChapterList
-										? 'grid xl:grid-cols-2 gap-4'
-										: 'grid grid-cols-1'
-								)}
-								style={{
-									gridTemplateRows: showChapterList ? 'minmax(0, 1fr)' : 'auto',
-								}}
-							>
-								<div
-									className={cn(
-										'transition-all duration-300',
-										showChapterList ? 'col-span-1' : 'col-span-1'
-									)}
-								>
-									<VideoPlayerCourse
-										src={currentChapter.videoUrl || ''}
-										poster={currentChapter.thumbnail || undefined}
-										title={currentChapter.title || course.title}
-										className='w-full h-full'
-										onVideoEnd={handleVideoEnd}
-										chapterId={currentChapter.id}
-										courseId={course.id}
-										isAuthenticated={isAuth}
-										isPending={isPending}
-									/>
-								</div>
-
-								{showChapterList && (
-									<div className='col-span-1'>
-										<CourseChapterList
-											course={course}
-											currentChapterIndex={currentChapterIndex}
-											canAccessPro={canAccessPro}
-											completedChapters={completedChapters}
-											isAuthenticated={isAuth}
-										/>
-									</div>
-								)}
-							</div>
-						</div>
+						<CourseVideoPlayer
+							course={course}
+							currentChapter={currentChapter}
+							currentChapterIndex={currentChapterIndex}
+							isAuth={isAuth}
+							canAccessPro={canAccessPro}
+							completedChapters={completedChapters}
+							onVideoEnd={handleVideoEnd}
+							isPending={isPending}
+						/>
 					) : (
 						<div className='aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
 							<div className='bg-secondary flex items-center justify-center h-full'>
@@ -177,6 +128,87 @@ export default function CourseVideoSection({
 					)}
 				</div>
 			)}
+		</div>
+	);
+}
+
+interface CourseVideoPlayerProps {
+	course: CourseWithRelations;
+	currentChapter: CourseWithRelations['chapters'][number];
+	currentChapterIndex: number;
+	isAuth: boolean;
+	canAccessPro: boolean;
+	completedChapters: string[];
+	onVideoEnd: () => void;
+	isPending: boolean;
+}
+
+export function CourseVideoPlayer({
+	course,
+	currentChapter,
+	currentChapterIndex,
+	isAuth,
+	canAccessPro,
+	completedChapters,
+	onVideoEnd,
+	isPending,
+}: CourseVideoPlayerProps) {
+	const [showChapterList, setShowChapterList] = useState(true);
+
+	return (
+		<div className='relative'>
+			<button
+				onClick={() => setShowChapterList(!showChapterList)}
+				className='absolute top-4 right-4 z-10 bg-button hover:bg-button/70 text-white p-2 rounded-full transition-all duration-200 backdrop-blur-sm'
+				title={showChapterList ? 'Hide chapter list' : 'Show chapter list'}
+			>
+				{showChapterList ? (
+					<ChevronRight className='w-4 h-4' />
+				) : (
+					<ChevronLeft className='w-4 h-4' />
+				)}
+			</button>
+
+			<div
+				className={cn(
+					'transition-all duration-300',
+					showChapterList ? 'grid xl:grid-cols-2 gap-4' : 'grid grid-cols-1'
+				)}
+				style={{
+					gridTemplateRows: showChapterList ? 'minmax(0, 1fr)' : 'auto',
+				}}
+			>
+				<div
+					className={cn(
+						'transition-all duration-300',
+						showChapterList ? 'col-span-1' : 'col-span-1'
+					)}
+				>
+					<VideoPlayerCourse
+						src={currentChapter.videoUrl || ''}
+						poster={currentChapter.thumbnail || undefined}
+						title={currentChapter.title || course.title}
+						className='w-full h-full'
+						onVideoEnd={onVideoEnd}
+						chapterId={currentChapter.id}
+						courseId={course.id}
+						isAuthenticated={isAuth}
+						isPending={isPending}
+					/>
+				</div>
+
+				{showChapterList && (
+					<div className='col-span-1'>
+						<CourseChapterList
+							course={course}
+							currentChapterIndex={currentChapterIndex}
+							canAccessPro={canAccessPro}
+							completedChapters={completedChapters}
+							isAuthenticated={isAuth}
+						/>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
