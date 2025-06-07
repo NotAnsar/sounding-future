@@ -29,29 +29,7 @@ export const columns: ColumnDef<CourseSeries>[] = [
 			);
 		},
 	},
-	// {
-	// 	accessorKey: 'description',
-	// 	cell: ({ row }) => {
-	// 		const description = row.getValue('description') as string | null;
-	// 		return (
-	// 			<div className='text-[15px] max-w-[300px] truncate'>
-	// 				{description || 'No description'}
-	// 			</div>
-	// 		);
-	// 	},
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Description
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// },
+
 	{
 		accessorKey: 'createdAt',
 		cell: ({ row }) => {

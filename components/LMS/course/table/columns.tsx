@@ -196,11 +196,6 @@ export const columns: ColumnDef<CourseWithRelations>[] = [
 	{
 		id: 'actions',
 		header: () => <div className='text-center'>Actions</div>,
-		cell: ({ row }) => (
-			<ActionsCell
-				courseId={row.original.id}
-				chapterCount={row.original.chapters.length}
-			/>
-		),
+		cell: ({ row }) => <ActionsCell course={row.original} />,
 	},
 ];

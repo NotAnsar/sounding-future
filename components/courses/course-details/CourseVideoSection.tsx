@@ -3,10 +3,11 @@
 import VideoPlayerCourse from '../VideoPlayerCourse';
 import { CourseWithRelations } from '@/db/course';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useTransition } from 'react';
-import Link from 'next/link';
+import { useCallback, useTransition, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
+import CourseChapterList from './CourseChapterTab';
+import { AuthGate, ProGate } from './AuthVideo';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CourseVideoSectionProps {
 	course: CourseWithRelations;
@@ -14,7 +15,7 @@ interface CourseVideoSectionProps {
 	currentChapterIndex: number;
 	isAuth?: boolean;
 	canAccessPro?: boolean;
-	completedChapters?: string[]; // NEW PROP
+	completedChapters?: string[];
 }
 
 export default function CourseVideoSection({
@@ -23,22 +24,20 @@ export default function CourseVideoSection({
 	currentChapterIndex,
 	isAuth,
 	canAccessPro = false,
-	completedChapters = [], // NEW PROP
+	completedChapters = [],
 }: CourseVideoSectionProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const [isPending, startTransition] = useTransition();
+	const [showChapterList, setShowChapterList] = useState(true);
 
-	// Check if current chapter requires Pro access
 	const isProChapter = currentChapter?.accessType?.toLowerCase() === 'pro';
 	const hasAccess = !isProChapter || canAccessPro;
 
-	// NEW: Check if current chapter is completed
 	const isCurrentChapterCompleted =
 		isAuth && currentChapter && completedChapters.includes(currentChapter.id);
 
-	// Auto-next with transition for better UX
 	const handleVideoEnd = useCallback(() => {
 		if (!isAuth || !hasAccess) return;
 
@@ -49,7 +48,6 @@ export default function CourseVideoSection({
 			const nextChapter = course.chapters[nextChapterIndex];
 
 			startTransition(() => {
-				// Update URL to next chapter
 				const params = new URLSearchParams(searchParams);
 				params.set('chapter', nextChapter.slug);
 				router.replace(`${pathname}?${params.toString()}`, {
@@ -69,7 +67,6 @@ export default function CourseVideoSection({
 
 	return (
 		<div className='space-y-4'>
-			{/* Video Player with access control */}
 			{!isAuth ? (
 				<AuthGate />
 			) : !hasAccess ? (
@@ -77,18 +74,64 @@ export default function CourseVideoSection({
 			) : (
 				<>
 					{currentChapter ? (
-						<VideoPlayerCourse
-							src={currentChapter.videoUrl || ''}
-							poster={currentChapter.thumbnail || undefined}
-							title={currentChapter.title || course.title}
-							className='w-full h-full'
-							onVideoEnd={handleVideoEnd}
-							// NEW PROPS ADDED:
-							chapterId={currentChapter.id}
-							courseId={course.id}
-							isAuthenticated={isAuth}
-							isPending={isPending}
-						/>
+						<div className='relative'>
+							<button
+								onClick={() => setShowChapterList(!showChapterList)}
+								className='absolute top-4 right-4 z-10 bg-button hover:bg-button/70 text-white p-2 rounded-full transition-all duration-200 backdrop-blur-sm'
+								title={
+									showChapterList ? 'Hide chapter list' : 'Show chapter list'
+								}
+							>
+								{showChapterList ? (
+									<ChevronRight className='w-4 h-4' />
+								) : (
+									<ChevronLeft className='w-4 h-4' />
+								)}
+							</button>
+
+							<div
+								className={cn(
+									'transition-all duration-300',
+									showChapterList
+										? 'grid xl:grid-cols-2 gap-4'
+										: 'grid grid-cols-1'
+								)}
+								style={{
+									gridTemplateRows: showChapterList ? 'minmax(0, 1fr)' : 'auto',
+								}}
+							>
+								<div
+									className={cn(
+										'transition-all duration-300',
+										showChapterList ? 'col-span-1' : 'col-span-1'
+									)}
+								>
+									<VideoPlayerCourse
+										src={currentChapter.videoUrl || ''}
+										poster={currentChapter.thumbnail || undefined}
+										title={currentChapter.title || course.title}
+										className='w-full h-full'
+										onVideoEnd={handleVideoEnd}
+										chapterId={currentChapter.id}
+										courseId={course.id}
+										isAuthenticated={isAuth}
+										isPending={isPending}
+									/>
+								</div>
+
+								{showChapterList && (
+									<div className='col-span-1'>
+										<CourseChapterList
+											course={course}
+											currentChapterIndex={currentChapterIndex}
+											canAccessPro={canAccessPro}
+											completedChapters={completedChapters}
+											isAuthenticated={isAuth}
+										/>
+									</div>
+								)}
+							</div>
+						</div>
 					) : (
 						<div className='aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
 							<div className='bg-secondary flex items-center justify-center h-full'>
@@ -99,7 +142,7 @@ export default function CourseVideoSection({
 				</>
 			)}
 
-			{/* Current Chapter Info with transition state */}
+			{/* Chapter Info */}
 			{currentChapter && (
 				<div
 					className={`bg-secondary rounded-lg p-4 transition-opacity duration-300 ${
@@ -114,7 +157,6 @@ export default function CourseVideoSection({
 									Pro Only
 								</span>
 							)}
-
 							{isCurrentChapterCompleted && (
 								<span className='text-sm px-3 rounded-full border-green-600 text-green-600 bg-green-400/40 dark:bg-green-600/40 border'>
 									Completed
@@ -123,8 +165,6 @@ export default function CourseVideoSection({
 							<span className='text-sm text-muted-foreground'>
 								Chapter {currentChapterIndex + 1} of {course.chapters.length}
 							</span>
-
-							{/* Loading indicator */}
 							{isPending && (
 								<div className='w-4 h-4 border border-primary border-t-transparent rounded-full animate-spin' />
 							)}
@@ -140,101 +180,3 @@ export default function CourseVideoSection({
 		</div>
 	);
 }
-
-// Auth Gate Component
-const AuthGate = () => (
-	<div className='bg-secondary flex items-center justify-center sm:aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
-		<div className='text-center space-y-3 sm:space-y-4 p-4 sm:p-8 max-w-md mx-auto'>
-			<div className='w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto'>
-				<svg
-					className='w-6 h-6 sm:w-8 sm:h-8 text-primary'
-					fill='none'
-					stroke='currentColor'
-					viewBox='0 0 24 24'
-				>
-					<path
-						strokeLinecap='round'
-						strokeLinejoin='round'
-						strokeWidth={2}
-						d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'
-					/>
-				</svg>
-			</div>
-			<div className='space-y-2 sm:space-y-3'>
-				<h3 className='text-lg sm:text-xl font-semibold'>Sign in to watch</h3>
-				<p className='text-muted-foreground text-sm sm:text-base leading-relaxed'>
-					You need to be signed in to access course videos
-				</p>
-				<div className='flex flex-col sm:flex-row items-center gap-2 sm:gap-3 justify-center pt-1'>
-					<Link
-						href='/login'
-						className={cn(
-							buttonVariants({ variant: 'default', size: 'sm' }),
-							'w-full sm:w-auto min-w-[100px]'
-						)}
-					>
-						Login
-					</Link>
-					<Link
-						href='/signup'
-						className={cn(
-							buttonVariants({ variant: 'secondary', size: 'sm' }),
-							'w-full sm:w-auto min-w-[100px]'
-						)}
-					>
-						Sign Up
-					</Link>
-				</div>
-			</div>
-		</div>
-	</div>
-);
-
-// Pro Gate Component
-const ProGate = () => (
-	<div className='bg-secondary flex items-center justify-center sm:aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2 border-primary/60'>
-		<div className='text-center space-y-3 sm:space-y-4 p-4 sm:p-8 max-w-md mx-auto'>
-			<div className='w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto'>
-				<svg
-					className='w-6 h-6 sm:w-8 sm:h-8 text-primary'
-					fill='none'
-					stroke='currentColor'
-					viewBox='0 0 24 24'
-				>
-					<path
-						strokeLinecap='round'
-						strokeLinejoin='round'
-						strokeWidth={2}
-						d='M5 3l14 9-14 9V3z'
-					/>
-				</svg>
-			</div>
-			<div className='space-y-2 sm:space-y-3'>
-				<h3 className='text-lg sm:text-xl font-semibold '>Pro Content</h3>
-				<p className='text-muted-foreground text-sm sm:text-base leading-relaxed font-medium'>
-					This chapter is only available to Pro subscribers
-				</p>
-				<div className='flex flex-col sm:flex-row items-center gap-2 sm:gap-3 justify-center pt-1'>
-					<Link
-						href='/user/settings/membership'
-						className={cn(
-							buttonVariants({ variant: 'default', size: 'sm' }),
-							'w-full sm:w-auto min-w-[100px]'
-						)}
-					>
-						Manage Membership
-					</Link>
-					<Link
-						href='/support-us'
-						className={cn(
-							buttonVariants({ variant: 'outline', size: 'sm' }),
-							'w-full sm:w-auto min-w-[100px]'
-						)}
-					>
-						Learn More
-					</Link>
-				</div>
-			</div>
-		</div>
-	</div>
-);

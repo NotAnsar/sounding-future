@@ -62,29 +62,7 @@ export const columns: ColumnDef<UserStats>[] = [
 			);
 		},
 	},
-	// {
-	// 	accessorKey: 'f_name',
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<Button
-	// 				variant='ghost'
-	// 				onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-	// 				className='hover:bg-transparent hover:text-foreground px-0'
-	// 			>
-	// 				Full Name
-	// 				<ArrowUpDown className='ml-2 h-4 w-4' />
-	// 			</Button>
-	// 		);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		const { f_name, l_name } = row.original;
-	// 		return (
-	// 			<div className={'text-sm font-semibold line-clamp-1'}>
-	// 				{f_name} {l_name}
-	// 			</div>
-	// 		);
-	// 	},
-	// },
+
 	{
 		accessorKey: 'email',
 		header: ({ column }) => {

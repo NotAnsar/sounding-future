@@ -12,13 +12,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { DeleteCourseButton } from './DeleteCourse';
+import { CourseWithRelations } from '@/db/course';
 
 interface ActionsCellProps {
-	courseId: string;
-	chapterCount: number;
+	course: CourseWithRelations;
 }
 
-export function ActionsCell({ courseId, chapterCount }: ActionsCellProps) {
+export function ActionsCell({ course }: ActionsCellProps) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
@@ -30,17 +30,28 @@ export function ActionsCell({ courseId, chapterCount }: ActionsCellProps) {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
+				{course.published && (
+					<DropdownMenuItem asChild>
+						<Link
+							href={`/courses/${course.slug}`}
+							className='flex items-center'
+						>
+							View Course
+						</Link>
+					</DropdownMenuItem>
+				)}
+
 				<DropdownMenuItem asChild>
 					<Link
-						href={`/user/lms/chapters?courseId=${courseId}`}
+						href={`/user/lms/chapters?courseId=${course.id}`}
 						className='flex items-center'
 					>
-						View Chapters ({chapterCount})
+						View Chapters ({course.chapters.length})
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem asChild>
 					<Link
-						href={`/user/lms/edit/${courseId}`}
+						href={`/user/lms/edit/${course.id}`}
 						className='flex items-center'
 					>
 						Edit Course
@@ -51,7 +62,7 @@ export function ActionsCell({ courseId, chapterCount }: ActionsCellProps) {
 					className='text-destructive focus:text-destructive'
 					onSelect={(e) => e.preventDefault()}
 				>
-					<DeleteCourseButton id={courseId} />
+					<DeleteCourseButton id={course.id} />
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

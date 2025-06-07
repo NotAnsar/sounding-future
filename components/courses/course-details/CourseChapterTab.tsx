@@ -15,7 +15,7 @@ interface CourseChapterListProps {
 	completedChapters?: string[];
 }
 
-export default function CourseChapterList({
+export default function CourseChapterList2({
 	course,
 	currentChapterIndex,
 	canAccessPro = false,
@@ -52,13 +52,10 @@ export default function CourseChapterList({
 
 	const downloadFile = async (originalUrl: string, filename?: string) => {
 		try {
-			// Extract file ID from the original URL
 			const fileId = originalUrl.split('/').pop();
 			if (!fileId) throw new Error('Invalid file URL');
 
-			// Use the proxy endpoint
 			const proxyUrl = `/api/download/${fileId}`;
-
 			const response = await fetch(proxyUrl);
 			if (!response.ok) throw new Error('Download failed');
 
@@ -99,28 +96,22 @@ export default function CourseChapterList({
 			return;
 		}
 
-		if (downloadingChapter === chapter.id) {
-			return; // Already downloading
-		}
+		if (downloadingChapter === chapter.id) return;
 
 		setDownloadingChapter(chapter.id);
 
 		try {
-			// Show initial toast
 			toast({
 				title: `Downloading ${chapter.downloads.length} file(s)...`,
 			});
 
-			// Download all files sequentially to avoid overwhelming the browser
 			for (let i = 0; i < chapter.downloads.length; i++) {
 				const downloadUrl = chapter.downloads[i];
 				const filename = `${chapter.title}-file-${i + 1}${getFileExtension(
 					downloadUrl
 				)}`;
-
 				await downloadFile(downloadUrl, filename);
 
-				// Small delay between downloads
 				if (i < chapter.downloads.length - 1) {
 					await new Promise((resolve) => setTimeout(resolve, 500));
 				}
@@ -130,7 +121,6 @@ export default function CourseChapterList({
 			});
 		} catch (error) {
 			console.error('Download failed:', error);
-
 			toast({
 				title: 'Failed to download some files',
 				variant: 'destructive',
@@ -140,7 +130,6 @@ export default function CourseChapterList({
 		}
 	};
 
-	// Helper function to get file extension from URL
 	const getFileExtension = (url: string): string => {
 		try {
 			const path = new URL(url).pathname;
@@ -152,159 +141,153 @@ export default function CourseChapterList({
 	};
 
 	return (
-		<div
-			className={cn(
-				'space-y-3 transition-opacity duration-300',
-				isPending && 'opacity-70'
-			)}
-		>
-			<h3 className='text-lg font-semibold mb-4'>Course Content</h3>
-			{course.chapters.map((chapter, index) => {
-				const isProChapter = chapter.accessType?.toLowerCase() === 'pro';
-				const hasChapterAccess = !isProChapter || canAccessPro;
-				const isCompleted =
-					isAuthenticated && completedChapters.includes(chapter.id);
+		<div className='h-full flex flex-col border-2 rounded-lg bg-secondary/20 overflow-hidden lg:aspect-video'>
+			{/* Fixed Header */}
+			<div className='flex-shrink-0 p-3 border-b bg-background/80 backdrop-blur-sm'>
+				<h3 className='font-semibold'>Course Content</h3>
+				<p className='text-xs text-muted-foreground mt-1'>
+					{course.chapters.length} chapters
+				</p>
+			</div>
 
-				return (
-					<div
-						key={chapter.id}
-						className={cn(
-							'px-4 py-5 rounded-lg justify-between flex items-center transition-all duration-300 ease-in-out border-2',
-							'hover:shadow-md',
-							index === currentChapterIndex
-								? 'bg-primary/10 border-primary/20 shadow-sm transform'
-								: 'bg-secondary hover:bg-secondary/80 border-transparent',
-							isPending && 'pointer-events-none',
-							!hasChapterAccess && 'opacity-70' // Dim locked chapters
-						)}
-						onClick={() => handleChapterClick(chapter.slug, hasChapterAccess)}
-					>
-						<div className='flex items-center gap-3 cursor-pointer'>
-							{/* Show different icons based on status */}
-							{!hasChapterAccess ? (
-								<div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
-									<svg
-										className='w-5 h-5 text-primary'
-										fill='none'
-										stroke='currentColor'
-										viewBox='0 0 24 24'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth={2}
-											d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'
-										/>
-									</svg>
-								</div>
-							) : index === currentChapterIndex ? (
-								<Icons.play className='w-10 h-10 fill-primary' />
-							) : (
+			{/* Scrollable Content */}
+			<div className='flex-1 overflow-y-auto'>
+				<div className={cn('p-2 space-y-1', isPending && 'opacity-70')}>
+					{[...course.chapters, ...course.chapters, ...course.chapters].map(
+						(chapter, index) => {
+							const isProChapter = chapter.accessType?.toLowerCase() === 'pro';
+							const hasChapterAccess = !isProChapter || canAccessPro;
+							const isCompleted =
+								isAuthenticated && completedChapters.includes(chapter.id);
+
+							return (
 								<div
+									key={chapter.id}
 									className={cn(
-										'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300',
+										'p-2 rounded-lg flex items-center transition-all duration-200 border cursor-pointer text-sm',
+										'hover:shadow-sm',
 										index === currentChapterIndex
-											? 'bg-primary text-primary-foreground'
-											: 'bg-muted text-muted-foreground'
+											? 'bg-primary/10 border-primary/30 shadow-sm'
+											: 'bg-background/70 hover:bg-background/90 border-transparent hover:border-primary/10',
+										isPending && 'pointer-events-none',
+										!hasChapterAccess && 'opacity-70'
 									)}
-								>
-									<span className='text-white'>{index + 1}</span>
-								</div>
-							)}
-
-							<div className='flex-1'>
-								<div className='flex items-center gap-2'>
-									<h4
-										className={cn(
-											'text-lg font-medium transition-colors duration-300',
-											index === currentChapterIndex && 'text-primary'
-										)}
-									>
-										{chapter.title}
-									</h4>
-									{isProChapter && (
-										<span className='text-xs px-2 py-1 rounded-full bg-primary/40 dark:bg-primary/55 text-primary-foreground border-primary/45 border'>
-											Pro
-										</span>
-									)}
-									{isCompleted && (
-										<span className='text-xs px-2 py-1 rounded-full border-green-600 text-green-600 bg-green-400/40 dark:bg-green-600/40 border'>
-											Completed
-										</span>
-									)}
-								</div>
-								{chapter.description && (
-									<p className='text-sm text-muted-foreground mt-1 line-clamp-2'>
-										{chapter.description}
-									</p>
-								)}
-								{!hasChapterAccess && (
-									<p className='text-xs text-primary mt-1'>
-										Upgrade to Pro to access this chapter
-									</p>
-								)}
-							</div>
-						</div>
-
-						{/* Right side controls - separate from chapter click */}
-						<div className='flex items-center gap-3 ml-4'>
-							{chapter.downloads.length > 0 && (
-								<button
-									type='button'
-									onClick={(e) => {
-										e.stopPropagation();
-										e.preventDefault();
-										handleDownloadAll(chapter, hasChapterAccess);
-									}}
-									disabled={downloadingChapter === chapter.id}
-									className={cn(
-										'p-2 rounded-full transition-all duration-200 z-10 group',
-										'hover:bg-primary/10 hover:scale-110 active:scale-95',
-										'focus:outline-none focus:ring-2 focus:ring-primary/20',
-										downloadingChapter === chapter.id
-											? 'opacity-50 cursor-not-allowed'
-											: hasChapterAccess
-											? 'cursor-pointer hover:bg-primary/10'
-											: 'opacity-50 cursor-not-allowed'
-									)}
-									title={
-										hasChapterAccess
-											? `Download ${chapter.downloads.length} file(s)`
-											: 'Pro subscription required'
+									onClick={() =>
+										handleChapterClick(chapter.slug, hasChapterAccess)
 									}
 								>
-									{downloadingChapter === chapter.id ? (
-										<div className='w-[18px] h-[18px] animate-spin rounded-full border-2 border-primary border-t-transparent' />
-									) : !hasChapterAccess ? (
-										<svg
-											className='w-[18px] h-[18px] text-primary'
-											fill='none'
-											stroke='currentColor'
-											viewBox='0 0 24 24'
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth={2}
-												d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'
-											/>
-										</svg>
-									) : (
-										<Icons.download className='w-[18px] h-[18px] text-foreground group-hover:text-primary transition-colors' />
-									)}
-								</button>
-							)}
+									<div className='flex items-center gap-2 flex-1 min-w-0'>
+										{/* Chapter Icon */}
+										{!hasChapterAccess ? (
+											<div className='w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
+												<svg
+													className='w-3 h-3 text-primary'
+													fill='none'
+													stroke='currentColor'
+													viewBox='0 0 24 24'
+												>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth={2}
+														d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'
+													/>
+												</svg>
+											</div>
+										) : index === currentChapterIndex ? (
+											<Icons.play className='w-7 h-7 fill-primary flex-shrink-0' />
+										) : (
+											<div className='w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-medium flex-shrink-0'>
+												<span className='text-white'>{index + 1}</span>
+											</div>
+										)}
 
-							<p className='text-muted-foreground text-sm'>
-								{formatTime(chapter.videoDuration || 0)}
-							</p>
-							{index === currentChapterIndex && (
-								<div className='w-2 h-2 bg-primary rounded-full animate-pulse' />
-							)}
-						</div>
-					</div>
-				);
-			})}
+										{/* Chapter Info */}
+										<div className='flex-1 min-w-0'>
+											<div className='flex items-center gap-1 mb-0.5'>
+												<h4
+													className={cn(
+														'text-xs font-medium truncate',
+														index === currentChapterIndex && 'text-primary'
+													)}
+												>
+													{chapter.title}
+												</h4>
+												{isProChapter && (
+													<span className='text-xs px-1 py-0.5 rounded bg-primary/40 text-primary-foreground border border-primary/45 flex-shrink-0'>
+														Pro
+													</span>
+												)}
+												{isCompleted && (
+													<span className='text-xs px-1 py-0.5 rounded border-green-600 text-green-600 bg-green-400/40 border flex-shrink-0'>
+														✓
+													</span>
+												)}
+											</div>
+											{!hasChapterAccess && (
+												<p className='text-xs text-primary'>Upgrade to Pro</p>
+											)}
+										</div>
+									</div>
+
+									{/* Right Side Controls */}
+									<div className='flex items-center gap-1 ml-1 flex-shrink-0'>
+										{chapter.downloads.length > 0 && (
+											<button
+												type='button'
+												onClick={(e) => {
+													e.stopPropagation();
+													e.preventDefault();
+													handleDownloadAll(chapter, hasChapterAccess);
+												}}
+												disabled={downloadingChapter === chapter.id}
+												className={cn(
+													'p-1 rounded-full transition-all duration-200 z-10',
+													'hover:bg-primary/10 hover:scale-105',
+													downloadingChapter === chapter.id
+														? 'opacity-50 cursor-not-allowed'
+														: hasChapterAccess
+														? 'cursor-pointer'
+														: 'opacity-50 cursor-not-allowed'
+												)}
+											>
+												{downloadingChapter === chapter.id ? (
+													<div className='w-3 h-3 animate-spin rounded-full border border-primary border-t-transparent' />
+												) : !hasChapterAccess ? (
+													<svg
+														className='w-3 h-3 text-primary'
+														fill='none'
+														stroke='currentColor'
+														viewBox='0 0 24 24'
+													>
+														<path
+															strokeLinecap='round'
+															strokeLinejoin='round'
+															strokeWidth={2}
+															d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'
+														/>
+													</svg>
+												) : (
+													<Icons.download className='w-3 h-3 text-foreground hover:text-primary transition-colors' />
+												)}
+											</button>
+										)}
+
+										<div className='text-right flex gap-1 items-center'>
+											<p className='text-xs text-muted-foreground'>
+												{formatTime(chapter.videoDuration || 0)}
+											</p>
+											{index === currentChapterIndex && (
+												<div className='w-1 h-1 bg-primary rounded-full animate-pulse mx-auto mt-0.5' />
+											)}
+										</div>
+									</div>
+								</div>
+							);
+						}
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }

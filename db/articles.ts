@@ -75,16 +75,12 @@ export async function getArticlesByArtistId(artistId: string): Promise<{
 
 		if (error instanceof Prisma.PrismaClientValidationError) {
 			console.error('Validation error:', error);
-			// throw new ArticleError('Invalid data provided');
+
 			return { error: true, data: [], message: 'Invalid data provided' };
 		}
 
-		// Generic error handling
 		console.error('Error fetching articles:', error);
-		// throw new ArticleError(
-		// 	'Unable to retrieve articles. Please try again later.',
-		// 	error
-		// );
+
 		return { error: true, data: [], message: 'Unable to retrieve articles' };
 	}
 }
