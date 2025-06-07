@@ -1,7 +1,7 @@
 'use client';
 
 import VideoPlayerCourse from '../VideoPlayerCourse';
-import { CourseWithRelations } from '@/db/course';
+import { CourseDetailsWithMarkers, CourseWithRelations } from '@/db/course';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useTransition, useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CourseVideoSectionProps {
 	course: CourseWithRelations;
-	currentChapter: CourseWithRelations['chapters'][number] | null;
+	currentChapter: CourseDetailsWithMarkers['chapters'][number] | null;
 	currentChapterIndex: number;
 	isAuth?: boolean;
 	canAccessPro?: boolean;
@@ -134,7 +134,7 @@ export default function CourseVideoSection({
 
 interface CourseVideoPlayerProps {
 	course: CourseWithRelations;
-	currentChapter: CourseWithRelations['chapters'][number];
+	currentChapter: CourseDetailsWithMarkers['chapters'][number];
 	currentChapterIndex: number;
 	isAuth: boolean;
 	canAccessPro: boolean;
@@ -185,13 +185,9 @@ export function CourseVideoPlayer({
 					)}
 				>
 					<VideoPlayerCourse
-						src={currentChapter.videoUrl || ''}
-						poster={currentChapter.thumbnail || undefined}
-						title={currentChapter.title || course.title}
 						className='w-full h-full'
 						onVideoEnd={onVideoEnd}
-						chapterId={currentChapter.id}
-						courseId={course.id}
+						currentChapter={currentChapter}
 						isAuthenticated={isAuth}
 						isPending={isPending}
 					/>

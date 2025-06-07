@@ -10,91 +10,40 @@ import {
 	updateChapterProgress,
 	updateCourseProgress,
 } from '@/actions/lms/course-progress';
+import { CourseDetailsWithMarkers } from '@/db/course';
 
 // Extended Player interface to include controlBar
 interface ExtendedPlayer extends Player {
-	controlBar: {
-		progressControl: {
-			seekBar: {
-				el(): HTMLElement;
-			};
-		};
-	};
+	controlBar: { progressControl: { seekBar: { el(): HTMLElement } } };
 }
 
-// Dummy markers data for demo - adjust timestamps for your video length
-export const DUMMY_MARKERS = [
-	{
-		id: '1',
-		timestamp: 0,
-		title: 'Start',
-		description: 'Beginning of the video',
-	},
-	{
-		id: '2',
-		timestamp: 30,
-		title: 'Introduction',
-		description: 'Quick intro section',
-	},
-	{
-		id: '3',
-		timestamp: 120,
-		title: 'Main Point',
-		description: 'Key concept explained',
-	},
-	{
-		id: '4',
-		timestamp: 240,
-		title: 'Example',
-		description: 'Demonstration or example',
-	},
-	{
-		id: '5',
-		timestamp: 360,
-		title: 'Conclusion',
-		description: 'Wrap up and ending',
-	},
-];
-
-interface VideoMarker {
-	id: string;
-	timestamp: number;
-	title: string;
-	description: string;
-}
+type VideoMarker =
+	CourseDetailsWithMarkers['chapters'][number]['markers'][number];
 
 interface VideoJSPlayerProps {
-	src: string;
-	poster?: string;
-	title?: string;
 	className?: string;
 	onVideoEnd?: () => void;
-	chapterId?: string;
-	courseId?: string;
 	isAuthenticated?: boolean;
 	isPending?: boolean;
 	onTimeUpdate?: (currentTime: number, duration: number) => void;
 	onSeekToTime?: (seekFunction: (time: number) => void) => void;
-	markers?: VideoMarker[];
+	currentChapter: CourseDetailsWithMarkers['chapters'][number];
 }
 
 export default function VideoPlayerCourse({
-	src,
-	poster,
-	className,
+	currentChapter,
 	onVideoEnd,
-	chapterId,
-	courseId,
-	isAuthenticated = false,
-	isPending,
 	onTimeUpdate,
 	onSeekToTime,
-	markers = DUMMY_MARKERS,
+	isAuthenticated = false,
+	isPending,
+	className,
 }: VideoJSPlayerProps) {
+	const { courseId, id: chapterId, videoDuration } = currentChapter;
 	const videoRef = useRef<HTMLDivElement>(null);
 	const playerRef = useRef<Player | null>(null);
 
-	const [duration, setDuration] = useState(0);
+	const [duration, setDuration] = useState(videoDuration || 0);
 	const [showMarkersList, setShowMarkersList] = useState(false);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [fullscreenElement, setFullscreenElement] = useState<Element | null>(
@@ -147,7 +96,6 @@ export default function VideoPlayerCourse({
             border-radius: 50%;
             cursor: pointer;
             z-index: 1;
-            box-shadow: 0 2px 8px rgba(138, 123, 255, 0.6);
             left: ${(marker.timestamp / duration) * 100}%;
             transform: translate(-50%, -50%);
             transition: all 0.2s ease;
@@ -234,9 +182,9 @@ export default function VideoPlayerCourse({
 				responsive: true,
 				fluid: true,
 				aspectRatio: '16:9',
-				poster: poster,
+				poster: currentChapter?.thumbnail,
 				preload: 'metadata',
-				sources: [{ src: src, type: 'video/mp4' }],
+				sources: [{ src: currentChapter?.videoUrl, type: 'video/mp4' }],
 				playbackRates: [0.5, 1, 1.25, 1.5, 2],
 			});
 
@@ -257,7 +205,7 @@ export default function VideoPlayerCourse({
 
 				// Add markers to progress bar
 				setTimeout(() => {
-					addMarkersToProgressBar(player, markers);
+					addMarkersToProgressBar(player, currentChapter.markers);
 				}, 100);
 			});
 
@@ -268,7 +216,7 @@ export default function VideoPlayerCourse({
 				setFullscreenElement(document.fullscreenElement);
 
 				setTimeout(() => {
-					addMarkersToProgressBar(player, markers);
+					addMarkersToProgressBar(player, currentChapter.markers);
 				}, 100);
 			});
 
@@ -305,21 +253,19 @@ export default function VideoPlayerCourse({
 			}
 		};
 	}, [
-		src,
-		poster,
 		onVideoEnd,
 		chapterId,
 		courseId,
 		isAuthenticated,
 		onTimeUpdate,
 		onSeekToTime,
-		markers,
+		currentChapter,
 	]);
 
 	// Filter markers that are within video duration
-	const validMarkers = markers.filter(
-		(marker: VideoMarker) => marker.timestamp <= duration
-	);
+	const validMarkers = currentChapter.markers
+		.filter((marker: VideoMarker) => marker.timestamp <= duration)
+		.sort((a: VideoMarker, b: VideoMarker) => a.timestamp - b.timestamp);
 
 	// Render markers list component
 	const renderMarkersList = () => (

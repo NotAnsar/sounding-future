@@ -13,16 +13,17 @@ import { cn } from '@/lib/utils';
 import ErrorMessage from '@/components/ErrorMessage';
 import SaveButton from '@/components/profile/SaveButton';
 import { Course, Instructor } from '@prisma/client';
-import { ChapterWithRelations } from '@/db/chapter';
+import { ChapterWithMarkers } from '@/db/chapter';
 import SelectInput from '@/components/ui/select-input';
 import { PublishToggle } from '@/components/PublishToggle';
 import VideoUploadSection from './VideoUploadSection';
 import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { MultiSelect } from '@/components/ui/multi-select';
 import DownloadsUploadSection from './DownloadsUploadSection';
+import VideoMarkersSection from './VideoMarkersSection';
 
 interface ChapterFormProps {
-	initialData?: ChapterWithRelations;
+	initialData?: ChapterWithMarkers;
 	courses: Course[];
 	instructors: Instructor[];
 	preSelectedCourseId?: string;
@@ -232,6 +233,13 @@ export default function ChapterForm({
 					}}
 					initialVideoUrl={initialData?.videoUrl || undefined}
 					initialDuration={initialData?.videoDuration || 0}
+				/>
+
+				{/* Video Markers Section */}
+				<VideoMarkersSection
+					initialMarkers={initialData?.markers || []}
+					errors={state?.errors?.markers}
+					videoDuration={initialData?.videoDuration || 0}
 				/>
 
 				{/* Thumbnail Upload */}

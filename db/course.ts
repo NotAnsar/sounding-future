@@ -98,9 +98,22 @@ export type CourseDetails = Prisma.CourseGetPayload<{
 		_count: { select: { courseProgress: true } };
 	};
 }>;
+export type CourseDetailsWithMarkers = Prisma.CourseGetPayload<{
+	include: {
+		instructors: {
+			include: {
+				instructor: { include: { courses: { include: { course: true } } } };
+			};
+		};
+		series: true;
+		topics: { include: { topic: true } };
+		chapters: { include: { markers: true } };
+		_count: { select: { courseProgress: true } };
+	};
+}>;
 
 export async function getCourseBySlug(slug: string): Promise<{
-	data: (CourseDetails & { isLiked?: boolean }) | null;
+	data: (CourseDetailsWithMarkers & { isLiked?: boolean }) | null;
 	error?: boolean;
 	message?: string;
 }> {
@@ -117,7 +130,11 @@ export async function getCourseBySlug(slug: string): Promise<{
 				},
 				series: true,
 				topics: { include: { topic: true } },
-				chapters: { where: { published: true }, orderBy: { position: 'asc' } },
+				chapters: {
+					include: { markers: true },
+					where: { published: true },
+					orderBy: { position: 'asc' },
+				},
 				_count: { select: { courseProgress: true } },
 				likes: session?.user?.id
 					? {

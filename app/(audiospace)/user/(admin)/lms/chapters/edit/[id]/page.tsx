@@ -1,4 +1,4 @@
-import { getChapterById } from '@/db/chapter';
+import { getChapterByIdWithMarkers } from '@/db/chapter';
 import { getCourses } from '@/db/course';
 import ChapterForm from '@/components/LMS/chapter/ChapterForm';
 import Error from '@/components/Error';
@@ -19,7 +19,7 @@ export default async function EditChapterPage({
 	const { id } = params;
 
 	const [chapter, courses, instructors] = await Promise.all([
-		getChapterById(id),
+		getChapterByIdWithMarkers(id),
 		getCourses(),
 		getInstructors(),
 	]);
