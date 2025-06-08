@@ -31,11 +31,12 @@ export async function generateMetadata({
 
 export default async function page({
 	params,
-	searchParams: { tab, chapter },
+	searchParams,
 }: {
 	params: { id: string };
 	searchParams: { tab?: string; chapter?: string };
 }) {
+	const { tab, chapter } = searchParams;
 	const [userAccess, res] = await Promise.all([
 		checkUserAccess(),
 		getCourseBySlug(params.id),
@@ -79,10 +80,10 @@ export default async function page({
 				<div className='flex flex-col sm:flex-row gap-2 sm:items-center justify-between'>
 					<CoursesDetailsNav
 						tabs={[
-							// { label: 'Course Content', link: 'content' },
 							{ label: 'Learnings & Skills', link: 'learnings' },
 							{ label: 'Instructor & Credits', link: 'instructor' },
 						]}
+						searchParams={searchParams}
 					/>
 					<div className='flex items-center gap-2 ml-auto'>
 						<LikeCourseForm
