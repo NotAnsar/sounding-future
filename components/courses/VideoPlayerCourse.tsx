@@ -1,8 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
 import type Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css';
@@ -39,16 +38,9 @@ export default function VideoPlayerCourse({
 	isPending,
 	className,
 }: VideoJSPlayerProps) {
-	const { courseId, id: chapterId, videoDuration } = currentChapter;
+	const { courseId, id: chapterId } = currentChapter;
 	const videoRef = useRef<HTMLDivElement>(null);
 	const playerRef = useRef<Player | null>(null);
-
-	const [duration, setDuration] = useState(videoDuration || 0);
-	const [showMarkersList, setShowMarkersList] = useState(false);
-	const [isFullscreen, setIsFullscreen] = useState(false);
-	const [fullscreenElement, setFullscreenElement] = useState<Element | null>(
-		null
-	);
 
 	// Handle seeking from markers
 	const handleSeek = (time: number) => {
@@ -200,7 +192,7 @@ export default function VideoPlayerCourse({
 			// Track duration and add markers
 			player.on('loadedmetadata', () => {
 				const duration = player.duration() || 0;
-				setDuration(duration);
+				// setDuration(duration);
 				onTimeUpdate?.(0, duration);
 
 				// Add markers to progress bar
@@ -211,10 +203,6 @@ export default function VideoPlayerCourse({
 
 			// Handle fullscreen changes
 			player.on('fullscreenchange', () => {
-				const isNowFullscreen = !!document.fullscreenElement;
-				setIsFullscreen(isNowFullscreen);
-				setFullscreenElement(document.fullscreenElement);
-
 				setTimeout(() => {
 					addMarkersToProgressBar(player, currentChapter.markers);
 				}, 100);
@@ -262,198 +250,11 @@ export default function VideoPlayerCourse({
 		currentChapter,
 	]);
 
-	// Filter markers that are within video duration
-	const validMarkers = currentChapter.markers
-		.filter((marker: VideoMarker) => marker.timestamp <= duration)
-		.sort((a: VideoMarker, b: VideoMarker) => a.timestamp - b.timestamp);
-
-	// Render markers list component
-	const renderMarkersList = () => (
-		<>
-			{/* Markers List Toggle Button */}
-			{validMarkers.length > 0 && (
-				<button
-					onClick={() => setShowMarkersList(!showMarkersList)}
-					className='bg-black/70 hover:bg-black/80 text-white p-2 rounded-lg transition-colors'
-					style={{
-						position: 'fixed',
-						top: '20px',
-						right: '20px',
-						zIndex: 9999,
-					}}
-					title='Show chapters'
-				>
-					<svg
-						className='w-4 h-4'
-						fill='none'
-						stroke='currentColor'
-						viewBox='0 0 24 24'
-					>
-						<path
-							strokeLinecap='round'
-							strokeLinejoin='round'
-							strokeWidth={2}
-							d='M4 6h16M4 12h16M4 18h16'
-						/>
-					</svg>
-				</button>
-			)}
-
-			{/* Markers List */}
-			{showMarkersList && validMarkers.length > 0 && (
-				<div
-					className='bg-black/90 rounded-lg p-3 max-w-xs'
-					style={{
-						position: 'fixed',
-						top: '70px',
-						right: '20px',
-						zIndex: 9999,
-					}}
-				>
-					<div className='flex justify-between items-center mb-2'>
-						<h4 className='text-white font-semibold text-sm'>Chapters</h4>
-						<button
-							onClick={() => setShowMarkersList(false)}
-							className='text-white/60 hover:text-white'
-						>
-							<svg
-								className='w-4 h-4'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M6 18L18 6M6 6l12 12'
-								/>
-							</svg>
-						</button>
-					</div>
-					<div className='space-y-1 max-h-64 overflow-y-auto'>
-						{validMarkers.map((marker: VideoMarker) => (
-							<button
-								key={marker.id}
-								onClick={() => {
-									handleSeek(marker.timestamp);
-									setShowMarkersList(false);
-								}}
-								className='w-full text-left text-white/80 hover:text-white text-xs py-2 px-2 rounded hover:bg-white/10 transition-colors'
-							>
-								<div className='flex justify-between items-start gap-2'>
-									<div className='flex-1'>
-										<div className='font-medium'>{marker.title}</div>
-										<div className='text-white/60 mt-1'>
-											{marker.description}
-										</div>
-									</div>
-									<span className='text-blue-300 flex-shrink-0 text-xs'>
-										{Math.floor(marker.timestamp / 60)}:
-										{String(Math.floor(marker.timestamp % 60)).padStart(2, '0')}
-									</span>
-								</div>
-							</button>
-						))}
-					</div>
-				</div>
-			)}
-		</>
-	);
-
 	return (
-		<div className='aspect-video relative w-full mt-2 rounded-2xl overflow-hidden border-2'>
+		<div className='aspect-video relative w-full rounded-lg overflow-hidden border-2'>
 			<div data-vjs-player className={cn(className)}>
 				<div ref={videoRef} />
 			</div>
-
-			{/* Render in normal mode */}
-			{!isFullscreen && (
-				<>
-					{/* Markers List Toggle Button */}
-					{validMarkers.length > 0 && (
-						<button
-							onClick={() => setShowMarkersList(!showMarkersList)}
-							className='absolute top-4 right-4 bg-black/70 hover:bg-black/80 text-white p-2 rounded-lg transition-colors z-10'
-							title='Show chapters'
-						>
-							<svg
-								className='w-4 h-4'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M4 6h16M4 12h16M4 18h16'
-								/>
-							</svg>
-						</button>
-					)}
-
-					{/* Markers List */}
-					{showMarkersList && validMarkers.length > 0 && (
-						<div className='absolute top-16 right-4 bg-black/90 rounded-lg p-3 max-w-xs z-20'>
-							<div className='flex justify-between items-center mb-2'>
-								<h4 className='text-white font-semibold text-sm'>Chapters</h4>
-								<button
-									onClick={() => setShowMarkersList(false)}
-									className='text-white/60 hover:text-white'
-								>
-									<svg
-										className='w-4 h-4'
-										fill='none'
-										stroke='currentColor'
-										viewBox='0 0 24 24'
-									>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth={2}
-											d='M6 18L18 6M6 6l12 12'
-										/>
-									</svg>
-								</button>
-							</div>
-							<div className='space-y-1 max-h-64 overflow-y-auto'>
-								{validMarkers.map((marker: VideoMarker) => (
-									<button
-										key={marker.id}
-										onClick={() => {
-											handleSeek(marker.timestamp);
-											setShowMarkersList(false);
-										}}
-										className='w-full text-left text-white/80 hover:text-white text-xs py-2 px-2 rounded hover:bg-white/10 transition-colors'
-									>
-										<div className='flex justify-between items-start gap-2'>
-											<div className='flex-1'>
-												<div className='font-medium'>{marker.title}</div>
-												<div className='text-white/60 mt-1'>
-													{marker.description}
-												</div>
-											</div>
-											<span className='text-blue-300 flex-shrink-0 text-xs'>
-												{Math.floor(marker.timestamp / 60)}:
-												{String(Math.floor(marker.timestamp % 60)).padStart(
-													2,
-													'0'
-												)}
-											</span>
-										</div>
-									</button>
-								))}
-							</div>
-						</div>
-					)}
-				</>
-			)}
-
-			{/* Render in fullscreen mode using portal */}
-			{isFullscreen &&
-				fullscreenElement &&
-				createPortal(renderMarkersList(), fullscreenElement)}
 
 			{/* Loading overlay during transition */}
 			{isPending && (
