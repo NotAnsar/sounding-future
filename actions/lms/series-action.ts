@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { generateSlug } from '../utils/utils';
+import { generateSlug, State } from '../utils/utils';
 
 const seriesSchema = z.object({
 	name: z
@@ -19,12 +19,9 @@ const seriesSchema = z.object({
 		.nullable(),
 });
 
-export type SeriesState =
-	| {
-			errors?: { name?: string[]; description?: string[] };
-			message?: string | null;
-	  }
-	| undefined;
+type seriesData = z.infer<typeof seriesSchema>;
+
+export type SeriesState = State<seriesData> | undefined;
 
 export async function createSeries(prevState: SeriesState, formData: FormData) {
 	const validatedFields = seriesSchema.safeParse({

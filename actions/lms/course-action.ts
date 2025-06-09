@@ -10,7 +10,7 @@ import {
 	updateFile,
 	deleteFile,
 } from '@/actions/utils/s3-image';
-import { generateSlug, imageSchema } from '../utils/utils';
+import { generateSlug, imageSchema, State } from '../utils/utils';
 import { auth } from '@/lib/auth';
 
 // Define Chapter schema for validation - title is optional
@@ -47,13 +47,7 @@ const CourseSchema = z.object({
 
 type CourseData = z.infer<typeof CourseSchema>;
 
-export type CourseFormState = {
-	message?: string | null;
-	errors?: {
-		[K in keyof CourseData]?: string[];
-	} & {
-		[key: string]: string[];
-	};
+export type CourseFormState = State<CourseData> & {
 	prev?: { thumbnail?: string | undefined };
 };
 

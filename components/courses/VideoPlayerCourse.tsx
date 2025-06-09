@@ -182,6 +182,13 @@ export default function VideoPlayerCourse({
 
 			playerRef.current = player;
 
+			player.ready(() => {
+				player.el().addEventListener('contextmenu', (e) => {
+					e.preventDefault();
+					return false;
+				});
+			});
+
 			// Track current time for markers
 			player.on('timeupdate', () => {
 				const currentTime = player.currentTime() || 0;

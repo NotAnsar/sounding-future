@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { generateSlug } from '../utils/utils';
+import { generateSlug, State } from '../utils/utils';
 
 const topicSchema = z.object({
 	name: z
@@ -19,12 +19,9 @@ const topicSchema = z.object({
 		.nullable(),
 });
 
-export type TopicState =
-	| {
-			errors?: { name?: string[]; description?: string[] };
-			message?: string | null;
-	  }
-	| undefined;
+type TopicData = z.infer<typeof topicSchema>;
+
+export type TopicState = State<TopicData> | undefined;
 
 export async function createTopic(prevState: TopicState, formData: FormData) {
 	const validatedFields = topicSchema.safeParse({
