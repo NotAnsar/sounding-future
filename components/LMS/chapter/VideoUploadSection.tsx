@@ -50,10 +50,7 @@ const formatDuration = (seconds: number): string => {
 };
 
 interface VideoUploadSectionProps {
-	errors?: {
-		videoUrl?: string[];
-		videoDuration?: string[];
-	};
+	errors?: { videoUrl?: string[]; videoDuration?: string[] };
 	initialVideoUrl?: string;
 	initialDuration?: number;
 	onDurationExtracted?: (duration: number) => void;
@@ -92,7 +89,7 @@ export default function VideoUploadSection({
 	return (
 		<div className='grid gap-2'>
 			{/* Hidden input for duration */}
-			<input type='hidden' name='videoDuration' value={duration} />
+			{/* <input type='hidden' name='videoDuration' value={duration} /> */}
 
 			{/* Hidden input to signal video deletion */}
 			{videoDeleted && initialVideoUrl && (

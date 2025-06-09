@@ -39,8 +39,13 @@ const ChapterSchema = z.object({
 		.max(200, 'Chapter title must be 200 characters or less'),
 	description: z.string().optional(),
 	videoUrl: videoSchema.shape.file.optional(),
-	hlsUrl: z.instanceof(File).optional(), // ADD THIS LINE
-	videoDuration: z.number().min(0, 'Duration must be positive').optional(),
+
+	videoDuration: z
+		.number()
+		.min(0, 'Duration must be positive')
+		.nullable()
+		.optional(), // Made nullable
+
 	thumbnail: imageSchema.shape.file.optional(),
 	downloads: z.array(downloadSchema.shape.file).optional(),
 	courseId: z.string().min(1, 'Course is required'),
@@ -53,7 +58,7 @@ const ChapterSchema = z.object({
 	markers: z.array(MarkerSchema).optional(),
 });
 
-type ChapterData = z.infer<typeof ChapterSchema>;
+type ChapterData = z.infer<typeof ChapterSchema> & { hlsUrl: string };
 
 export type ChapterFormState = State<ChapterData> & {
 	prev?: {
@@ -313,7 +318,7 @@ export async function addChapter(
 	// Validate markers against video duration
 	const markerValidation = validateMarkersAgainstDuration(
 		markers,
-		videoDuration,
+		videoDuration || 0,
 		!!(videoFile || hlsFiles.length > 0)
 	);
 
@@ -417,9 +422,10 @@ export async function updateChapter(
 	// Check if new video file is provided
 	const videoFile = await checkFile(formData.get('videoUrl'));
 	const hlsFiles = getHLSFiles(formData);
-	const newVideoDuration = formData.get('videoDuration')
-		? Number(formData.get('videoDuration'))
-		: undefined;
+
+	// Get duration from form, but handle properly
+	const formVideoDuration = formData.get('videoDuration');
+	const newVideoDuration = formVideoDuration ? Number(formVideoDuration) : 0;
 
 	// Get current chapter to check existing video duration
 	const currentChapter = await prisma.chapter.findUnique({
@@ -440,38 +446,80 @@ export async function updateChapter(
 		};
 	}
 
-	// Determine final video state after operations
+	// Determine final video state and duration after operations
 	let willHaveVideo = false;
-	let finalVideoDuration = newVideoDuration;
+	let finalVideoDuration: number | null = null;
 
 	if (deleteVideo && deleteHls) {
 		// Both are being deleted
 		willHaveVideo = !!(videoFile || hlsFiles.length > 0);
-		finalVideoDuration =
-			videoFile || hlsFiles.length > 0 ? newVideoDuration : undefined;
+		finalVideoDuration = willHaveVideo ? newVideoDuration : null;
 	} else if (deleteVideo) {
-		// Only video is being deleted - check existing HLS OR new files
-		willHaveVideo =
-			!!(hlsFiles.length > 0) || !!currentChapter.hlsUrl || !!videoFile;
-		finalVideoDuration =
-			newVideoDuration || currentChapter.videoDuration || undefined;
+		// Only video is being deleted
+		if (hlsFiles.length > 0) {
+			// New HLS files uploaded
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration;
+		} else if (currentChapter.hlsUrl) {
+			// Existing HLS remains
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration || currentChapter.videoDuration;
+		} else if (videoFile) {
+			// New video uploaded
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration;
+		} else {
+			// No video at all
+			willHaveVideo = false;
+			finalVideoDuration = null;
+		}
 	} else if (deleteHls) {
-		// Only HLS is being deleted - check existing video OR new files
-		willHaveVideo =
-			!!videoFile || !!currentChapter.videoUrl || !!(hlsFiles.length > 0);
-		finalVideoDuration =
-			newVideoDuration || currentChapter.videoDuration || undefined;
+		// Only HLS is being deleted
+		if (videoFile) {
+			// New video uploaded
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration;
+		} else if (currentChapter.videoUrl) {
+			// Existing video remains
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration || currentChapter.videoDuration;
+		} else if (hlsFiles.length > 0) {
+			// New HLS uploaded
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration;
+		} else {
+			// No video at all
+			willHaveVideo = false;
+			finalVideoDuration = null;
+		}
 	} else {
-		// Nothing is being deleted - check existing files OR new files
-		willHaveVideo = !!(
-			videoFile ||
-			hlsFiles.length > 0 ||
-			currentChapter.videoUrl ||
-			currentChapter.hlsUrl
-		);
-		finalVideoDuration =
-			newVideoDuration || currentChapter.videoDuration || undefined;
+		// Nothing is being deleted
+		if (videoFile || hlsFiles.length > 0) {
+			// New files uploaded
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration;
+		} else if (currentChapter.videoUrl || currentChapter.hlsUrl) {
+			// Existing files remain
+			willHaveVideo = true;
+			finalVideoDuration = newVideoDuration || currentChapter.videoDuration;
+		} else {
+			// No video at all
+			willHaveVideo = false;
+			finalVideoDuration = null;
+		}
 	}
+
+	console.log('🎯 Duration calculation:', {
+		formVideoDuration,
+		newVideoDuration,
+		currentDuration: currentChapter.videoDuration,
+		finalVideoDuration,
+		willHaveVideo,
+		deleteVideo,
+		deleteHls,
+		hasVideoFile: !!videoFile,
+		hasHlsFiles: hlsFiles.length > 0,
+	});
 
 	// Validate video requirement for publishing
 	if (published && !willHaveVideo) {
@@ -493,7 +541,7 @@ export async function updateChapter(
 	// Validate markers against video duration
 	const markerValidation = validateMarkersAgainstDuration(
 		markers,
-		finalVideoDuration,
+		finalVideoDuration || undefined,
 		willHaveVideo
 	);
 
@@ -521,6 +569,10 @@ export async function updateChapter(
 	});
 
 	if (!validatedFields.success) {
+		console.error(
+			'Validation errors:',
+			validatedFields.error.flatten().fieldErrors
+		);
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 			message: 'Failed to update chapter. Please check the form for errors.',
@@ -548,11 +600,10 @@ export async function updateChapter(
 		}
 
 		// Handle HLS deletion
-
 		if (deleteHls && currentChapter.hlsUrl) {
 			console.log('🗑️ Deleting HLS folder and all segments...');
 			try {
-				await deleteHLSFolder(currentChapter.hlsUrl); // CHANGE THIS LINE
+				await deleteHLSFolder(currentChapter.hlsUrl);
 				console.log('✅ HLS folder deleted successfully');
 			} catch (error) {
 				console.error('❌ Failed to delete HLS folder:', error);
@@ -582,7 +633,7 @@ export async function updateChapter(
 			if (finalHlsUrl && !deleteHls) {
 				// Delete old HLS files first
 				try {
-					console.log('🗑️  Deleting old HLS files...');
+					console.log('🗑️ Deleting old HLS files...');
 					await deleteHLSFolder(finalHlsUrl);
 				} catch (error) {
 					console.warn('Failed to delete old HLS files:', error);
@@ -631,12 +682,14 @@ export async function updateChapter(
 		const { title } = updateData;
 		const slug = generateSlug(title);
 
+		console.log('💾 Updating chapter with duration:', videoDuration);
+
 		// Update chapter, instructor relationships, and markers
 		await prisma.chapter.update({
 			where: { id },
 			data: {
 				...updateData,
-				videoDuration: videoDuration || null,
+				videoDuration: videoDuration,
 				videoUrl: finalVideoUrl,
 				hlsUrl: finalHlsUrl,
 				thumbnail: thumbnailUrl,

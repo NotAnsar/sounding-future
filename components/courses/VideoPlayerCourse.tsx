@@ -183,17 +183,11 @@ export default function VideoPlayerCourse({
 					src: proxiedHlsUrl,
 					type: 'application/x-mpegURL',
 				});
-				console.log('🎬 Added proxied HLS source:', proxiedHlsUrl);
-				console.log('🔗 Original HLS URL:', currentChapter.hlsUrl);
 			}
 
 			// Add MP4 source if available
 			if (currentChapter?.videoUrl) {
-				sources.push({
-					src: currentChapter.videoUrl,
-					type: 'video/mp4',
-				});
-				console.log('🎥 Added MP4 source:', currentChapter.videoUrl);
+				sources.push({ src: currentChapter.videoUrl, type: 'video/mp4' });
 			}
 
 			// Don't create player if no sources
@@ -201,8 +195,6 @@ export default function VideoPlayerCourse({
 				console.error('❌ No video sources available');
 				return;
 			}
-
-			console.log('🚀 Creating player with sources:', sources);
 
 			const player = videojs(videoElement, {
 				controls: true,
@@ -245,18 +237,6 @@ export default function VideoPlayerCourse({
 				// Log current source being tried
 				const currentSrc = player.currentSrc();
 				console.error('🎯 Current source:', currentSrc);
-			});
-
-			// Log when sources change
-			player.on('loadstart', () => {
-				const currentSrc = player.currentSrc();
-				console.log('📺 Loading source:', currentSrc);
-			});
-
-			// Log successful load
-			player.on('loadeddata', () => {
-				const currentSrc = player.currentSrc();
-				console.log('✅ Successfully loaded:', currentSrc);
 			});
 
 			player.ready(() => {

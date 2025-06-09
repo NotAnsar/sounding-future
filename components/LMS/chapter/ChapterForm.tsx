@@ -22,6 +22,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import DownloadsUploadSection from './DownloadsUploadSection';
 import VideoMarkersSection from './VideoMarkersSection';
 import HLSUploadSection from './HLSUploadSection';
+import { useState } from 'react';
 
 interface ChapterFormProps {
 	initialData?: ChapterWithMarkers;
@@ -49,12 +50,17 @@ export default function ChapterForm({
 }: ChapterFormProps) {
 	const isEditing = !!initialData;
 
+	const [videoDuration, setVideoDuration] = useState<number>(
+		initialData?.videoDuration || 0
+	);
+
 	const initialStateWithPrev: ChapterFormState = {
 		...initialState,
 		prev: {
 			videoUrl: initialData?.videoUrl || undefined,
 			thumbnail: initialData?.thumbnail || undefined,
 			downloads: initialData?.downloads || undefined,
+			hlsUrl: initialData?.hlsUrl || undefined,
 		},
 	};
 
@@ -63,6 +69,16 @@ export default function ChapterForm({
 		: addChapter;
 
 	const [state, formAction] = useFormState(action, initialStateWithPrev);
+
+	// ADD: Handle duration from video upload
+	const handleVideoDurationExtracted = (duration: number) => {
+		setVideoDuration(duration);
+	};
+
+	// ADD: Handle duration from HLS upload
+	const handleHLSDurationExtracted = (duration: number) => {
+		setVideoDuration(duration);
+	};
 
 	// Access type options
 	const accessTypeOptions = [
@@ -234,10 +250,20 @@ export default function ChapterForm({
 						videoDuration: state?.errors?.videoDuration,
 					}}
 					initialVideoUrl={initialData?.videoUrl || undefined}
-					initialDuration={initialData?.videoDuration || 0}
+					initialDuration={videoDuration || 0}
+					onDurationExtracted={handleVideoDurationExtracted} // ADD this
 				/>
 
-				<HLSUploadSection initialHlsUrl={initialData?.hlsUrl || undefined} />
+				<input type='hidden' name='videoDuration' value={videoDuration} />
+				{/* <HLSUploadSection initialHlsUrl={initialData?.hlsUrl || undefined} /> */}
+				<HLSUploadSection
+					errors={{
+						hlsUrl: state?.errors?.hlsUrl,
+					}}
+					initialHlsUrl={initialData?.hlsUrl || undefined}
+					initialDuration={videoDuration || 0}
+					onDurationExtracted={handleHLSDurationExtracted} // ADD this
+				/>
 
 				{/* Video Markers Section */}
 				<VideoMarkersSection
