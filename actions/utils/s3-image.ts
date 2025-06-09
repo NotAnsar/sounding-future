@@ -133,3 +133,243 @@ export async function deleteDownloadFiles(fileUrls: string[]): Promise<void> {
 	const deletePromises = fileUrls.map((url) => deleteFile(url));
 	await Promise.all(deletePromises);
 }
+
+// Helper function to upload to S3 with buffer
+export async function uploadToS3({
+	buffer,
+	key,
+	contentType,
+}: {
+	buffer: Buffer;
+	key: string;
+	contentType: string;
+}): Promise<string> {
+	const command = new PutObjectCommand({
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: key,
+		Body: buffer,
+		ContentType: contentType,
+		ContentLength: buffer.length,
+	});
+
+	await s3.send(command);
+	return `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${key}`;
+}
+
+// Specialized function for uploading HLS files
+export async function uploadHLSFiles(files: File[]): Promise<string> {
+	try {
+		console.log(`🎬 Starting HLS upload: ${files.length} files`);
+
+		// Separate playlist and segment files
+		const playlistFile = files.find((f) =>
+			f.name.toLowerCase().endsWith('.m3u8')
+		);
+		const segmentFiles = files.filter((f) =>
+			f.name.toLowerCase().endsWith('.ts')
+		);
+
+		if (!playlistFile) {
+			throw new Error('No playlist file (.m3u8) found in upload');
+		}
+
+		if (segmentFiles.length === 0) {
+			throw new Error('No segment files (.ts) found in upload');
+		}
+
+		console.log(
+			`📁 Found: 1 playlist (${playlistFile.name}), ${segmentFiles.length} segments`
+		);
+
+		// Generate unique folder for this HLS stream
+		const hlsId = uuidv4();
+		const hlsFolder = `hls/${hlsId}`;
+
+		console.log(`📂 Uploading to folder: ${hlsFolder}`);
+
+		// Upload ALL segment files first
+		const segmentUploadPromises = segmentFiles.map(async (file) => {
+			const segmentKey = `${hlsFolder}/${file.name}`;
+			console.log(`⬆️  Uploading segment: ${file.name} → ${segmentKey}`);
+
+			const arrayBuffer = await file.arrayBuffer();
+
+			const url = await uploadToS3({
+				buffer: Buffer.from(arrayBuffer),
+				key: segmentKey,
+				contentType: 'video/mp2t', // Correct MIME type for .ts files
+			});
+
+			console.log(`✅ Uploaded segment: ${url}`);
+			return { originalName: file.name, url };
+		});
+
+		// Wait for all segments to upload
+		const uploadedSegments = await Promise.all(segmentUploadPromises);
+		console.log(
+			`🎉 All ${uploadedSegments.length} segments uploaded successfully`
+		);
+
+		// Read and modify playlist content
+		const playlistContent = await playlistFile.text();
+		console.log('📄 Original playlist content:', playlistContent);
+
+		// Create mapping of original names to new URLs
+		const segmentMap = new Map<string, string>();
+		uploadedSegments.forEach(({ originalName, url }) => {
+			segmentMap.set(originalName, url);
+		});
+
+		// Replace relative paths with absolute URLs in playlist
+		const lines = playlistContent.split('\n');
+		const modifiedLines = lines.map((line) => {
+			const trimmedLine = line.trim();
+
+			// If this line is a segment file reference
+			if (trimmedLine.endsWith('.ts')) {
+				const absoluteUrl = segmentMap.get(trimmedLine);
+				if (absoluteUrl) {
+					console.log(`🔄 Replacing: ${trimmedLine} → ${absoluteUrl}`);
+					return absoluteUrl;
+				} else {
+					console.warn(`⚠️  No uploaded URL found for segment: ${trimmedLine}`);
+					return line; // Keep original if not found
+				}
+			}
+
+			return line; // Keep all other lines unchanged
+		});
+
+		const modifiedPlaylistContent = modifiedLines.join('\n');
+		console.log('📝 Modified playlist content:', modifiedPlaylistContent);
+
+		// Upload the modified playlist
+		const playlistKey = `${hlsFolder}/playlist.m3u8`;
+		const playlistUrl = await uploadToS3({
+			buffer: Buffer.from(modifiedPlaylistContent),
+			key: playlistKey,
+			contentType: 'application/x-mpegURL',
+		});
+
+		console.log(`📋 Playlist uploaded: ${playlistUrl}`);
+		console.log(`🎊 HLS upload complete! Folder: ${hlsFolder}`);
+
+		return playlistUrl;
+	} catch (error) {
+		console.error('❌ HLS upload failed:', error);
+		throw new Error(
+			`HLS upload failed: ${
+				error instanceof Error ? error.message : String(error)
+			}`
+		);
+	}
+}
+
+// Add this function to your existing s3-image.ts file:
+
+// Helper function to delete an entire HLS folder and all its contents
+export async function deleteHLSFolder(playlistUrl: string): Promise<void> {
+	if (!playlistUrl) throw new Error('Playlist URL is required for deletion.');
+
+	try {
+		console.log('🗑️ Starting HLS folder deletion for:', playlistUrl);
+
+		// Extract the folder path from playlist URL
+		const urlParts = playlistUrl.split(`/${AWS_S3_BUCKET_NAME}/`);
+		if (urlParts.length !== 2) {
+			console.error('Invalid HLS URL format');
+			return;
+		}
+
+		const playlistKey = urlParts[1]; // e.g., "hls/374eb1a4-f379-4b43-832e-2869d57b1f88/playlist.m3u8"
+		const folderPath = playlistKey.substring(0, playlistKey.lastIndexOf('/')); // e.g., "hls/374eb1a4-f379-4b43-832e-2869d57b1f88"
+
+		console.log('📂 HLS folder path:', folderPath);
+
+		// First, get the playlist content to find all segment files
+		try {
+			const playlistResponse = await fetch(playlistUrl);
+			if (playlistResponse.ok) {
+				const playlistContent = await playlistResponse.text();
+				console.log('📄 Retrieved playlist for deletion:', playlistContent);
+
+				// Extract segment URLs from playlist
+				const lines = playlistContent.split('\n');
+				const segmentUrls = lines.filter(
+					(line) =>
+						line.trim().startsWith('http') && line.trim().endsWith('.ts')
+				);
+
+				console.log(`🎬 Found ${segmentUrls.length} segment URLs to delete`);
+
+				// Delete each segment file
+				for (const segmentUrl of segmentUrls) {
+					try {
+						await deleteFile(segmentUrl.trim());
+						console.log('✅ Deleted segment:', segmentUrl.trim());
+					} catch (error) {
+						console.warn(
+							'⚠️  Failed to delete segment:',
+							segmentUrl.trim(),
+							error
+						);
+						// Continue with other deletions
+					}
+				}
+			}
+		} catch (error) {
+			console.warn('⚠️  Could not fetch playlist content for cleanup:', error);
+			// Continue with folder-based deletion as fallback
+		}
+
+		// Delete the playlist file itself
+		try {
+			await deleteFile(playlistUrl);
+			console.log('✅ Deleted playlist file');
+		} catch (error) {
+			console.warn('⚠️  Failed to delete playlist file:', error);
+		}
+
+		// Fallback: Try to delete common segment files in the folder
+		// This handles cases where the playlist content couldn't be read
+		const commonSegmentPatterns = [
+			'kurs1hls0.ts',
+			'kurs1hls1.ts',
+			'kurs1hls2.ts',
+			'kurs1hls3.ts',
+			'kurs1hls4.ts',
+			'segment0.ts',
+			'segment1.ts',
+			'segment2.ts',
+			'segment3.ts',
+			'segment4.ts',
+			'segment000.ts',
+			'segment001.ts',
+			'segment002.ts',
+			'segment003.ts',
+			'segment004.ts',
+		];
+
+		for (const pattern of commonSegmentPatterns) {
+			try {
+				const segmentKey = `${folderPath}/${pattern}`;
+				const segmentUrl = `${AWS_URL}/${AWS_S3_BUCKET_NAME}/${segmentKey}`;
+
+				// Try to delete (will fail silently if file doesn't exist)
+				await deleteFile(segmentUrl);
+				console.log('✅ Deleted fallback segment:', pattern);
+			} catch (error) {
+				// Ignore errors for fallback deletion
+			}
+		}
+
+		console.log('🎊 HLS folder deletion completed');
+	} catch (error) {
+		console.error('❌ Error deleting HLS folder:', error);
+		throw new Error(
+			`Failed to delete HLS folder: ${
+				error instanceof Error ? error.message : String(error)
+			}`
+		);
+	}
+}

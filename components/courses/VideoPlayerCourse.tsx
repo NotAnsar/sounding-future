@@ -171,16 +171,38 @@ export default function VideoPlayerCourse({
 			videoElement.classList.add('vjs-big-play-centered');
 			videoRef.current.appendChild(videoElement);
 
-			// const player = videojs(videoElement, {
-			// 	controls: true,
-			// 	responsive: true,
-			// 	fluid: true,
-			// 	aspectRatio: '16:9',
-			// 	poster: currentChapter?.thumbnail,
-			// 	preload: 'metadata',
-			// 	sources: [{ src: currentChapter?.videoUrl, type: 'video/mp4' }],
-			// 	playbackRates: [0.5, 1, 1.25, 1.5, 2],
-			// });
+			// Build sources array - only include valid URLs
+			const sources = [];
+
+			// Add HLS source if available - USE PROXY TO BYPASS CORS
+			if (currentChapter?.hlsUrl) {
+				const proxiedHlsUrl = `/api/hls-proxy?url=${encodeURIComponent(
+					currentChapter.hlsUrl
+				)}`;
+				sources.push({
+					src: proxiedHlsUrl,
+					type: 'application/x-mpegURL',
+				});
+				console.log('🎬 Added proxied HLS source:', proxiedHlsUrl);
+				console.log('🔗 Original HLS URL:', currentChapter.hlsUrl);
+			}
+
+			// Add MP4 source if available
+			if (currentChapter?.videoUrl) {
+				sources.push({
+					src: currentChapter.videoUrl,
+					type: 'video/mp4',
+				});
+				console.log('🎥 Added MP4 source:', currentChapter.videoUrl);
+			}
+
+			// Don't create player if no sources
+			if (sources.length === 0) {
+				console.error('❌ No video sources available');
+				return;
+			}
+
+			console.log('🚀 Creating player with sources:', sources);
 
 			const player = videojs(videoElement, {
 				controls: true,
@@ -188,28 +210,54 @@ export default function VideoPlayerCourse({
 				fluid: true,
 				aspectRatio: '16:9',
 				poster: currentChapter?.thumbnail,
-				preload: 'none', // Only load when user clicks play
-				sources: [
-					{
-						src: currentChapter?.hlsUrl, // .m3u8 file
-						type: 'application/x-mpegURL',
-					},
-					{
-						src: currentChapter?.videoUrl, // Fallback MP4
-						type: 'video/mp4',
-					},
-				],
+				preload: 'metadata',
+				sources: sources,
 				playbackRates: [0.5, 1, 1.25, 1.5, 2],
 				html5: {
 					hls: {
 						enableLowInitialPlaylist: true,
 						smoothQualityChange: true,
 						overrideNative: true,
+						withCredentials: false,
+						handleManifestRedirects: true,
+					},
+					vhs: {
+						enableLowInitialPlaylist: true,
+						smoothQualityChange: true,
+						overrideNative: true,
 					},
 				},
+				techOrder: ['html5'],
 			});
 
 			playerRef.current = player;
+
+			// Add comprehensive error handling
+			player.on('error', () => {
+				const errorObj = player.error();
+				console.error('🔍 Error details:', errorObj);
+
+				if (errorObj) {
+					console.error('📋 Error code:', errorObj.code);
+					console.error('📋 Error message:', errorObj.message);
+				}
+
+				// Log current source being tried
+				const currentSrc = player.currentSrc();
+				console.error('🎯 Current source:', currentSrc);
+			});
+
+			// Log when sources change
+			player.on('loadstart', () => {
+				const currentSrc = player.currentSrc();
+				console.log('📺 Loading source:', currentSrc);
+			});
+
+			// Log successful load
+			player.on('loadeddata', () => {
+				const currentSrc = player.currentSrc();
+				console.log('✅ Successfully loaded:', currentSrc);
+			});
 
 			player.ready(() => {
 				player.el().addEventListener('contextmenu', (e) => {
@@ -228,7 +276,6 @@ export default function VideoPlayerCourse({
 			// Track duration and add markers
 			player.on('loadedmetadata', () => {
 				const duration = player.duration() || 0;
-				// setDuration(duration);
 				onTimeUpdate?.(0, duration);
 
 				// Add markers to progress bar
@@ -285,6 +332,20 @@ export default function VideoPlayerCourse({
 		onSeekToTime,
 		currentChapter,
 	]);
+
+	// Show message if no video sources
+	if (!currentChapter?.videoUrl && !currentChapter?.hlsUrl) {
+		return (
+			<div className='aspect-video relative w-full rounded-lg overflow-hidden border-2 bg-gray-100 flex items-center justify-center'>
+				<div className='text-center text-gray-500'>
+					<div className='text-lg font-medium mb-2'>No video available</div>
+					<div className='text-sm'>
+						{"This chapter doesn't have a video yet."}
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='aspect-video relative w-full rounded-lg overflow-hidden border-2'>

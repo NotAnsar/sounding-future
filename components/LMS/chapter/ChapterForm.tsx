@@ -21,6 +21,7 @@ import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { MultiSelect } from '@/components/ui/multi-select';
 import DownloadsUploadSection from './DownloadsUploadSection';
 import VideoMarkersSection from './VideoMarkersSection';
+import HLSUploadSection from './HLSUploadSection';
 
 interface ChapterFormProps {
 	initialData?: ChapterWithMarkers;
@@ -36,6 +37,7 @@ const initialState: ChapterFormState = {
 		videoUrl: undefined,
 		thumbnail: undefined,
 		downloads: undefined,
+		hlsUrl: undefined,
 	},
 };
 
@@ -234,6 +236,8 @@ export default function ChapterForm({
 					initialVideoUrl={initialData?.videoUrl || undefined}
 					initialDuration={initialData?.videoDuration || 0}
 				/>
+
+				<HLSUploadSection initialHlsUrl={initialData?.hlsUrl || undefined} />
 
 				{/* Video Markers Section */}
 				<VideoMarkersSection

@@ -18,6 +18,8 @@ import {
 	uploadFile,
 	uploadDownloadFiles,
 	deleteDownloadFiles,
+	uploadHLSFiles,
+	deleteHLSFolder, // ADD THIS IMPORT
 } from '@/actions/utils/s3-image';
 
 // Define marker schema for validation
@@ -37,6 +39,7 @@ const ChapterSchema = z.object({
 		.max(200, 'Chapter title must be 200 characters or less'),
 	description: z.string().optional(),
 	videoUrl: videoSchema.shape.file.optional(),
+	hlsUrl: z.instanceof(File).optional(), // ADD THIS LINE
 	videoDuration: z.number().min(0, 'Duration must be positive').optional(),
 	thumbnail: imageSchema.shape.file.optional(),
 	downloads: z.array(downloadSchema.shape.file).optional(),
@@ -55,6 +58,7 @@ type ChapterData = z.infer<typeof ChapterSchema>;
 export type ChapterFormState = State<ChapterData> & {
 	prev?: {
 		videoUrl?: string | undefined;
+		hlsUrl?: string | undefined;
 		thumbnail?: string | undefined;
 		downloads?: string[] | undefined;
 	};
@@ -114,6 +118,22 @@ function getMarkersFromFormData(formData: FormData): Array<{
 	return markers;
 }
 
+// Helper function to process HLS files from FormData
+function getHLSFiles(formData: FormData): File[] {
+	const files: File[] = [];
+
+	// Get all values for the 'hlsFiles' key
+	const hlsEntries = formData.getAll('hlsFiles');
+
+	for (const entry of hlsEntries) {
+		if (entry instanceof File && entry.size > 0) {
+			files.push(entry);
+		}
+	}
+
+	return files;
+}
+
 // Helper function to get next position for chapter
 async function getNextChapterPosition(courseId: string): Promise<number> {
 	const lastChapter = await prisma.chapter.findFirst({
@@ -129,13 +149,21 @@ async function getNextChapterPosition(courseId: string): Promise<number> {
 function validateVideoForPublishing(
 	published: boolean,
 	hasNewVideo: boolean,
-	existingVideoUrl?: string
+	hasNewHls: boolean,
+	existingVideoUrl?: string,
+	existingHlsUrl?: string
 ): { isValid: boolean; error?: string } {
-	if (published && !hasNewVideo && !existingVideoUrl) {
+	if (
+		published &&
+		!hasNewVideo &&
+		!hasNewHls &&
+		!existingVideoUrl &&
+		!existingHlsUrl
+	) {
 		return {
 			isValid: false,
 			error:
-				'Cannot publish chapter without a video. Please upload a video first.',
+				'Cannot publish chapter without a video or HLS stream. Please upload a media file first.',
 		};
 	}
 	return { isValid: true };
@@ -226,9 +254,14 @@ export async function addChapter(
 
 	// Check if video file is provided
 	const videoFile = await checkFile(formData.get('videoUrl'));
+	const hlsFiles = getHLSFiles(formData);
 
 	// Validate video requirement for publishing
-	const videoValidation = validateVideoForPublishing(published, !!videoFile);
+	const videoValidation = validateVideoForPublishing(
+		published,
+		!!videoFile,
+		hlsFiles.length > 0
+	);
 	if (!videoValidation.isValid) {
 		return {
 			errors: { published: [videoValidation.error!] },
@@ -281,7 +314,7 @@ export async function addChapter(
 	const markerValidation = validateMarkersAgainstDuration(
 		markers,
 		videoDuration,
-		!!videoFile
+		!!(videoFile || hlsFiles.length > 0)
 	);
 
 	if (!markerValidation.isValid) {
@@ -294,6 +327,23 @@ export async function addChapter(
 	try {
 		// Upload video if provided
 		const videoFileUrl = videoUrl ? await uploadFile(videoUrl, 'video') : null;
+
+		// Upload HLS files if provided using specialized function
+		let hlsFileUrl = null;
+		if (hlsFiles.length > 0) {
+			console.log(`🎬 Processing ${hlsFiles.length} HLS files for upload...`);
+
+			try {
+				hlsFileUrl = await uploadHLSFiles(hlsFiles);
+				console.log('✅ HLS upload successful:', hlsFileUrl);
+			} catch (error) {
+				console.error('❌ HLS upload failed:', error);
+				return {
+					errors: { hlsUrl: ['Failed to upload HLS files'] },
+					message: 'Failed to upload HLS files: ',
+				};
+			}
+		}
 
 		// Upload thumbnail if provided
 		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : null;
@@ -313,6 +363,7 @@ export async function addChapter(
 				...otherData,
 				videoDuration: videoDuration || null,
 				videoUrl: videoFileUrl,
+				hlsUrl: hlsFileUrl,
 				thumbnail: thumbnailUrl,
 				downloads: downloadUrls,
 				slug,
@@ -351,6 +402,7 @@ export async function updateChapter(
 ): Promise<ChapterFormState> {
 	const published = formData.get('published') === 'true';
 	const deleteVideo = formData.get('deleteVideo') === 'true';
+	const deleteHls = formData.get('deleteHls') === 'true';
 
 	// Get instructor IDs from form data
 	const instructorIds = formData.getAll('instructorIds') as string[];
@@ -364,6 +416,7 @@ export async function updateChapter(
 
 	// Check if new video file is provided
 	const videoFile = await checkFile(formData.get('videoUrl'));
+	const hlsFiles = getHLSFiles(formData);
 	const newVideoDuration = formData.get('videoDuration')
 		? Number(formData.get('videoDuration'))
 		: undefined;
@@ -374,6 +427,7 @@ export async function updateChapter(
 		select: {
 			published: true,
 			courseId: true,
+			hlsUrl: true,
 			videoUrl: true,
 			downloads: true,
 			videoDuration: true,
@@ -390,14 +444,31 @@ export async function updateChapter(
 	let willHaveVideo = false;
 	let finalVideoDuration = newVideoDuration;
 
-	if (deleteVideo) {
-		// Video is being deleted
-		willHaveVideo = !!videoFile; // Only if new video is uploaded
-		finalVideoDuration = videoFile ? newVideoDuration : undefined;
+	if (deleteVideo && deleteHls) {
+		// Both are being deleted
+		willHaveVideo = !!(videoFile || hlsFiles.length > 0);
+		finalVideoDuration =
+			videoFile || hlsFiles.length > 0 ? newVideoDuration : undefined;
+	} else if (deleteVideo) {
+		// Only video is being deleted - check existing HLS OR new files
+		willHaveVideo =
+			!!(hlsFiles.length > 0) || !!currentChapter.hlsUrl || !!videoFile;
+		finalVideoDuration =
+			newVideoDuration || currentChapter.videoDuration || undefined;
+	} else if (deleteHls) {
+		// Only HLS is being deleted - check existing video OR new files
+		willHaveVideo =
+			!!videoFile || !!currentChapter.videoUrl || !!(hlsFiles.length > 0);
+		finalVideoDuration =
+			newVideoDuration || currentChapter.videoDuration || undefined;
 	} else {
-		// Video is not being deleted - check existing video OR new video
-		willHaveVideo = !!videoFile || !!currentChapter.videoUrl;
-		// Use new duration if provided, otherwise keep existing duration
+		// Nothing is being deleted - check existing files OR new files
+		willHaveVideo = !!(
+			videoFile ||
+			hlsFiles.length > 0 ||
+			currentChapter.videoUrl ||
+			currentChapter.hlsUrl
+		);
 		finalVideoDuration =
 			newVideoDuration || currentChapter.videoDuration || undefined;
 	}
@@ -407,10 +478,10 @@ export async function updateChapter(
 		return {
 			errors: {
 				published: [
-					'Cannot publish chapter without a video. Please upload a video first.',
+					'Cannot publish chapter without a video or HLS stream. Please upload a media file first.',
 				],
 			},
-			message: 'Cannot publish chapter without a video.',
+			message: 'Cannot publish chapter without a video or HLS stream.',
 		};
 	}
 
@@ -468,11 +539,26 @@ export async function updateChapter(
 		const isBeingUnpublished = wasPublished && !published;
 
 		let finalVideoUrl = currentChapter.videoUrl;
+		let finalHlsUrl = currentChapter.hlsUrl;
 
 		// Handle video deletion
 		if (deleteVideo && currentChapter.videoUrl) {
 			await deleteFile(currentChapter.videoUrl);
 			finalVideoUrl = null;
+		}
+
+		// Handle HLS deletion
+
+		if (deleteHls && currentChapter.hlsUrl) {
+			console.log('🗑️ Deleting HLS folder and all segments...');
+			try {
+				await deleteHLSFolder(currentChapter.hlsUrl); // CHANGE THIS LINE
+				console.log('✅ HLS folder deleted successfully');
+			} catch (error) {
+				console.error('❌ Failed to delete HLS folder:', error);
+				// Continue anyway - don't fail the whole operation
+			}
+			finalHlsUrl = null;
 		}
 
 		// Handle new video upload
@@ -484,6 +570,35 @@ export async function updateChapter(
 			} else {
 				// Upload new video
 				finalVideoUrl = await uploadFile(videoFile, 'video');
+			}
+		}
+
+		// Handle new HLS upload using specialized function
+		if (hlsFiles.length > 0) {
+			console.log(
+				`🎬 Processing ${hlsFiles.length} new HLS files for upload...`
+			);
+
+			if (finalHlsUrl && !deleteHls) {
+				// Delete old HLS files first
+				try {
+					console.log('🗑️  Deleting old HLS files...');
+					await deleteHLSFolder(finalHlsUrl);
+				} catch (error) {
+					console.warn('Failed to delete old HLS files:', error);
+					// Continue anyway
+				}
+			}
+
+			try {
+				finalHlsUrl = await uploadHLSFiles(hlsFiles);
+				console.log('✅ HLS upload successful:', finalHlsUrl);
+			} catch (error) {
+				console.error('❌ HLS upload failed:', error);
+				return {
+					errors: { hlsUrl: ['Failed to upload HLS files'] },
+					message: 'Failed to upload HLS files: ',
+				};
 			}
 		}
 
@@ -523,6 +638,7 @@ export async function updateChapter(
 				...updateData,
 				videoDuration: videoDuration || null,
 				videoUrl: finalVideoUrl,
+				hlsUrl: finalHlsUrl,
 				thumbnail: thumbnailUrl,
 				downloads: finalDownloads,
 				slug,
@@ -539,7 +655,7 @@ export async function updateChapter(
 					deleteMany: {},
 					// Create new markers only if there will be a video
 					create:
-						finalVideoUrl && validatedMarkers
+						(finalVideoUrl || finalHlsUrl) && validatedMarkers
 							? validatedMarkers.map((marker) => ({
 									timestamp: marker.timestamp,
 									title: marker.title,
@@ -578,6 +694,7 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 				downloads: true,
 				courseId: true,
 				published: true,
+				hlsUrl: true,
 			},
 		});
 
@@ -594,6 +711,16 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 		if (chapter?.videoUrl) {
 			await deleteFile(chapter.videoUrl);
 		}
+		if (chapter?.hlsUrl) {
+			console.log('🗑️ Deleting HLS folder for chapter deletion...');
+			try {
+				await deleteHLSFolder(chapter.hlsUrl); // CHANGE THIS LINE
+				console.log('✅ HLS folder deleted for chapter');
+			} catch (error) {
+				console.warn('⚠️ Failed to delete HLS folder:', error);
+				// Continue with chapter deletion anyway
+			}
+		}
 		if (chapter?.thumbnail) {
 			await deleteFile(chapter.thumbnail);
 		}
@@ -606,7 +733,7 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 			await updateCoursePublishStatus(chapter.courseId, wasPublished);
 		}
 
-		revalidatePath('/user/lms', 'layout'); // Also revalidate courses list
+		revalidatePath('/user/lms', 'layout');
 		return { success: true, message: 'Chapter deleted successfully' };
 	} catch (error) {
 		console.error('Delete chapter error:', error);
