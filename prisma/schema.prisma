@@ -613,6 +613,7 @@ model Chapter {
   title       String
   description String?     @db.Text
   videoUrl    String?     @map("video_url")
+  hlsUrl    String?
   videoDuration Int?     @map("video_duration") // Duration in seconds
   downloads   String[]    // Array of download URLs
   thumbnail   String?     // URL to thumbnail

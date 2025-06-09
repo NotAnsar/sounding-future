@@ -5,6 +5,8 @@ import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
 import type Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css';
+import '@videojs/http-streaming';
+import 'hls.js';
 import {
 	updateChapterProgress,
 	updateCourseProgress,
@@ -169,15 +171,42 @@ export default function VideoPlayerCourse({
 			videoElement.classList.add('vjs-big-play-centered');
 			videoRef.current.appendChild(videoElement);
 
+			// const player = videojs(videoElement, {
+			// 	controls: true,
+			// 	responsive: true,
+			// 	fluid: true,
+			// 	aspectRatio: '16:9',
+			// 	poster: currentChapter?.thumbnail,
+			// 	preload: 'metadata',
+			// 	sources: [{ src: currentChapter?.videoUrl, type: 'video/mp4' }],
+			// 	playbackRates: [0.5, 1, 1.25, 1.5, 2],
+			// });
+
 			const player = videojs(videoElement, {
 				controls: true,
 				responsive: true,
 				fluid: true,
 				aspectRatio: '16:9',
 				poster: currentChapter?.thumbnail,
-				preload: 'metadata',
-				sources: [{ src: currentChapter?.videoUrl, type: 'video/mp4' }],
+				preload: 'none', // Only load when user clicks play
+				sources: [
+					{
+						src: currentChapter?.hlsUrl, // .m3u8 file
+						type: 'application/x-mpegURL',
+					},
+					{
+						src: currentChapter?.videoUrl, // Fallback MP4
+						type: 'video/mp4',
+					},
+				],
 				playbackRates: [0.5, 1, 1.25, 1.5, 2],
+				html5: {
+					hls: {
+						enableLowInitialPlaylist: true,
+						smoothQualityChange: true,
+						overrideNative: true,
+					},
+				},
 			});
 
 			playerRef.current = player;
