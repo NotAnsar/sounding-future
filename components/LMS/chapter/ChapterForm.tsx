@@ -255,7 +255,7 @@ export default function ChapterForm({
 				/>
 
 				<input type='hidden' name='videoDuration' value={videoDuration} />
-				{/* <HLSUploadSection initialHlsUrl={initialData?.hlsUrl || undefined} /> */}
+
 				<HLSUploadSection
 					errors={{
 						hlsUrl: state?.errors?.hlsUrl,

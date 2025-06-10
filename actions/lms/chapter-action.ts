@@ -745,7 +745,7 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 		}
 		if (chapter?.hlsUrl) {
 			try {
-				await deleteHLSFolder(chapter.hlsUrl); // CHANGE THIS LINE
+				await deleteHLSFolder(chapter.hlsUrl);
 				console.info('✅ HLS folder deleted for chapter');
 			} catch (error) {
 				console.warn('⚠️ Failed to delete HLS folder:', error);

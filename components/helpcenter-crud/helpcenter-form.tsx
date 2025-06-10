@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-// import StudioImageUpload from '@/components/profile/StudioImageUpload';
 import { HelpCenterVideo } from '@prisma/client';
 import {
 	createHelpCenterVideo,
@@ -18,6 +17,7 @@ import {
 import { PublishToggle } from '../PublishToggle';
 import StudioVideoUpload from '../profile/VideoUpload';
 import StudioImageUpload from '../profile/StudioImageUpload';
+import HLSUploadSection from '../LMS/chapter/HLSUploadSection';
 
 export default function HelpCenterForm({
 	initialData,
@@ -30,6 +30,7 @@ export default function HelpCenterForm({
 		prev: {
 			videoUrl: initialData?.videoUrl || undefined,
 			thumbnailUrl: initialData?.thumbnailUrl || undefined,
+			hlsUrl: initialData?.hlsUrl || undefined,
 		},
 	};
 
@@ -101,6 +102,12 @@ export default function HelpCenterForm({
 					initialData={initialData?.videoUrl || undefined}
 					message='Upload Video, max. 200mb'
 				/>
+
+				<HLSUploadSection
+					errors={{ hlsUrl: state?.errors?.hlsUrl }}
+					initialHlsUrl={initialData?.hlsUrl || undefined}
+				/>
+
 				<StudioImageUpload
 					name='thumbnailUrl'
 					error={state?.errors?.thumbnailUrl}

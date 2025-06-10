@@ -42,6 +42,7 @@ export default async function Page() {
 									poster={d.thumbnailUrl || undefined}
 									title={d.title}
 									className='w-full h-full'
+									hlsUrl={d.hlsUrl || undefined}
 								/>
 							</div>
 						</section>

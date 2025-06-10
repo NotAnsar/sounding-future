@@ -13,10 +13,28 @@ import {
 import {
 	checkFile,
 	deleteFile,
+	deleteHLSFolder,
 	updateFile,
 	uploadFile,
+	uploadHLSFiles,
 } from './utils/s3-image';
 import { redirect } from 'next/navigation';
+
+// Helper function to process HLS files from FormData
+function getHLSFiles(formData: FormData): File[] {
+	const files: File[] = [];
+
+	// Get all values for the 'hlsFiles' key
+	const hlsEntries = formData.getAll('hlsFiles');
+
+	for (const entry of hlsEntries) {
+		if (entry instanceof File && entry.size > 0) {
+			files.push(entry);
+		}
+	}
+
+	return files;
+}
 
 const formSchema = z.object({
 	title: z.string().min(2, 'Title must be at least 2 characters').trim(),
@@ -27,13 +45,14 @@ const formSchema = z.object({
 	isNewUserVideo: z.boolean().default(false),
 });
 
-type HelpCenterVideoData = z.infer<typeof formSchema>;
+type HelpCenterVideoData = z.infer<typeof formSchema> & { hlsUrl: string };
 
 export type HelpCenterVideoState =
 	| (State<HelpCenterVideoData> & {
 			prev?: {
 				videoUrl?: string | undefined;
 				thumbnailUrl?: string | undefined;
+				hlsUrl?: string | undefined;
 			};
 	  })
 	| undefined;
@@ -57,15 +76,36 @@ export async function createHelpCenterVideo(
 			message: 'Invalid data. Unable to create help center video.',
 		};
 	}
+
+	const hlsFiles = getHLSFiles(formData);
 	const { videoUrl, thumbnailUrl: thumbnail, ...rest } = validatedFields.data;
 
 	try {
 		const videoFileUrl = await uploadFile(videoUrl, 'video');
 
+		let hlsFileUrl = null;
+		if (hlsFiles.length > 0) {
+			try {
+				hlsFileUrl = await uploadHLSFiles(hlsFiles);
+				console.info('✅ HLS upload successful:', hlsFileUrl);
+			} catch (error) {
+				console.error('❌ HLS upload failed:', error);
+				return {
+					errors: { hlsUrl: ['Failed to upload HLS files'] },
+					message: 'Failed to upload HLS files: ',
+				};
+			}
+		}
+
 		const thumbnailUrl = thumbnail ? await uploadFile(thumbnail) : undefined;
 
 		await prisma.helpCenterVideo.create({
-			data: { ...rest, videoUrl: videoFileUrl, thumbnailUrl },
+			data: {
+				...rest,
+				videoUrl: videoFileUrl,
+				thumbnailUrl,
+				hlsUrl: hlsFileUrl,
+			},
 		});
 
 		revalidatePath('/', 'layout');
@@ -80,6 +120,8 @@ export async function updateHelpCenterVideo(
 	prevState: HelpCenterVideoState,
 	formData: FormData
 ) {
+	const deleteHls = formData.get('deleteHls') === 'true';
+
 	const validatedFields = formSchema
 		.omit({ videoUrl: true, thumbnailUrl: true })
 		.safeParse({
@@ -95,6 +137,8 @@ export async function updateHelpCenterVideo(
 			message: 'Invalid data. Unable to update help center video.',
 		};
 	}
+	let finalHlsUrl = prevState?.prev?.hlsUrl || null;
+	const hlsFiles = getHLSFiles(formData);
 
 	try {
 		const videoFile = await checkFile(formData.get('videoUrl'));
@@ -124,6 +168,41 @@ export async function updateHelpCenterVideo(
 			'video'
 		);
 
+		if (deleteHls && finalHlsUrl) {
+			try {
+				await deleteHLSFolder(finalHlsUrl);
+				console.info('✅ HLS folder deleted successfully');
+			} catch (error) {
+				console.error('❌ Failed to delete HLS folder:', error);
+				// Continue anyway - don't fail the whole operation
+			}
+			finalHlsUrl = null;
+		}
+
+		if (hlsFiles.length > 0) {
+			if (finalHlsUrl && !deleteHls) {
+				// Delete old HLS files first
+				try {
+					console.info('🗑️ Deleting old HLS files...');
+					await deleteHLSFolder(finalHlsUrl);
+				} catch (error) {
+					console.warn('Failed to delete old HLS files:', error);
+					// Continue anyway
+				}
+			}
+
+			try {
+				finalHlsUrl = await uploadHLSFiles(hlsFiles);
+				console.info('✅ HLS upload successful:', finalHlsUrl);
+			} catch (error) {
+				console.error('❌ HLS upload failed:', error);
+				return {
+					errors: { hlsUrl: ['Failed to upload HLS files'] },
+					message: 'Failed to upload HLS files: ',
+				};
+			}
+		}
+
 		const thumbnail = formData.get('thumbnailUrl');
 
 		if (thumbnail instanceof File && thumbnail.size > 2 * 1024 * 1024) {
@@ -140,7 +219,12 @@ export async function updateHelpCenterVideo(
 
 		await prisma.helpCenterVideo.update({
 			where: { id },
-			data: { ...validatedFields.data, videoUrl: videoFileUrl, thumbnailUrl },
+			data: {
+				...validatedFields.data,
+				videoUrl: videoFileUrl,
+				thumbnailUrl,
+				hlsUrl: finalHlsUrl,
+			},
 		});
 		revalidatePath('/', 'layout');
 	} catch (error) {
@@ -162,6 +246,11 @@ export async function deleteHelpCenterVideo(
 		if (video.thumbnailUrl) await deleteFile(video.thumbnailUrl);
 
 		if (video.videoUrl) await deleteFile(video.videoUrl);
+		if (video?.hlsUrl) {
+			try {
+				await deleteHLSFolder(video.hlsUrl);
+			} catch (error) {}
+		}
 
 		revalidatePath('/', 'layout');
 		return { success: true, message: 'Help center video deleted successfully' };
