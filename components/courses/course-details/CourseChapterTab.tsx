@@ -206,7 +206,7 @@ export default function CourseChapterList2({
 										<div className='flex items-center gap-1 mb-0.5'>
 											<h4
 												className={cn(
-													'text-xs font-medium truncate',
+													'text-sm font-medium truncate',
 													index === currentChapterIndex && 'text-primary'
 												)}
 											>
