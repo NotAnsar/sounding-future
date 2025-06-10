@@ -336,11 +336,9 @@ export async function addChapter(
 		// Upload HLS files if provided using specialized function
 		let hlsFileUrl = null;
 		if (hlsFiles.length > 0) {
-			console.log(`🎬 Processing ${hlsFiles.length} HLS files for upload...`);
-
 			try {
 				hlsFileUrl = await uploadHLSFiles(hlsFiles);
-				console.log('✅ HLS upload successful:', hlsFileUrl);
+				console.info('✅ HLS upload successful:', hlsFileUrl);
 			} catch (error) {
 				console.error('❌ HLS upload failed:', error);
 				return {
@@ -509,18 +507,6 @@ export async function updateChapter(
 		}
 	}
 
-	console.log('🎯 Duration calculation:', {
-		formVideoDuration,
-		newVideoDuration,
-		currentDuration: currentChapter.videoDuration,
-		finalVideoDuration,
-		willHaveVideo,
-		deleteVideo,
-		deleteHls,
-		hasVideoFile: !!videoFile,
-		hasHlsFiles: hlsFiles.length > 0,
-	});
-
 	// Validate video requirement for publishing
 	if (published && !willHaveVideo) {
 		return {
@@ -601,10 +587,9 @@ export async function updateChapter(
 
 		// Handle HLS deletion
 		if (deleteHls && currentChapter.hlsUrl) {
-			console.log('🗑️ Deleting HLS folder and all segments...');
 			try {
 				await deleteHLSFolder(currentChapter.hlsUrl);
-				console.log('✅ HLS folder deleted successfully');
+				console.info('✅ HLS folder deleted successfully');
 			} catch (error) {
 				console.error('❌ Failed to delete HLS folder:', error);
 				// Continue anyway - don't fail the whole operation
@@ -626,14 +611,10 @@ export async function updateChapter(
 
 		// Handle new HLS upload using specialized function
 		if (hlsFiles.length > 0) {
-			console.log(
-				`🎬 Processing ${hlsFiles.length} new HLS files for upload...`
-			);
-
 			if (finalHlsUrl && !deleteHls) {
 				// Delete old HLS files first
 				try {
-					console.log('🗑️ Deleting old HLS files...');
+					console.info('🗑️ Deleting old HLS files...');
 					await deleteHLSFolder(finalHlsUrl);
 				} catch (error) {
 					console.warn('Failed to delete old HLS files:', error);
@@ -643,7 +624,7 @@ export async function updateChapter(
 
 			try {
 				finalHlsUrl = await uploadHLSFiles(hlsFiles);
-				console.log('✅ HLS upload successful:', finalHlsUrl);
+				console.info('✅ HLS upload successful:', finalHlsUrl);
 			} catch (error) {
 				console.error('❌ HLS upload failed:', error);
 				return {
@@ -681,8 +662,6 @@ export async function updateChapter(
 
 		const { title } = updateData;
 		const slug = generateSlug(title);
-
-		console.log('💾 Updating chapter with duration:', videoDuration);
 
 		// Update chapter, instructor relationships, and markers
 		await prisma.chapter.update({
@@ -765,10 +744,9 @@ export async function deleteChapter(id: string): Promise<DeleteChapterState> {
 			await deleteFile(chapter.videoUrl);
 		}
 		if (chapter?.hlsUrl) {
-			console.log('🗑️ Deleting HLS folder for chapter deletion...');
 			try {
 				await deleteHLSFolder(chapter.hlsUrl); // CHANGE THIS LINE
-				console.log('✅ HLS folder deleted for chapter');
+				console.info('✅ HLS folder deleted for chapter');
 			} catch (error) {
 				console.warn('⚠️ Failed to delete HLS folder:', error);
 				// Continue with chapter deletion anyway

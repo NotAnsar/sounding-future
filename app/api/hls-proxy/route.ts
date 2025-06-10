@@ -17,8 +17,6 @@ export async function GET(request: NextRequest) {
 			return NextResponse.json({ error: 'Invalid URL' }, { status: 400 });
 		}
 
-		console.log('🎬 Proxying HLS request:', url);
-
 		const response = await fetch(url, {
 			headers: {
 				'User-Agent':
@@ -46,8 +44,6 @@ export async function GET(request: NextRequest) {
 		if (url.endsWith('.m3u8')) {
 			const textContent = new TextDecoder().decode(data);
 
-			console.log('📄 Original playlist content:', textContent);
-
 			// Replace segment URLs with proxied versions
 			const modifiedContent = textContent
 				.split('\n')
@@ -59,15 +55,13 @@ export async function GET(request: NextRequest) {
 						const proxiedUrl = `/api/hls-proxy?url=${encodeURIComponent(
 							trimmedLine
 						)}`;
-						console.log(`🔄 Proxying: ${trimmedLine} → ${proxiedUrl}`);
+
 						return proxiedUrl;
 					}
 
 					return line;
 				})
 				.join('\n');
-
-			console.log('📝 Modified playlist for proxy:', modifiedContent);
 
 			return new NextResponse(modifiedContent, {
 				status: 200,
@@ -80,9 +74,6 @@ export async function GET(request: NextRequest) {
 				},
 			});
 		}
-
-		// For segment files (.ts), return as-is with CORS headers
-		console.log(`📺 Serving segment file: ${url} (${data.byteLength} bytes)`);
 
 		return new NextResponse(data, {
 			status: 200,

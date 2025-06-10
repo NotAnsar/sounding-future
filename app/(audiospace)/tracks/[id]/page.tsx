@@ -122,7 +122,6 @@ export default async function page({
 								</Suspense>
 							</TabsContent>
 							<TrackArtistDetails artists={track.artists} />
-							{/* <TrackArtistDetails artist={track.artist} /> */}
 						</div>
 						<div>
 							<ul className='mt-2 px-8 py-6 bg-player rounded-2xl text-center justify-center space-y-3'>
