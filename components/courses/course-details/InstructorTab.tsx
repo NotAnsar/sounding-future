@@ -40,8 +40,6 @@ function CreditsSection({ credits }: { credits: string }) {
 async function InstructorSection({ ChapterId }: { ChapterId: string }) {
 	const { data } = await getChapterById(ChapterId);
 
-	await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate loading delay
-
 	if (!data) return null;
 
 	// Extract other courses more efficiently
