@@ -6,6 +6,7 @@ import CoursesNav from '@/components/courses/CoursesNav';
 import { getTopics } from '@/db/topic';
 import Error from '@/components/Error';
 import CoursesList from '@/components/courses/CoursesList';
+import CoursesProOnly from '@/components/courses/CoursesProOnly';
 
 export async function generateMetadata() {
 	const courses = await getCourses(true);
@@ -72,6 +73,7 @@ export default async function page({
 					/>
 				)}
 			</Tabs>
+			<CoursesProOnly className='mt-8' />
 		</>
 	);
 }

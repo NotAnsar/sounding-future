@@ -21,10 +21,15 @@ export default function DynamicNav({
 		<div className='flex gap-1.5 justify-between '>
 			<TabsList className='flex w-fit gap-2 sm:gap-4 bg-background text-white justify-start'>
 				{hasRandom && (
-					<TabsTrigger value='default' className='!p-0'>
+					<TabsTrigger
+						value='default'
+						// className='!p-0'
+						className='!p-0 rounded-full flex-shrink-0'
+					>
 						<Link
 							href={`?sort=default`}
-							className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+							// className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+							className='px-2 py-1.5 sm:px-4 sm:py-1.5 rounded-full whitespace-nowrap text-sm sm:text-[15px]'
 						>
 							Random{' '}
 							<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>
@@ -33,8 +38,16 @@ export default function DynamicNav({
 						</Link>
 					</TabsTrigger>
 				)}
-				<TabsTrigger value='new' className='!p-0'>
-					<Link href={`?sort=new`} className='px-2 py-1.5 sm:px-3 sm:py-1.5'>
+				<TabsTrigger
+					value='new'
+					// className='!p-0'
+					className='!p-0 rounded-full flex-shrink-0'
+				>
+					<Link
+						href={`?sort=new`}
+						// className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+						className='px-2 py-1.5 sm:px-4 sm:py-1.5 rounded-full whitespace-nowrap text-sm sm:text-[15px]'
+					>
 						New{' '}
 						<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>
 							{label}
@@ -42,10 +55,15 @@ export default function DynamicNav({
 					</Link>
 				</TabsTrigger>
 
-				<TabsTrigger value='popular' className='!p-0'>
+				<TabsTrigger
+					value='popular'
+					// className='!p-0'
+					className='!p-0 rounded-full flex-shrink-0'
+				>
 					<Link
 						href={`?sort=popular`}
-						className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+						// className='px-2 py-1.5 sm:px-3 sm:py-1.5'
+						className='px-2 py-1.5 sm:px-4 sm:py-1.5 rounded-full whitespace-nowrap text-sm sm:text-[15px]'
 					>
 						Popular{' '}
 						<span className={cn(hasRandom ? 'hidden sm:inline' : 'inline')}>

@@ -11,6 +11,10 @@ export default function ArtistArticles({
 		articleId: string;
 	})[];
 }) {
+	if (!articles || articles.length === 0) {
+		return null;
+	}
+
 	return (
 		<div className='max-w-2xl xl:w-1/3'>
 			<h1 className='text-xl font-semibold text-primary-foreground mb-4'>
