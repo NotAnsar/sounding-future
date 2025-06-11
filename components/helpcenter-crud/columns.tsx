@@ -35,7 +35,7 @@ export const columns: ColumnDef<HelpCenterVideo>[] = [
 		accessorKey: 'description',
 		cell: ({ row }) => {
 			return (
-				<div className='text-[15px] text-nowrap'>
+				<div className='text-sm max-w-48 text-muted-foreground line-clamp-1'>
 					{row.getValue('description')}
 				</div>
 			);
@@ -80,7 +80,7 @@ export const columns: ColumnDef<HelpCenterVideo>[] = [
 		accessorKey: 'createdAt',
 		cell: ({ row }) => {
 			return (
-				<div className='text-[15px] text-nowrap'>
+				<div className='text-sm text-nowrap'>
 					{convertDateFormat(new Date(row.getValue('createdAt')))}
 				</div>
 			);
