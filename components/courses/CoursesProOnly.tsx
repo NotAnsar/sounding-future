@@ -27,7 +27,7 @@ export default function CoursesProOnly({ className }: { className?: string }) {
 				tutorials for the community.
 			</p>
 			<Link
-				href={'/user/settings/membership'}
+				href={'/support-us'}
 				className={cn(buttonVariants(), 'w-fit inline-flex mt-2')}
 			>
 				Become a Pro Member
