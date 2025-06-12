@@ -143,11 +143,15 @@ export default async function page({
 
 			<Tabs value={activeTab} className='w-full'>
 				<div className='flex justify-between items-center mb-6'>
-					<TabsList className='grid w-fit grid-cols-2 gap-2'>
-						<TabsTrigger value='liked' asChild>
+					<TabsList className='grid w-fit grid-cols-2 gap-2 sm:gap-4'>
+						<TabsTrigger
+							value='liked'
+							className='!p-0 rounded-full flex-shrink-0'
+						>
 							<Link
 								href={handleTabChange('liked')}
-								className='flex items-center gap-2'
+								// className='flex items-center gap-2 rounded-full px-2 sm:px-4 text-sm sm:text-[15px]'
+								className='px-2 py-1.5 sm:px-4 sm:py-1.5 rounded-full whitespace-nowrap text-sm sm:text-[15px]'
 							>
 								Liked Courses
 								{likedCourses.length > 0 && (
@@ -162,10 +166,14 @@ export default async function page({
 								)}
 							</Link>
 						</TabsTrigger>
-						<TabsTrigger value='learning' asChild>
+						<TabsTrigger
+							value='learning'
+							className='!p-0 rounded-full flex-shrink-0'
+						>
 							<Link
 								href={handleTabChange('learning')}
-								className='flex items-center gap-2'
+								// className='flex items-center gap-2 rounded-full	px-2 sm:px-4 text-sm sm:text-[15px]'
+								className='px-2 py-1.5 sm:px-4 sm:py-1.5 rounded-full whitespace-nowrap text-sm sm:text-[15px]'
 							>
 								My Learning
 								{learningCourses.length > 0 && (
